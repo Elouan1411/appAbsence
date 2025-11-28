@@ -1,0 +1,15 @@
+{
+  "name": "projet_l3",
+  "version": "1.0.0",
+  "description": "Projet L3 - serveur + client",
+  "main": "start.js",
+  "scripts": {
+    "dev": "concurrently -n \"serveur,client\" -c \"yellow,cyan\" \"cd server && nodemon index.js\" \"cd client && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}

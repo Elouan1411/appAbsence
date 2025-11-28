@@ -1,0 +1,49 @@
+const jwt = require("jsonwebtoken");
+
+//Middleware de vérification de la validité du token
+function verifyToken(req, res, next) {
+  const token = req.cookies.jwt;
+  if (!token) {
+    return res.status(403).json({ error: "Token manquant" });
+  }
+  jwt.verifyToken(token, "app absence", (err, decodedToken) => {
+    if (err) {
+      return res.status(500).json({ error: "Token invalide" });
+      req.user = decodedToken;
+      next();
+    }
+  });
+}
+
+//Middleware qui vérifie si l'utilisateur est un admin
+function isAdmin(req, res, next) {
+  if (req.user.pwd.split("-")[1] === "admin") {
+    return next();
+  }
+  res.status(403).json({ error: "Accès refusé" });
+}
+
+//Middleware qui vérifie si l'utilisateur est un admin ou un professeur
+function isAdminOrTeacher(req, res, next) {
+  if (
+    req.user.pwd.split("-")[1] === "admin" ||
+    req.user.pwd.split("-")[1] === "teacher"
+  ) {
+    return next();
+  }
+  res.status(403).json({ error: "Accès refusé" });
+}
+
+//Fonction qui vérifie si l'utilisateur est un admin ou le propriétaire de l'absence
+function isAdminOrOwner(login) {
+  return (req, res, next) => {
+    const role = req.user.pwd.split("-")[1];
+    const userLogin = req.user.pwd.split("-")[0];
+    const loginParam = req.params[login];
+
+    if (role === "admin" || userLogin === loginParam) return next();
+    res.status(403).json({ error: "Accès refusé" });
+  };
+}
+
+module.exports = { isAdmin, isAdminOrOwner, isAdminOrTeacher, verifyToken };
