@@ -43,13 +43,6 @@ app.use(cookieParser());
  *             Constantes utilisées
  *****************************************************/
 
-let users = {};
-users["rjoffrin"] = { password: 1234, role: "student" };
-users["apierrot"] = { password: 1234, role: "admin" };
-users["fdadeau"] = { password: 1234, role: "teacher" };
-
-const maxAge = 3 * 24 * 60 * 60;
-
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, "upload");
 if (!fs.existsSync(uploadDir)) {
@@ -59,6 +52,10 @@ if (!fs.existsSync(uploadDir)) {
   console.log("Upload directory exists at:", uploadDir);
 }
 
-// On utilise la route absence
+// Utilisation de la route d'absence
 const absenceRoutes = require("./routes/absence");
 app.use("/absence", absenceRoutes);
+
+// Utilisation de la route d'authentification
+const authRoutes = require("./routes/auth");
+app.use("/auth", authRoutes);

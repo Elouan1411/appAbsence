@@ -8,10 +8,10 @@ function verifyToken(req, res, next) {
   }
   jwt.verifyToken(token, "app absence", (err, decodedToken) => {
     if (err) {
-      return res.status(500).json({ error: "Token invalide" });
-      req.user = decodedToken;
-      next();
+      res.status(500).json({ error: "Token invalide" });
     }
+    req.user = decodedToken;
+    next();
   });
 }
 
