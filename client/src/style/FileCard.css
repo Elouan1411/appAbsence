@@ -1,0 +1,61 @@
+.file-card {
+    height: 25px;
+    width: 250px;
+    position: relative;
+    outline: solid black 3px;
+    margin: 10px;
+    display: inline-flex;
+    justify-content: space-between;
+    border-radius: 8px;
+}
+
+.file-card>span:nth-of-type(1) {
+    padding-left: 5px;
+}
+
+
+.file-card>span:nth-of-type(2) {
+    display: inline-block;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+
+.file-card>span:nth-of-type(2)>* {
+    height: 100%;
+    padding: 0 15px;
+    display: inline-block;
+    border-left: black solid 3px;
+}
+
+.file-card>span:nth-of-type(2)>*:hover {
+    background-color: #a4a4a4;
+}
+
+.file-card>span:nth-of-type(2)>span:first-of-type {
+    display: none;
+}
+
+.edit.file-card>span:nth-of-type(2)>span:first-of-type {
+    display: inline-block;
+}
+
+.plus.file-card {
+    display: none;
+}
+
+
+.edit.plus.file-card {
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    outline-color: #a4a4a4;
+    color: #a4a4a4;
+}
+
+.edit.plus.file-card:hover {
+    outline-color: black;
+    color: black;
+}

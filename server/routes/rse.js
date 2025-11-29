@@ -1,6 +1,6 @@
 const express = require("express");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
-const result = express.Router();
+const router = express.Router();
 /*****************************************
  *             Méthodes GET
  *****************************************/

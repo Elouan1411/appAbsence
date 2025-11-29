@@ -1,0 +1,89 @@
+#centered.consulter {
+    width: 950px;
+    height: 550px;
+    position: relative;
+    transform: translateX(-50%);
+    padding: 100px;
+}
+
+
+.consulter aside {
+    position: absolute;
+}
+
+.consulter .align>span {
+    float: right;
+}
+
+
+.consulter>.card {
+    display: block;
+    height: 150px;
+    justify-content: space-around;
+    flex-direction: column;
+    height: 100%;
+}
+
+.consulter>.card > a:first-of-type{
+    display: block;
+    margin-bottom: 1.5em;
+    color: black;
+}
+
+
+.consulter #editable-infos {
+    float: left;
+    width: 50%;
+}
+
+.consulter #editable-infos table {
+    font-size: 1em;
+    margin: 0;
+    width: 100%;
+    border: transparent;
+}
+
+.consulter #editable-infos table tr td:first-of-type {
+    font-weight: bold;
+    text-align: left;
+}
+
+.consulter #editable-infos table tr td:last-of-type {
+    text-align: right;
+    width: 15em;
+    height: 1.5em;
+}
+
+.consulter #editable-infos table tr td:last-of-type span:first-of-type {
+    float: left;
+}
+
+.consulter #editable-infos table tr td:last-of-type span:last-of-type {
+    float: right;
+}
+
+.consulter #editable-infos table tr td:last-of-type input {
+    z-index: 10;
+}
+
+.consulter #editable-infos td {
+    border: transparent;
+    padding: 0;
+}
+
+
+
+.consulter #fixed-infos {
+    float: right;
+    margin-right: 8em;
+    margin-top: 4em;
+}
+
+
+.consulter>.card>div#content {
+    height: 250px;
+}
+
+.consulter #controls>#btnEnvoyer {
+    float: right;
+}
