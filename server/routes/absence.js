@@ -9,6 +9,11 @@ const {
   isAdmin,
 } = require("../middlewares/auth");
 
+/*****************************************
+ *            Méthodes GET
+ *****************************************/
+
+//Récupération de toutes les absences
 router.get("/", verifyToken, isAdmin, (req, res) => {
   const sql = "SELECT * FROM Absence";
   db.all(sql, [], (err, rows) => {
@@ -19,6 +24,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
   });
 });
 
+// Récupération des absences concernant un login
 router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
   const login = req.params.login.substring(1);
   const sql = "SELECT * FROM Absence WHERE login = ?";
@@ -30,6 +36,7 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
   });
 });
 
+//Récupération des absences pour un professeur donné
 router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   let loginProf = req.params.login.substring(1);
   const sql = "SELECT * FROM Absence WHERE loginProfesseur = ?";
@@ -41,6 +48,11 @@ router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
+/*****************************************
+ *            Méthodes POST
+ *****************************************/
+
+// Insertion d'une nouvelle absence
 router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const { number, start, end, loginProf, code, login } = req.body;
   let sql = `INSERT INTO Absence (numeroEtudiant, debut, fin, loginProfesseur, codeMatiere, login)
@@ -55,6 +67,11 @@ router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
   res.status(200).json([]);
 });
 
+/*****************************************
+ *            Méthodes DELETE
+ *****************************************/
+
+// Suppression d'une absence
 router.delete("/", verifyToken, isAdminOrOwner("loginProf"), (req, res) => {
   const { id, loginProf, debut, fin } = req.body;
   const sql = `DELETE FROM Absence WHERE numeroEtudiant = ? AND debut = ? AND fin = ?`;

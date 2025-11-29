@@ -34,6 +34,12 @@ function isAdminOrTeacher(req, res, next) {
   res.status(403).json({ error: "Accès refusé" });
 }
 
+function isTeacher(req, res, next) {
+  if (req.user.pwd.split("-")[1] === "admin") {
+    return next();
+  }
+  res.status(403).json({ error: "Accès refusé" });
+}
 //Fonction qui vérifie si l'utilisateur est un admin ou le propriétaire de l'absence
 function isAdminOrOwner(login) {
   return (req, res, next) => {
@@ -46,4 +52,21 @@ function isAdminOrOwner(login) {
   };
 }
 
-module.exports = { isAdmin, isAdminOrOwner, isAdminOrTeacher, verifyToken };
+function isOwner(login) {
+  return (req, res, next) => {
+    const userLogin = req.user.pwd.split("-")[0]; // login de l'utilisateur connecté
+    const loginParam = req.params[login]; // login présent dans l'URL
+
+    if (userLogin === loginParam) return next();
+    res.status(403).json({ error: "Accès refusé" });
+  };
+}
+
+module.exports = {
+  isAdmin,
+  isAdminOrOwner,
+  isAdminOrTeacher,
+  verifyToken,
+  isOwner,
+  isTeacher,
+};

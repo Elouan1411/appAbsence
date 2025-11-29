@@ -59,3 +59,39 @@ app.use("/absence", absenceRoutes);
 // Utilisation de la route d'authentification
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
+
+//Utilisation de la route appel
+const appelRoutes = require("./routes/appel");
+app.use("/appel", appelRoutes);
+
+//Utilisation de la route dispense
+const dispenseRoutes = require("./routes/dispense");
+app.use("/dispense", dispenseRoutes);
+
+//Utilisation de la route file
+const fileRoutes = require("./routes/file");
+app.use("/file", fileRoutes);
+
+//Utilisation de la route groups
+const groupsRoutes = require("./routes/groups");
+app.use("/groups", groupsRoutes);
+
+//Utilisation de la route justificatif
+const justificatifRoutes = require("./routes/justificatif");
+app.use("/justificatif", justificatifRoutes);
+
+//Utilisation de la route justification
+const justificationRoutes = require("./routes/justification");
+app.use("/justification", justificationRoutes);
+
+//Utilisation de la route RSE
+const rseRoutes = require("./routes/rse");
+app.use("/rse", rseRoutes);
+
+//Utilisation de la route étudiant
+const studentRoutes = require("./routes/student");
+app.use("/eleve", studentRoutes);
+
+//Utilisation de la route matière
+const subjectRoutes = require("./routes/subject");
+app.use("/matiere", subjectRoutes);

@@ -8,6 +8,10 @@ users["rjoffrin"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
 
+/*****************************************
+ *            Méthodes POST
+ *****************************************/
+
 //Route pour se connecter
 router.post("/login", (req, res) => {
   const { user, pwd } = req.body;
