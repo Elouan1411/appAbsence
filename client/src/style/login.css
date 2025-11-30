@@ -10,12 +10,66 @@
 .login-form-container {
   display: flex;
   justify-content: center;
-  align-content: space-between;
+  align-items: center;
   flex-direction: column;
   gap: 1vh;
-  height: 60%;
-  width: 32%;
+  height: 54%;
+  width: 27%;
   border-radius: 3%;
   background-color: white;
   box-shadow: rgba(100, 100, 111, 0.2) 0vw 0.6vh 2.68vh 0vh;
+}
+
+.login-header {
+  margin-top: 4vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle {
+  border-radius: 100%;
+  background-color: var(--primary-color);
+  width: 5vw;
+  height: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2vh;
+}
+.circle svg {
+  fill: white;
+  width: 70%;
+  height: 70%;
+}
+.input-container {
+  width: 100%;
+  height: 14vh;
+}
+.button {
+  width: 90%;
+}
+
+.input-container p {
+  margin-left: 1vw;
+  margin-bottom: 0.4vh;
+  font-size: 0.7vw;
+}
+
+hr {
+  border: none;
+  height: 1.5px;
+  background-color: lightgray;
+  width: 90%;
+}
+
+.text-credit {
+  font-weight: 300;
+  color: var(--text-secondary);
+}
+
+p {
+  margin-bottom: 0.4vh;
 }

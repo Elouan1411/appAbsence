@@ -22,6 +22,8 @@ const cookieParser = require("cookie-parser");
 //Importation dotenv pour les variables d'environnement
 require("dotenv").config();
 
+const cors = require("cors");
+
 /*****************************************************
  *             Lancement du serveur web
  *****************************************************/
@@ -38,6 +40,13 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 /*****************************************************
  *             Constantes utilisées
