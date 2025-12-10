@@ -1,5 +1,5 @@
 import React, { use, useEffect } from "react";
-import "../style/Login.css";
+import "../style/login.css";
 import InputField from "../components/common/InputField";
 import Button from "../components/common/Button";
 import { useState } from "react";
