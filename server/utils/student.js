@@ -6,61 +6,93 @@ const exceljs = require("exceljs");
  * @param {String} filepath - The path to the Excel file.
  * @param {String} fileExtension - The extension of the file (".xlsx" or ".csv").
  * @param {String} promo - The promotion of the students.
- * @returns {Object} { success: boolean, message: string }
+ * @returns {Promise<Object>} { success: boolean, message: string }
  */
-async function importExcelInDB(filepath, fileExtension, promo) {
-    try {
-        const workbook = new exceljs.Workbook();
-        if (fileExtension === ".csv") {
-            await workbook.csv.readFile(filepath);
-        } else {
-            await workbook.xlsx.readFile(filepath);
-        }
-
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = exceljs.utils.sheet_to_json(worksheet);
-
-        let processedCount = 0;
-        const totalRecords = json.length;
-
-        if (totalRecords === 0) {
-            return { success: false, message: "File uploaded but no student records found" };
-        }
-
-        for (let i of json) {
-            i["promo"] = promo;
-            if (i["promoPair"] == undefined) {
-                i["promoPair"] = i["promo"];
-                i["groupeTDPair"] = i["groupeTD"];
-                i["groupeTPPair"] = i["groupeTP"];
+function importExcelInDB(filepath, fileExtension, promo) {
+    return new Promise(async (resolve, reject) => {
+        console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
+        try {
+            const workbook = new exceljs.Workbook();
+            if (fileExtension === ".csv") {
+                console.log("[DEBUG] Reading CSV...");
+                await workbook.csv.readFile(filepath);
+            } else {
+                console.log("[DEBUG] Reading XLSX...");
+                await workbook.xlsx.readFile(filepath);
             }
-            let elements = [];
-            for (let j in i) {
-                elements.push(i[j]);
+            console.log("[DEBUG] File read complete.");
+
+            const worksheet = workbook.getWorksheet(1);
+
+            if (!worksheet) {
+                console.log("[DEBUG] No worksheet found.");
+                resolve({ success: false, message: "File uploaded but no worksheet found" });
+                return;
             }
-            const sql = `INSERT INTO Eleve (numero, loginENT, nom, prenom, Promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair)
-                                                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-            db.run(sql, elements, (err) => {
-                processedCount++;
+            const totalRows = worksheet.rowCount;
+            console.log(`[DEBUG] Worksheet found. Total rows: ${totalRows}`);
 
+            if (totalRows <= 1) {
+                // Assuming row 1 is header
+                console.log("[DEBUG] Not enough rows (<= 1).");
+                resolve({ success: false, message: "File uploaded but no student records found" });
+                return;
+            }
+
+            console.log("[DEBUG] Preparing BULK INSERT...");
+
+            const outputData = [];
+            const placeholders = [];
+
+            // Iterate rows to build data
+            // Start at 2 to skip header
+            for (let rowNumber = 2; rowNumber <= totalRows; rowNumber++) {
+                const row = worksheet.getRow(rowNumber);
+
+                const numero = row.getCell(1).value;
+                const login = row.getCell(2).value;
+                const nom = row.getCell(3).value;
+                const prenom = row.getCell(4).value;
+                const groupeTD = row.getCell(5).value;
+                const groupeTP = row.getCell(6).value;
+
+                if (!numero && !login) continue;
+
+                const promoPair = promo;
+                const groupeTDPair = groupeTD;
+                const groupeTPPair = groupeTP;
+
+                outputData.push(numero, login, promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair);
+
+                placeholders.push("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            }
+
+            if (outputData.length === 0) {
+                resolve({ success: false, message: "No valid students found in file." });
+                return;
+            }
+
+            const sql =
+                `INSERT INTO Eleve (numero, loginENT, Promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
+                placeholders.join(", ");
+
+            console.log(`[DEBUG] Executing Bulk Insert for ${placeholders.length} records...`);
+
+            db.run(sql, outputData, (err) => {
                 if (err) {
-                    console.error("Error inserting student:", err);
+                    console.error("[DEBUG] Error during Bulk Insert:", err.message);
+                    resolve({ success: false, message: "Error during bulk insertion: " + err.message });
                 } else {
-                    console.log("Student added successfully.");
-                }
-
-                // If all records processed, send response
-                if (processedCount === totalRecords) {
-                    return { success: true, message: "Students processed and file uploaded successfully" };
+                    console.log("[DEBUG] Bulk insert successful.");
+                    resolve({ success: true, message: `Successfully imported ${placeholders.length} students.` });
                 }
             });
+        } catch (error) {
+            console.error("[DEBUG] Catch error:", error);
+            resolve({ success: false, message: "Error processing the Excel file: " + error.message });
         }
-    } catch (error) {
-        console.error("Error processing Excel file:", error);
-        return { success: false, message: "Error processing the Excel file" };
-    }
+    });
 }
 
 module.exports = { importExcelInDB };
