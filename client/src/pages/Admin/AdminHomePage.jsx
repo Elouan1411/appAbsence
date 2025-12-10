@@ -14,10 +14,15 @@ function AdminHomePage() {
     try {
     } catch (error) {}
   };
+
+  const handleNavigate = () => {
+    navigate("/admin/import", { replace: true });
+  };
   return (
     <div>
       <Title>Page d'accueil admin</Title>
       <Button onClick={handleSignOut}>Se déconnecter</Button>
+      <Button onClick={handleNavigate}>Naviguer vers la page d'import</Button>
     </div>
   );
 }

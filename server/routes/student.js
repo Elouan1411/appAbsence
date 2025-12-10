@@ -6,6 +6,7 @@ const {
 } = require("../middlewares/auth");
 const db = require("../database/db");
 const router = express.Router();
+const formidable = require("formidable");
 
 /*****************************************
  *           Méthodes DELETE
@@ -137,6 +138,7 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
     }
 
     const fileObject = files.file ? files.file[0] : null;
+
     const fileType = fields.fileType ? fields.fileType[0] : null;
     const promo = fields.promo ? fields.promo[0] : null;
 
@@ -160,7 +162,8 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
       // If it's an Excel file, process it to add students to the database
       if (fileType === "excel") {
         try {
-          var workbook = XLSX.readFile(fileObject.filepath);
+          const workbook = new Excel.Workbook();
+          workbook.readFile(fileObject.filepath);
           var sheetName = workbook.SheetNames[0];
           var worksheet = workbook.Sheets[sheetName];
           var json = XLSX.utils.sheet_to_json(worksheet);
@@ -228,8 +231,9 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
  *****************************************/
 
 //Mise à jour des informations d'un élève
-router.put("/", verifyToken, isAdmin, (req, res) => {
-  const { number, name, forname, promo, td, tp } = req.body;
+router.put("/:number", verifyToken, isAdmin, (req, res) => {
+  const { name, forname, promo, td, tp } = req.body;
+  const number = req.params;
   const sql = `UPDATE Eleve SET nom = ?, prenom = ?, promo = ?, groupeTD = ?, groupeTP = ? WHERE numero = ?`;
 
   db.run(sql, [name, forname, promo, td, tp, number], (err) => {
