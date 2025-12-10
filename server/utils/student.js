@@ -63,4 +63,4 @@ async function importExcelInDB(filepath, fileExtension, promo) {
     }
 }
 
-module.exports = importExcelInDB;
+module.exports = { importExcelInDB };

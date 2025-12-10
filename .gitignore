@@ -3,3 +3,4 @@
 /.vs_code
 ./server/node_modules
 jsconfig.json
+install-all.sh

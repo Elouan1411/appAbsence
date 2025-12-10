@@ -42,7 +42,6 @@ router.post("/new", verifyToken, isOwner, (req, res) => {
   db.all(sql, [login, id], (err, rows) => {
     if (err) return console.error(err.message);
     if (rows.length > 0) {
-      //ucaca
     } else res.status(403);
   });
 });

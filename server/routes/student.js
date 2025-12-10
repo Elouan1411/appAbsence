@@ -140,7 +140,8 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
         // Generate a unique filename
         const timestamp = Date.now();
         // Get extension of file
-        const fileExtension = path.extname(fileObject.filepath);
+        console.log("fileObject", fileObject);
+        const fileExtension = path.extname(fileObject.originalFilename);
         const fileName = `${promo}_${timestamp}${fileExtension}`;
         // Fix: Go up one level from 'routes' to 'server' then 'upload'
         const targetPath = path.join(__dirname, "../upload", fileName);
@@ -152,6 +153,7 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
                 return res.status(500).json({ error: "Error saving the file" });
             }
             let result;
+            console.log("fileExtension", fileExtension);
             switch (fileExtension) {
                 case ".xlsx":
                 case ".csv":
@@ -163,13 +165,11 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
                     }
                     return res.status(200).json({
                         message: result.message,
-                        path: fileName,
                     });
                 case ".pdf":
                     // For PDF files, just confirm the upload
                     return res.status(200).json({
                         message: "PDF file uploaded successfully",
-                        path: fileName,
                     });
                 default:
                     return res.status(500).json({ error: "Unsupported file type" });
