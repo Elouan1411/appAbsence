@@ -18,3 +18,7 @@
   font-weight: 600;
   color: var(--primary-color);
 }
+
+.icon {
+  color: var(--primary-color);
+}
