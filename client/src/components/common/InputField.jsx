@@ -1,5 +1,4 @@
 import React from "react";
-import "../../style/Common.css";
 function InputField({
   placeholder,
   text,

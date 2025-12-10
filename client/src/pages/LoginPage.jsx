@@ -18,11 +18,11 @@ function LoginPage() {
       const role = await login(user, password);
       console.log(`Role : ${role} | Type : ${typeof role}`);
       if (role === "admin") {
-        navigate("/admin", { replace: true });
+        navigate("/admin/", { replace: true });
       } else if (role === "teacher") {
-        navigate("/teacher", { replace: true });
+        navigate("/teacher/", { replace: true });
       } else if (role === "student") {
-        navigate("/student", { replace: true });
+        navigate("/student/", { replace: true });
       } else {
         navigate("/error", { replace: true });
       }
