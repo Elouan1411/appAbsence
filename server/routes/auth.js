@@ -2,7 +2,7 @@ const express = require("express");
 const createToken = require("../utils/auth");
 const { verifyToken } = require("../middlewares/auth");
 const router = express.Router();
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 10 * 60 * 60;
 let users = {};
 users["rjoffrin"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
@@ -36,10 +36,10 @@ router.post("/login", (req, res) => {
             const token = createToken(user + "-" + users[user]["role"]);
             res.cookie("jwt", token, {
                 httpOnly: true,
-                maxAge: maxAge * 1000,
+                maxAge: maxAge,
                 sameSite: "strict",
             });
-            res.status(200).json({ role: users[user]["role"], token: token }); //TODO: supprimer token:token quand on aura le frontend
+            res.status(200).json(users[user]["role"]);
         } else {
             res.status(401).json("Mot de passe incorrect");
         }
