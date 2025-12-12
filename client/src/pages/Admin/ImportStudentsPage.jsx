@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import ImportZone from "../../components/ImportStudentsPage/ImportZone";
 import Title from "../../components/common/Title";
 import Grid from "../../components/ImportStudentsPage/Grid";
-import Button from "../../components/common/Button"; // Votre composant bouton
+import Button from "../../components/common/Button"; // Notre composant bouton
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
+
 
 function ImportStudentsPage() {
   const [rowData, setRowData] = useState([]);
@@ -33,8 +34,11 @@ function ImportStudentsPage() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Students");
 
-    worksheet.columns = colDefs.map((col) => ({
-      header: col.field,
+    // Envoyer dans le fichier que les colonnes valides si l'utilisateur déside d'envoyer comme ca //TODO: peut etre empecher d'envoyer dans ce cas
+    const validCols = colDefs.filter(col => !col.field.startsWith("_ignored_"));
+
+    worksheet.columns = validCols.map((col) => ({
+      header: col.field, 
       key: col.field,
     }));
     worksheet.addRows(modifiedRows);
@@ -53,7 +57,7 @@ function ImportStudentsPage() {
     formData.append("promo", "L3");
 
     try {
-      const response = await fetch("http://localhost:3000/eleve/studentList", {
+      const response = await fetch(`http://localhost:3000/eleve/studentList`, {
         method: "POST",
         headers: {},
         credentials: "include",

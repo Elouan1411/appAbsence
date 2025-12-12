@@ -1,33 +1,45 @@
 .dropzone-container {
-  width: 80%;
-  height: 30vh;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 25px;
-  border: 5px var(--primary-color) solid;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    width: 80%;
+    height: 30vh;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    border: 5px var(--primary-color) solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .dropzone-container:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .dropzone-container p {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
 .icon {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .content-container {
-  width: 100%;
-  height: 95vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    width: 100%;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-error {
+    background-color: var(--error-color);
+}
+.cell-error {
+    background-color: var(--error-color) !important;
+}
+
+.cell-ignored {
+    background-color: #e5e7eb !important; /* Gris clair */
+    color: #9ca3af !important; /* Texte grisé */
 }

@@ -10,7 +10,8 @@ export const routesConfig = [
 
     children: [
       { index: true, label: "Tableau de bord", element: <AdminHomePage /> },
-      { path: "import", label: "Importer Élèves", element: <ImportStudentsPage /> }
+      { path: "import", label: "Importer Élèves", element: <ImportStudentsPage /> },
+      { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage /> }
     ]
   },
   {
