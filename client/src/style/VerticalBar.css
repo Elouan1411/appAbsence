@@ -36,9 +36,11 @@
     padding: 15px 15px;
     transition: width 0.3s ease;
     width: var(--sidebar-width-closed); 
-    border-radius: 0 16px 16px 0;
+    border-radius: 16px;
     position: relative;
     overflow-x: hidden;
+    margin: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 .sidebar.open {
@@ -46,9 +48,27 @@
 }
 
 .vertical-bar-button {
-    rotate: 45deg;
     border: none;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    align-self: flex-end; 
+    margin-bottom: 20px;
+    margin-right: 5px;
+    transition: background-color 0.2s ease, align-self 0.3s ease, margin 0.3s ease;
+}
+
+.vertical-bar-button:hover {
+    background-color: var(--hover-bg);
+}
+
+.icon-toggle {
+    display: block;
     width: 24px;
     height: 24px;
     background-color: var(--icon-color, var(--text-secondary));
@@ -60,10 +80,12 @@
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
-    align-self: flex-end; 
-    margin-bottom: 20px;
-    margin-right: 5px;
+    rotate: 45deg;
     transition: transform 0.3s ease;
+}
+
+.vertical-bar-button:hover .icon-toggle {
+    background-color: var(--accent-color);
 }
 
 .sidebar:not(.open) .vertical-bar-button {
@@ -71,7 +93,7 @@
     margin-right: 0;
 }
 
-.open > .vertical-bar-button {
+.open > .vertical-bar-button .icon-toggle {
     -webkit-mask-image: url("../assets/menu_expand.svg");
     mask-image: url("../assets/menu_expand.svg");
 }

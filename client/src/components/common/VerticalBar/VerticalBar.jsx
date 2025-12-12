@@ -37,7 +37,9 @@ function VerticalBar({ notificationCount = 0 }) {
     return (
         <nav className={`sidebar ${isMenuOpen ? "open" : ""} ${isDarkMode ? "dark" : "light"}`}>
             
-            <button className="vertical-bar-button" onClick={() => setIsMenuOpen(!isMenuOpen)}></button>
+            <button className="vertical-bar-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <span className="icon-toggle"></span>
+            </button>
             
             <div className="nav-container">
                 <ul className="nav-list">
