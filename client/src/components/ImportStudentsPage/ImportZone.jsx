@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
+import { validateStudentData, EXPECTED_HEADERS } from "../../utils/studentValidation";
 
 function ImportZone({ setRowData, setColDefs }) {
   const processExcel = async (file) => {
@@ -12,30 +13,43 @@ function ImportZone({ setRowData, setColDefs }) {
       await workbook.xlsx.load(buffer);
 
       const worksheet = workbook.worksheets[0];
+      const data = [];
 
-      let headers = [];
-      let data = [];
+      const forcedHeaders = EXPECTED_HEADERS; // ["Numéro", "Login", "Nom", "Prénom", "Promo", "Groupe TD", "Groupe TP", "Promo Pair", "Groupe TD Pair", "Groupe TP Pair"]
+
+      // Configuration des colonnes pour la Grid (on utilise nos headers forcés)
+      const columns = forcedHeaders.map((header) => ({ 
+             field: header,
+             cellClassRules: {
+                'cell-error': (params) => {
+                    return params.data._errors && params.data._errors[header];
+                }
+            }
+      }));
+      if (setColDefs) setColDefs(columns);
 
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) {
-          row.eachCell((cell) => {
-            headers.push(cell.value);
-          });
-          const columns = headers.map((header) => ({ field: header }));
+        if (rowNumber === 1) return; // On ignore la ligne d'en-tête pour l'instant
 
-          if (setColDefs) setColDefs(columns);
-        } else {
-          let rowItem = {};
-          headers.forEach((header, index) => {
+        let rowItem = {};
+        
+        // On mappe par INDEX (Colonne 1 -> forcedHeaders[0], etc.)
+        forcedHeaders.forEach((headerName, index) => {
+            // ExcelJS commence les colonnes à 1
             const cellValue = row.getCell(index + 1).value;
 
-            rowItem[header] =
-              typeof cellValue === "object" && cellValue?.result
-                ? cellValue.result
-                : cellValue;
-          });
-          data.push(rowItem);
-        }
+            // Remplir rowItem avec les valeurs du fichier
+            rowItem[headerName] =
+            typeof cellValue === "object" && cellValue?.result
+              ? cellValue.result
+              : cellValue;
+        });
+
+        // Vérification des données de la ligne
+        const errors = validateStudentData(rowItem);
+        rowItem._errors = errors;
+
+        data.push(rowItem);
       });
 
       if (setRowData) setRowData(data);
@@ -96,7 +110,7 @@ function ImportZone({ setRowData, setColDefs }) {
         processExcel(file);
       }
 
-      handlePostFile(file);
+      // handlePostFile(file); // Désactivé pour tester la validation locale (est ce qu'on veut que ca soit activé ? je trouve que non)
     },
     [setRowData, setColDefs]
   );
