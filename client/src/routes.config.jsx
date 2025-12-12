@@ -2,6 +2,7 @@ import AdminHomePage from "./pages/Admin/AdminHomePage";
 import ImportStudentsPage from "./pages/Admin/ImportStudentsPage";
 import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
+import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 
 export const routesConfig = [
   {

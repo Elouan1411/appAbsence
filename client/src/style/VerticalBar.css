@@ -192,6 +192,11 @@
     rotate: 90deg;
 }
 
+.icon-liste-des-eleves {
+    -webkit-mask-image: url("../assets/student_list.svg");
+    mask-image: url("../assets/student_list.svg");
+}
+
 .label {
     margin-left: 14px;
     font-weight: 500;
