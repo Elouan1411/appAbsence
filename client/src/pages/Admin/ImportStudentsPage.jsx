@@ -13,19 +13,22 @@ function ImportStudentsPage() {
   const gridRef = useRef(null);
 
   const handleSaveAndSend = async () => {
-    if (!gridRef.current || !gridRef.current.api) return;
+    if (!gridRef.current || !gridRef.current.api) {
+      console.error("La grille n'est pas initialisée");
+      return;
+    }
 
     const modifiedRows = [];
     gridRef.current.api.forEachNode((node) => {
       modifiedRows.push(node.data);
     });
 
+    console.log("Données à sauvegarder :", modifiedRows);
+
     if (modifiedRows.length === 0) {
-      alert("Aucune donnée à envoyer !");
+      alert("Le tableau est vide !");
       return;
     }
-
-    console.log("Données modifiées récupérées :", modifiedRows);
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Students");
@@ -33,17 +36,15 @@ function ImportStudentsPage() {
     worksheet.columns = colDefs.map((col) => ({
       header: col.field,
       key: col.field,
-      width: 20,
     }));
-
     worksheet.addRows(modifiedRows);
 
     const buffer = await workbook.xlsx.writeBuffer();
+
     const blob = new Blob([buffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
-
-    const fileToSend = new File([blob], "modified_students.xlsx", {
+    const fileToSend = new File([blob], "modifications.xlsx", {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
@@ -51,25 +52,19 @@ function ImportStudentsPage() {
     formData.append("file", fileToSend);
     formData.append("promo", "L3");
 
-    // const token =
-    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwd2QiOiJhcGllcnJvdC1hZG1pbiIsImlhdCI6MTc2NTM4MDM5MCwiZXhwIjoxNzY1NjM5NTkwfQ.cShqZUQQ-Mg6vfO0GhbDcI1NSxWSd9pWASqKhwKR22I";
-
     try {
       const response = await fetch("http://localhost:3000/eleve/studentList", {
         method: "POST",
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+        headers: {},
         credentials: "include",
         body: formData,
       });
 
       const values = await response.json();
       if (response.ok) {
-        alert("Modifications sauvegardées et envoyées avec succès !");
+        alert("Succès : " + values.message);
       } else {
-        alert("Erreur lors de l'envoi : " + values.error);
+        alert("Erreur serveur : " + values.error);
       }
     } catch (error) {
       console.error("Erreur réseau", error);
@@ -81,7 +76,7 @@ function ImportStudentsPage() {
       <Title>Importer un groupe d'étudiants</Title>
       <div className="content-container">
         {rowData.length > 0 ? (
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 20, width: "100%" }}>
             <div
               style={{
                 marginBottom: 10,
