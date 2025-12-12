@@ -9,6 +9,9 @@ const exceljs = require("exceljs");
  * @returns {Promise<Object>} { success: boolean, message: string }
  */
 function importExcelInDB(filepath, fileExtension, promo) {
+    //TODO: (@elouan) normalisé ce qu'on met dans la base de données (upperCase ect...)
+    //TODO: (@elouan) Vérifier si le fichier est bien formaté (pas d'erreur critique)
+    //TODO: (@elouan) Update si déjà inséré
     return new Promise(async (resolve, reject) => {
         console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
         try {

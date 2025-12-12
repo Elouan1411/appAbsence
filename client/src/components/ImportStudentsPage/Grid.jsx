@@ -11,6 +11,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onCellValueChanged }) => {
       editable: true,
       filter: true,
       flex: 1,
+      suppressMovable: true,
     }),
     []
   );

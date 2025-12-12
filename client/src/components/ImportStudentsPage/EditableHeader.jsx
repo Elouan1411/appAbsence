@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const EditableHeader = (props) => {
+const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console : [Violation] 'requestAnimationFrame' handler took 59ms
   const [value, setValue] = useState(props.displayName);
   const context = props.context; // Accès au contexte passé via Grid (onRename)
   
@@ -26,7 +26,7 @@ const EditableHeader = (props) => {
     }
   };
 
-  return (
+  return ( //TODO: (@everyone) ajouter un bouton pour supprimer les colonnes grisées
     <div style={{ width: "100%" }}>
       <input
         type="text"
@@ -35,7 +35,7 @@ const EditableHeader = (props) => {
         onBlur={onBlur}
         onKeyDown={onKeyDown}
         className="ag-header-cell-text"
-        style={{//TODO: faire ca plus beau
+        style={{//TODO: (@elouan) améliorer le design => meme police meme taille que le reste
           width: "100%",
           border: "1px solid #ccc",
           borderRadius: "4px",

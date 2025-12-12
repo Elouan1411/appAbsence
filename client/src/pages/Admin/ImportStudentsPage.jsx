@@ -8,7 +8,7 @@ import "../../style/Admin.css";
 import { matchHeader, validateStudentData } from "../../utils/studentValidation";
 
 
-function ImportStudentsPage() {
+function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vide
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
 
@@ -124,9 +124,10 @@ function ImportStudentsPage() {
     } catch (error) {
       console.error("Erreur réseau", error);
     }
+    //TODO: (@everyone) afficher notification de succès ou d'erreur
   };
 
-  return (
+  return (//TODO: (@everyone) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
     <div>
       <Title>Importer un groupe d'étudiants</Title>
       <div className="content-container">
