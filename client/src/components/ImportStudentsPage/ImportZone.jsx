@@ -4,6 +4,7 @@ import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
 import { validateStudentData, matchHeader, EXPECTED_HEADERS } from "../../utils/studentValidation";
+import EditableHeader from "./EditableHeader";
 
 function ImportZone({ setRowData, setColDefs }) {
   const processExcel = async (file) => {
@@ -51,7 +52,8 @@ function ImportZone({ setRowData, setColDefs }) {
               // On l'ajoute à la fin du tableau
                gridColumns.push({
                   field: `_ignored_${fh.name}`, // Préfixe pour éviter collision
-                  headerName: fh.name + " (Ignoré)",
+                  headerName: fh.name,
+                  headerComponent: EditableHeader, // Composant éditable pour changer le titre
                   cellClass: 'cell-ignored', // Style grisé
                   editable: false // On empêche l'édition car ignoré
               });             
@@ -94,38 +96,6 @@ function ImportZone({ setRowData, setColDefs }) {
     }
   };
 
-  const handlePostFile = async (acceptedFile) => { // pour directement upload le fichier //TODO: à supprimer je pense
-      const formData = new FormData();
-      formData.append("file", acceptedFile);
-      formData.append("promo", "L3");
-
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwd2QiOiJhcGllcnJvdC1hZG1pbiIsImlhdCI6MTc2NTM4MDM5MCwiZXhwIjoxNzY1NjM5NTkwfQ.cShqZUQQ-Mg6vfO0GhbDcI1NSxWSd9pWASqKhwKR22I";
-
-      try {
-        const response = await fetch("http://localhost:3000/eleve/studentList", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-          body: formData,
-        });
-
-        const values = await response.json();
-
-        if (!response.ok) {
-          console.error("Erreur serveur :", values.error);
-          alert(`Erreur serveur: ${values.error}`);
-          return;
-        }
-
-        console.log("Succès serveur :", values.message);
-      } catch (error) {
-        console.error("Erreur réseau :", error);
-      }
-    };
-
   const onDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -140,8 +110,6 @@ function ImportZone({ setRowData, setColDefs }) {
       if (extension === "xlsx") {
         processExcel(file);
       }
-      
-      // handlePostFile(file); // ne pas upload directement le fichier
     },
     [setRowData, setColDefs]
   );

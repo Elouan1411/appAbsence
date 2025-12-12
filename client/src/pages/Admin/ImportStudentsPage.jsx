@@ -5,6 +5,7 @@ import Grid from "../../components/ImportStudentsPage/Grid";
 import Button from "../../components/common/Button"; // Notre composant bouton
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
+import { matchHeader, validateStudentData } from "../../utils/studentValidation";
 
 
 function ImportStudentsPage() {
@@ -12,6 +13,52 @@ function ImportStudentsPage() {
   const [colDefs, setColDefs] = useState([]);
 
   const gridRef = useRef(null);
+
+  // fonction appelée via el Context de la Grid depius EditableHeader
+  const handleRename = (colId, newName) => {
+      const match = matchHeader(newName);
+      
+      if (!match) {
+          alert(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
+          return;
+      }
+
+      // remapper les données
+      const newRowData = rowData.map(row => {
+          const newRow = { ...row };
+          newRow[match] = newRow[colId];
+          // on supprime la clé avec _ignored_ devant
+          delete newRow[colId];
+          
+          // re-valider la ligne
+          newRow._errors = validateStudentData(newRow);
+          return newRow;
+      });
+
+      // on retire la colonne ignorée (car mtn elle est placé correctement)
+      const newColDefs = colDefs.filter(col => col.field !== colId);
+
+      setRowData(newRowData);
+      setColDefs(newColDefs);
+      alert(`Super, la colonne est désormais sous le bon nom : "${match}" !`);
+  };
+
+  const handleCellValueChanged = (params) => {
+      // params.data contient la ligne modifiée
+      const updatedData = params.data;
+      
+      // On recalcule les erreurs pour cette ligne
+      const errors = validateStudentData(updatedData);
+      
+      // On met à jour l'objet _errors
+      updatedData._errors = errors;
+      
+      // On force le rafraichissement de la ligne pour appliquer les styles (rouge/pas rouge)
+      params.api.refreshCells({
+          rowNodes: [params.node],
+          force: true
+      });
+  };
 
   const handleSaveAndSend = async () => {
     if (!gridRef.current || !gridRef.current.api) {
@@ -31,13 +78,17 @@ function ImportStudentsPage() {
       return;
     }
 
+    // Vérification si y a la présence de colonne ignorées 
+    const hasIgnoredCols = colDefs.some((col) => col.field.startsWith("_ignored_"));
+    if (hasIgnoredCols) {
+      alert("Il y a des colonnes ignorées (grisées) !\nImportation impossible");
+      return;
+    }
+
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Students");
 
-    // Envoyer dans le fichier que les colonnes valides si l'utilisateur déside d'envoyer comme ca //TODO: peut etre empecher d'envoyer dans ce cas
-    const validCols = colDefs.filter(col => !col.field.startsWith("_ignored_"));
-
-    worksheet.columns = validCols.map((col) => ({
+    worksheet.columns = colDefs.map((col) => ({
       header: col.field, 
       key: col.field,
     }));
@@ -98,6 +149,8 @@ function ImportStudentsPage() {
               rowData={rowData}
               colDefs={colDefs}
               gridRef={gridRef} // On passe la ref ici
+              onRename={handleRename} // On passe la fonction de renommage
+              onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
             />
           </div>
         ) : (
