@@ -4,7 +4,6 @@ const EditableHeader = (props) => {
   const [value, setValue] = useState(props.displayName);
   const context = props.context; // Accès au contexte passé via Grid (onRename)
   
-  // Met à jour la valeur si le props change (re-render)
   useEffect(() => {
     setValue(props.displayName);
   }, [props.displayName]);
@@ -14,18 +13,20 @@ const EditableHeader = (props) => {
   };
 
   const onBlur = () => {
-    if (context && context.onRename) {
-      context.onRename(props.column.colId, value);
+    if (value !== props.displayName) {
+        if (context && context.onRename) {
+            context.onRename(props.column.colId, value);
+        }
     }
   };
 
   const onKeyDown = (event) => {
     if (event.key === "Enter") {
-        onBlur();
+        event.target.blur();
     }
   };
 
-  return ( 
+  return (
     <div style={{ width: "100%" }}>
       <input
         type="text"

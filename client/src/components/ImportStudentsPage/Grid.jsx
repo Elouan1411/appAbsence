@@ -5,11 +5,10 @@ import { lightTheme } from "../../constants/grid";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Ajout de 'gridRef' et 'onRename' dans les props
-const Grid = ({ rowData, colDefs, gridRef, onRename }) => {
+const Grid = ({ rowData, colDefs, gridRef, onRename, onCellValueChanged }) => {
   const defaultColDef = useMemo(
     () => ({
-      editable: true, // Important : permet l'édition
+      editable: true,
       filter: true,
       flex: 1,
     }),
@@ -19,12 +18,13 @@ const Grid = ({ rowData, colDefs, gridRef, onRename }) => {
   return (
     <div style={{ height: 500, width: "100%" }}>
       <AgGridReact
-        ref={gridRef} // On attache la référence ici
+        ref={gridRef}
         theme={lightTheme}
         rowData={rowData}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        context={{ onRename }} // On passe la fonction de renommage au contexte
+        context={{ onRename }} 
+        onCellValueChanged={onCellValueChanged} 
       />
     </div>
   );
