@@ -5,8 +5,8 @@ import { lightTheme } from "../../constants/grid";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Ajout de 'gridRef' dans les props
-const Grid = ({ rowData, colDefs, gridRef }) => {
+// Ajout de 'gridRef' et 'onRename' dans les props
+const Grid = ({ rowData, colDefs, gridRef, onRename }) => {
   const defaultColDef = useMemo(
     () => ({
       editable: true, // Important : permet l'édition
@@ -24,6 +24,7 @@ const Grid = ({ rowData, colDefs, gridRef }) => {
         rowData={rowData}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
+        context={{ onRename }} // On passe la fonction de renommage au contexte
       />
     </div>
   );

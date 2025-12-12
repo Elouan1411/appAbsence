@@ -5,6 +5,7 @@ import Grid from "../../components/ImportStudentsPage/Grid";
 import Button from "../../components/common/Button"; // Notre composant bouton
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
+import { matchHeader, validateStudentData } from "../../utils/studentValidation";
 
 
 function ImportStudentsPage() {
@@ -12,6 +13,35 @@ function ImportStudentsPage() {
   const [colDefs, setColDefs] = useState([]);
 
   const gridRef = useRef(null);
+
+  // fonction appelée via el Context de la Grid depius EditableHeader
+  const handleRename = (colId, newName) => {
+      const match = matchHeader(newName);
+      
+      if (!match) {
+          alert(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
+          return; // Ou on pourrait juste renommer le header sans remapper, mais l'objectif est de corriger le mapping
+      }
+
+      // remapper les données
+      const newRowData = rowData.map(row => {
+          const newRow = { ...row };
+          newRow[match] = newRow[colId];
+          // on supprime la clé avec _ignored_ devant
+          delete newRow[colId];
+          
+          // re-valider la ligne
+          newRow._errors = validateStudentData(newRow);
+          return newRow;
+      });
+
+      // on retire la colonne ignorée (car mtn elle est placé correctement)
+      const newColDefs = colDefs.filter(col => col.field !== colId);
+
+      setRowData(newRowData);
+      setColDefs(newColDefs);
+      alert(`Super, la colonne est désormais sous le bon nom : "${match}" !`);
+  };
 
   const handleSaveAndSend = async () => {
     if (!gridRef.current || !gridRef.current.api) {
@@ -98,6 +128,7 @@ function ImportStudentsPage() {
               rowData={rowData}
               colDefs={colDefs}
               gridRef={gridRef} // On passe la ref ici
+              onRename={handleRename} // On passe la fonction de renommage
             />
           </div>
         ) : (
