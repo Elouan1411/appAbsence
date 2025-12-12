@@ -35,3 +35,11 @@
 .cell-error {
     background-color: var(--error-color);
 }
+.cell-error {
+    background-color: var(--error-color) !important;
+}
+
+.cell-ignored {
+    background-color: #e5e7eb !important; /* Gris clair */
+    color: #9ca3af !important; /* Texte grisé */
+}
