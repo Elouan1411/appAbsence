@@ -47,14 +47,17 @@ const HEADER_MATCH_PATTERNS = {
         /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?[\s_-]?(pair|2|p2|bis|supplémentaire)?$/i,
 };
 
-// TODO: Affiner les regex selon les besoins réels
 const DATA_REGEX = {
     numero: /^[0-9]{8}$/,
-    login: /^[a-zA-Z0-9._-]{3,20}$/,
+    login: /^[a-zA-Z0-9._-]{2,20}$/,
     nom: /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/,
     prenom: /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/,
-    groupeTD: /^[0-9A-Z]{1,5}$/,
-    groupeTP: /^[0-9A-Z]{1,5}$/,
+    promo: /^(l[1-3]|m[1-2])$/i,
+    groupeTD: /^td[1-9]$/i,
+    groupeTP: /^tp[1-9][a-z]$/i,
+    promoPair: /^(l[1-3]|m[1-2])$/i,
+    groupeTDPair: /^td[1-9]$/i,
+    groupeTPPair: /^tp[1-9][a-z]$/i,
 };
 
 /**
@@ -80,9 +83,15 @@ function validateStudentData(row) {
     const errors = {};
 
     if (!DATA_REGEX.numero.test(String(row["Numéro"] || "").trim())) errors["Numéro"] = true;
+    if (!DATA_REGEX.login.test(String(row["Login"] || "").trim())) errors["Login"] = true;
+    if (!DATA_REGEX.nom.test(String(row["Nom"] || "").trim())) errors["Nom"] = true;
+    if (!DATA_REGEX.prenom.test(String(row["Prénom"] || "").trim())) errors["Prénom"] = true;
+    if (!DATA_REGEX.promo.test(String(row["Promo"] || "").trim())) errors["Promo"] = true;
     if (!DATA_REGEX.groupeTD.test(String(row["Groupe TD"] || "").trim())) errors["Groupe TD"] = true;
     if (!DATA_REGEX.groupeTP.test(String(row["Groupe TP"] || "").trim())) errors["Groupe TP"] = true;
-    //TODO: faire toutes les autres validations
+    if (!DATA_REGEX.promoPair.test(String(row["Promo Pair"] || "").trim())) errors["Promo Pair"] = true;
+    if (!DATA_REGEX.groupeTDPair.test(String(row["Groupe TD Pair"] || "").trim())) errors["Groupe TD Pair"] = true;
+    if (!DATA_REGEX.groupeTPPair.test(String(row["Groupe TP Pair"] || "").trim())) errors["Groupe TP Pair"] = true;
 
     return errors;
 }
