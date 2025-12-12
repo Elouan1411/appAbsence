@@ -7,6 +7,7 @@ import AdminHomePage from "./pages/Admin/AdminHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import ErrorPage from "./pages/ErrorPage";
 import ImportStudentsPage from "./pages/Admin/ImportStudentsPage";
+import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 
 function App() {
   const { user, role, loading } = useAuth();
@@ -43,6 +44,7 @@ function App() {
       >
         <Route index element={<AdminHomePage />} />
         <Route path="import" element={<ImportStudentsPage />} />
+        <Route path="studentlist" element={<ShowStudentPage />} />
       </Route>
 
       <Route

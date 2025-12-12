@@ -15,14 +15,23 @@ function AdminHomePage() {
     } catch (error) {}
   };
 
-  const handleNavigate = () => {
+  const handleNavigateImport = () => {
     navigate("/admin/import", { replace: true });
+  };
+
+  const handleNavigateList = () => {
+    navigate("/admin/studentlist", { replace: true });
   };
   return (
     <div>
       <Title>Page d'accueil admin</Title>
       <Button onClick={handleSignOut}>Se déconnecter</Button>
-      <Button onClick={handleNavigate}>Naviguer vers la page d'import</Button>
+      <Button onClick={handleNavigateImport}>
+        Naviguer vers la page d'import
+      </Button>
+      <Button onClick={handleNavigateList}>
+        Naviguer vers la liste des étudiants
+      </Button>
     </div>
   );
 }

@@ -46,6 +46,38 @@ function ImportZone({ setRowData, setColDefs }) {
     }
   };
 
+  const handlePostFile = async (acceptedFile) => {
+    const formData = new FormData();
+    formData.append("file", acceptedFile);
+    formData.append("promo", "L3");
+
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwd2QiOiJhcGllcnJvdC1hZG1pbiIsImlhdCI6MTc2NTM4MDM5MCwiZXhwIjoxNzY1NjM5NTkwfQ.cShqZUQQ-Mg6vfO0GhbDcI1NSxWSd9pWASqKhwKR22I";
+
+    try {
+      const response = await fetch("http://localhost:3000/eleve/studentList", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: formData,
+      });
+
+      const values = await response.json();
+
+      if (!response.ok) {
+        console.error("Erreur serveur :", values.error);
+        alert(`Erreur serveur: ${values.error}`);
+        return;
+      }
+
+      console.log("Succès serveur :", values.message);
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+    }
+  };
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -63,6 +95,8 @@ function ImportZone({ setRowData, setColDefs }) {
       if (extension === "xlsx") {
         processExcel(file);
       }
+
+      handlePostFile(file);
     },
     [setRowData, setColDefs]
   );
