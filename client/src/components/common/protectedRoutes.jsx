@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import Layout from "../Layouts/Layout";
 
-export function ProtectedRoute({ children, roles }) {
+export function ProtectedRoutes({roles}) {
   const { user, role } = useAuth();
 
   console.log("user :", user, "/ Role : ", role);
@@ -13,5 +14,7 @@ export function ProtectedRoute({ children, roles }) {
     return <Navigate to="/error" replace />;
   }
 
-  return children;
+return <Layout />;
 }
+
+export default ProtectedRoutes;

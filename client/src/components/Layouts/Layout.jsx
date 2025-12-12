@@ -1,14 +1,17 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import VerticalBar from "../common/VerticalBar/VerticalBar";
 
-function Layout() {
+const Layout = () => {
   return (
-    <div className="admin-layout">
+    <div className="layout">
+      <VerticalBar />
+
       <main>
         <Outlet />
       </main>
     </div>
   );
-}
+};
 
 export default Layout;
