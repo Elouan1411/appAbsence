@@ -3,7 +3,12 @@ import { useDropzone } from "react-dropzone";
 import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
-import { validateStudentData, matchHeader, EXPECTED_HEADERS } from "../../utils/studentValidation";
+import { Toaster, toast } from "react-hot-toast";
+import {
+  validateStudentData,
+  matchHeader,
+  EXPECTED_HEADERS,
+} from "../../utils/studentValidation";
 import EditableHeader from "./EditableHeader";
 
 function ImportZone({ setRowData, setColDefs }) {
@@ -19,45 +24,46 @@ function ImportZone({ setRowData, setColDefs }) {
       // check header
       const fileHeaders = []; // { name: "nom", index: 1, mappedKey: "Nom" | null }
       const headerRow = worksheet.getRow(1);
-      
+
       // parse header and add in fileHeaders
       headerRow.eachCell((cell, colNumber) => {
-          const headerName = cell.value?.toString() || "";
-          const mappedKey = matchHeader(headerName);
-          fileHeaders.push({
-              name: headerName, // nom de la colonne que le client a fourni
-              index: colNumber, // l'index de la colonne que le client a fourni
-              mappedKey: mappedKey // nom de la vrai colonne attendue
-          });
+        const headerName = cell.value?.toString() || "";
+        const mappedKey = matchHeader(headerName);
+        fileHeaders.push({
+          name: headerName, // nom de la colonne que le client a fourni
+          index: colNumber, // l'index de la colonne que le client a fourni
+          mappedKey: mappedKey, // nom de la vrai colonne attendue
+        });
       });
 
       const gridColumns = [];
-    
+
       // on parcourt les headers attendus
-      EXPECTED_HEADERS.forEach(expectedKey => {
-          gridColumns.push({
-              field: expectedKey, // nom de la vrai colonne attendue
-              headerName: expectedKey, // nom de la vrai colonne attendue
-              cellClassRules: { // ajout de la règle pour mettre en rouge les cellules qui ont des erreurs
-                'cell-error': (params) => {
-                    return params.data._errors && params.data._errors[expectedKey];
-                }
-            }
-          });
+      EXPECTED_HEADERS.forEach((expectedKey) => {
+        gridColumns.push({
+          field: expectedKey, // nom de la vrai colonne attendue
+          headerName: expectedKey, // nom de la vrai colonne attendue
+          cellClassRules: {
+            // ajout de la règle pour mettre en rouge les cellules qui ont des erreurs
+            "cell-error": (params) => {
+              return params.data._errors && params.data._errors[expectedKey];
+            },
+          },
+        });
       });
 
       // celles du fichier client qui n'ont pas matché
-      fileHeaders.forEach(fh => {
-          if (!fh.mappedKey) {
-              // On l'ajoute à la fin du tableau
-               gridColumns.push({
-                  field: `_ignored_${fh.name}`, // Préfixe pour éviter collision
-                  headerName: fh.name,
-                  headerComponent: EditableHeader, // Composant éditable pour changer le titre
-                  cellClass: 'cell-ignored', // Style grisé
-                  editable: false // On empêche l'édition car ignoré
-              });             
-          }
+      fileHeaders.forEach((fh) => {
+        if (!fh.mappedKey) {
+          // On l'ajoute à la fin du tableau
+          gridColumns.push({
+            field: `_ignored_${fh.name}`, // Préfixe pour éviter collision
+            headerName: fh.name,
+            headerComponent: EditableHeader, // Composant éditable pour changer le titre
+            cellClass: "cell-ignored", // Style grisé
+            editable: false, // On empêche l'édition car ignoré
+          });
+        }
       });
 
       if (setColDefs) setColDefs(gridColumns);
@@ -67,18 +73,21 @@ function ImportZone({ setRowData, setColDefs }) {
         if (rowNumber === 1) return; // Skip header
 
         let rowItem = {};
-        
-        fileHeaders.forEach(fh => {
-            const cellValue = row.getCell(fh.index).value;
-            const cleanValue = typeof cellValue === "object" && cellValue?.result ? cellValue.result : cellValue;
 
-            if (fh.mappedKey) {
-                // Colonne reconnue -> on utilise la clé standard
-                rowItem[fh.mappedKey] = cleanValue;
-            } else {
-                // Colonne ignorée -> on stocke sous la clé ignorée pour affichage
-                rowItem[`_ignored_${fh.name}`] = cleanValue;
-            }
+        fileHeaders.forEach((fh) => {
+          const cellValue = row.getCell(fh.index).value;
+          const cleanValue =
+            typeof cellValue === "object" && cellValue?.result
+              ? cellValue.result
+              : cellValue;
+
+          if (fh.mappedKey) {
+            // Colonne reconnue -> on utilise la clé standard
+            rowItem[fh.mappedKey] = cleanValue;
+          } else {
+            // Colonne ignorée -> on stocke sous la clé ignorée pour affichage
+            rowItem[`_ignored_${fh.name}`] = cleanValue;
+          }
         });
 
         // validation des données (fond rouge sur les cases avec erreurs)
@@ -92,7 +101,7 @@ function ImportZone({ setRowData, setColDefs }) {
       console.log(`${data.length} lignes importées localement.`);
     } catch (error) {
       console.error("Erreur lors de la lecture du fichier Excel :", error);
-      alert("Impossible de lire le fichier Excel.");
+      toast.error("Impossible de lire le fichier Excel.");
     }
   };
 
@@ -103,7 +112,7 @@ function ImportZone({ setRowData, setColDefs }) {
 
       const extension = file.name.split(".").pop().toLowerCase();
       if (extension !== "xlsx" && extension !== "csv") {
-        alert("Extension de fichier invalide.");
+        toast.error("Extension de fichier invalide.");
         return;
       }
 
@@ -118,6 +127,7 @@ function ImportZone({ setRowData, setColDefs }) {
 
   return (
     <div {...getRootProps()} className="dropzone-container">
+      <Toaster position="top-center" reverseOrder={false} />
       <input {...getInputProps()} />
       <Import size={40} className="icon" />
       {isDragActive ? (

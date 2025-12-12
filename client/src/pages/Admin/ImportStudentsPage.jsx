@@ -5,10 +5,14 @@ import Grid from "../../components/ImportStudentsPage/Grid";
 import Button from "../../components/common/Button"; // Notre composant bouton
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
-import { matchHeader, validateStudentData } from "../../utils/studentValidation";
+import {
+  matchHeader,
+  validateStudentData,
+} from "../../utils/studentValidation";
+import toast, { Toaster } from "react-hot-toast";
 
-
-function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vide
+function ImportStudentsPage() {
+  //TODO: (@elouan) gérer cas si nom de colonne vide
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
 
@@ -16,48 +20,52 @@ function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vi
 
   // fonction appelée via el Context de la Grid depius EditableHeader
   const handleRename = (colId, newName) => {
-      const match = matchHeader(newName);
-      
-      if (!match) {
-          alert(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
-          return;
-      }
+    const match = matchHeader(newName);
 
-      // remapper les données
-      const newRowData = rowData.map(row => {
-          const newRow = { ...row };
-          newRow[match] = newRow[colId];
-          // on supprime la clé avec _ignored_ devant
-          delete newRow[colId];
-          
-          // re-valider la ligne
-          newRow._errors = validateStudentData(newRow);
-          return newRow;
-      });
+    if (!match) {
+      toast.error(
+        `Le nom "${newName}" ne correspond à aucune colonne attendue.`
+      );
+      return;
+    }
 
-      // on retire la colonne ignorée (car mtn elle est placé correctement)
-      const newColDefs = colDefs.filter(col => col.field !== colId);
+    // remapper les données
+    const newRowData = rowData.map((row) => {
+      const newRow = { ...row };
+      newRow[match] = newRow[colId];
+      // on supprime la clé avec _ignored_ devant
+      delete newRow[colId];
 
-      setRowData(newRowData);
-      setColDefs(newColDefs);
-      alert(`Super, la colonne est désormais sous le bon nom : "${match}" !`);
+      // re-valider la ligne
+      newRow._errors = validateStudentData(newRow);
+      return newRow;
+    });
+
+    // on retire la colonne ignorée (car mtn elle est placé correctement)
+    const newColDefs = colDefs.filter((col) => col.field !== colId);
+
+    setRowData(newRowData);
+    setColDefs(newColDefs);
+    toast.success(
+      `Super, la colonne est désormais sous le bon nom : "${match}" !`
+    );
   };
 
   const handleCellValueChanged = (params) => {
-      // params.data contient la ligne modifiée
-      const updatedData = params.data;
-      
-      // On recalcule les erreurs pour cette ligne
-      const errors = validateStudentData(updatedData);
-      
-      // On met à jour l'objet _errors
-      updatedData._errors = errors;
-      
-      // On force le rafraichissement de la ligne pour appliquer les styles (rouge/pas rouge)
-      params.api.refreshCells({
-          rowNodes: [params.node],
-          force: true
-      });
+    // params.data contient la ligne modifiée
+    const updatedData = params.data;
+
+    // On recalcule les erreurs pour cette ligne
+    const errors = validateStudentData(updatedData);
+
+    // On met à jour l'objet _errors
+    updatedData._errors = errors;
+
+    // On force le rafraichissement de la ligne pour appliquer les styles (rouge/pas rouge)
+    params.api.refreshCells({
+      rowNodes: [params.node],
+      force: true,
+    });
   };
 
   const handleSaveAndSend = async () => {
@@ -74,14 +82,18 @@ function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vi
     console.log("Données à sauvegarder :", modifiedRows);
 
     if (modifiedRows.length === 0) {
-      alert("Le tableau est vide !");
+      toast.error("Le tableau est vide !");
       return;
     }
 
-    // Vérification si y a la présence de colonne ignorées 
-    const hasIgnoredCols = colDefs.some((col) => col.field.startsWith("_ignored_"));
+    // Vérification si y a la présence de colonne ignorées
+    const hasIgnoredCols = colDefs.some((col) =>
+      col.field.startsWith("_ignored_")
+    );
     if (hasIgnoredCols) {
-      alert("Il y a des colonnes ignorées (grisées) !\nImportation impossible");
+      toast.error(
+        "Il y a des colonnes ignorées (grisées) !\nImportation impossible"
+      );
       return;
     }
 
@@ -89,7 +101,7 @@ function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vi
     const worksheet = workbook.addWorksheet("Students");
 
     worksheet.columns = colDefs.map((col) => ({
-      header: col.field, 
+      header: col.field,
       key: col.field,
     }));
     worksheet.addRows(modifiedRows);
@@ -117,18 +129,19 @@ function ImportStudentsPage() {//TODO: (@elouan) gérer cas si nom de colonne vi
 
       const values = await response.json();
       if (response.ok) {
-        alert("Succès : " + values.message);
+        toast.success("Données envoyées avec succès.");
       } else {
-        alert("Erreur serveur : " + values.error);
+        toast.error("Une erreur est survenue.");
       }
     } catch (error) {
-      console.error("Erreur réseau", error);
+      toast.error("Erreur réseau", error);
     }
-    //TODO: (@everyone) afficher notification de succès ou d'erreur
   };
 
-  return (//TODO: (@everyone) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
+  return (
+    //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
     <div>
+      <Toaster position="top-right" reverseOrder={false} />
       <Title>Importer un groupe d'étudiants</Title>
       <div className="content-container">
         {rowData.length > 0 ? (
