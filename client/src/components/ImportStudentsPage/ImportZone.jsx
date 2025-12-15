@@ -3,7 +3,8 @@ import { useDropzone } from "react-dropzone";
 import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
-import { Toaster, toast } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+
 import {
   validateStudentData,
   matchHeader,
@@ -127,7 +128,6 @@ function ImportZone({ setRowData, setColDefs }) {
 
   return (
     <div {...getRootProps()} className="dropzone-container">
-      <Toaster position="top-center" reverseOrder={false} />
       <input {...getInputProps()} />
       <Import size={40} className="icon" />
       {isDragActive ? (
@@ -135,6 +135,7 @@ function ImportZone({ setRowData, setColDefs }) {
       ) : (
         <p>Glissez-déposez vos fichiers ici...</p>
       )}
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

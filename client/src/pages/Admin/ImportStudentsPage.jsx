@@ -141,7 +141,6 @@ function ImportStudentsPage() {
   return (
     //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
     <div>
-      <Toaster position="top-right" reverseOrder={false} />
       <Title>Importer un groupe d'étudiants</Title>
       <div className="content-container">
         {rowData.length > 0 ? (
@@ -171,6 +170,7 @@ function ImportStudentsPage() {
           <ImportZone setRowData={setRowData} setColDefs={setColDefs} />
         )}
       </div>
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }
