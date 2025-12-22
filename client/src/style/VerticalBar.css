@@ -1,8 +1,14 @@
 :root {
+    --accent-color: #3e7e86;
+    --sidebar-width-open: 260px;
+    --sidebar-width-closed: 80px;
+}
+
+.sidebar.dark {
     --sidebar-bg: #1e1e24;
     --text-primary: #e0e0e0;
     --text-secondary: #8b8b93;
-    --accent-color: #3e7e86;
+    --icon-color: #ffffff;
     --hover-bg: #2b2b30;
     --active-bg: #2d2d36;
     --sidebar-width-open: 260px;
@@ -12,15 +18,11 @@
     --toggle-text: var(--text-secondary);
 }
 
-.sidebar.dark {
-    --icon-color: #ffffff;
-}
-
 .sidebar.light {
-    --icon-color: #000000;
     --sidebar-bg: #ffffff;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;
+    --icon-color: #000000;
     --hover-bg: #f3f4f6;
     --active-bg: #e5e7eb;
     --toggle-bg: #e5e7eb;

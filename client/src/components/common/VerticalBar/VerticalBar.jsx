@@ -23,7 +23,9 @@ function VerticalBar({ notificationCount = 0 }) {
     });
 
     useEffect(() => {
-        sessionStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        const theme = isDarkMode ? 'dark' : 'light';
+        sessionStorage.setItem('theme', theme);
+        document.body.className = theme;
     }, [isDarkMode]);
     const { role } = useAuth(); 
 

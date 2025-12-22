@@ -1,4 +1,28 @@
-.loading{
+:root {
+    --primary-color: #3e7e86;
+    --background-color: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+}
+
+body.dark {
+    --background-color: #121212;
+    --card-bg: #1e1e24;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaaaaa;
+    --icon-color: #ffffff;
+}
+
+body.light {
+    --background-color: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --icon-color: #000000;
+}
+
+.loading {
     display: flex;
     justify-content: center;
     align-items: center;

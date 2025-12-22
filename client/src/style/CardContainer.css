@@ -1,0 +1,19 @@
+.card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.4rem 1rem 0.4rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none; 
+}
+
+.card-container::-webkit-scrollbar {
+    display: none;
+}
+
+.card-container > * {
+    flex-shrink: 0;
+}
