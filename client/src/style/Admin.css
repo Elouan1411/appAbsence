@@ -35,8 +35,9 @@
 .cell-error {
     background-color: var(--error-color);
 }
-.cell-error {
-    background-color: var(--error-color) !important;
+
+.cell-autofilled {
+    color: var(--autofilled-color);
 }
 
 .cell-ignored {

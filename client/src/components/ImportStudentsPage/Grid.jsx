@@ -26,6 +26,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onCellValueChange
         defaultColDef={defaultColDef}
         context={{ onRename, onDelete }} 
         onCellValueChanged={onCellValueChanged} 
+        tooltipShowDelay={600}
       />
     </div>
   );
