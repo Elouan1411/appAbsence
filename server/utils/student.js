@@ -10,15 +10,14 @@ const exceljs = require("exceljs");
  */
 function importExcelInDB(filepath, fileExtension, promo) {
     //TODO: (@elouan) Vérifier si le fichier est bien formaté (pas d'erreur critique)
-    //TODO: (@elouan) Update si déjà inséré
     return new Promise(async (resolve, reject) => {
         console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
 
-        //TEMP
-        //TELECHARGER SUR MON ORDI LE FICHIER :
-        const fs = require("fs");
-        fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
-        // FIN TEMP
+        // //TEMP
+        // //TELECHARGER SUR MON ORDI LE FICHIER :
+        // const fs = require("fs");
+        // fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
+        // // FIN TEMP
 
         try {
             const workbook = new exceljs.Workbook();
@@ -83,7 +82,7 @@ function importExcelInDB(filepath, fileExtension, promo) {
             }
 
             const sql =
-                `INSERT INTO Eleve (numero, loginENT, Promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
+                `INSERT OR REPLACE INTO Eleve (numero, loginENT, Promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
                 placeholders.join(", ");
 
             console.log(`[DEBUG] Executing Bulk Insert for ${placeholders.length} records...`);
