@@ -19,6 +19,11 @@
   color: var(--primary-color);
 }
 
+.import-icon {
+  color: var(--primary-color);
+  background-color: transparent;
+}
+
 .icon-big {
   color: var(--primary-color) !important;
 }
@@ -35,13 +40,50 @@
 .cell-error {
   background-color: var(--error-color);
 }
-.cell-error {
-  background-color: var(--error-color) !important;
+
+.cell-autofilled {
+  color: var(--autofilled-color);
 }
 
 .cell-ignored {
-  background-color: #e5e7eb !important; /* Gris clair */
-  color: #9ca3af !important; /* Texte grisé */
+  background-color: var(--cell-ignored-background);
+  color: var(--cell-ignored-color);
+}
+
+.circle-x {
+  width: 20px;
+  height: 20px;
+  color: var(--icon-color);
+  transition: transform 0.2s ease, color 0.2s;
+}
+
+.circle-x:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+  color: var(--error-color);
+}
+
+.circle-x:active {
+  cursor: pointer;
+  transform: scale(0.95);
+}
+
+.editable-header-input {
+  width: 100%;
+  border: 1px solid var(--text-secondary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-size: 13px;
+  flex: 1;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.editable-header-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(62, 126, 134, 0.2);
 }
 
 .showStudentPage {

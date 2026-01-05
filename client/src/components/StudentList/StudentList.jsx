@@ -5,6 +5,8 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
 import RseCell from "./RseCell";
+import { useTheme } from "../../hooks/useTheme";
+import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -12,7 +14,7 @@ function StudentList() {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const theme = sessionStorage.getItem("theme");
+  const theme = useTheme();
 
   const autoSizeStrategy = useMemo(() => {
     return {
@@ -77,7 +79,7 @@ function StudentList() {
         }
         return {
           field: key,
-          headerName: key,
+          headerName: HEADER_DISPLAY_NAMES[key] || key,
           valueFormatter: valueFormatter,
         };
       });

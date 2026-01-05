@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 
-const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console : [Violation] 'requestAnimationFrame' handler took 59ms
+const EditableHeader = (props) => {
   const [value, setValue] = useState(props.displayName);
   const context = props.context; // Accès au contexte passé via Grid (onRename)
   
@@ -35,17 +35,7 @@ const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console 
         onChange={onChange}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
-        className="ag-header-cell-text"
-        style={{
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "2px",
-          backgroundColor: "#fff",
-          color: "#000",
-          fontSize: "12px",
-          flex: 1
-        }}
+        className="editable-header-input"
       />
       {context && context.onDelete && (
           <Trash2 
@@ -62,4 +52,4 @@ const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console 
   );
 };
 
-export default EditableHeader;
+export default React.memo(EditableHeader);

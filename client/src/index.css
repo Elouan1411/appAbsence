@@ -9,9 +9,9 @@
     --error-color: #ff6b6b;
 }
 body {
-  background-color: var(--background-color);
-  font-family: "Inter", sans-serif;
-  padding: 0px;
+    background-color: var(--background-color);
+    font-family: "Inter", sans-serif;
+    padding: 0px;
 }
 
 .title {

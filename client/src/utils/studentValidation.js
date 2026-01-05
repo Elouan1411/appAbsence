@@ -35,15 +35,17 @@ const HEADER_MATCH_PATTERNS = {
     groupeTP: /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?$/i,
 
     // Match : 'promo pair', 'promotion pair', 'année paire', 'annee 2', 'promo p2', etc.
-    promoPair: /^(promo(tion)?|anne[eé]?e?)[\s_-]?(pair|2|p2)$/i,
+    promoPair: /^(promo(tion)?|anne[eé]?e?)[\s_-]?\(?(pair|2|p2|s2)\)?$/i,
 
     // Match : 'groupe td pair', 'gpe td 2', 'gpr td p2', 'td pair', 'g.td bis', 't.d. supplémentaire',
     // 'travaux dirigé pair', 'travaux-diriges 2', 'groupe-travaux-diriges p2', etc.
-    groupeTDPair: /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?d\.?)|(travaux[\s_-]?dirig[eé]s?))([\s_-]?(groupe|n[o°]?))?[\s_-]?(pair|2|p2|bis|supplémentaire)?$/i,
+    groupeTDPair:
+        /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?d\.?)|(travaux[\s_-]?dirig[eé]s?))([\s_-]?(groupe|n[o°]?))?[\s_-]?\(?(pair|2|p2|s2|bis|supplémentaire)\)?$/i,
 
     // Match : 'groupe tp pair', 'gpe tp 2', 'gpr tp p2', 'tp pair', 'g.tp bis', 't.p. supplémentaire',
     // 'travaux pratique pair', 'travaux-pratiques 2', 'groupe-travaux-pratiques p2', etc.
-    groupeTPPair: /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?[\s_-]?(pair|2|p2|bis|supplémentaire)?$/i,
+    groupeTPPair:
+        /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?[\s_-]?\(?(pair|2|p2|s2|bis|supplémentaire)\)?$/i,
 };
 
 const DATA_REGEX = {
@@ -95,4 +97,17 @@ function validateStudentData(row) {
     return errors;
 }
 
-export { validateStudentData, matchHeader, EXPECTED_HEADERS };
+const HEADER_DISPLAY_NAMES = {
+    numero: "Numéro",
+    loginENT: "Login ENT",
+    nom: "Nom",
+    prenom: "Prénom",
+    promo: "Promo",
+    groupeTD: "Groupe TD",
+    groupeTP: "Groupe TP",
+    promoPair: "Promo (Pair)",
+    groupeTDPair: "Groupe TD (Pair)",
+    groupeTPPair: "Groupe TP (Pair)",
+};
+
+export { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };
