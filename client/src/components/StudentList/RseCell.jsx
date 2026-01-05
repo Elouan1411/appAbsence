@@ -1,6 +1,7 @@
 import { RSE_COLORS } from "../../constants/RSE_COLORS";
 const RseCell = ({ value }) => {
   if (!value || typeof value !== "object") return "-";
+  if (Object.keys(value).length == 0) return "-";
 
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>

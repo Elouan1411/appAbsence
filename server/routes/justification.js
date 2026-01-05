@@ -6,6 +6,7 @@ const {
   isAdminOrOwner,
 } = require("../middlewares/auth");
 const router = express.Router();
+const db = require("../database/db");
 
 /*****************************************
  *             Méthodes GET

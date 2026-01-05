@@ -10,6 +10,7 @@ import {
   validateStudentData,
 } from "../../utils/studentValidation";
 import toast, { Toaster } from "react-hot-toast";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 function ImportStudentsPage() {
   //TODO: (@elouan) gérer cas si nom de colonne vide
@@ -80,6 +81,13 @@ function ImportStudentsPage() {
       rowNodes: [params.node],
       force: true,
     });
+  };
+
+  const confirm = () => {
+    const confirmed = alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
+    if (confirmed) {
+      handleSaveAndSend();
+    }
   };
 
   const handleSaveAndSend = async () => {
@@ -156,7 +164,10 @@ function ImportStudentsPage() {
     //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
     //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
     <div>
-      <Title>Importer un groupe d'étudiants</Title>
+      <div className="title-container">
+        <span className="icon-big icon-importer-eleves"></span>
+        <Title>Importer un groupe d'étudiants</Title>
+      </div>
       <div className="content-container">
         {rowData.length > 0 ? (
           <div style={{ marginTop: 20, width: "100%" }}>
@@ -168,7 +179,7 @@ function ImportStudentsPage() {
               }}
             >
               {/* Le Bouton de sauvegarde */}
-              <Button onClick={handleSaveAndSend}>
+              <Button onClick={confirm}>
                 Sauvegarder et Envoyer les modifications
               </Button>
             </div>

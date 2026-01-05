@@ -4,11 +4,10 @@ import { AgGridReact } from "ag-grid-react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
-import RseCell from "./RseCell";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-function StudentList() {
+function JustificationList() {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,10 +33,10 @@ function StudentList() {
     };
   }, []);
 
-  async function handleFetchStudents() {
+  async function handleFetchJustification() {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/eleve/all", {
+      const response = await fetch("http://localhost:3000/justification/", {
         method: "GET",
         credentials: "include",
       });
@@ -54,31 +53,17 @@ function StudentList() {
   }
 
   useEffect(() => {
-    handleFetchStudents();
+    handleFetchJustification();
   }, []);
 
   useEffect(() => {
     if (rowData && rowData.length > 0) {
       const firstObject = rowData[0];
       const generatedColumns = Object.keys(firstObject).map((key) => {
-        if (key == "RSE") {
-          return {
-            headerName: key,
-            field: key,
-            cellRenderer: RseCell,
-            autoHeight: true,
-            resizable: true,
-            cellStyle: () => ({
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }),
-          };
-        }
         return {
           field: key,
           headerName: key,
-          valueFormatter: valueFormatter,
+          // valueFormatter: valueFormatter,
         };
       });
       setColDefs(generatedColumns);
@@ -117,4 +102,4 @@ function StudentList() {
   );
 }
 
-export default StudentList;
+export default JustificationList;

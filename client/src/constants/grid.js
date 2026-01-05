@@ -1,6 +1,6 @@
 import { themeQuartz } from "ag-grid-community";
 export const darkTheme = themeQuartz.withParams({
-  backgroundColor: "#1f2836",
+  backgroundColor: "#1e1e24",
   browserColorScheme: "dark",
   chromeBackgroundColor: {
     ref: "foregroundColor",

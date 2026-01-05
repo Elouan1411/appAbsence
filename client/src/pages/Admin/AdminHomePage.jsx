@@ -5,6 +5,7 @@ import Button from "../../components/common/Button";
 import { useNavigate } from "react-router-dom";
 import DisplayCard from "../../components/common/DisplayCard";
 import CardContainer from "../../components/common/CardContainer";
+import JustificationList from "../../components/JustificationList/JustificationList";
 
 function AdminHomePage() {
   const { logout } = useAuth();
@@ -27,26 +28,66 @@ function AdminHomePage() {
   };
   return (
     <div>
-      <Title>Page d'accueil admin</Title>
+      <div className="title-container">
+        <span className="icon-big icon-tableau-de-bord"></span>
+        <Title>Tableau de bord</Title>
+      </div>
       <CardContainer>
-        <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
-        <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"}/>
+        <DisplayCard
+          title="Nombre d'etudiants"
+          value="10"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
+        <DisplayCard
+          title="Nombre d'absences"
+          value="150"
+          iconLink={"./src/assets/dashboard.svg"}
+        />
       </CardContainer>
-      <Button onClick={handleSignOut}>Se déconnecter</Button>
-      <Button onClick={handleNavigateImport}>
-        Naviguer vers la page d'import
-      </Button>
-      <Button onClick={handleNavigateList}>
-        Naviguer vers la liste des étudiants
-      </Button>
+
+      <div className="justificationListContainer">
+        <JustificationList />
+      </div>
     </div>
   );
 }
