@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 
-const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console : [Violation] 'requestAnimationFrame' handler took 59ms
+const EditableHeader = (props) => {
   const [value, setValue] = useState(props.displayName);
   const context = props.context; // Accès au contexte passé via Grid (onRename)
   
@@ -62,4 +62,4 @@ const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console 
   );
 };
 
-export default EditableHeader;
+export default React.memo(EditableHeader);
