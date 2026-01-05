@@ -36,7 +36,7 @@ function JustificationList() {
   async function handleFetchJustification() {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/justification/", {
+      const response = await fetch("http://localhost:3000/justification/new", {
         method: "GET",
         credentials: "include",
       });
@@ -59,13 +59,12 @@ function JustificationList() {
   useEffect(() => {
     if (rowData && rowData.length > 0) {
       const firstObject = rowData[0];
-      const generatedColumns = Object.keys(firstObject).map((key) => {
-        return {
+      const generatedColumns = Object.keys(firstObject)
+        .filter((key) => key != "idAbsJustifiee")
+        .map((key) => ({
           field: key,
           headerName: key,
-          // valueFormatter: valueFormatter,
-        };
-      });
+        }));
       setColDefs(generatedColumns);
     }
   }, [rowData]);
@@ -76,7 +75,12 @@ function JustificationList() {
     };
   }, []);
 
-  console.log(rowData);
+  const handleRowClick = (event) => {
+    const rowData = event.data;
+    console.log(rowData);
+
+    // Ici tu peux naviguer vers une page ou ouvrir une modale
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -95,6 +99,7 @@ function JustificationList() {
             paginationPageSizeSelector={[10, 20, 50, 100]}
             localeText={AG_GRID_LOCALE_FR}
             autoSizeStrategy={autoSizeStrategy}
+            onRowClicked={handleRowClick}
           />
         </div>
       )}
