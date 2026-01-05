@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { lightTheme } from "../../constants/grid";
+import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
+import valueFormatter from "../../functions/valueFormatter";
+import RseCell from "./RseCell";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -10,6 +12,7 @@ function StudentList() {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const theme = sessionStorage.getItem("theme");
 
   const defaultColDef = useMemo(() => {
     return {
@@ -49,9 +52,23 @@ function StudentList() {
   useEffect(() => {
     if (rowData && rowData.length > 0) {
       const firstObject = rowData[0];
-      const generatedColumns = Object.keys(firstObject).map((key) => ({
-        field: key,
-      }));
+      const generatedColumns = Object.keys(firstObject).map((key) => {
+        if (key == "RSE") {
+          return {
+            headerName: key,
+            field: key,
+            cellRenderer: RseCell,
+            autoHeight: true,
+            resizable: true,
+            minWidth: 250,
+          };
+        }
+        return {
+          field: key,
+          headerName: key,
+          valueFormatter: valueFormatter,
+        };
+      });
       setColDefs(generatedColumns);
     }
   }, [rowData]);
@@ -61,6 +78,8 @@ function StudentList() {
       mode: "multiRow",
     };
   }, []);
+
+  console.log(rowData);
 
   return (
     <div style={{ padding: 20 }}>
@@ -74,7 +93,7 @@ function StudentList() {
             rowData={rowData}
             columnDefs={colDefs}
             defaultColDef={defaultColDef}
-            theme={lightTheme}
+            theme={theme == "dark" ? darkTheme : lightTheme}
             rowSelection={rowSelection}
             pagination={true}
             paginationPageSize={10}

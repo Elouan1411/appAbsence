@@ -1,6 +1,7 @@
 const express = require("express");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const router = express.Router();
+const db = require("../database/db");
 /*****************************************
  *             Méthodes GET
  *****************************************/
