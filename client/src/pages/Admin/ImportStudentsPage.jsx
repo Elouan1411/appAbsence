@@ -51,6 +51,20 @@ function ImportStudentsPage() {
     );
   };
 
+  const handleDeleteColumn = (colId) => {
+    // on retire la colonne de la definitions des colonnes
+    const newColDefs = colDefs.filter((col) => col.field !== colId);
+    setColDefs(newColDefs);
+
+    const newRowData = rowData.map((row) => {
+      const newRow = { ...row };
+      delete newRow[colId];
+      return newRow;
+    });
+    setRowData(newRowData);
+    toast.success("Colonne supprimée avec succès.");
+  };
+
   const handleCellValueChanged = (params) => {
     // params.data contient la ligne modifiée
     const updatedData = params.data;
@@ -140,6 +154,7 @@ function ImportStudentsPage() {
 
   return (
     //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
+    //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
     <div>
       <Title>Importer un groupe d'étudiants</Title>
       <div className="content-container">
@@ -163,6 +178,7 @@ function ImportStudentsPage() {
               colDefs={colDefs}
               gridRef={gridRef} // On passe la ref ici
               onRename={handleRename} // On passe la fonction de renommage
+              onDelete={handleDeleteColumn} // On passe la fonction de suppression
               onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
             />
           </div>

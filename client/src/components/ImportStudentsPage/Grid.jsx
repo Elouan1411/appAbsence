@@ -5,7 +5,7 @@ import { lightTheme } from "../../constants/grid";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const Grid = ({ rowData, colDefs, gridRef, onRename, onCellValueChanged }) => {
+const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onCellValueChanged }) => {
   const defaultColDef = useMemo(
     () => ({
       editable: true,
@@ -24,7 +24,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onCellValueChanged }) => {
         rowData={rowData}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        context={{ onRename }} 
+        context={{ onRename, onDelete }} 
         onCellValueChanged={onCellValueChanged} 
       />
     </div>

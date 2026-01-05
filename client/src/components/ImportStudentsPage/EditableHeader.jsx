@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Trash2 } from "lucide-react";
 
 const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console : [Violation] 'requestAnimationFrame' handler took 59ms
   const [value, setValue] = useState(props.displayName);
@@ -26,8 +27,8 @@ const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console 
     }
   };
 
-  return ( //TODO: (@everyone) ajouter un bouton pour supprimer les colonnes grisées
-    <div style={{ width: "100%" }}>
+  return (
+    <div style={{ width: "100%", display: "flex", alignItems: "center", gap: "5px" }}>
       <input
         type="text"
         value={value}
@@ -35,16 +36,28 @@ const EditableHeader = (props) => {//TODO: (@everyone) corriger warning console 
         onBlur={onBlur}
         onKeyDown={onKeyDown}
         className="ag-header-cell-text"
-        style={{//TODO: (@elouan) améliorer le design => meme police meme taille que le reste
+        style={{
           width: "100%",
           border: "1px solid #ccc",
           borderRadius: "4px",
           padding: "2px",
           backgroundColor: "#fff",
           color: "#000",
-          fontSize: "12px"
+          fontSize: "12px",
+          flex: 1
         }}
       />
+      {context && context.onDelete && (
+          <Trash2 
+            size={16} 
+            color="red" 
+            style={{ cursor: "pointer" }} 
+            onClick={(e) => {
+                e.stopPropagation();
+                context.onDelete(props.column.colId);
+            }}
+          />
+      )}
     </div>
   );
 };

@@ -6,3 +6,4 @@ jsconfig.json
 install-all.sh
 server/upload/*
 !server/upload/.gitkeep
+/server/debug
