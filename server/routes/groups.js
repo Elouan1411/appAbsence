@@ -5,6 +5,34 @@ const router = express.Router();
  *            Méthodes GET
  *****************************************/
 
+// Récuperer les differentes promos
+router.get("promo", (req, res) => {
+    let sql = "SELECT DISTINCT promo FROM Eleve";
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+        res.status(200).json(rows);
+    });
+})
+
+// Récuperer les groupes de TD/TP en fonction d'un group et d'une promo
+router.get("groups/:promo/:pair", (req, res) => {
+    let promo = req.params.promo;
+    let pair = req.params.pair;
+
+    let sql = "SELECT DISTINCT ";
+
+    if (pair == true) {
+        sql += "groupeTDPair, groupeTPPair FROM Eleve WHERE promoPair = '" + promo + "'";
+    } else {
+        sql += "groupeTD, groupeTP FROM Eleve WHERE promo = '" + promo + "'";
+    }
+    
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+        res.status(200).json(rows);
+    });
+})
+
 // Récupération des élèves appartenant à une association TD/TP
 router.get("/TDTP/:pair", (req, res) => {
   let body = req.body;
@@ -88,6 +116,38 @@ router.get("/tp/:pair", (req, res) => {
     sql += "ORDER BY groupeTPPair ASC";
   } else {
     sql += "ORDER BY groupeTP ASC";
+  }
+
+  db.all(sql, [], (err, rows) => {
+    if (err) return console.error(err.message);
+
+    res.status(200).json(rows);
+  });
+});
+
+// Récuperation des étudiants appartenant à un groupe de TD donné
+router.get("/td/:pair", (req, res) => {
+  let body = req.body;
+  let pair = req.params.pair.substring(1);
+
+  sql = "SELECT DISTINCT ";
+
+  if (pair == true) {
+    sql += "groupeTDPair ";
+  } else {
+    sql += "groupeTD ";
+  }
+
+  sql += "FROM Eleve ";
+
+  for (let key in body) {
+    sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
+  }
+
+  if (pair == true) {
+    sql += "ORDER BY groupeTDPair ASC";
+  } else {
+    sql += "ORDER BY groupeTD ASC";
   }
 
   db.all(sql, [], (err, rows) => {
