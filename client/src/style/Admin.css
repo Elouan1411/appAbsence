@@ -19,8 +19,9 @@
     color: var(--primary-color);
 }
 
-.icon {
+.import-icon {
     color: var(--primary-color);
+    background-color: transparent;
 }
 
 .content-container {
@@ -41,6 +42,29 @@
 }
 
 .cell-ignored {
-    background-color: #e5e7eb !important; /* Gris clair */
-    color: #9ca3af !important; /* Texte grisé */
+    background-color: var(--cell-ignored-background);
+    color: var(--cell-ignored-color);
+}
+
+.circle-x {
+    size: 10px;
+    color: var(--icon-color);
+}
+
+.editable-header-input {
+    width: 100%;
+    border: 1px solid var(--text-secondary);
+    border-radius: 6px;
+    padding: 4px 8px;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-size: 13px;
+    flex: 1;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.editable-header-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(62, 126, 134, 0.2);
 }

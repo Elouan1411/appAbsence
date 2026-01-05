@@ -68,6 +68,7 @@ function ImportZone({ setRowData, setColDefs }) {
                         headerComponent: EditableHeader, // Composant éditable pour changer le titre
                         cellClass: "cell-ignored", // Style grisé
                         editable: false, // On empêche l'édition car ignoré
+                        tooltipValueGetter: () => "Le nom de la colonne n'est pas reconnu par le système",
                     });
                 }
             });
@@ -148,7 +149,7 @@ function ImportZone({ setRowData, setColDefs }) {
     return (
         <div {...getRootProps()} className="dropzone-container">
             <input {...getInputProps()} />
-            <Import size={40} className="icon" />
+            <Import size={40} className="import-icon" />
             {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
             <Toaster position="top-center" reverseOrder={false} />
         </div>

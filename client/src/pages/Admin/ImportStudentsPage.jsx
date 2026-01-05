@@ -30,22 +30,22 @@ function ImportStudentsPage() {
     }
 
     // remapper les données
-    const newRowData = rowData.map((row) => {
-      const newRow = { ...row };
-      newRow[match] = newRow[colId];
-      // on supprime la clé avec _ignored_ devant
-      delete newRow[colId];
+    setRowData((currentRows) => {
+      return currentRows.map((row) => {
+        const newRow = { ...row };
+        newRow[match] = newRow[colId];
+        // on supprime la clé avec _ignored_ devant
+        delete newRow[colId];
 
-      // re-valider la ligne
-      newRow._errors = validateStudentData(newRow);
-      return newRow;
+        // re-valider la ligne
+        newRow._errors = validateStudentData(newRow);
+        return newRow;
+      });
     });
 
     // on retire la colonne ignorée (car mtn elle est placé correctement)
-    const newColDefs = colDefs.filter((col) => col.field !== colId);
+    setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
 
-    setRowData(newRowData);
-    setColDefs(newColDefs);
     toast.success(
       `Super, la colonne est désormais sous le bon nom : "${match}" !`
     );
@@ -53,16 +53,23 @@ function ImportStudentsPage() {
 
   const handleDeleteColumn = (colId) => {
     // on retire la colonne de la definitions des colonnes
-    const newColDefs = colDefs.filter((col) => col.field !== colId);
-    setColDefs(newColDefs);
+    setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
 
-    const newRowData = rowData.map((row) => {
-      const newRow = { ...row };
-      delete newRow[colId];
-      return newRow;
+    setRowData((currentRows) => {
+      return currentRows.map((row) => {
+        const newRow = { ...row };
+        delete newRow[colId];
+        return newRow;
+      });
     });
-    setRowData(newRowData);
     toast.success("Colonne supprimée avec succès.");
+  };
+
+  const handleDeleteRow = (rowIndex) => {
+    setRowData((currentRows) =>
+      currentRows.filter((_, index) => index !== rowIndex)
+    );
+    toast.success("Ligne supprimée avec succès.");
   };
 
   const handleCellValueChanged = (params) => {
@@ -179,6 +186,7 @@ function ImportStudentsPage() {
               gridRef={gridRef} // On passe la ref ici
               onRename={handleRename} // On passe la fonction de renommage
               onDelete={handleDeleteColumn} // On passe la fonction de suppression
+              onDeleteRow={handleDeleteRow} // On passe la fonction de suppression de ligne
               onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
             />
           </div>
