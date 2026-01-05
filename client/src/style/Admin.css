@@ -47,8 +47,21 @@
 }
 
 .circle-x {
-    size: 10px;
+    width: 20px;
+    height: 20px;
     color: var(--icon-color);
+    transition: transform 0.2s ease, color 0.2s;
+}
+
+.circle-x:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    color: var(--error-color);
+}
+
+.circle-x:active {
+    cursor: pointer;
+    transform: scale(0.95);
 }
 
 .editable-header-input {
