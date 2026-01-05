@@ -6,6 +6,7 @@ import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
 import RseCell from "./RseCell";
 import { useTheme } from "../../hooks/useTheme";
+import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -66,7 +67,7 @@ function StudentList() {
         }
         return {
           field: key,
-          headerName: key,
+          headerName: HEADER_DISPLAY_NAMES[key] || key,
           valueFormatter: valueFormatter,
         };
       });

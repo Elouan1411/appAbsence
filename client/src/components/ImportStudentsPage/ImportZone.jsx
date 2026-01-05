@@ -4,8 +4,7 @@ import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
 import toast, { Toaster } from "react-hot-toast";
-
-import { validateStudentData, matchHeader, EXPECTED_HEADERS } from "../../utils/studentValidation";
+import { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 import EditableHeader from "./EditableHeader";
 
 function ImportZone({ setRowData, setColDefs }) {
@@ -23,9 +22,30 @@ function ImportZone({ setRowData, setColDefs }) {
             const headerRow = worksheet.getRow(1);
 
             // parse header and add in fileHeaders
-            headerRow.eachCell((cell, colNumber) => {
-                const headerName = cell.value?.toString() || "";
-                const mappedKey = matchHeader(headerName);
+            headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => { // includeEmpty -> pou' les colonnes vides
+                let headerName = cell.value?.toString().trim() || "";
+                
+                // Si le header est vide, on vérifie si la colonne contient des données
+                if (!headerName) {
+                    const column = worksheet.getColumn(colNumber);
+                    let hasData = false;
+                    column.eachCell((cellData, rowNumber) => {
+                        if (rowNumber > 1) { // On ignore la ligne d'en-tête
+                            const val = cellData.value;
+                            if (val !== null && val !== undefined && val.toString().trim() !== '') {
+                                hasData = true;
+                            }
+                        }
+                    });
+
+                    // Si la colonne est vide de données, on l'ignore complètement
+                    if (!hasData) return;
+
+                    headerName = "Sans nom";
+                }
+
+                const mappedKey = headerName === "Sans nom" ? null : matchHeader(headerName);
+
                 fileHeaders.push({
                     name: headerName, // nom de la colonne que le client a fourni
                     index: colNumber, // l'index de la colonne que le client a fourni
@@ -39,7 +59,7 @@ function ImportZone({ setRowData, setColDefs }) {
             EXPECTED_HEADERS.forEach((expectedKey) => {
                 gridColumns.push({
                     field: expectedKey, // nom de la vrai colonne attendue
-                    headerName: expectedKey, // nom de la vrai colonne attendue
+                    headerName: HEADER_DISPLAY_NAMES[expectedKey] || expectedKey, // nom d'affichage propre
                     cellClassRules: {
                         // ajout de la règle pour mettre en rouge les cellules qui ont des erreurs
                         "cell-error": (params) => {
@@ -63,7 +83,7 @@ function ImportZone({ setRowData, setColDefs }) {
                 if (!fh.mappedKey) {
                     // On l'ajoute à la fin du tableau
                     gridColumns.push({
-                        field: `_ignored_${fh.name}`, // Préfixe pour éviter collision
+                        field: `_ignored_${fh.name}_${fh.index}`, // Préfixe + index pour éviter collision (car nom peut être identique "Sans nom")
                         headerName: fh.name,
                         headerComponent: EditableHeader, // Composant éditable pour changer le titre
                         cellClass: "cell-ignored", // Style grisé
@@ -89,8 +109,8 @@ function ImportZone({ setRowData, setColDefs }) {
                         // Colonne reconnue -> on utilise la clé standard
                         rowItem[fh.mappedKey] = cleanValue;
                     } else {
-                        // Colonne ignorée -> on stocke sous la clé ignorée pour affichage
-                        rowItem[`_ignored_${fh.name}`] = cleanValue;
+                        // Colonne ignorée -> on stocke sous la clé ignorée pour affichage (avec index)
+                        rowItem[`_ignored_${fh.name}_${fh.index}`] = cleanValue;
                     }
                 });
 

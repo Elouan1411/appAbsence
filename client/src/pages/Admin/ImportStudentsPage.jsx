@@ -8,6 +8,7 @@ import "../../style/Admin.css";
 import {
   matchHeader,
   validateStudentData,
+  HEADER_DISPLAY_NAMES,
 } from "../../utils/studentValidation";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -43,8 +44,22 @@ function ImportStudentsPage() {
       });
     });
 
-    // on retire la colonne ignorée (car mtn elle est placé correctement)
-    setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
+    // on met à jour la colonne cible avec le bon nom d'affichage
+    setColDefs((currentCols) => {
+        // 1. On retire la colonne ignorée
+        const filtered = currentCols.filter((col) => col.field !== colId);
+        
+        // 2. On met à jour le headerName de la colonne qui vient d'être peuplée
+        return filtered.map(col => {
+            if (col.field === match) {
+                return {
+                    ...col,
+                    headerName: HEADER_DISPLAY_NAMES[match] || match
+                };
+            }
+            return col;
+        });
+    });
 
     toast.success(
       `Super, la colonne est désormais sous le bon nom : "${match}" !`
