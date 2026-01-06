@@ -1,0 +1,68 @@
+.select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.select-label {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+
+    background-image: url("../assets/down_arrow.svg");
+
+    background-repeat: no-repeat;
+    background-position: right 12px top 50%;
+    background-size: 25px auto;
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.custom-select option:disabled {
+    color: var(--text-secondary);
+    background-color: var(--card-bg);
+}
+
+.reason-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.custom-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px 12px;
+    font-size: 16px;
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}

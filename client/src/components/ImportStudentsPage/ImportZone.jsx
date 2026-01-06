@@ -22,17 +22,19 @@ function ImportZone({ setRowData, setColDefs }) {
             const headerRow = worksheet.getRow(1);
 
             // parse header and add in fileHeaders
-            headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => { // includeEmpty -> pou' les colonnes vides
+            headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                // includeEmpty -> pou' les colonnes vides
                 let headerName = cell.value?.toString().trim() || "";
-                
+
                 // Si le header est vide, on vérifie si la colonne contient des données
                 if (!headerName) {
                     const column = worksheet.getColumn(colNumber);
                     let hasData = false;
                     column.eachCell((cellData, rowNumber) => {
-                        if (rowNumber > 1) { // On ignore la ligne d'en-tête
+                        if (rowNumber > 1) {
+                            // On ignore la ligne d'en-tête
                             const val = cellData.value;
-                            if (val !== null && val !== undefined && val.toString().trim() !== '') {
+                            if (val !== null && val !== undefined && val.toString().trim() !== "") {
                                 hasData = true;
                             }
                         }
@@ -65,16 +67,17 @@ function ImportZone({ setRowData, setColDefs }) {
                         "cell-error": (params) => {
                             return params.data._errors && params.data._errors[expectedKey];
                         },
-                        'cell-autofilled': (params) => {
-                          return params.data._autoFilled && params.data._autoFilled[expectedKey];
-                        }
+                        "cell-autofilled": (params) => {
+                            return params.data._autoFilled && params.data._autoFilled[expectedKey];
+                        },
                     },
-                    tooltipValueGetter: (params) => { // hover
+                    tooltipValueGetter: (params) => {
+                        // hover
                         if (params.data._autoFilled && params.data._autoFilled[expectedKey]) {
                             return "Valeur remplie automatiquement (copié)";
                         }
-                        return undefined; 
-                    }
+                        return undefined;
+                    },
                 });
             });
 
@@ -103,7 +106,8 @@ function ImportZone({ setRowData, setColDefs }) {
 
                 fileHeaders.forEach((fh) => {
                     const cellValue = row.getCell(fh.index).value;
-                    const cleanValue = typeof cellValue === "object" && cellValue?.result ? cellValue.result : cellValue;
+                    // const cleanValue = typeof cellValue === "object" && cellValue?.result ? cellValue.result : cellValue;
+                    const cleanValue = cellValue && typeof cellValue === "object" && "result" in cellValue ? cellValue.result : cellValue;
 
                     if (fh.mappedKey) {
                         // Colonne reconnue -> on utilise la clé standard
@@ -116,19 +120,19 @@ function ImportZone({ setRowData, setColDefs }) {
 
                 rowItem._autoFilled = {};
 
-                if (!rowItem.promoPair){
-                  rowItem.promoPair = rowItem.promo;
-                  rowItem._autoFilled.promoPair = true;
+                if (!rowItem.promoPair) {
+                    rowItem.promoPair = rowItem.promo;
+                    rowItem._autoFilled.promoPair = true;
                 }
 
-                if (!rowItem.groupeTDPair){
-                  rowItem.groupeTDPair = rowItem.groupeTD;
-                  rowItem._autoFilled.groupeTDPair = true;
+                if (!rowItem.groupeTDPair) {
+                    rowItem.groupeTDPair = rowItem.groupeTD;
+                    rowItem._autoFilled.groupeTDPair = true;
                 }
 
-                if (!rowItem.groupeTPPair){
-                  rowItem.groupeTPPair = rowItem.groupeTP;
-                  rowItem._autoFilled.groupeTPPair = true;
+                if (!rowItem.groupeTPPair) {
+                    rowItem.groupeTPPair = rowItem.groupeTP;
+                    rowItem._autoFilled.groupeTPPair = true;
                 }
 
                 // validation des données (fond rouge sur les cases avec erreurs)

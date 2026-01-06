@@ -2,6 +2,7 @@ import AdminHomePage from "./pages/Admin/AdminHomePage";
 import ImportStudentsPage from "./pages/Admin/ImportStudentsPage";
 import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
+import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
 import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 
 export const routesConfig = [
@@ -26,7 +27,8 @@ export const routesConfig = [
     path: "/dashboard",
     allowedRoles: ["student"],
     children: [
-      { index: true, label: "Mon Espace", element: <StudentHomePage /> }
+      { index: true, label: "Mon Espace", element: <StudentHomePage /> },
+      { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage /> }
     ]
   }
 ];
