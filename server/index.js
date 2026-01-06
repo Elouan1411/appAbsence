@@ -31,7 +31,7 @@ var app = express();
 
 const PORT = process.env.PORT;
 app.listen(PORT, function () {
-    console.log("C'est parti ! En attente de connexion sur le port", PORT);
+  console.log("C'est parti ! En attente de connexion sur le port", PORT);
 });
 // listening to proxy for react routing requests
 
@@ -42,10 +42,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(
-    cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-    })
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
 );
 
 /*****************************************************
@@ -55,10 +55,10 @@ app.use(
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, "upload");
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    console.log("Created upload directory at:", uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("Created upload directory at:", uploadDir);
 } else {
-    console.log("Upload directory exists at:", uploadDir);
+  console.log("Upload directory exists at:", uploadDir);
 }
 
 // Utilisation de la route d'absence
@@ -104,3 +104,5 @@ app.use("/eleve", studentRoutes);
 //Utilisation de la route matière
 const subjectRoutes = require("./routes/subject");
 app.use("/matiere", subjectRoutes);
+
+app.use("/upload", express.static(path.join(__dirname, "upload")));

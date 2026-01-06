@@ -7,6 +7,7 @@ const {
 } = require("../middlewares/auth");
 const router = express.Router();
 const db = require("../database/db");
+const fs = require("fs");
 
 /*****************************************
  *             Méthodes GET
@@ -25,7 +26,7 @@ router.get("/new", verifyToken, isAdmin, (req, res) => {
 // Récupération de toutes les justifications
 router.get("/", verifyToken, isAdmin, (req, res) => {
   const sql =
-    "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, validite, nom, prenom FROM JustificationAbsence, Eleve WHERE JustificationAbsence.numeroEtudiant = Eleve.numero";
+    "SELECT idAbsJustifiee, numeroEtudiant, nom, prenom, debut, fin, motif, validite,  FROM JustificationAbsence, Eleve WHERE JustificationAbsence.numeroEtudiant = Eleve.numero";
   db.all(sql, [], (err, rows) => {
     if (err) return console.error(err.message);
 
@@ -35,6 +36,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 
 // Récupération d'une justification particulière
 router.get("/:id", verifyToken, isOwner, (req, res) => {
+  const ID = req.params.id;
   let result = [];
   fs.readdir("./upload", (err, files) => {
     if (err) {
@@ -62,6 +64,7 @@ router.get("/:id", verifyToken, isOwner, (req, res) => {
 
 //Récupération d'une justification particulière côté admin
 router.get("/admin/:id", verifyToken, isAdmin, (req, res) => {
+  const ID = req.params.id;
   let result = [];
   fs.readdir("./upload", (err, files) => {
     if (err) {
