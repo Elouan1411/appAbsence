@@ -3,6 +3,7 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
+import RseCell from "../StudentList/RseCell";
 import "../../style/SelectGroups.css"; 
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -26,6 +27,14 @@ function RollCallList({ criteria }) {
       { field: "prenom", headerName: "Prénom", minWidth: 150 },
       { field: isPair ? "groupeTDPair" : "groupeTD", headerName: "TD", minWidth: 100 },
       { field: isPair ? "groupeTPPair" : "groupeTP", headerName: "TP", minWidth: 100 },
+      {
+        headerName: "RSE",
+        field: "RSE",
+        cellRenderer: RseCell,
+        autoHeight: true,
+        resizable: true,
+        minWidth: 250,
+      },
     ];
   }, [criteria]);
 
@@ -59,7 +68,29 @@ function RollCallList({ criteria }) {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
+          
+          const studentIds = data.map(s => s.numero);
+          if (studentIds.length > 0) {
+              try {
+                  const rseResponse = await fetch("http://localhost:3000/rse/list", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ ids: studentIds }),
+                      credentials: "include"
+                  });
+                  
+                  if (rseResponse.ok) {
+                      const rseMap = await rseResponse.json();
+                      data.forEach(s => {
+                          s.RSE = rseMap[s.numero] || null;
+                      });
+                  }
+              } catch (e) {
+                  console.error("Error fetching RSE:", e);
+              }
+          }
+
+          console.log("Students with RSE:", data);
           setRowData(data);
         } else {
           console.error("Error fetching students:", response.status);

@@ -1,5 +1,5 @@
 const express = require("express");
-const { verifyToken, isAdmin } = require("../middlewares/auth");
+const { verifyToken, isAdmin, isAdminOrTeacher } = require("../middlewares/auth");
 const router = express.Router();
 const db = require("../database/db");
 /*****************************************
@@ -20,6 +20,40 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 /*****************************************
  *             Méthodes POST
  *****************************************/
+
+// Récupération des RSE pour une liste d'étudiants 
+router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(200).json({});
+    }
+
+    // Création du tableau -> chaine de placeholder (["?", "?"] -> "?, ?") pour eviter les injections sql
+    const placeholders = ids.map(() => "?").join(",");
+    const sql = `
+        SELECT ra.numeroEtudiant, r.code, r.libelle 
+        FROM RSEAnnee ra
+        JOIN RSE r ON ra.codeRSE = r.code
+        WHERE ra.numeroEtudiant IN (${placeholders})
+    `;
+
+    db.all(sql, ids, (err, rows) => {
+        if (err) {
+            console.error("SQL Error in /rse/list:", err.message);
+            return res.status(500).json({ error: err.message });
+        }
+
+        const rseMap = {};
+        rows.forEach(row => {
+            if (!rseMap[row.numeroEtudiant]) {
+                rseMap[row.numeroEtudiant] = {};
+            }
+            rseMap[row.numeroEtudiant][row.code] = row.libelle;
+        });
+
+        res.status(200).json(rseMap);
+    });
+});
 
 //Insertion d'un nouveau RSE
 router.post("/new", verifyToken, isAdmin, (req, res) => {
