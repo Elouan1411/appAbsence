@@ -175,7 +175,7 @@ function ImportZone({ setRowData, setColDefs }) {
             <input {...getInputProps()} />
             <Import size={40} className="import-icon" />
             {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
-            <Toaster position="top-center" reverseOrder={false} />
+            <Toaster position="top-right" reverseOrder={false} />
         </div>
     );
 }

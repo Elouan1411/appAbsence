@@ -1,3 +1,8 @@
+.studentJustificationPage {
+    max-width: 800px;
+    margin: auto;
+}
+
 .select-container {
     display: flex;
     flex-direction: column;
@@ -58,6 +63,7 @@
 }
 .custom-textarea {
     width: 100%;
+    box-sizing: border-box;
     min-height: 100px;
     padding: 10px 12px;
     font-size: 16px;
@@ -72,4 +78,178 @@
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.optional-text {
+    font-weight: normal;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-left: 4px;
+}
+
+.dropzone {
+    border: 2px dashed var(--dropzone-border);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--input-bg);
+}
+
+.dropzone:hover,
+.dropzone.dragging {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.cloud-icon-container {
+    width: 48px;
+    height: 48px;
+    background-color: var(--cloud-icon-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    color: var(--cloud-icon-color);
+}
+
+.dropzone-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.dropzone-subtext {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--file-item-bg);
+    border: 1px solid var(--file-item-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    transition: background-color 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.file-item:hover {
+    background-color: var(--file-item-hover-bg);
+    border-color: var(--file-item-hover-border);
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.file-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--file-icon-color);
+    flex-shrink: 0;
+}
+
+.file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-name:hover {
+    text-decoration: underline;
+}
+
+.upload-success {
+    color: var(--upload-success-color);
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.upload-success.deletable {
+    cursor: pointer;
+}
+
+.icon-state-success,
+.icon-state-delete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-state-success {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.icon-state-delete {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+}
+
+.upload-success.deletable:hover .icon-state-success,
+.file-item:hover .upload-success.deletable .icon-state-success {
+    opacity: 0;
+    transform: scale(0.5) rotate(90deg);
+}
+@media (max-width: 768px) {
+    .upload-success.deletable .icon-state-success {
+        display: none;
+        opacity: 0;
+    }
+
+    .upload-success.deletable .icon-state-delete {
+        display: block;
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+    .file-item {
+        background-color: var(--file-item-bg);
+        border-color: var(--file-item-border);
+    }
+
+    .file-name:hover {
+        text-decoration: none;
+    }
+}
+.upload-success.deletable:hover .icon-state-delete,
+.file-item:hover .upload-success.deletable .icon-state-delete {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
 }
