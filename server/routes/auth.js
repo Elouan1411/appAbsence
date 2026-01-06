@@ -4,7 +4,7 @@ const { verifyToken } = require("../middlewares/auth");
 const router = express.Router();
 const maxAge = 10 * 60 * 60 * 1000;
 let users = {};
-users["rjoffrin"] = { password: 1234, role: "student" };
+users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
 
