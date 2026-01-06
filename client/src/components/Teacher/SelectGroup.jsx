@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "../../style/SelectGroups.css";
 
-function SelectGroup() {
+function SelectGroup({ onValidate }) {
     const [promos, setPromos] = useState([]);
     const [TD, setTD] = useState([]);
     const [TP, setTP] = useState([]);
@@ -12,7 +13,7 @@ function SelectGroup() {
     useEffect(() => {
         async function fetchPromos() {
             try {
-                const response = await fetch("http://localhost:3000/teacher/promo", {
+                const response = await fetch("http://localhost:3000/groups/promo", {
                     credentials: "include",
                 });
                 if (response.ok) {
@@ -26,20 +27,37 @@ function SelectGroup() {
         fetchPromos();
     }, []);
 
-    async function fetchGroups() {
+    async function fetchGroups(promo, semestre) {
+        if (!promo || !semestre) return;
         try {
-            const response = await fetch("http://localhost:3000/teacher/groups/" + selectedPromo + "/" + selectedSemestre, {
+            const link = "http://localhost:3000/groups/groups/" + promo + "/" + semestre;
+            const response = await fetch(link, {
                 credentials: "include",
             });
             if (response.ok) {
                 const data = await response.json();
-                data.array.forEach(el => {
-                    if (el.substring(1, 2) === "D") {
-                        setTD(previousTD => [...previousTD, el]); 
-                    } else {
-                        setTP(previousTP => [...previousTP, el]); 
+                
+                const isPair = semestre === "true" || semestre === "1";
+                const tdKey = isPair ? "groupeTDPair" : "groupeTD";
+                const tpKey = isPair ? "groupeTPPair" : "groupeTP";
+
+                const uniqueTDs = [];
+                const uniqueTPs = [];
+
+                data.forEach(item => {
+                    const valTD = item[tdKey];
+                    const valTP = item[tpKey];
+
+                    if (valTD && !uniqueTDs.find(obj => obj.groupeTD === valTD)) {
+                        uniqueTDs.push({ groupeTD: valTD });
+                    }
+                    if (valTP && !uniqueTPs.find(obj => obj.groupeTP === valTP)) {
+                        uniqueTPs.push({ groupeTP: valTP });
                     }
                 });
+
+                setTD(uniqueTDs);
+                setTP(uniqueTPs);
             }
         } catch (err) {
             console.error(err);
@@ -47,17 +65,25 @@ function SelectGroup() {
     }
 
     const handleChangePromo = (event) => {
-        console.log("Nouvelle promo sélectionnée :", event.target.value);
-        setSelectedPromo(event.target.value);
+        const newPromo = event.target.value;
+        console.log("Nouvelle promo sélectionnée :", newPromo);
+        setSelectedPromo(newPromo);
         setTD([]);
         setTP([]);
+        if (selectedSemestre !== "") {
+            fetchGroups(newPromo, selectedSemestre);
+        }
     };
 
     const handleChangeSemestre = (event) => {
-        console.log("Nouveau semestre sélectionné :", event.target.value);
-        setSelectedSemestre(event.target.value);
+        const newSemestre = event.target.value;
+        console.log("Nouveau semestre sélectionné :", newSemestre);
+        setSelectedSemestre(newSemestre);
         setTD([]);
         setTP([]);
+        if (selectedPromo !== "") {
+            fetchGroups(selectedPromo, newSemestre);
+        }
     };
 
     const handleChangeTD = (event) => {
@@ -70,45 +96,68 @@ function SelectGroup() {
         setSelectedTP(event.target.value);
     };
 
+    const handleValidate = () => {
+        if (onValidate) {
+            onValidate({ 
+                promo: selectedPromo, 
+                semestre: selectedSemestre, 
+                groupeTD: selectedTD, 
+                groupeTP: selectedTP 
+            });
+        }
+    };
+
     return (
-        <div>
+        <div className="Card">
             <h2>Selectionner un groupe</h2>
-            <label htmlFor="Promo">Promotion</label>
             
-            <select onChange={handleChangePromo} value={selectedPromo}>
-                {selectedPromo === "" && <option value="">-- Choisir --</option>}
-                {promos.map((promo) => (
-                    <option key={promo.promo} value={promo.promo}>
-                        {promo.promo}
-                    </option>
-                ))}
-            </select>
+            <div className="input-group">
+                <label htmlFor="Promo">Promotion</label>
+                <select onChange={handleChangePromo} value={selectedPromo}>
+                    {selectedPromo === "" && <option value="">-- Choisir --</option>}
+                    {promos.map((promo) => (
+                        <option key={promo.promo} value={promo.promo}>
+                            {promo.promo}
+                        </option>
+                    ))}
+                </select>
+            </div>
             
-            <label htmlFor="Semestre">Semestre</label>
-            <select onChange={handleChangeSemestre} value={selectedSemestre}>
-                <option value="false">Semestre Impair</option>
-                <option value="true">Semestre Pair</option>
-            </select>
+            <div className="input-group">
+                <label htmlFor="Semestre">Semestre</label>
+                <select onChange={handleChangeSemestre} value={selectedSemestre}>
+                    <option value="0">Semestre Impair</option>
+                    <option value="1">Semestre Pair</option>
+                </select>
+            </div>
 
-            <h2>TD</h2>
-            <select onChange={handleChangeTD} value={selectedTD}>
-                {selectedTD === "" && <option value="">-- Choisir --</option>}
-                {TD.map((td) => (
-                    <option key={td.groupeTD} value={td.groupeTD}>
-                        {td.groupeTD}
-                    </option>
-                ))}
-            </select>
+            <div className="input-group">
+                <label htmlFor="TD">TD</label>
+                <select onChange={handleChangeTD} value={selectedTD}>
+                    {selectedTD === "" && <option value="">-- Choisir --</option>}
+                    {TD.map((td) => (
+                        <option key={td.groupeTD} value={td.groupeTD}>
+                            {td.groupeTD}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
-            <h2>TP</h2>
-            <select onChange={handleChangeTP} value={selectedTP}>
-                {selectedTP === "" && <option value="">-- Choisir --</option>}
-                {TP.map((tp) => (
-                    <option key={tp.groupeTP} value={tp.groupeTP}>
-                        {tp.groupeTP}
-                    </option>
-                ))}
-            </select>
+            <div className="input-group">
+                <label htmlFor="TP">TP</label>
+                <select onChange={handleChangeTP} value={selectedTP}>
+                    {selectedTP === "" && <option value="">-- Choisir --</option>}
+                    {TP.map((tp) => (
+                        <option key={tp.groupeTP} value={tp.groupeTP}>
+                            {tp.groupeTP}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <button className="validate-btn" onClick={handleValidate}>
+                Valider
+            </button>
         </div>
     );
 }
