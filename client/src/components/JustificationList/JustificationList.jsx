@@ -1,16 +1,34 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, use } from "react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
+import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
+import dateFormatter from "../../functions/dateFormatter";
+import ValidationModal from "../ValidationJustification/ValidationModal";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+const columnOrder = [
+  "numeroEtudiant",
+  "nom",
+  "prenom",
+  "debut",
+  "fin",
+  "motif",
+];
 
 function JustificationList() {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalId, setModalId] = useState(null);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
   const theme = sessionStorage.getItem("theme");
 
   const autoSizeStrategy = useMemo(() => {
@@ -58,13 +76,19 @@ function JustificationList() {
 
   useEffect(() => {
     if (rowData && rowData.length > 0) {
-      const firstObject = rowData[0];
-      const generatedColumns = Object.keys(firstObject)
-        .filter((key) => key != "idAbsJustifiee")
-        .map((key) => ({
+      const generatedColumns = columnOrder.map((key) => {
+        if (key == "debut" || key == "fin") {
+          return {
+            headerName: HEADER_DISPLAY_NAMES[key] || key,
+            field: key,
+            valueFormatter: (params) => dateFormatter(params.value),
+          };
+        }
+        return {
+          headerName: HEADER_DISPLAY_NAMES[key] || key,
           field: key,
-          headerName: key,
-        }));
+        };
+      });
       setColDefs(generatedColumns);
     }
   }, [rowData]);
@@ -76,10 +100,8 @@ function JustificationList() {
   }, []);
 
   const handleRowClick = (event) => {
-    const rowData = event.data;
-    console.log(rowData);
-
-    // Ici tu peux naviguer vers une page ou ouvrir une modale
+    setModalId(event.data.idAbsJustifiee);
+    setIsModalOpen(true);
   };
 
   return (
@@ -100,6 +122,12 @@ function JustificationList() {
             localeText={AG_GRID_LOCALE_FR}
             autoSizeStrategy={autoSizeStrategy}
             onRowClicked={handleRowClick}
+          />
+          <ValidationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            idAbsence={modalId}
+            title="Valider une absence"
           />
         </div>
       )}

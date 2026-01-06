@@ -16,6 +16,7 @@ body.dark {
     --icon-color: #ffffff;
     --cell-ignored-background: #1e1e24;
     --autofilled-color: #666666;
+    --modal-background-color: #24242a;
     --border-color: #4b5563;
     --primary-color-rgb: 62, 126, 134;
     --input-bg: #2a2a30;
@@ -32,6 +33,7 @@ body.light {
     --border-color: #ced4da;
     --primary-color-rgb: 62, 126, 134;
     --input-bg: #f8f9fa;
+    --modal-background-color: #f9fafb;
 }
 
 .loading {

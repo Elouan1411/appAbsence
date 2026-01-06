@@ -4,6 +4,7 @@ import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
 import ShowStudentPage from "./pages/Admin/ShowStudentPage";
+import RollCallPage from "./pages/Teacher/RollCallPage";
 
 export const routesConfig = [
   {
@@ -20,7 +21,8 @@ export const routesConfig = [
     path: "/teacher",
     allowedRoles: ["teacher"],
     children: [
-      { index: true, label: "Tableau de bord", element: <TeacherHomePage /> }
+      { index: true, label: "Tableau de bord", element: <TeacherHomePage /> },
+      { path: "rollcall", label: "Appel", element: <RollCallPage /> }
     ]
   },
   {
