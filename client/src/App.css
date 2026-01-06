@@ -6,6 +6,14 @@
     --text-secondary: #4b5563;
     --cell-ignored-color: #9ca3af;
     --input-bg: #f9fafb;
+    --upload-success-color: #10b981;
+    --dropzone-border: #cbd5e1;
+    --cloud-icon-bg: #eff6ff;
+    --cloud-icon-color: #3b82f6;
+    --file-item-bg: #ecfdf5;
+    --file-item-border: #d1fae5;
+    --file-item-hover-bg: #fef2f2;
+    --file-item-hover-border: #fee2e2;
 }
 
 body.dark {
@@ -20,6 +28,13 @@ body.dark {
     --border-color: #4b5563;
     --primary-color-rgb: 62, 126, 134;
     --input-bg: #2a2a30;
+    --dropzone-border: #4b5563;
+    --cloud-icon-bg: rgba(59, 130, 246, 0.2);
+    --cloud-icon-color: #60a5fa;
+    --file-item-bg: rgba(16, 185, 129, 0.1);
+    --file-item-border: rgba(16, 185, 129, 0.2);
+    --file-item-hover-bg: rgba(239, 68, 68, 0.1);
+    --file-item-hover-border: rgba(239, 68, 68, 0.2);
 }
 
 body.light {

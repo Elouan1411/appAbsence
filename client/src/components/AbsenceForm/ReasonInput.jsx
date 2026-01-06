@@ -22,6 +22,7 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange }) => {
             </div>
             <div>
                 <textarea
+                    id="comment"
                     className="custom-textarea"
                     value={comment}
                     onChange={(e) => onCommentChange(e.target.value)}
