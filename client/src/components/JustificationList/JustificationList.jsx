@@ -6,7 +6,7 @@ import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
 import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 import dateFormatter from "../../functions/dateFormatter";
-import ValidationModal from "../ValidationJustification/ValidationModal";
+import ValidationModal from "../ValidationJustification/ValidationView";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -19,16 +19,11 @@ const columnOrder = [
   "motif",
 ];
 
-function JustificationList() {
+function JustificationList({ selectedId, setSelectedId }) {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalId, setModalId] = useState(null);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
   const theme = sessionStorage.getItem("theme");
 
   const autoSizeStrategy = useMemo(() => {
@@ -100,16 +95,23 @@ function JustificationList() {
   }, []);
 
   const handleRowClick = (event) => {
-    setModalId(event.data.idAbsJustifiee);
-    setIsModalOpen(true);
+    console.log(event.data);
+    setSelectedId(event.data.idAbsJustifiee);
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        padding: 10,
+      }}
+    >
       {loading ? (
         <p>En chargement...</p>
       ) : (
-        <div style={{ height: 600, width: "100%" }}>
+        <div className="justification-list-container" style={{ flex: 1 }}>
           <AgGridReact
             rowData={rowData}
             columnDefs={colDefs}
@@ -122,12 +124,7 @@ function JustificationList() {
             localeText={AG_GRID_LOCALE_FR}
             autoSizeStrategy={autoSizeStrategy}
             onRowClicked={handleRowClick}
-          />
-          <ValidationModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            idAbsence={modalId}
-            title="Valider une absence"
+            style={{ width: "100%", height: "100%" }}
           />
         </div>
       )}
