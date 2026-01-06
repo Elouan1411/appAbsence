@@ -15,6 +15,7 @@ body.dark {
   --icon-color: #ffffff;
   --cell-ignored-background: #1e1e24;
   --autofilled-color: #666666;
+  --modal-background-color: #24242a;
 }
 
 body.light {
@@ -25,6 +26,7 @@ body.light {
   --icon-color: #000000;
   --cell-ignored-background: #e5e7eb;
   --autofilled-color: #bfc5c5;
+  --modal-background-color: #f9fafb;
 }
 
 .loading {
