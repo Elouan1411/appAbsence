@@ -15,22 +15,23 @@ function RollCallPage() {
       <Title>Faire l'appel</Title>  
       
       <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", flexWrap: "wrap", marginTop: "1rem" }}>
-        <div style={{ flex: 2, minWidth: "300px" }}>
           <SelectGroup 
             onValidate={(sel) => setSelection(sel)} 
             date={dateTime.date}
+            style={{ flex: 2, minWidth: "300px" }}
           />
-        </div>
-        <div style={{ flex: 1, minWidth: "200px" }}>
-           <SelectTime onChange={setDateTime} />
-        </div>
-        <div style={{ flex: 1, minWidth: "200px" }}>
+
+           <SelectTime 
+             onChange={setDateTime} 
+             style={{ flex: 1, minWidth: "300px" }}
+           />
+
            <SelectSubject 
              onSelect={setSubject} 
              promo={selection?.promo}
              pair={selection?.semestre}
+             style={{ flex: 1, minWidth: "300px" }}
            />
-        </div>
       </div>
 
       <RollCallList 
