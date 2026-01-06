@@ -103,4 +103,4 @@ app.use("/eleve", studentRoutes);
 
 //Utilisation de la route matière
 const subjectRoutes = require("./routes/subject");
-app.use("/matiere", subjectRoutes);
+app.use("/subject", subjectRoutes);

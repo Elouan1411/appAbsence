@@ -39,7 +39,7 @@ router.post("/:pair", (req, res) => {
   let pair = req.params.pair;
   let body = req.body; 
 
-  let sql = "SELECT DISTINCT numero, nom, prenom,";
+  let sql = "SELECT DISTINCT numero, nom, prenom, loginENT,";
 
   if (pair == true) {
     sql += " groupeTDPair, groupeTPPair ";

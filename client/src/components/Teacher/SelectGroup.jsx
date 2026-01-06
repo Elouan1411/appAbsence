@@ -1,14 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectGroup({ onValidate }) {
+function SelectGroup({ onValidate, date }) {
     const [promos, setPromos] = useState([]);
     const [TD, setTD] = useState([]);
     const [TP, setTP] = useState([]);
+
+    const getSemesterFromDate = (dateStr) => {
+        let month;
+        if (dateStr) {
+            month = new Date(dateStr).getMonth();
+        } else {
+            month = new Date().getMonth();
+        }
+        if (month >= 8) return "0";
+        return "1";
+    };
+
     const [selectedPromo, setSelectedPromo] = useState("");
-    const [selectedSemestre, setSelectedSemestre] = useState("");
+    const [selectedSemestre, setSelectedSemestre] = useState(() => getSemesterFromDate(date));
     const [selectedTD, setSelectedTD] = useState("");
     const [selectedTP, setSelectedTP] = useState("");
+
+    useEffect(() => {
+        if (date) {
+            const newSemestre = getSemesterFromDate(date);
+            if (newSemestre !== selectedSemestre) {
+                setSelectedSemestre(newSemestre);
+                if (selectedPromo) {
+                    fetchGroups(selectedPromo, newSemestre);
+                }
+            }
+        }
+    }, [date]);
 
     useEffect(() => {
         async function fetchPromos() {
@@ -96,19 +120,19 @@ function SelectGroup({ onValidate }) {
         setSelectedTP(event.target.value);
     };
 
-    const handleValidate = () => {
+    useEffect(() => {
         if (onValidate) {
-            onValidate({ 
+             onValidate({ 
                 promo: selectedPromo, 
                 semestre: selectedSemestre, 
                 groupeTD: selectedTD, 
                 groupeTP: selectedTP 
             });
         }
-    };
+    }, [selectedPromo, selectedSemestre, selectedTD, selectedTP]);
 
     return (
-        <div className="Card">
+        <div className="Card cols-4">
             <h2>Selectionner un groupe</h2>
             
             <div className="input-group">
@@ -134,7 +158,7 @@ function SelectGroup({ onValidate }) {
             <div className="input-group">
                 <label htmlFor="TD">TD</label>
                 <select onChange={handleChangeTD} value={selectedTD}>
-                    {selectedTD === "" && <option value="">-- Choisir --</option>}
+                    <option value="">-- Tous --</option>
                     {TD.map((td) => (
                         <option key={td.groupeTD} value={td.groupeTD}>
                             {td.groupeTD}
@@ -146,7 +170,7 @@ function SelectGroup({ onValidate }) {
             <div className="input-group">
                 <label htmlFor="TP">TP</label>
                 <select onChange={handleChangeTP} value={selectedTP}>
-                    {selectedTP === "" && <option value="">-- Choisir --</option>}
+                    <option value="">-- Tous --</option>
                     {TP.map((tp) => (
                         <option key={tp.groupeTP} value={tp.groupeTP}>
                             {tp.groupeTP}
@@ -154,10 +178,6 @@ function SelectGroup({ onValidate }) {
                     ))}
                 </select>
             </div>
-
-            <button className="validate-btn" onClick={handleValidate}>
-                Valider
-            </button>
         </div>
     );
 }

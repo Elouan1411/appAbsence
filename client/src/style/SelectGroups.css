@@ -9,9 +9,20 @@
     transition: background-color 0.3s ease, color 0.3s ease;
     
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
     align-items: end; 
+}
+
+.Card.cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.Card.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.Card.cols-1 {
+    grid-template-columns: 1fr; 
 }
 
 .input-group {
