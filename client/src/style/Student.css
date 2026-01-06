@@ -12,7 +12,6 @@
 }
 
 .custom-select {
-    background-color: var(--background-color);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -39,6 +38,7 @@
 
 .custom-select,
 .custom-textarea {
+    background-color: var(--input-bg);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .custom-select:hover,
@@ -62,7 +62,6 @@
     padding: 10px 12px;
     font-size: 16px;
     color: var(--text-primary);
-    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     resize: vertical;
