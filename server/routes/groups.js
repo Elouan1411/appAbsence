@@ -61,8 +61,6 @@ router.post("/:pair", (req, res) => {
   }
 
   sql += " ORDER BY numero ASC";
-  
-  console.log("SQL (POST):", sql);
 
   db.all(sql, [], (err, rows) => {
     if (err) return console.error(err.message);
