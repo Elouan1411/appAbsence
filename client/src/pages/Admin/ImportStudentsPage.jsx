@@ -8,8 +8,10 @@ import "../../style/Admin.css";
 import {
   matchHeader,
   validateStudentData,
+  HEADER_DISPLAY_NAMES,
 } from "../../utils/studentValidation";
 import toast, { Toaster } from "react-hot-toast";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 function ImportStudentsPage() {
   //TODO: (@elouan) gérer cas si nom de colonne vide
@@ -30,22 +32,36 @@ function ImportStudentsPage() {
     }
 
     // remapper les données
-    const newRowData = rowData.map((row) => {
-      const newRow = { ...row };
-      newRow[match] = newRow[colId];
-      // on supprime la clé avec _ignored_ devant
-      delete newRow[colId];
+    setRowData((currentRows) => {
+      return currentRows.map((row) => {
+        const newRow = { ...row };
+        newRow[match] = newRow[colId];
+        // on supprime la clé avec _ignored_ devant
+        delete newRow[colId];
 
-      // re-valider la ligne
-      newRow._errors = validateStudentData(newRow);
-      return newRow;
+        // re-valider la ligne
+        newRow._errors = validateStudentData(newRow);
+        return newRow;
+      });
     });
 
-    // on retire la colonne ignorée (car mtn elle est placé correctement)
-    const newColDefs = colDefs.filter((col) => col.field !== colId);
+    // on met à jour la colonne cible avec le bon nom d'affichage
+    setColDefs((currentCols) => {
+        // 1. On retire la colonne ignorée
+        const filtered = currentCols.filter((col) => col.field !== colId);
+        
+        // 2. On met à jour le headerName de la colonne qui vient d'être peuplée
+        return filtered.map(col => {
+            if (col.field === match) {
+                return {
+                    ...col,
+                    headerName: HEADER_DISPLAY_NAMES[match] || match
+                };
+            }
+            return col;
+        });
+    });
 
-    setRowData(newRowData);
-    setColDefs(newColDefs);
     toast.success(
       `Super, la colonne est désormais sous le bon nom : "${match}" !`
     );
@@ -53,16 +69,23 @@ function ImportStudentsPage() {
 
   const handleDeleteColumn = (colId) => {
     // on retire la colonne de la definitions des colonnes
-    const newColDefs = colDefs.filter((col) => col.field !== colId);
-    setColDefs(newColDefs);
+    setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
 
-    const newRowData = rowData.map((row) => {
-      const newRow = { ...row };
-      delete newRow[colId];
-      return newRow;
+    setRowData((currentRows) => {
+      return currentRows.map((row) => {
+        const newRow = { ...row };
+        delete newRow[colId];
+        return newRow;
+      });
     });
-    setRowData(newRowData);
     toast.success("Colonne supprimée avec succès.");
+  };
+
+  const handleDeleteRow = (rowIndex) => {
+    setRowData((currentRows) =>
+      currentRows.filter((_, index) => index !== rowIndex)
+    );
+    toast.success("Ligne supprimée avec succès.");
   };
 
   const handleCellValueChanged = (params) => {
@@ -80,6 +103,13 @@ function ImportStudentsPage() {
       rowNodes: [params.node],
       force: true,
     });
+  };
+
+  const confirm = () => {
+    const confirmed = alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
+    if (confirmed) {
+      handleSaveAndSend();
+    }
   };
 
   const handleSaveAndSend = async () => {
@@ -156,7 +186,10 @@ function ImportStudentsPage() {
     //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
     //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
     <div>
-      <Title>Importer un groupe d'étudiants</Title>
+      <div className="title-container">
+        <span className="icon-big icon-importer-eleves"></span>
+        <Title>Importer un groupe d'étudiants</Title>
+      </div>
       <div className="content-container">
         {rowData.length > 0 ? (
           <div style={{ marginTop: 20, width: "100%" }}>
@@ -168,7 +201,7 @@ function ImportStudentsPage() {
               }}
             >
               {/* Le Bouton de sauvegarde */}
-              <Button onClick={handleSaveAndSend}>
+              <Button onClick={confirm}>
                 Sauvegarder et Envoyer les modifications
               </Button>
             </div>
@@ -179,6 +212,7 @@ function ImportStudentsPage() {
               gridRef={gridRef} // On passe la ref ici
               onRename={handleRename} // On passe la fonction de renommage
               onDelete={handleDeleteColumn} // On passe la fonction de suppression
+              onDeleteRow={handleDeleteRow} // On passe la fonction de suppression de ligne
               onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
             />
           </div>

@@ -6,6 +6,7 @@ const {
   isAdminOrOwner,
 } = require("../middlewares/auth");
 const router = express.Router();
+const db = require("../database/db");
 
 /*****************************************
  *             Méthodes GET
@@ -14,10 +15,9 @@ const router = express.Router();
 //Récupération des nouvelles justifications
 router.get("/new", verifyToken, isAdmin, (req, res) => {
   const sql =
-    "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, nom, prenom FROM JustificationAbsence, Eleve WHERE validite = 2 AND JustificationAbsence.numeroEtudiant = Eleve.numero";
+    "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2;";
   db.all(sql, [], (err, rows) => {
     if (err) return console.error(err.message);
-
     res.json(rows);
   });
 });

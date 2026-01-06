@@ -35,17 +35,7 @@ const EditableHeader = (props) => {
         onChange={onChange}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
-        className="ag-header-cell-text"
-        style={{
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          padding: "2px",
-          backgroundColor: "#fff",
-          color: "#000",
-          fontSize: "12px",
-          flex: 1
-        }}
+        className="editable-header-input"
       />
       {context && context.onDelete && (
           <Trash2 

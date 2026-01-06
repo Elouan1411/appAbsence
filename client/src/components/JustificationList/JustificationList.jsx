@@ -4,17 +4,14 @@ import { AgGridReact } from "ag-grid-react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
-import RseCell from "./RseCell";
-import { useTheme } from "../../hooks/useTheme";
-import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-function StudentList() {
+function JustificationList() {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
+  const theme = sessionStorage.getItem("theme");
 
   const autoSizeStrategy = useMemo(() => {
     return {
@@ -36,10 +33,10 @@ function StudentList() {
     };
   }, []);
 
-  async function handleFetchStudents() {
+  async function handleFetchJustification() {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/eleve/all", {
+      const response = await fetch("http://localhost:3000/justification/new", {
         method: "GET",
         credentials: "include",
       });
@@ -56,33 +53,18 @@ function StudentList() {
   }
 
   useEffect(() => {
-    handleFetchStudents();
+    handleFetchJustification();
   }, []);
 
   useEffect(() => {
     if (rowData && rowData.length > 0) {
       const firstObject = rowData[0];
-      const generatedColumns = Object.keys(firstObject).map((key) => {
-        if (key == "RSE") {
-          return {
-            headerName: key,
-            field: key,
-            cellRenderer: RseCell,
-            autoHeight: true,
-            resizable: true,
-            cellStyle: () => ({
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }),
-          };
-        }
-        return {
+      const generatedColumns = Object.keys(firstObject)
+        .filter((key) => key != "idAbsJustifiee")
+        .map((key) => ({
           field: key,
-          headerName: HEADER_DISPLAY_NAMES[key] || key,
-          valueFormatter: valueFormatter,
-        };
-      });
+          headerName: key,
+        }));
       setColDefs(generatedColumns);
     }
   }, [rowData]);
@@ -93,7 +75,12 @@ function StudentList() {
     };
   }, []);
 
-  console.log(rowData);
+  const handleRowClick = (event) => {
+    const rowData = event.data;
+    console.log(rowData);
+
+    // Ici tu peux naviguer vers une page ou ouvrir une modale
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -112,6 +99,7 @@ function StudentList() {
             paginationPageSizeSelector={[10, 20, 50, 100]}
             localeText={AG_GRID_LOCALE_FR}
             autoSizeStrategy={autoSizeStrategy}
+            onRowClicked={handleRowClick}
           />
         </div>
       )}
@@ -119,4 +107,4 @@ function StudentList() {
   );
 }
 
-export default StudentList;
+export default JustificationList;
