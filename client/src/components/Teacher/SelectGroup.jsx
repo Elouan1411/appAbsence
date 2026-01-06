@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectGroup({ onValidate, date }) {
+function SelectGroup({ onValidate, date, style }) {
     const [promos, setPromos] = useState([]);
     const [TD, setTD] = useState([]);
     const [TP, setTP] = useState([]);

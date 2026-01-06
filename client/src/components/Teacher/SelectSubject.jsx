@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectSubject({ onSelect, promo, pair }) {
+function SelectSubject({ onSelect, promo, pair, style }) {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState("");
 
@@ -39,7 +39,7 @@ function SelectSubject({ onSelect, promo, pair }) {
     };
 
     return (
-        <div className="Card cols-1" style={{ height: "fit-content" }}>
+        <div className="Card cols-1" style={{ height: "fit-content", ...style }}>
             <h2>Matière</h2>
             <div className="input-group">
                 <label htmlFor="subject">Choix</label>

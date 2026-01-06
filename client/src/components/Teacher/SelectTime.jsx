@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectTime({ onChange }) {
+function SelectTime({ onChange, style }) {
     const [date, setDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -65,7 +65,7 @@ function SelectTime({ onChange }) {
     };
 
     return (
-        <div className="Card cols-3" style={{ height: "fit-content" }}>
+        <div className="Card cols-3" style={{ height: "fit-content", ...style }}>
             <h2>Date et Heure</h2>
             
             <div className="input-group">

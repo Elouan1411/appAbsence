@@ -5,6 +5,7 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import RseCell from "../StudentList/RseCell";
 import "../../style/SelectGroups.css"; 
+import { useTheme } from "../../hooks/useTheme";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -15,7 +16,7 @@ function RollCallList({ criteria, dateTime, subject }) {
     const [rowData, setRowData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [gridApi, setGridApi] = useState(null);
-    const theme = sessionStorage.getItem("theme");
+    const theme = useTheme();
     const { user } = useAuth();
 
     const PresenceRenderer = (params) => {
@@ -72,15 +73,8 @@ function RollCallList({ criteria, dateTime, subject }) {
             cellStyle: { display: "flex", justifyContent: "center" },
             sortable: false, filter: false, resizable: false
         },
-        {
-            field: "numero",
-            headerName: "Numéro",
-            minWidth: 120,
-        },
         { field: "nom", headerName: "Nom", minWidth: 150 },
         { field: "prenom", headerName: "Prénom", minWidth: 150 },
-        { field: isPair ? "groupeTDPair" : "groupeTD", headerName: "TD", minWidth: 100 },
-        { field: isPair ? "groupeTPPair" : "groupeTP", headerName: "TP", minWidth: 100 },
         {
             headerName: "RSE",
             field: "RSE",
@@ -89,6 +83,10 @@ function RollCallList({ criteria, dateTime, subject }) {
             resizable: true,
             minWidth: 250,
         },
+        { field: isPair ? "groupeTDPair" : "groupeTD", headerName: "TD", minWidth: 100 },
+        { field: isPair ? "groupeTPPair" : "groupeTP", headerName: "TP", minWidth: 100 },
+        { field: "numero", headerName: "Numéro", minWidth: 120 },
+
         ];
     }, [criteria]);
 

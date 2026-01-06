@@ -11,6 +11,7 @@
     display: grid;
     gap: 1.5rem;
     align-items: end; 
+    min-width: 300px;
 }
 
 .Card.cols-4 {
