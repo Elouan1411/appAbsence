@@ -7,6 +7,7 @@ import valueFormatter from "../../functions/valueFormatter";
 import RseCell from "./RseCell";
 import { useTheme } from "../../hooks/useTheme";
 import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
+import "../../style/Admin.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -96,11 +97,11 @@ function StudentList() {
   console.log(rowData);
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="student-list">
       {loading ? (
         <p>En chargement...</p>
       ) : (
-        <div style={{ height: 600, width: "100%" }}>
+        <div style={{ height: "100%", width: "100%" }}>
           <AgGridReact
             rowData={rowData}
             columnDefs={colDefs}
