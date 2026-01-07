@@ -1,204 +1,323 @@
-.dropzone-container {
-  width: 80%;
-  height: 30vh;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 25px;
-  border: 5px var(--primary-color) solid;
+.justification-container {
+  width: 100%;
+  height: 80vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.dropzone-container:hover {
-  cursor: pointer;
+  flex-direction: row;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.dropzone-container p {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--primary-color);
+.part {
+  height: 100%;
+  overflow: auto;
+  transition: width 0.1s ease-out;
 }
 
-.import-icon {
-  color: var(--primary-color);
+.justification-list-container,
+.validation-view-container {
+  width: 100% !important;
+  height: 100%;
+}
+
+.resizing-bar {
+  width: 10px;
   background-color: transparent;
-}
-
-.icon-big {
-  color: var(--primary-color) !important;
-}
-
-.content-container {
-  width: 100%;
-  height: 95vh;
+  cursor: col-resize;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 10;
+  flex-shrink: 0;
+  margin: 0 -5px;
+  position: relative;
 }
 
-.cell-error {
-  background-color: var(--error-color);
+.resizer {
+  width: 2px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
 }
 
-.cell-autofilled {
-  color: var(--autofilled-color);
+.resizing-bar:hover .resizer,
+.resizing-bar:active .resizer {
+  background-color: var(--primary-color, #3b82f6);
 }
 
-.cell-ignored {
-  background-color: var(--cell-ignored-background);
-  color: var(--cell-ignored-color);
+.resizing-cursor {
+  cursor: col-resize;
+  user-select: none;
+}
+.resizing-cursor iframe {
+  pointer-events: none;
 }
 
-.circle-x {
-  width: 20px;
-  height: 20px;
-  color: var(--icon-color);
-  transition: transform 0.2s ease, color 0.2s;
-}
-
-.circle-x:hover {
-  cursor: pointer;
-  transform: scale(1.2);
-  color: var(--error-color);
-}
-
-.circle-x:active {
-  cursor: pointer;
-  transform: scale(0.95);
-}
-
-.editable-header-input {
-  width: 100%;
-  border: 1px solid var(--text-secondary);
-  border-radius: 6px;
-  padding: 4px 8px;
-  background-color: var(--background-color);
-  color: var(--text-primary);
-  font-size: 13px;
-  flex: 1;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.editable-header-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(62, 126, 134, 0.2);
-}
-
-.showStudentPage {
-  width: "100%";
-  height: 100vh;
+.empty-state {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.title-container {
-  height: 8vh;
-  display: flex;
-  align-items: center;
-  background-color: var(--card-bg);
-  margin-top: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  padding: 15px 15px;
-  margin-right: 15px;
-}
-
-.title-container > .title {
-  margin-left: 10px;
-}
-
-.studentListContainer {
-  height: 90vh;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  padding-bottom: 10vh;
+  align-items: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
-.lucide {
-  background-color: transparent !important;
-  color: var(--text-primary);
+.justification-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
 }
-
+.justification-list-container {
+  width: 50%;
+  height: 100%;
+}
+.validation-view-container {
+  width: 50%;
+  height: 100%;
+}
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  animation: fadeInOverlay 0.3s forwards;
 }
 
 .modal-content {
-  background: #2a2a32;
-  border-radius: 8px;
-  border-color: var(--modal-background-color);
+  background: var(--modal-bg);
   width: 90%;
   height: 90vh;
-  filter: blur(0) !important;
-  animation: fadeIn 0.2s ease-in-out;
-  color: var(--text-primary);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform: scale(0.95);
+  animation: scaleInModal 0.3s forwards 0.1s;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--autofilled-color);
+  padding: 1.5rem;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
-.modal-body {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
 }
 
 .modal-close {
   background: none;
   border: none;
-  font-size: 2.5rem;
+  color: var(--text-secondary);
+  font-size: 2rem;
+  line-height: 1;
   cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover {
   color: var(--text-primary);
+}
+
+.modal-body-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.accordion-section {
+  border-radius: 15px;
+  overflow: hidden;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion-trigger {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background-color: var(--card-bg);
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 10000;
+}
+
+.accordion-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chevron {
+  width: 24px;
+  height: 24px;
+  background-image: url("../assets/down_arrow.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+  filter: invert(1);
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  background: var(--card-bg);
+  padding: 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item .label,
+.motif-box .label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item .value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.motif-box {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+.motif-box h3 {
+  color: var(--text-secondary);
+}
+
+.motif-text {
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.pdf-wrapper {
+  min-height: 400px;
+  max-height: 50vh;
+  display: flex;
+  justify-content: center;
+  background-color: var(--card-bg);
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  background-color: var(--card-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+.validate-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.refuse-button {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+@keyframes fadeInOverlay {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInModal {
+  to {
+    transform: scale(1);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-.modal-buttons {
+.pdf-toolbar {
+  margin-top: 1vh;
+  height: 2vh;
   display: flex;
-  flex-direction: row;
-  width: 30%;
-  gap: 5vw;
-}
-
-.modal-buttons button {
-  color: var(--modal-background-color);
-  font-weight: bold;
-  padding: 0.5rem;
-}
-.validate-button {
-  background-color: green;
-}
-
-.refuse-button {
-  background-color: red;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }
