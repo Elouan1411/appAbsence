@@ -7,6 +7,7 @@ import "../../style/Admin.css";
 import { useAuth } from '../../hooks/useAuth';
 import Title from "../../components/common/Title";
 import { useTheme } from "../../hooks/useTheme";
+import { alertConfirm } from "../../hooks/alertConfirm";
 import toast, { Toaster } from 'react-hot-toast';
 import "../../style/icon.css";
 
@@ -78,7 +79,11 @@ function TeacherHistoryPage() {
 
     const ActionRenderer = (params) => {
         const handleDelete = async () => {
-             if (window.confirm(`Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
+             const confirmed = await alertConfirm(
+                 "Attention",
+                 `Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`
+             );
+             if (confirmed) {
                 try {
                     const response = await fetch('http://localhost:3000/absence', {
                         method: 'DELETE',

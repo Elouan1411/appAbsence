@@ -12,6 +12,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
 import toast, { Toaster } from 'react-hot-toast';
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 function RollCallList({ criteria, dateTime, subject }) {
     const [rowData, setRowData] = useState([]);
@@ -204,7 +205,11 @@ function RollCallList({ criteria, dateTime, subject }) {
         console.log("Absent students:", absentStudents);
 
         if (absentStudents.length === 0) {
-            if(!confirm("Aucun absent sélectionné. Valider quand même (tout le monde présent) ?")) return;
+            const confirmed = await alertConfirm(
+                "Attention",
+                "Êtes-vous surs de vouloir valider l'appel (tous les élèves sont présents) ?"
+            );
+            if (!confirmed) return;
         }
 
         const numberList = absentStudents.map(s => s.numero);
