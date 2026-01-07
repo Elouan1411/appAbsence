@@ -116,7 +116,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* background-color: var(--input-bg); */
 }
 
 .dropzone:hover,
@@ -265,7 +264,6 @@
     transform: scale(1) rotate(0deg);
 }
 
-/* Period Absence Styles */
 .period-card {
     display: flex;
     align-items: center;
@@ -297,7 +295,6 @@
     margin-bottom: 2px;
 }
 
-/* React DatePicker Customization */
 .custom-datepicker-input {
     background: transparent;
     border: none;
@@ -375,7 +372,6 @@
     background-color: rgba(var(--primary-color-rgb), 0.05);
 }
 
-/* DatePicker Popup Styles */
 div.react-datepicker {
     font-family: inherit;
     border-radius: 12px;
@@ -447,7 +443,6 @@ div.react-datepicker__time-container
     color: white;
 }
 
-/* Mobile Responsiveness for Period Card */
 @media (max-width: 350px) {
     .period-card {
         display: grid;
@@ -464,12 +459,10 @@ div.react-datepicker__time-container
         grid-column: 1 / 2;
     }
 
-    /* Start Date Input (DU) */
     .period-card-column:first-of-type {
         grid-row: 1;
     }
 
-    /* Arrow Icon */
     .period-card-arrow-icon {
         grid-column: 1 / 2;
         grid-row: 2;
@@ -478,13 +471,10 @@ div.react-datepicker__time-container
         justify-self: center;
     }
 
-    /* End Date Input (AU) */
     .period-card-column:last-of-type {
         grid-row: 3;
     }
 
-    /* Delete Button */
-    /* Delete Button Position for Mobile */
     .remove-period-button {
         grid-column: 2;
         grid-row: 1 / 4;
