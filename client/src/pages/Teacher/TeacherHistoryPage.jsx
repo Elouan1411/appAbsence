@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'; 
-import { Check, X, Clock, Trash2, Edit2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useAuth } from '../../hooks/useAuth';
 import Title from "../../components/common/Title";
 import { useTheme } from "../../hooks/useTheme";
+import "../../style/icon.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -37,20 +37,31 @@ function TeacherHistoryPage() {
     const JustificationRenderer = (params) => {
         const { validite, motif, motifValidite } = params.data;
         
-        let icon = <X size={20} color="red" />;
+        const Icon = ({ name, color }) => (
+            <span 
+                className={`icon icon-${name}`}
+                style={{
+                    width: 20,
+                    height: 20,
+                    backgroundColor: color
+                }} 
+            />
+        );
+
+        let icon = <Icon name="x" color="red" />;
         let statusText = "Non justifiée";
         let tooltip = "Aucune justification soumise";
 
         if (validite === 2) {
-            icon = <Clock size={20} color="orange" />;
+            icon = <Icon name="history" color="orange" />;
             statusText = "En attente";
             tooltip = `Motif étudiant : ${motif}`;
         } else if (validite === 1) {
-            icon = <Check size={20} color="green" />;
+            icon = <Icon name="check_success" color="green" />;
             statusText = "Justifiée";
              tooltip = `Motif validé : ${motifValidite || motif}`;
         } else if (validite === 0 && motif) {
-             icon = <AlertCircle size={20} color="red" />;
+             icon = <Icon name="notification" color="red" />;
              statusText = "Refusée";
              tooltip = `Justification refusée. Motif refus : ${motifValidite}`;
         }
@@ -91,8 +102,15 @@ function TeacherHistoryPage() {
 
         return (
             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                <button onClick={handleDelete} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'red' }}>
-                    <Trash2 size={18} />
+                <button onClick={handleDelete} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>
+                    <span 
+                        className="icon icon-trash"
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: 'red',
+                        }} 
+                    />
                 </button>
             </div>
         );

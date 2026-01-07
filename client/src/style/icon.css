@@ -1,0 +1,35 @@
+.icon {
+    display: inline-block;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+}
+
+.icon-check-success {
+    mask-image: url(../assets/check_success.svg);
+    -webkit-mask-image: url(../assets/check_success.svg);
+}
+
+.icon-trash {
+    mask-image: url(../assets/trash.svg);
+    -webkit-mask-image: url(../assets/trash.svg);
+}
+    
+.icon-history {
+    mask-image: url(../assets/history.svg);
+    -webkit-mask-image: url(../assets/history.svg);
+}
+
+.icon-notification {
+    mask-image: url(../assets/notification.svg);
+    -webkit-mask-image: url(../assets/notification.svg);
+}
+
+.icon-x {
+    mask-image: url(../assets/x.svg);
+    -webkit-mask-image: url(../assets/x.svg);
+}
+

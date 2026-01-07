@@ -5,12 +5,12 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import RseCell from "../StudentList/RseCell";
 import "../../style/SelectGroups.css"; 
+import "../../style/icon.css";
 import { useTheme } from "../../hooks/useTheme";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
-import { Check, X } from "lucide-react";
 
 function RollCallList({ criteria, dateTime, subject }) {
     const [rowData, setRowData] = useState([]);
@@ -34,6 +34,17 @@ function RollCallList({ criteria, dateTime, subject }) {
             }
         };
 
+        const Icon = ({ name, iconColor }) => (
+            <span 
+                className={`icon icon-${name}`}
+                style={{
+                    width: 20,
+                    height: 20,
+                    backgroundColor: iconColor
+                }} 
+            />
+        );
+
         return (
             <div 
                 onClick={handleClick}
@@ -47,7 +58,10 @@ function RollCallList({ criteria, dateTime, subject }) {
                     opacity: isActive ? 1 : 0.2
                 }}
             >
-                {isPresentCol ? <Check size={20} color={color} strokeWidth={4} /> : <X size={20} color={color} strokeWidth={4} />}
+                {isPresentCol ? 
+                    <Icon name="check-success" iconColor={color} /> : 
+                    <Icon name="x" iconColor={color} />
+                }
             </div>
         );
     };
