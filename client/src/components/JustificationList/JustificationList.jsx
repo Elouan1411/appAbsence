@@ -7,7 +7,7 @@ import valueFormatter from "../../functions/valueFormatter";
 import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 import dateFormatter from "../../functions/dateFormatter";
 import ValidationModal from "../ValidationJustification/ValidationView";
-
+import { useTheme } from "../../hooks/useTheme";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = [
@@ -24,7 +24,7 @@ function JustificationList({ selectedId, setSelectedId }) {
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const theme = sessionStorage.getItem("theme");
+  const theme = useTheme();
 
   const autoSizeStrategy = useMemo(() => {
     return {
@@ -105,7 +105,8 @@ function JustificationList({ selectedId, setSelectedId }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: 10,
+        paddingRight: 10,
+        paddingLeft: 10,
       }}
     >
       {loading ? (

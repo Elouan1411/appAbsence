@@ -30,30 +30,37 @@ export default function PDFDocument({ file }) {
           />
         </Document>
       </div>
-      <div className="pdf-toolbar">
-        {pageNumber > 1 ? (
-          <button
-            onClick={() => setPageNumber((p) => Math.max(p - 1, 1))}
-            disabled={pageNumber === 1}
-          >
-            <span className="icon-previous-button"></span>
+      <div className="pdf-buttons">
+        <div className="pdf-toolbar">
+          {pageNumber > 1 ? (
+            <button
+              onClick={() => setPageNumber((p) => Math.max(p - 1, 1))}
+              disabled={pageNumber === 1}
+            >
+              <span className="icon-previous-button"></span>
+            </button>
+          ) : (
+            <></>
+          )}
+          <span className="page-text">
+            Page {pageNumber} / {numPages}
+          </span>
+          {pageNumber > 1 ? (
+            <button
+              onClick={() => setPageNumber((p) => Math.min(p + 1, numPages))}
+              disabled={pageNumber === numPages}
+            >
+              <span className="icon-next-button"></span>
+            </button>
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className="download-button-container">
+          <button onClick={console.log("Ça télécharge")}>
+            <span className="icon-download"></span>
           </button>
-        ) : (
-          <></>
-        )}
-        <span>
-          Page {pageNumber} / {numPages}
-        </span>
-        {pageNumber > 1 ? (
-          <button
-            onClick={() => setPageNumber((p) => Math.min(p + 1, numPages))}
-            disabled={pageNumber === numPages}
-          >
-            <span className="icon-next-button"></span>
-          </button>
-        ) : (
-          <></>
-        )}
+        </div>
       </div>
     </div>
   );

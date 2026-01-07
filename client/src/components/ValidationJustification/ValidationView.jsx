@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Button from "../common/Button";
 import PDFDocument from "../common/PDFDocument";
 import dateFormatter from "../../functions/dateFormatter";
+import CustomLoader from "../common/CustomLoader";
 
 export default function ValidationView({ idAbsence }) {
   const [data, setData] = useState(null);
@@ -40,19 +41,21 @@ export default function ValidationView({ idAbsence }) {
     handleFetchJustification();
   }, []);
 
-  // Optionnel : Afficher un loader si isLoading est true, sinon null
-  if (isLoading || !data) return null;
+  if (isLoading || !data) {
+    if (isLoading) {
+      return <CustomLoader />;
+    } else {
+      return null;
+    }
+  }
 
   return (
     <div className="validation-view-container">
-      <div
-        className="validation-view-content"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="validation-view-content">
         <div className="validation-body-scroll">
-          <section className="accordion-section">
+          <section className="section">
             <button
-              className={`accordion-trigger ${isHeaderOpen ? "active" : ""}`}
+              className={`section-header ${isHeaderOpen ? "active" : ""}`}
               onClick={() => setIsHeaderOpen((o) => !o)}
             >
               <h3 className="section-title">Informations générales</h3>
@@ -60,7 +63,7 @@ export default function ValidationView({ idAbsence }) {
             </button>
 
             {isHeaderOpen && (
-              <div className="accordion-content fade-in">
+              <div className="section-content fade-in">
                 <div className="info-grid">
                   <div className="info-item">
                     <span className="label">Numéro étudiant</span>
@@ -98,9 +101,9 @@ export default function ValidationView({ idAbsence }) {
             )}
           </section>
 
-          <section className="accordion-section">
+          <section className="section">
             <button
-              className={`accordion-trigger ${isPdfOpen ? "active" : ""}`}
+              className={`section-header ${isPdfOpen ? "active" : ""}`}
               onClick={() => setPdfOpen((o) => !o)}
             >
               <h3 className="section-title">
@@ -110,14 +113,15 @@ export default function ValidationView({ idAbsence }) {
             </button>
 
             {isPdfOpen && (
-              <div className="accordion-content pdf-wrapper fade-in">
+              <div className="section-content pdf-wrapper fade-in">
                 <PDFDocument file={file} />
               </div>
             )}
           </section>
         </div>
-
-        <footer className="modal-footer">
+      </div>
+      <footer className="validation-footer">
+        <div className="button-container">
           <Button
             className="action-button refuse-button"
             onClick={() => console.log("Refuser")}
@@ -130,8 +134,8 @@ export default function ValidationView({ idAbsence }) {
           >
             Valider
           </Button>
-        </footer>
-      </div>
+        </div>
+      </footer>
     </div>
   );
 }
