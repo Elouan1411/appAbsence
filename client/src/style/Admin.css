@@ -13,6 +13,131 @@
   );
 }
 
+.dropzone-container {
+  width: 80%;
+  height: 30vh;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  border: 5px var(--primary-color) solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.dropzone-container:hover {
+  cursor: pointer;
+}
+
+.dropzone-container p {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.import-icon {
+  color: var(--primary-color);
+  background-color: transparent;
+}
+
+.icon-big {
+  color: var(--primary-color) !important;
+}
+
+.content-container {
+  width: 100%;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-error {
+  background-color: var(--error-color);
+}
+
+.cell-autofilled {
+  color: var(--autofilled-color);
+}
+
+.cell-ignored {
+  background-color: var(--cell-ignored-background);
+  color: var(--cell-ignored-color);
+}
+
+.circle-x {
+  width: 20px;
+  height: 20px;
+  color: var(--icon-color);
+  transition: transform 0.2s ease, color 0.2s;
+}
+
+.circle-x:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+  color: var(--error-color);
+}
+
+.circle-x:active {
+  cursor: pointer;
+  transform: scale(0.95);
+}
+
+.editable-header-input {
+  width: 100%;
+  border: 1px solid var(--text-secondary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-size: 13px;
+  flex: 1;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.editable-header-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(62, 126, 134, 0.2);
+}
+
+.showStudentPage {
+  width: "100%";
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title-container {
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg);
+  margin-top: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  padding: 15px 15px;
+  margin-right: 15px;
+}
+
+.title-container > .title {
+  margin-left: 10px;
+}
+
+.studentListContainer {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 10vh;
+}
+
+.lucide {
+  background-color: transparent !important;
+  color: var(--text-primary);
+}
+
 .admin-homepage-container {
   height: 100vh;
   display: flex;
