@@ -15,8 +15,28 @@ const fs = require("fs");
 
 //Récupération des nouvelles justifications
 router.get("/new", verifyToken, isAdmin, (req, res) => {
-  const sql =
-    "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2;";
+  // const sql =
+  //   "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom, dateDemande FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2 GROUP BY dateDemande,numeroEtudiant;";
+  const sql = `SELECT 
+    idAbsJustifiee,
+    numeroEtudiant,
+    nom,
+    prenom,
+    groupeTD,
+    dateDemande,
+    motif,
+    validite,
+    json_group_array(
+        json_object(
+            'id', JustificationAbsence.idAbsJustifiee,
+            'debut', JustificationAbsence.debut, 
+            'fin', JustificationAbsence.fin
+        )
+    ) as liste_creneaux
+FROM JustificationAbsence
+LEFT JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero
+GROUP BY JustificationAbsence.dateDemande, JustificationAbsence.numeroEtudiant
+ORDER BY JustificationAbsence.dateDemande DESC`;
   db.all(sql, [], (err, rows) => {
     if (err) return console.error(err.message);
     res.json(rows);

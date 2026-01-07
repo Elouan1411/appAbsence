@@ -3,43 +3,22 @@ import Button from "../common/Button";
 import PDFDocument from "../common/PDFDocument";
 import dateFormatter from "../../functions/dateFormatter";
 import CustomLoader from "../common/CustomLoader";
+import { alertConfirm } from "../../hooks/alertConfirm";
+import toast, { Toaster } from "react-hot-toast";
 
-export default function ValidationView({ idAbsence }) {
-  const [data, setData] = useState(null);
+export default function ValidationView({ selectedItem }) {
+  console.log(selectedItem.liste_creneaux);
+  const [data, setData] = useState(selectedItem);
+  console.log("Data liste creneaux : ", data.liste_creneaux);
   const [isLoading, setLoading] = useState(false);
   const [file, setFile] = useState("");
 
+  data.liste_creneaux.forEach((creneau) => {
+    console.log(`Créneau ${creneau.id} : `, creneau);
+  });
+
   const [isHeaderOpen, setIsHeaderOpen] = useState(true);
   const [isPdfOpen, setPdfOpen] = useState(true);
-
-  async function handleFetchJustification() {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `http://localhost:3000/justification/admin/${idAbsence}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
-
-      const result = await response.json();
-      setData(result);
-      if (result.list && result.list.length > 0) {
-        setFile(`http://localhost:3000/upload/${result.list[0]}`);
-      }
-    } catch (err) {
-      console.error("Erreur de fetch :", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    handleFetchJustification();
-  }, []);
 
   if (isLoading || !data) {
     if (isLoading) {
@@ -49,6 +28,19 @@ export default function ValidationView({ idAbsence }) {
     }
   }
 
+  const handleConfirmValidation = async () => {
+    const confirmed = await alertConfirm(
+      "Attention",
+      "Êtes-vous surs de vouloir sauvegarder ?"
+    );
+    if (confirmed) {
+      handleValidate();
+    }
+  };
+
+  const handleValidate = () => {
+    console.log("Je valide");
+  };
   return (
     <div className="validation-view-container">
       <div className="validation-view-content">
@@ -77,25 +69,35 @@ export default function ValidationView({ idAbsence }) {
                     <span className="label">Prénom</span>
                     <span className="value">{data.prenom ?? "-"}</span>
                   </div>
-                  <div className="info-item">
-                    <span className="label">Début</span>
-                    <span className="value">
-                      {dateFormatter(data.debut ?? 0)}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="label">Fin</span>
-                    <span className="value">
-                      {dateFormatter(data.fin ?? 0)}
-                    </span>
-                  </div>
                 </div>
-
                 <div className="motif-box">
                   <span className="label">Motif déclaré</span>
                   <p className="motif-text">
                     {data.motif ?? "Aucun motif précisé."}
                   </p>
+                </div>
+
+                <div className="creneaux-container">
+                  {data.liste_creneaux?.map((creneau, index) => (
+                    <div className="date-item" key={index}>
+                      {" "}
+                      <div className="date-id">
+                        <span className="id-absence">
+                          Absence n° {index + 1}
+                        </span>
+                      </div>
+                      <div className="date-content">
+                        <span className="value">
+                          <span className="label">Date de début : </span>
+                          {dateFormatter(creneau.debut ?? 0)}
+                        </span>
+                        <span className="value">
+                          <span className="label">Date de fin : </span>
+                          {dateFormatter(creneau.fin ?? 0)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -130,12 +132,13 @@ export default function ValidationView({ idAbsence }) {
           </Button>
           <Button
             className="action-button validate-button"
-            onClick={() => console.log("Valider")}
+            onClick={handleConfirmValidation}
           >
             Valider
           </Button>
         </div>
       </footer>
+      <Toaster />
     </div>
   );
 }

@@ -1,19 +1,34 @@
-//TODO: enlever la notation Tailwind
+import "../../../style/Alert.css";
+import { useState } from "react";
+export function ConfirmAlert({ title, message, onConfirm, onCancel }) {
+  const [isClosing, setIsClosing] = useState(false);
 
-export function ConfirmAlert({ message, onConfirm, onCancel }) {
-    return (
-        <div className="bg-white rounded shadow p-4 flex items-center justify-between gap-4">
-            <span>{message}</span>
+  const closeAnimation = (callbackAction) => {
+    setIsClosing(true);
 
-            <div className="flex gap-2">
-                <button onClick={onCancel} className="px-3 py-1 bg-gray-200 rounded">
-                    Annuler
-                </button>
-
-                <button onClick={onConfirm} className="px-3 py-1 bg-red-500 text-white rounded">
-                    Confirmer
-                </button>
-            </div>
-        </div>
-    );
+    setTimeout(() => {
+      callbackAction();
+    }, 300);
+  };
+  return (
+    <div className={`container ${isClosing ? "closing" : ""}`}>
+      <div className="alert-title-container">
+        <h2 className="alert-title">{title}</h2>
+      </div>
+      <span className="separator"></span>
+      <div className="content">
+        <span>{message}</span>
+      </div>
+      <span className="separator"></span>
+      <div className="buttons">
+        <button onClick={() => closeAnimation(onCancel)} className="">
+          Annuler
+        </button>
+        <span className="vertical-separator"></span>
+        <button onClick={() => closeAnimation(onConfirm)} className="">
+          Confirmer
+        </button>
+      </div>
+    </div>
+  );
 }

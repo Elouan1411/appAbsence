@@ -1,19 +1,20 @@
 import toast from "react-hot-toast";
 import { ConfirmAlert } from "../components/common/Alert/ConfirmAlert";
 
-export function alertConfirm(message) {
+export function alertConfirm(title, message) {
   return new Promise((resolve) => {
     toast.custom(
       (t) => (
         <ConfirmAlert
+          title={title}
           message={message}
           onConfirm={() => {
             resolve(true);
-            toast.dismiss(t.id);
+            toast.remove(t.id);
           }}
           onCancel={() => {
             resolve(false);
-            toast.dismiss(t.id);
+            toast.remove(t.id);
           }}
         />
       ),

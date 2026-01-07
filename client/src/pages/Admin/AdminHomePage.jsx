@@ -8,7 +8,7 @@ import ValidationView from "../../components/ValidationJustification/ValidationV
 import { useNavigate } from "react-router-dom";
 
 function AdminHomePage() {
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const containerRef = useRef(null);
   const [leftWidth, setLeftWidth] = useState(50);
   const [isResizing, setIsResizing] = useState(false);
@@ -123,8 +123,8 @@ function AdminHomePage() {
       <div className="justification-container" ref={containerRef}>
         <div className="left part" style={{ width: `${leftWidth}%` }}>
           <JustificationList
-            setSelectedId={setSelectedId}
-            selectedId={selectedId}
+            setSelectedItem={setSelectedItem}
+            selectedItem={selectedItem}
           />
         </div>
 
@@ -133,8 +133,8 @@ function AdminHomePage() {
         </div>
 
         <div className="part right" style={{ width: `${100 - leftWidth}%` }}>
-          {selectedId ? (
-            <ValidationView idAbsence={selectedId} />
+          {selectedItem ? (
+            <ValidationView selectedItem={selectedItem} />
           ) : (
             <div className="empty-state">Sélectionnez un étudiant</div>
           )}

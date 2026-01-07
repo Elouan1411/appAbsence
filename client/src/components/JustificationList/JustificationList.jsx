@@ -19,7 +19,7 @@ const columnOrder = [
   "motif",
 ];
 
-function JustificationList({ selectedId, setSelectedId }) {
+function JustificationList({ selectedId, setSelectedItem }) {
   const [rowData, setRowData] = useState([]);
   const [colDefs, setColDefs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,32 @@ function JustificationList({ selectedId, setSelectedId }) {
       if (!response.ok) throw new Error("Erreur HTTP " + response.status);
 
       const result = await response.json();
-      setRowData(result);
+      console.log(result);
+      const processedData = result.map((item) => {
+        if (item.liste_creneaux && item.liste_creneaux.length > 0) {
+          let new_creneaux = JSON.parse(item.liste_creneaux);
+          const sortedByStart = [...new_creneaux].sort(
+            (a, b) => new Date(a.debut) - new Date(b.debut)
+          );
+          console.log(sortedByStart);
+
+          const sortedByEnd = [...new_creneaux].sort(
+            (a, b) => new Date(b.fin) - new Date(a.fin)
+          );
+
+          return {
+            ...item,
+            debut: sortedByStart[0].debut,
+            fin: sortedByEnd[0].fin,
+            liste_creneaux: new_creneaux,
+          };
+        }
+
+        return item;
+      });
+
+      console.log("Données traitées :", processedData);
+      setRowData(processedData);
     } catch (err) {
       console.error("Erreur de fetch: " + err.message);
     } finally {
@@ -96,7 +121,7 @@ function JustificationList({ selectedId, setSelectedId }) {
 
   const handleRowClick = (event) => {
     console.log(event.data);
-    setSelectedId(event.data.idAbsJustifiee);
+    setSelectedItem(event.data);
   };
 
   return (
