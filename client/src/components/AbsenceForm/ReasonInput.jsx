@@ -1,7 +1,7 @@
 import React from "react";
 import "../../style/Student.css";
 
-const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange }) => {
+const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error }) => {
     return (
         <div className="reason-input">
             <div className="select-container">
@@ -9,7 +9,13 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange }) => {
                     Motif de l'absence
                 </label>
 
-                <select id="reason" className="custom-select" value={reason} onChange={(e) => onReasonChange(e.target.value)}>
+                <select
+                    id="reason"
+                    className={`custom-select ${error && !reason ? "input-error" : ""}`}
+                    value={reason}
+                    onChange={(e) => onReasonChange(e.target.value)}
+                    title={error && !reason ? "Veuillez sélectionner un motif" : ""}
+                >
                     <option value="" disabled>
                         Sélectionnez un motif...
                     </option>
@@ -23,10 +29,11 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange }) => {
             <div>
                 <textarea
                     id="comment"
-                    className="custom-textarea"
+                    className={`custom-textarea ${error && !comment ? "input-error" : ""}`}
                     value={comment}
                     onChange={(e) => onCommentChange(e.target.value)}
                     placeholder="Ajoutez un commentaire ou des détails supplémentaires..."
+                    title={error && !comment ? "Veuillez ajouter un commentaire" : ""}
                 />
             </div>
         </div>

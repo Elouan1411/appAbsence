@@ -521,3 +521,20 @@ div.react-datepicker__time-container .react-datepicker__time .react-datepicker__
     background-color: rgba(255, 0, 0, 0.05);
     border-color: #ef4444;
 }
+
+.period-card.period-error:hover {
+    border-color: #dc2626;
+}
+
+.input-error {
+    background-color: rgba(255, 0, 0, 0.05) !important;
+    border-color: #ef4444 !important;
+}
+
+.input-error:hover {
+    border-color: #dc2626 !important;
+}
+
+.submit-button {
+    width: 100%;
+}
