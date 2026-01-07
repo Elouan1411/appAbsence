@@ -40,14 +40,16 @@ function isTeacher(req, res, next) {
   }
   res.status(403).json({ error: "Accès refusé" });
 }
+
 //Fonction qui vérifie si l'utilisateur est un admin ou le propriétaire de l'absence
 function isAdminOrOwner(login) {
   return (req, res, next) => {
     const role = req.user.pwd.split("-")[1];
     const userLogin = req.user.pwd.split("-")[0];
     const loginParam = req.params[login];
+    const bodyParam = req.body[login];
 
-    if (role === "admin" || userLogin === loginParam) return next();
+    if (role === "admin" || userLogin === loginParam || userLogin === bodyParam) return next();
     res.status(403).json({ error: "Accès refusé" });
   };
 }

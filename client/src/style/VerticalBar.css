@@ -225,6 +225,11 @@
   mask-image: url("../assets/roll_call.svg");
 }
 
+.icon-historique {
+  -webkit-mask-image: url("../assets/history.svg");
+  mask-image: url("../assets/history.svg");
+}
+
 .label {
   margin-left: 14px;
   font-weight: 500;
