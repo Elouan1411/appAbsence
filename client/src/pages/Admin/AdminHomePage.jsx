@@ -8,8 +8,6 @@ import ValidationView from "../../components/ValidationJustification/ValidationV
 import { useNavigate } from "react-router-dom";
 
 function AdminHomePage() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
   const containerRef = useRef(null);
   const [leftWidth, setLeftWidth] = useState(50);
@@ -52,27 +50,14 @@ function AdminHomePage() {
     };
   }, [isResizing, resize, stopResizing]);
 
-  const handleSignOut = async () => {
-    console.log("ok");
-
-    await logout();
-
-    navigate("/", { replace: true });
-
-    try {
-    } catch (error) {}
-  };
-
-  const handleNavigateImport = () => {
-    navigate("/admin/import", { replace: true });
-  };
-
-  const handleNavigateList = () => {
-    navigate("/admin/studentlist", { replace: true });
-  };
-
   return (
-    <div className={isResizing ? "resizing-cursor" : ""}>
+    <div
+      className={
+        isResizing
+          ? "resizing-cursor admin-homepage-container"
+          : "admin-homepage-container"
+      }
+    >
       <div className="title-container">
         <span className="icon-big icon-tableau-de-bord"></span>
         <Title>Tableau de bord</Title>
@@ -132,6 +117,9 @@ function AdminHomePage() {
         <DisplayCard title="Exemple" value="10" iconLink="" />
       </CardContainer>
 
+      <div className="homepage-subtitle-container">
+        <h2 className="homepage-subtitle">Justifier des absences</h2>
+      </div>
       <div className="justification-container" ref={containerRef}>
         <div className="left part" style={{ width: `${leftWidth}%` }}>
           <JustificationList

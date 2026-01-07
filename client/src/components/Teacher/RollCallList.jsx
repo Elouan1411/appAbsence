@@ -226,8 +226,8 @@ function RollCallList({ criteria, dateTime, subject }) {
     }
 
     return (
-        <div style={{ marginTop: "2rem", maxWidth: "100%" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ marginTop: "2rem", width: "100%", flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
             <h2>Liste d'appel</h2>
             <button 
                 className="validate-btn" 
@@ -241,7 +241,7 @@ function RollCallList({ criteria, dateTime, subject }) {
         {loading ? (
             <p>Chargement...</p>
         ) : (
-            <div style={{ height: 500, width: "100%" }}>
+            <div style={{ flex: 1, width: "100%" }}>
             <AgGridReact
                 rowData={rowData}
                 columnDefs={colDefs}
@@ -249,7 +249,7 @@ function RollCallList({ criteria, dateTime, subject }) {
                 theme={theme === "dark" ? darkTheme : lightTheme}
                 onGridReady={onGridReady}
                 pagination={true}
-                paginationPageSize={20}
+                paginationPageSize={100}
                 localeText={AG_GRID_LOCALE_FR}
             />
             </div>
