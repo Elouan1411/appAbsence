@@ -7,6 +7,7 @@ import { fr } from "date-fns/locale/fr";
 import "react-datepicker/dist/react-datepicker.css";
 import { ArrowRight } from "lucide-react";
 import { addDays, subDays, setHours, setMinutes } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 
 registerLocale("fr", fr);
 
@@ -33,8 +34,9 @@ const PeriodAbsence = () => {
     };
 
     const mySetPeriod = (newPeriods) => {
-        setPeriod(newPeriods);
-        checkPeriod(newPeriods);
+        const sortedPeriods = [...newPeriods].sort((a, b) => a.start - b.start);
+        setPeriod(sortedPeriods);
+        checkPeriod(sortedPeriods);
     };
 
     const removePeriod = (id) => {
@@ -132,42 +134,53 @@ const PeriodAbsence = () => {
     return (
         <div>
             <h2 className="period-title">Période(s) d'absence</h2>
-            {period.map((p) => (
-                <div key={p.id} className={`period-card ${errors[p.id] ? "period-error" : ""}`} title={errors[p.id] || ""}>
-                    <div className="period-card-column">
-                        <span className="period-card-label">DU</span>
-                        <DatePicker
-                            selected={p.start}
-                            onChange={(date) => updateStartDate(p.id, date)}
-                            locale="fr"
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={30}
-                            dateFormat="dd MMM HH:mm"
-                            className="custom-datepicker-input"
-                            shouldCloseOnSelect={true}
-                        />
-                    </div>
-                    <ArrowRight className="period-card-arrow-icon" size={20} />
-                    <div className="period-card-column">
-                        <span className="period-card-label">AU</span>
-                        <DatePicker
-                            selected={p.end}
-                            onChange={(date) => updateEndDate(p.id, date)}
-                            locale="fr"
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={30}
-                            dateFormat="dd MMM HH:mm"
-                            className="custom-datepicker-input"
-                            shouldCloseOnSelect={true}
-                        />
-                    </div>
-                    <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
-                        <img src={trashIcon} alt="Delete" width="20" height="20" />
-                    </button>
-                </div>
-            ))}
+            <AnimatePresence initial={false} mode="popLayout">
+                {period.map((p) => (
+                    <motion.div
+                        layout
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        key={p.id}
+                        className={`period-card ${errors[p.id] ? "period-error" : ""}`}
+                        title={errors[p.id] || ""}
+                    >
+                        <div className="period-card-column">
+                            <span className="period-card-label">DU</span>
+                            <DatePicker
+                                selected={p.start}
+                                onChange={(date) => updateStartDate(p.id, date)}
+                                locale="fr"
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={30}
+                                dateFormat="dd MMM HH:mm"
+                                className="custom-datepicker-input"
+                                shouldCloseOnSelect={true}
+                            />
+                        </div>
+                        <ArrowRight className="period-card-arrow-icon" size={20} />
+                        <div className="period-card-column">
+                            <span className="period-card-label">AU</span>
+                            <DatePicker
+                                selected={p.end}
+                                onChange={(date) => updateEndDate(p.id, date)}
+                                locale="fr"
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={30}
+                                dateFormat="dd MMM HH:mm"
+                                className="custom-datepicker-input"
+                                shouldCloseOnSelect={true}
+                            />
+                        </div>
+                        <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
+                            <img src={trashIcon} alt="Delete" width="20" height="20" />
+                        </button>
+                    </motion.div>
+                ))}
+            </AnimatePresence>
             <button onClick={addPeriod} className="add-period-button">
                 {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
             </button>
