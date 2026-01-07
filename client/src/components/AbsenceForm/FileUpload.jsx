@@ -88,9 +88,9 @@ const FileUpload = () => {
     return (
         <div>
             <div className="file-upload-container">
-                <label className="select-label">
+                <h2 className="file-upload-title">
                     Justificatifs <span className="optional-text">(Optionnel)</span>
-                </label>
+                </h2>
 
                 <div
                     className={`dropzone ${isDragging ? "dragging" : ""}`}
