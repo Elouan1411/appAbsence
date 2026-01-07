@@ -11,7 +11,7 @@ function RollCallPage() {
   const [subject, setSubject] = useState("");
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div style={{ padding: "1rem", height: "97.5%", display: "flex", flexDirection: "column" }}>
       <Title>Faire l'appel</Title>  
       
       <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", flexWrap: "wrap", marginTop: "1rem" }}>

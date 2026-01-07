@@ -36,6 +36,42 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
   });
 });
 
+//Récupération de l'historique des absences pour un professeur (avec détails)
+router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
+  let loginProf = req.params.login.substring(1);
+  const sql = `
+    SELECT 
+      A.idAbsence,
+      A.numeroEtudiant,
+      A.debut,
+      A.fin,
+      A.codeMatiere,
+      M.libelle as nomMatiere,
+      E.nom,
+      E.prenom,
+      J.validite,
+      J.motif,
+      J.motifValidite
+    FROM Absence A
+    LEFT JOIN Eleve E ON A.numeroEtudiant = E.numero
+    LEFT JOIN Matiere M ON A.codeMatiere = M.code
+    LEFT JOIN JustificationAbsence J ON (
+      A.numeroEtudiant = J.numeroEtudiant 
+      AND A.debut <= J.debut 
+      AND A.fin >= J.fin
+    )
+    WHERE A.loginProfesseur = ?
+    ORDER BY A.debut DESC
+  `;
+  
+  db.all(sql, [loginProf], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(200).json(rows);
+  });
+});
+
 //Récupération des absences pour un professeur donné
 router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   let loginProf = req.params.login.substring(1);

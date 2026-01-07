@@ -10,10 +10,22 @@
     position: relative;
 }
 
-.select-label {
+.select-label,
+.period-title,
+.file-upload-title {
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+}
+
+.period-title {
+    margin-bottom: calc(8px + 1vh);
+}
+
+.select-label {
+    margin-bottom: 1vh;
 }
 
 .custom-select {
@@ -84,7 +96,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 10px;
 }
 
 .optional-text {
@@ -105,7 +116,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--input-bg);
 }
 
 .dropzone:hover,
@@ -123,7 +133,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 12px;
-    color: var(--cloud-icon-color);
+    color: var(--primary-color);
 }
 
 .dropzone-text {
@@ -235,7 +245,7 @@
 
     .upload-success.deletable .icon-state-delete {
         display: block;
-        opacity: 1;
+        opacity: 0.5;
         transform: scale(1) rotate(0deg);
     }
 
@@ -252,4 +262,236 @@
 .file-item:hover .upload-success.deletable .icon-state-delete {
     opacity: 1;
     transform: scale(1) rotate(0deg);
+}
+
+.period-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s;
+}
+
+.period-card:hover {
+    border-color: var(--dropzone-border);
+}
+
+.period-card-column {
+    display: flex;
+    flex-direction: column;
+    width: 42%;
+}
+
+.period-card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.custom-datepicker-input {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    padding: 0;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.custom-datepicker-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.period-card-arrow-icon {
+    color: var(--cell-ignored-color);
+    margin: 0 16px;
+    margin-top: 12px;
+}
+
+.remove-period-button {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-left: auto;
+}
+
+.remove-period-button:hover {
+    background-color: transparent;
+    transform: scale(1.1) rotate(6deg);
+}
+
+.remove-period-button:active {
+    transform: scale(0.95) rotate(6deg);
+}
+
+.remove-period-button img {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.remove-period-button:hover img {
+    opacity: 1;
+}
+
+.add-period-button {
+    width: 100%;
+    padding: 16px;
+    border: 2px dashed var(--dropzone-border);
+    background-color: transparent;
+    color: var(--primary-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.add-period-button:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+div.react-datepicker {
+    font-family: inherit;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+div.react-datepicker__header {
+    background-color: var(--input-bg);
+    border-bottom: 1px solid var(--border-color);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+div.react-datepicker__current-month,
+div.react-datepicker-time__header,
+div.react-datepicker-year-header {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+div.react-datepicker__day-name {
+    color: var(--text-secondary);
+}
+
+div.react-datepicker__day {
+    color: var(--text-primary);
+}
+
+div.react-datepicker__day:hover {
+    background-color: var(--input-bg);
+    border-radius: 50%;
+}
+
+div.react-datepicker__day--selected,
+div.react-datepicker__day--keyboard-selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+}
+
+div.react-datepicker__time-container {
+    border-left: 1px solid var(--border-color);
+}
+
+div.react-datepicker__time-container .react-datepicker__time {
+    background-color: var(--card-bg);
+}
+
+div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+    color: var(--text-primary);
+}
+
+div.react-datepicker__time-container
+    .react-datepicker__time
+    .react-datepicker__time-box
+    ul.react-datepicker__time-list
+    li.react-datepicker__time-list-item:hover {
+    background-color: var(--input-bg);
+}
+
+div.react-datepicker__time-container
+    .react-datepicker__time
+    .react-datepicker__time-box
+    ul.react-datepicker__time-list
+    li.react-datepicker__time-list-item--selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+@media (max-width: 350px) {
+    .period-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
+        align-items: center;
+        padding: 16px;
+        position: relative;
+    }
+
+    .period-card-column {
+        width: 100%;
+        grid-column: 1 / 2;
+    }
+
+    .period-card-column:first-of-type {
+        grid-row: 1;
+    }
+
+    .period-card-arrow-icon {
+        grid-column: 1 / 2;
+        grid-row: 2;
+        transform: rotate(90deg);
+        margin: 4px 0;
+        justify-self: center;
+    }
+
+    .period-card-column:last-of-type {
+        grid-row: 3;
+    }
+
+    .remove-period-button {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        margin-left: 8px;
+        align-self: center;
+    }
+}
+
+.studentJustificationPage > div {
+    margin-bottom: 30px;
+}
+
+.section-divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 32px auto;
+    opacity: 0.6;
+    width: 90%;
 }
