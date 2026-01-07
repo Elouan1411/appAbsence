@@ -6,8 +6,7 @@ import checkIcon from "../../assets/check_success.svg";
 import trashIcon from "../../assets/trash.svg";
 import toast, { Toaster } from "react-hot-toast";
 
-const FileUpload = () => {
-    const [files, setFiles] = useState([]);
+const FileUpload = ({ files, setFiles }) => {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 

@@ -142,3 +142,36 @@ p {
 .icon-next-button {
   transform: scaleX(-1);
 }
+
+.loader-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loader {
+  color: var(--text-primary);
+}
+
+.icon-download {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-color: var(--text-primary, var(--text-secondary));
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  color: var(--text-primary);
+  -webkit-mask-image: url("./assets/download.svg");
+  mask-image: url("./assets/download.svg");
+  transition: ease-in-out 0.2s;
+}
+.icon-download:hover {
+  background-color: var(--text-secondary);
+  transition: ease-in-out 0.2s;
+  cursor: pointer;
+}

@@ -387,7 +387,11 @@ div.react-datepicker__header {
     border-top-right-radius: 12px;
 }
 
-div.react-datepicker__current-month,
+h2.react-datepicker__current-month {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
 div.react-datepicker-time__header,
 div.react-datepicker-year-header {
     color: var(--text-primary);
@@ -443,6 +447,23 @@ div.react-datepicker__time-container
     color: white;
 }
 
+div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
+}
+
 @media (max-width: 350px) {
     .period-card {
         display: grid;
@@ -494,4 +515,26 @@ div.react-datepicker__time-container
     margin: 32px auto;
     opacity: 0.6;
     width: 90%;
+}
+
+.period-error {
+    background-color: rgba(255, 0, 0, 0.05);
+    border-color: #ef4444;
+}
+
+.period-card.period-error:hover {
+    border-color: #dc2626;
+}
+
+.input-error {
+    background-color: rgba(255, 0, 0, 0.05) !important;
+    border-color: #ef4444 !important;
+}
+
+.input-error:hover {
+    border-color: #dc2626 !important;
+}
+
+.submit-button {
+    width: 100%;
 }
