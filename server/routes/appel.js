@@ -6,6 +6,7 @@ const {
   isAdmin,
 } = require("../middlewares/auth");
 const router = express.Router();
+const db = require("../database/db");
 
 /*****************************************
  *             Méthodes GET
@@ -51,6 +52,7 @@ router.get("/info/:id", verifyToken, isTeacher, (req, res) => {
 
 // Publication d'un appel
 router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
+  const { start, end, loginProf, code } = req.body;
   let sql = `INSERT INTO Appel (debut, fin, loginProfesseur, codeMatiere)
                         VALUES(?, ?, ?, ?)`;
   db.run(sql, [start, end, loginProf, code], (err) => {

@@ -124,7 +124,7 @@ function SelectTime({ onChange, style }) {
                     style={{
                         backgroundColor: "var(--background-color)",
                         color: "var(--text-primary)",
-                        border: "1px solid var(--text-secondary)",
+                        border: endTime <= startTime ? "1px solid red" : "1px solid var(--text-secondary)",
                         borderRadius: "8px",
                         padding: "0.75rem 1rem",
                         fontSize: "1rem",

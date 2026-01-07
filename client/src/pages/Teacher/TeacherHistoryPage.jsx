@@ -3,9 +3,11 @@ import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'; 
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import "../../style/Admin.css";
 import { useAuth } from '../../hooks/useAuth';
 import Title from "../../components/common/Title";
 import { useTheme } from "../../hooks/useTheme";
+import toast, { Toaster } from 'react-hot-toast';
 import "../../style/icon.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -90,12 +92,14 @@ function TeacherHistoryPage() {
                         credentials: 'include'
                     });
                     if (response.ok) {
+                        toast.success("Absence supprimée avec succès");
                         fetchHistory(); 
                     } else {
-                        alert("Erreur lors de la suppression");
+                        toast.error("Erreur lors de la suppression");
                     }
                 } catch (err) {
                     console.error(err);
+                    toast.error("Erreur réseau");
                 }
              }
         };
@@ -188,6 +192,7 @@ function TeacherHistoryPage() {
 
     return (
         <div style={{ padding: "1rem", height: "97.5%", display: "flex", flexDirection: "column" }}>
+            <Toaster position="top-right" reverseOrder={false} />
             <Title>Historique des Appels</Title>
             <div className={theme === 'dark' ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'} style={{ flex: 1, width: '100%', marginTop: '1rem' }}>
                 <AgGridReact

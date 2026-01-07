@@ -11,6 +11,7 @@ import { useTheme } from "../../hooks/useTheme";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
+import toast, { Toaster } from 'react-hot-toast';
 
 function RollCallList({ criteria, dateTime, subject }) {
     const [rowData, setRowData] = useState([]);
@@ -179,11 +180,16 @@ function RollCallList({ criteria, dateTime, subject }) {
 
     const handleValidateRollCall = async () => {
         if (!subject) {
-            alert("Veuillez sélectionner une matière.");
+            toast.error("Veuillez sélectionner une matière.");
             return;
         }
         if (!dateTime.date || !dateTime.startTime || !dateTime.endTime) {
-            alert("Veuillez vérifier la date et l'heure.");
+            toast.error("Veuillez vérifier la date et l'heure.");
+            return;
+        }
+
+        if (dateTime.endTime <= dateTime.startTime) {
+            toast.error("L'heure de fin doit être strictement supérieure à l'heure de début.");
             return;
         }
         
@@ -216,22 +222,36 @@ function RollCallList({ criteria, dateTime, subject }) {
         console.log("Sending Absence Payload:", payload);
 
         try {
-            const response = await fetch("http://localhost:3000/absence/", {
+            const responseAbsence = await fetch("http://localhost:3000/absence/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
                 credentials: "include"
             });
+
+            const responseAppel = await fetch("http://localhost:3000/appel/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    start: payload.start,
+                    end: payload.end,
+                    loginProf: payload.loginProf,
+                    code: payload.code
+                }),
+                credentials: "include"
+            });
             
-            if (response.ok) {
-                alert("Appel validé avec succès !");
+            if (responseAbsence.ok && responseAppel.ok) {
+                toast.success("Appel validé avec succès !", { duration: 3000 });
             } else {
-                const errText = await response.text();
-                alert("Erreur lors de la validation: " + errText);
+                let errText = "";
+                if (!responseAbsence.ok) errText += "Erreur absence: " + await responseAbsence.text() + ". ";
+                if (!responseAppel.ok) errText += "Erreur appel: " + await responseAppel.text();
+                toast.error("Erreur validation: " + errText);
             }
         } catch (err) {
             console.error(err);
-            alert("Erreur réseau");
+            toast.error("Erreur réseau");
         }
     };
 
@@ -241,6 +261,7 @@ function RollCallList({ criteria, dateTime, subject }) {
 
     return (
         <div style={{ marginTop: "2rem", width: "100%", flex: 1, display: "flex", flexDirection: "column" }}>
+        <Toaster position="top-right" reverseOrder={false} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
             <h2>Liste d'appel</h2>
             <button 
