@@ -6,16 +6,18 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export default function PDFDocument({ file }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
+  let height = 450;
+  async function onDocumentLoadSuccess(pdf) {
+    setNumPages(pdf.numPages);
+    const page = await pdf.getPage(1);
+    height = page.height;
   }
 
   if (!file) return <p>Aucun document</p>;
   console.log(file);
 
   return (
-    <div className="pdf-wrapper">
+    <div className="pdf-content">
       <div className="pdf-container">
         <Document
           file={file}
@@ -27,6 +29,7 @@ export default function PDFDocument({ file }) {
             width={595}
             renderAnnotationLayer={false}
             renderTextLayer={false}
+            height={height}
           />
         </Document>
       </div>
@@ -45,7 +48,7 @@ export default function PDFDocument({ file }) {
           <span className="page-text">
             Page {pageNumber} / {numPages}
           </span>
-          {pageNumber > 1 ? (
+          {numPages > 1 ? (
             <button
               onClick={() => setPageNumber((p) => Math.min(p + 1, numPages))}
               disabled={pageNumber === numPages}
