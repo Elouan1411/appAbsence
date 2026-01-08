@@ -25,9 +25,7 @@ function RollCallList({ criteria, dateTime, subject }) {
         const isPresentCol = params.colDef.field === "present";
         const status = params.data.attendanceStatus;
 
-        const isActive = isPresentCol
-            ? status === "present"
-            : status === "absent";
+        const isActive = isPresentCol ? status === "present" : status === "absent";
         const color = isPresentCol ? "#4caf50" : "#f44336";
 
         const handleClick = () => {
@@ -62,11 +60,7 @@ function RollCallList({ criteria, dateTime, subject }) {
                     opacity: isActive ? 1 : 0.2,
                 }}
             >
-                {isPresentCol ? (
-                    <Icon name="check-success" iconColor={color} />
-                ) : (
-                    <Icon name="x" iconColor={color} />
-                )}
+                {isPresentCol ? <Icon name="check-success" iconColor={color} /> : <Icon name="x" iconColor={color} />}
             </div>
         );
     };
@@ -138,21 +132,18 @@ function RollCallList({ criteria, dateTime, subject }) {
             try {
                 const pairParam = criteria.semestre === "1" ? "1" : "0";
 
-                const response = await fetch(
-                    `http://localhost:3000/groups/${pairParam}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            promo: criteria.promo,
-                            groupeTD: criteria.groupeTD,
-                            groupeTP: criteria.groupeTP,
-                        }),
-                        credentials: "include",
-                    }
-                );
+                const response = await fetch(`http://localhost:3000/groups/${pairParam}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        promo: criteria.promo,
+                        groupeTD: criteria.groupeTD,
+                        groupeTP: criteria.groupeTP,
+                    }),
+                    credentials: "include",
+                });
 
                 if (response.ok) {
                     const data = await response.json();
@@ -162,17 +153,14 @@ function RollCallList({ criteria, dateTime, subject }) {
                     const studentIds = data.map((s) => s.numero);
                     if (studentIds.length > 0) {
                         try {
-                            const rseResponse = await fetch(
-                                "http://localhost:3000/rse/list",
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({ ids: studentIds }),
-                                    credentials: "include",
-                                }
-                            );
+                            const rseResponse = await fetch("http://localhost:3000/rse/list", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ ids: studentIds }),
+                                credentials: "include",
+                            });
 
                             if (rseResponse.ok) {
                                 const rseMap = await rseResponse.json();
@@ -215,9 +203,7 @@ function RollCallList({ criteria, dateTime, subject }) {
         }
 
         if (dateTime.endTime <= dateTime.startTime) {
-            toast.error(
-                "L'heure de fin doit être strictement supérieure à l'heure de début."
-            );
+            toast.error("L'heure de fin doit être strictement supérieure à l'heure de début.");
             return;
         }
 
@@ -233,13 +219,7 @@ function RollCallList({ criteria, dateTime, subject }) {
 
         if (absentStudents.length === 0) {
             // if(!confirm("Aucun absent sélectionné. Valider quand même (tout le monde présent) ?")) return;
-            if (
-                await alertConfirm(
-                    "Aucun absent sélectionné",
-                    "Valider quand même (tout le monde présent) ?"
-                )
-            )
-                return;
+            if (await alertConfirm("Aucun absent sélectionné", "Valider quand même (tout le monde présent) ?")) return;
         }
 
         const numberList = absentStudents.map((s) => s.numero);
@@ -261,15 +241,12 @@ function RollCallList({ criteria, dateTime, subject }) {
         console.log("Sending Absence Payload:", payload);
 
         try {
-            const responseAbsence = await fetch(
-                "http://localhost:3000/absence/",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                    credentials: "include",
-                }
-            );
+            const responseAbsence = await fetch("http://localhost:3000/absence/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                credentials: "include",
+            });
 
             const responseAppel = await fetch("http://localhost:3000/appel/", {
                 method: "POST",
@@ -287,13 +264,8 @@ function RollCallList({ criteria, dateTime, subject }) {
                 toast.success("Appel validé avec succès !", { duration: 3000 });
             } else {
                 let errText = "";
-                if (!responseAbsence.ok)
-                    errText +=
-                        "Erreur absence: " +
-                        (await responseAbsence.text()) +
-                        ". ";
-                if (!responseAppel.ok)
-                    errText += "Erreur appel: " + (await responseAppel.text());
+                if (!responseAbsence.ok) errText += "Erreur absence: " + (await responseAbsence.text()) + ". ";
+                if (!responseAppel.ok) errText += "Erreur appel: " + (await responseAppel.text());
                 toast.error("Erreur validation: " + errText);
             }
         } catch (err) {
@@ -334,11 +306,7 @@ function RollCallList({ criteria, dateTime, subject }) {
                 }}
             >
                 <h2 style={{ verticalAlign: "bottom" }}>Liste d'appel</h2>
-                <button
-                    className="validate-btn"
-                    style={{ fontSize: "1rem", marginTop: "0rem" }}
-                    onClick={handleValidateRollCall}
-                >
+                <button className="validate-btn" style={{ fontSize: "1rem", marginTop: "0rem" }} onClick={handleValidateRollCall}>
                     Valider l'appel
                 </button>
             </div>
