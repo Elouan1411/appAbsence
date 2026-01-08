@@ -8,4 +8,3 @@ server/upload/*
 !server/upload/.gitkeep
 /server/debug
 /server/server.log
-/server/verify_full.sh
