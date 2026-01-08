@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../style/Student.css";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import trashIcon from "../../assets/trash.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from "date-fns/locale/fr";
@@ -16,7 +16,9 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
         let baseDate = new Date();
 
         if (period.length > 0) {
-            const lastPeriodEnd = new Date(Math.max(...period.map((p) => p.end)));
+            const lastPeriodEnd = new Date(
+                Math.max(...period.map((p) => p.end))
+            );
             baseDate = new Date(lastPeriodEnd);
             baseDate.setDate(baseDate.getDate() + 1);
         }
@@ -45,8 +47,14 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
 
                 if (newStart > p.end) {
                     const theDayAfter = addDays(newStart, 1);
-                    const theDayAfterSameHour = setHours(theDayAfter, p.end.getHours());
-                    newEnd = setMinutes(theDayAfterSameHour, p.end.getMinutes());
+                    const theDayAfterSameHour = setHours(
+                        theDayAfter,
+                        p.end.getHours()
+                    );
+                    newEnd = setMinutes(
+                        theDayAfterSameHour,
+                        p.end.getMinutes()
+                    );
                 }
 
                 return { ...p, start: newStart, end: newEnd };
@@ -65,8 +73,14 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
 
                 if (newEnd < p.start) {
                     const theDayBefore = subDays(newEnd, 1);
-                    const theDayBeforeSameHour = setHours(theDayBefore, p.start.getHours());
-                    newStart = setMinutes(theDayBeforeSameHour, p.start.getMinutes());
+                    const theDayBeforeSameHour = setHours(
+                        theDayBefore,
+                        p.start.getHours()
+                    );
+                    newStart = setMinutes(
+                        theDayBeforeSameHour,
+                        p.start.getMinutes()
+                    );
                 }
 
                 return { ...p, start: newStart, end: newEnd };
@@ -86,7 +100,9 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
                         key={p.id}
-                        className={`period-card ${errors[p.id] ? "period-error" : ""}`}
+                        className={`period-card ${
+                            errors[p.id] ? "period-error" : ""
+                        }`}
                         title={errors[p.id] || ""}
                     >
                         <div className="period-card-column">
@@ -103,7 +119,10 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
                                 shouldCloseOnSelect={true}
                             />
                         </div>
-                        <ArrowRight className="period-card-arrow-icon" size={20} />
+                        <ArrowRight
+                            className="period-card-arrow-icon"
+                            size={20}
+                        />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
                             <DatePicker
@@ -118,16 +137,29 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
                                 shouldCloseOnSelect={true}
                             />
                         </div>
-                        <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
-                            <img src={trashIcon} alt="Delete" width="20" height="20" />
+                        <button
+                            onClick={() => removePeriod(p.id)}
+                            title="Supprimer"
+                            className="remove-period-button"
+                        >
+                            <img
+                                src={trashIcon}
+                                alt="Delete"
+                                width="20"
+                                height="20"
+                            />
                         </button>
                     </motion.div>
                 ))}
             </AnimatePresence>
-            <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
-                {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
+            <button
+                onClick={addPeriod}
+                className={`add-period-button ${error ? "input-error" : ""}`}
+            >
+                {period.length < 1
+                    ? "+ Ajouter une date/heure"
+                    : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
             </button>
-            <Toaster position="top-right" reverseOrder={false} />
         </div>
     );
 };

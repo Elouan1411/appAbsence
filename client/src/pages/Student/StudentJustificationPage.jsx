@@ -5,6 +5,7 @@ import PeriodAbsence from "../../components/AbsenceForm/PeriodAbsence";
 import FileUpload from "../../components/AbsenceForm/FileUpload";
 import Button from "../../components/common/Button";
 import toast from "react-hot-toast";
+import CustomLoader from "../../components/common/CustomLoader";
 
 const StudentJustificationPage = () => {
     const [reason, setReason] = useState("");
@@ -14,6 +15,7 @@ const StudentJustificationPage = () => {
     const [errors, setErrors] = useState({});
     const [reasonError, setReasonError] = useState(false);
     const [periodError, setPeriodError] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const periodsOverlap = (p1, p2) => {
         if (!p1.start || !p1.end || !p2.start || !p2.end) return false;
@@ -68,6 +70,7 @@ const StudentJustificationPage = () => {
 
     const handleSubmit = () => {
         let hasError = false;
+        setIsSubmitting(true);
         toast.dismiss();
 
         if (period.length === 0) {
@@ -79,13 +82,17 @@ const StudentJustificationPage = () => {
             hasError = true;
         }
 
-        if (!reason || !comment) {
+        if (!reason || (reason === "autre" && !comment)) {
             setReasonError(true);
-            toast.error("Veuillez indiquer un motif et un commentaire.");
+            const errorMsg = !reason ? "Veuillez indiquer un motif." : "Veuillez ajouter un commentaire pour le motif 'Autre'.";
+            toast.error(errorMsg);
             hasError = true;
         }
 
-        if (hasError) return;
+        if (hasError) {
+            setIsSubmitting(false);
+            return;
+        }
 
         console.log("Form Data:", {
             reason,
@@ -98,20 +105,97 @@ const StudentJustificationPage = () => {
         handleConfirm();
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         const hasFiles = files.length > 0;
-
         const message = hasFiles ? "Confirmer l'envoi de l'absence ?" : "Voulez vous envoyer l'absence sans justificatif ?";
 
-        if (confirm(message) && sendJustification()) {
-            toast.success("Justification envoyée avec succès !");
-        } else {
-            toast.error("Justification non envoyée !");
+        if (window.confirm(message)) {
+            const success = await sendJustification();
+            if (success) {
+                toast.success("Justification envoyée avec succès !");
+                setReason("");
+                setComment("");
+                setPeriod([]);
+                setFiles([]);
+            } else {
+                toast.error("Erreur lors de l'envoi de la justification.");
+            }
         }
+        setIsSubmitting(false);
     };
 
-    const sendJustification = () => {
-        return true;
+    const sendJustification = async () => {
+        try {
+            // get timestamp here, for have same timestamp for all periods
+            const now = new Date();
+            // Format YYYYMMDDMMSS
+            const timestamp =
+                now.getFullYear().toString() +
+                (now.getMonth() + 1).toString().padStart(2, "0") +
+                now.getDate().toString().padStart(2, "0") +
+                now.getHours().toString().padStart(2, "0") +
+                now.getMinutes().toString().padStart(2, "0") +
+                now.getSeconds().toString().padStart(2, "0");
+
+            let firstJustificationId = null;
+
+            for (const p of period) {
+                const formData = {
+                    start: new Date(p.start).getTime(),
+                    end: new Date(p.end).getTime(),
+                    justification: reason + (comment ? " | " + comment : ""),
+                    timestamp: now.getTime(), // Send common timestamp
+                };
+
+                const response = await fetch("http://localhost:3000/justification", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: "include",
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Justification submission failed:", errorText);
+                    return false;
+                }
+
+                const justificationId = await response.json();
+
+                if (!firstJustificationId) {
+                    firstJustificationId = justificationId;
+                }
+            }
+
+            // Upload files only once, attached to the first justification ID
+            if (files.length > 0 && firstJustificationId) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileData = new FormData();
+                    // Naming convention: idAbsJustifiee-justN-YYYYMMDDMMSS
+                    const customName = `${firstJustificationId}-just${i + 1}-${timestamp}`;
+
+                    fileData.append("file", file);
+                    fileData.append("fileName", customName);
+
+                    const fileResponse = await fetch("http://localhost:3000/file/upload", {
+                        method: "POST",
+                        body: fileData,
+                        credentials: "include",
+                    });
+
+                    if (!fileResponse.ok) {
+                        console.error("File upload failed for justification", firstJustificationId);
+                    }
+                }
+            }
+            return true;
+        } catch (error) {
+            console.error("Error in sendJustification:", error);
+            return false;
+        }
     };
 
     return (
@@ -136,8 +220,8 @@ const StudentJustificationPage = () => {
             <FileUpload files={files} setFiles={setFiles} />
 
             <div style={{ marginTop: "30px" }}>
-                <Button onClick={handleSubmit} className="submit-button">
-                    Envoyer la justification
+                <Button onClick={handleSubmit} className="submit-button" disabled={isSubmitting}>
+                    {isSubmitting ? <CustomLoader /> : "Envoyer la justification"}
                 </Button>
             </div>
         </div>

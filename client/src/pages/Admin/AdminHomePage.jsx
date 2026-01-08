@@ -8,140 +8,94 @@ import ValidationView from "../../components/ValidationJustification/ValidationV
 import { useNavigate } from "react-router-dom";
 
 function AdminHomePage() {
-  const [selectedItem, setSelectedItem] = useState(null);
-  const containerRef = useRef(null);
-  const [leftWidth, setLeftWidth] = useState(50);
-  const [isResizing, setIsResizing] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const containerRef = useRef(null);
+    const [leftWidth, setLeftWidth] = useState(50);
+    const [isResizing, setIsResizing] = useState(false);
 
-  const startResizing = useCallback(() => {
-    setIsResizing(true);
-  }, []);
+    const [reloadJustifications, setReloadJustifications] = useState(0);
 
-  const stopResizing = useCallback(() => {
-    setIsResizing(false);
-  }, []);
-
-  const resize = useCallback(
-    (mouseMoveEvent) => {
-      if (isResizing && containerRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-
-        const newLeftWidth =
-          ((mouseMoveEvent.clientX - containerRect.left) /
-            containerRect.width) *
-          100;
-
-        if (newLeftWidth > 20 && newLeftWidth < 80) {
-          setLeftWidth(newLeftWidth);
-        }
-      }
-    },
-    [isResizing]
-  );
-
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener("mousemove", resize);
-      window.addEventListener("mouseup", stopResizing);
-    }
-    return () => {
-      window.removeEventListener("mousemove", resize);
-      window.removeEventListener("mouseup", stopResizing);
+    const reload = () => {
+        setReloadJustifications((prev) => prev + 1);
     };
-  }, [isResizing, resize, stopResizing]);
 
-  return (
-    <div
-      className={
-        isResizing
-          ? "resizing-cursor admin-homepage-container"
-          : "admin-homepage-container"
-      }
-    >
-      <div className="title-container">
-        <span className="icon-big icon-tableau-de-bord"></span>
-        <Title>Tableau de bord</Title>
-      </div>
+    const startResizing = useCallback(() => {
+        setIsResizing(true);
+    }, []);
 
-      <CardContainer>
-        <DisplayCard
-          title="Nombre d'etudiants"
-          value="10"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard
-          title="Nombre d'absences"
-          value="150"
-          iconLink={"./src/assets/dashboard.svg"}
-        />
-        <DisplayCard title="Exemple" value="10" iconLink="" />
-      </CardContainer>
+    const stopResizing = useCallback(() => {
+        setIsResizing(false);
+    }, []);
 
-      <div className="homepage-subtitle-container">
-        <h2 className="homepage-subtitle">Justifier des absences</h2>
-      </div>
-      <div className="justification-container" ref={containerRef}>
-        <div className="left part" style={{ width: `${leftWidth}%` }}>
-          <JustificationList
-            setSelectedItem={setSelectedItem}
-            selectedItem={selectedItem}
-          />
+    const resize = useCallback(
+        (mouseMoveEvent) => {
+            if (isResizing && containerRef.current) {
+                const containerRect = containerRef.current.getBoundingClientRect();
+
+                const newLeftWidth = ((mouseMoveEvent.clientX - containerRect.left) / containerRect.width) * 100;
+
+                if (newLeftWidth > 20 && newLeftWidth < 80) {
+                    setLeftWidth(newLeftWidth);
+                }
+            }
+        },
+        [isResizing]
+    );
+
+    useEffect(() => {
+        if (isResizing) {
+            window.addEventListener("mousemove", resize);
+            window.addEventListener("mouseup", stopResizing);
+        }
+        return () => {
+            window.removeEventListener("mousemove", resize);
+            window.removeEventListener("mouseup", stopResizing);
+        };
+    }, [isResizing, resize, stopResizing]);
+
+    return (
+        <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
+            <div className="title-container">
+                <span className="icon-big icon-tableau-de-bord"></span>
+                <Title>Tableau de bord</Title>
+            </div>
+
+            <CardContainer>
+                <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Exemple" value="10" iconLink="" />
+            </CardContainer>
+
+            <div className="homepage-subtitle-container">
+                <h2 className="homepage-subtitle">Justifier des absences</h2>
+            </div>
+            <div className="justification-container" ref={containerRef}>
+                <div className="left part" style={{ width: `${leftWidth}%` }}>
+                    <JustificationList setSelectedItem={setSelectedItem} selectedItem={selectedItem} reload={reloadJustifications} />
+                </div>
+
+                <div className="resizing-bar" onMouseDown={startResizing}>
+                    <div className="resizer" />
+                </div>
+
+                <div className="part right" style={{ width: `${100 - leftWidth}%` }}>
+                    {selectedItem ? (
+                        <ValidationView selectedItem={selectedItem} reload={reload} />
+                    ) : (
+                        <div className="empty-state">Sélectionnez une justification</div>
+                    )}
+                </div>
+            </div>
         </div>
-
-        <div className="resizing-bar" onMouseDown={startResizing}>
-          <div className="resizer" />
-        </div>
-
-        <div className="part right" style={{ width: `${100 - leftWidth}%` }}>
-          {selectedItem ? (
-            <ValidationView selectedItem={selectedItem} />
-          ) : (
-            <div className="empty-state">Sélectionnez un étudiant</div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default AdminHomePage;

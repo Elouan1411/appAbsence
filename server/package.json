@@ -18,8 +18,10 @@
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "formidable": "^3.5.4",
+    "heic-convert": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.11",
+    "pdfkit": "^0.17.2",
     "sqlite3": "^5.1.7"
   }
 }
