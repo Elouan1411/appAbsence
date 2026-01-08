@@ -6,12 +6,36 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export default function PDFDocument({ file }) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
+    const filename = file.split("/").pop();
     let height = 450;
     async function onDocumentLoadSuccess(pdf) {
         setNumPages(pdf.numPages);
         const page = await pdf.getPage(1);
         height = page.height;
     }
+
+    const handleDownload = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(file);
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename || "download";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Erreur de téléchargement :", error);
+            window.open(file, "_blank");
+        }
+    };
 
     if (!file) return <p>Aucun document</p>;
     console.log(file);
@@ -64,7 +88,7 @@ export default function PDFDocument({ file }) {
                     )}
                 </div>
                 <div className="download-button-container">
-                    <button onClick={console.log("Ça télécharge")}>
+                    <button onClick={handleDownload}>
                         <span className="icon-download"></span>
                     </button>
                 </div>
