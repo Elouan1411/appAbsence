@@ -304,51 +304,50 @@ function RollCallList({ criteria, dateTime, subject }) {
 
   return (
     <div
-      style={{
-        marginTop: "2rem",
-        width: "100%",
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Toaster position="top-right" reverseOrder={false} />
-      <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1rem",
+            marginTop: "1rem",
+            width: "100%",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
         }}
-      >
-        <h2>Liste d'appel</h2>
-        <button
-          className="validate-btn"
-          style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}
-          onClick={handleValidateRollCall}
+    >
+        <Toaster position="top-right" reverseOrder={false} />
+        <div
+            style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            }}
         >
-          Valider l'appel
-        </button>
-      </div>
-
-      {loading ? (
-        <p>Chargement...</p>
-      ) : (
-        <div style={{ flex: 1, width: "100%" }}>
-          <AgGridReact
-            rowData={rowData}
-            columnDefs={colDefs}
-            defaultColDef={defaultColDef}
-            theme={theme === "dark" ? darkTheme : lightTheme}
-            onGridReady={onGridReady}
-            pagination={true}
-            paginationPageSize={100}
-            localeText={AG_GRID_LOCALE_FR}
-          />
+            <h2 style={{ verticalAlign: "bottom" }}>Liste d'appel</h2>
+            <button
+                className="validate-btn"
+                style={{ fontSize: "1rem" , marginTop: "0rem"}}
+                onClick={handleValidateRollCall}
+            >
+                Valider l'appel
+            </button>
         </div>
-      )}
+
+        {loading ? (
+            <p>Chargement...</p>
+        ) : (
+            <div style={{ flex: 1, width: "100%" }}>
+            <AgGridReact
+                rowData={rowData}
+                columnDefs={colDefs}
+                defaultColDef={defaultColDef}
+                theme={theme === "dark" ? darkTheme : lightTheme}
+                onGridReady={onGridReady}
+                pagination={true}
+                paginationPageSize={100}
+                localeText={AG_GRID_LOCALE_FR}
+            />
+            </div>
+        )}
     </div>
-  );
+    );
 }
 
 export default RollCallList;
