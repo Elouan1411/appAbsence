@@ -27,6 +27,7 @@ body.dark {
     --file-item-border: rgba(16, 185, 129, 0.2);
     --file-item-hover-bg: rgba(239, 68, 68, 0.1);
     --file-item-hover-border: rgba(239, 68, 68, 0.2);
+    --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
 }
 
 body.light {
@@ -47,6 +48,7 @@ body.light {
     --file-item-border: #d1fae5;
     --file-item-hover-bg: #fef2f2;
     --file-item-hover-border: #fee2e2;
+    --header-background-color: color-mix(in srgb, #fff, #181d1f 15.000000000000001%);
 }
 
 .loading {
