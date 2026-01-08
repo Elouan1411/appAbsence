@@ -143,7 +143,7 @@ const StudentJustificationPage = () => {
                 const formData = {
                     start: new Date(p.start).getTime(),
                     end: new Date(p.end).getTime(),
-                    justification: reason + (comment ? " - " + comment : ""),
+                    justification: reason + (comment ? " | " + comment : ""),
                     timestamp: now.getTime(), // Send common timestamp
                 };
 

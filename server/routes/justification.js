@@ -173,10 +173,18 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
 /*****************************************
  *             Méthodes POST
  *****************************************/
+const { validateJustificationInput } = require("../utils/justificationSecurity");
+
 //Publication d'une justification
 router.post("/", verifyToken, (req, res) => {
     let body = req.body;
     const userLogin = req.user.pwd.split("-")[0];
+
+    // Security Check: Input Validation
+    const validation = validateJustificationInput(body);
+    if (!validation.valid) {
+        return res.status(400).json(validation.message);
+    }
 
     // Retrieve student number from DB based on login
     db.get("SELECT numero FROM Eleve WHERE loginENT = ?", [userLogin], (err, row) => {
@@ -185,22 +193,22 @@ router.post("/", verifyToken, (req, res) => {
 
         let number = row.numero;
 
-        const formatToDB = (timestamp, withSeconds = false) => {
-            const date = new Date(timestamp);
-            // Check for invalid date
-            if (isNaN(date.getTime())) {
-                throw new Error("Invalid Date");
-            }
-            const pad = (n) => (n < 10 ? "0" + n : n);
-            let str = date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
-
-            if (withSeconds) {
-                str += pad(date.getSeconds());
-            }
-            return str;
-        };
-
         try {
+            const formatToDB = (timestamp, withSeconds = false) => {
+                const date = new Date(timestamp);
+                // Check for invalid date
+                if (isNaN(date.getTime())) {
+                    throw new Error("Invalid Date");
+                }
+                const pad = (n) => (n < 10 ? "0" + n : n);
+                let str = date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
+
+                if (withSeconds) {
+                    str += pad(date.getSeconds());
+                }
+                return str;
+            };
+
             let start = formatToDB(body.start);
             let end = formatToDB(body.end);
             let motif = body.justification;
@@ -218,7 +226,8 @@ router.post("/", verifyToken, (req, res) => {
                 res.status(200).json(this.lastID);
             });
         } catch (e) {
-            return res.status(400).json("Invalid date format");
+            console.error("Error in POST /justification:", e);
+            return res.status(400).json(e.message || "Erreur lors du traitement");
         }
     });
 });
