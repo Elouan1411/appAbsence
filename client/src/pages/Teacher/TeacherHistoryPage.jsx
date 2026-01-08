@@ -18,9 +18,6 @@ function TeacherHistoryPage() {
     const { user } = useAuth();
     const [rowData, setRowData] = useState([]);
     const theme = useTheme();
-    const { user } = useAuth();
-    const [rowData, setRowData] = useState([]);
-    const theme = useTheme();
 
     const fetchHistory = async () => {
         if (!user) return;
@@ -261,7 +258,6 @@ function TeacherHistoryPage() {
                 flexDirection: "column",
             }}
         >
-            <Toaster position="top-right" reverseOrder={false} />
             <Title>Historique des Appels</Title>
             <div style={{ flex: 1, width: "100%", marginTop: "1rem" }}>
                 <AgGridReact
