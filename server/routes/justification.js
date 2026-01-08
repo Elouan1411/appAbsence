@@ -174,43 +174,57 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
     res.status(200).json(rows);
   });
 });
-
 /*****************************************
  *             Méthodes POST
  *****************************************/
 //Publication d'une justification
-router.post("/", verifyToken, isAdminOrOwner, (req, res) => {
-  let body = req.body;
+router.post("/", verifyToken, (req, res) => {
+    let body = req.body;
+    const userLogin = req.user.pwd.split("-")[0];
 
-  let login = body["login"];
-  let number = body["number"];
+    // Retrieve student number from DB based on login
+    db.get("SELECT numero FROM Eleve WHERE loginENT = ?", [userLogin], (err, row) => {
+        if (err) return res.status(500).json(err.message);
+        if (!row) return res.status(404).json("Étudiant non trouvé");
 
-  let date = body["start-date"].split("-");
-  let hour = body["start-time"].split(":");
+        let number = row.numero;
 
-  let start = date[0] + date[1] + date[2] + hour[0] + hour[1];
+        const formatToDB = (timestamp, withSeconds = false) => {
+            const date = new Date(timestamp);
+            // Check for invalid date
+            if (isNaN(date.getTime())) {
+                throw new Error("Invalid Date");
+            }
+            const pad = (n) => (n < 10 ? "0" + n : n);
+            let str = date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
 
-  date = body["end-date"].split("-");
-  hour = body["end-time"].split(":");
+            if (withSeconds) {
+                str += pad(date.getSeconds());
+            }
+            return str;
+        };
 
-  let end = date[0] + date[1] + date[2] + hour[0] + hour[1];
-  let motif = body.justification;
-  const sql = `INSERT INTO JustificationAbsence (numeroEtudiant, debut, fin, motif, validite, motifValidite, login)
-                                    VALUES(?, ?, ?, ?, ?, ?, ?)`;
+        try {
+            let start = formatToDB(body.start);
+            let end = formatToDB(body.end);
+            let motif = body.justification;
+            // Use client provided timestamp or fallback to server time
+            let dateDemande = body.timestamp ? formatToDB(body.timestamp, true) : formatToDB(Date.now(), true);
 
-  db.run(sql, [number, start, end, motif, 2, "", login], (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(401).json(err.message);
-    }
-    console.log(this.lastID);
-    db.get("SELECT last_insert_rowid() as id", (err, row) => {
-      if (err) {
-        console.error(err.message);
-      }
-      res.status(200).json(row.id);
+            const sql = `INSERT INTO JustificationAbsence (numeroEtudiant, debut, fin, motif, validite, motifValidite, login, dateDemande)
+                                      VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+
+            db.run(sql, [number, start, end, motif, 2, "", userLogin, dateDemande], function (err) {
+                if (err) {
+                    console.error(err);
+                    return res.status(401).json(err.message);
+                }
+                res.status(200).json(this.lastID);
+            });
+        } catch (e) {
+            return res.status(400).json("Invalid date format");
+        }
     });
-  });
 });
 
 /*****************************************

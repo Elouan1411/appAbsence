@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../style/Student.css";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import trashIcon from "../../assets/trash.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from "date-fns/locale/fr";
@@ -127,7 +127,6 @@ const PeriodAbsence = ({ period, setPeriod, errors, error }) => {
             <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
                 {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
             </button>
-            <Toaster position="top-right" reverseOrder={false} />
         </div>
     );
 };
