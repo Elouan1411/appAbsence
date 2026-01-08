@@ -63,7 +63,7 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
 
                     const subMotif = item.motif.split("|");
                     const motifTitle = motif_translation[subMotif[0].trim()] || subMotif[0].trim();
-                    const commentaire = firstCharUppercase(subMotif[1]).trim();
+                    const commentaire = firstCharUppercase(subMotif[1] || "").trim() || "";
 
                     return {
                         ...item,

@@ -30,13 +30,9 @@ function AdminHomePage() {
     const resize = useCallback(
         (mouseMoveEvent) => {
             if (isResizing && containerRef.current) {
-                const containerRect =
-                    containerRef.current.getBoundingClientRect();
+                const containerRect = containerRef.current.getBoundingClientRect();
 
-                const newLeftWidth =
-                    ((mouseMoveEvent.clientX - containerRect.left) /
-                        containerRect.width) *
-                    100;
+                const newLeftWidth = ((mouseMoveEvent.clientX - containerRect.left) / containerRect.width) * 100;
 
                 if (newLeftWidth > 20 && newLeftWidth < 80) {
                     setLeftWidth(newLeftWidth);
@@ -58,69 +54,23 @@ function AdminHomePage() {
     }, [isResizing, resize, stopResizing]);
 
     return (
-        <div
-            className={
-                isResizing
-                    ? "resizing-cursor admin-homepage-container"
-                    : "admin-homepage-container"
-            }
-        >
+        <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
             <div className="title-container">
                 <span className="icon-big icon-tableau-de-bord"></span>
                 <Title>Tableau de bord</Title>
             </div>
 
             <CardContainer>
-                <DisplayCard
-                    title="Nombre d'etudiants"
-                    value="10"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
-                <DisplayCard
-                    title="Nombre d'absences"
-                    value="150"
-                    iconLink={"./src/assets/dashboard.svg"}
-                />
+                <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
+                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
                 <DisplayCard title="Exemple" value="10" iconLink="" />
             </CardContainer>
 
@@ -129,30 +79,18 @@ function AdminHomePage() {
             </div>
             <div className="justification-container" ref={containerRef}>
                 <div className="left part" style={{ width: `${leftWidth}%` }}>
-                    <JustificationList
-                        setSelectedItem={setSelectedItem}
-                        selectedItem={selectedItem}
-                        reload={reloadJustifications}
-                    />
+                    <JustificationList setSelectedItem={setSelectedItem} selectedItem={selectedItem} reload={reloadJustifications} />
                 </div>
 
                 <div className="resizing-bar" onMouseDown={startResizing}>
                     <div className="resizer" />
                 </div>
 
-                <div
-                    className="part right"
-                    style={{ width: `${100 - leftWidth}%` }}
-                >
+                <div className="part right" style={{ width: `${100 - leftWidth}%` }}>
                     {selectedItem ? (
-                        <ValidationView
-                            selectedItem={selectedItem}
-                            reload={reload}
-                        />
+                        <ValidationView selectedItem={selectedItem} reload={reload} />
                     ) : (
-                        <div className="empty-state">
-                            Sélectionnez un étudiant
-                        </div>
+                        <div className="empty-state">Sélectionnez une justification</div>
                     )}
                 </div>
             </div>
