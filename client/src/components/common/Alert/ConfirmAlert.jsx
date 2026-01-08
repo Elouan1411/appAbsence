@@ -14,11 +14,6 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
 
     const handleConfirmClick = () => {
         if (toInput && localMotif.trim().length === 0) {
-            toast.error("Veuillez saisir un motif !", {
-                id: "error-motif",
-                style: { zIndex: 999999 },
-                className: "super-toast",
-            });
             return;
         }
         triggerClose(onConfirm);
@@ -30,7 +25,10 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
 
     return (
         <div className={`alert-overlay ${isClosing ? "closing" : ""}`}>
-            <div className="container" onClick={(e) => e.stopPropagation()}>
+            <div
+                className={`container ${isClosing ? "closing" : ""}`}
+                onClick={(e) => e.stopPropagation()}
+            >
                 <div className="alert-title-container">
                     <h2 className="alert-title">{title}</h2>
                 </div>
@@ -52,7 +50,7 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
                 {toInput && (
                     <div className="motif-container">
                         <textarea
-                            className="motif-input"
+                            className={`motif-input`}
                             value={localMotif}
                             onChange={(e) => setLocalMotif(e.target.value)}
                             placeholder="Ex: Raison médicale..."
@@ -65,7 +63,12 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
                 <div className="buttons">
                     <button onClick={handleCancelClick}>Annuler</button>
                     <span className="vertical-separator"></span>
-                    <button onClick={handleConfirmClick}>Confirmer</button>
+                    <button
+                        onClick={handleConfirmClick}
+                        disabled={toInput && localMotif.trim().length === 0}
+                    >
+                        Confirmer
+                    </button>
                 </div>
             </div>
         </div>

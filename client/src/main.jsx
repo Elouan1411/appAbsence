@@ -20,24 +20,7 @@ root.render(
         <AuthProvider>
             <BrowserRouter>
                 <App />
-                <Toaster
-                    position="top-right"
-                    reverseOrder={false}
-                    containerStyle={{
-                        zIndex: 999999,
-                        top: 20,
-                        right: 20,
-                    }}
-                    toastOptions={{
-                        className: "",
-                        style: {
-                            border: "1px solid #713200",
-                            padding: "16px",
-                            color: "#713200",
-                            zIndex: 999999,
-                        },
-                    }}
-                />
+                <Toaster position="top-right" reverseOrder={false} />
             </BrowserRouter>
         </AuthProvider>
     </StrictMode>

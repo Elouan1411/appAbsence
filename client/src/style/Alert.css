@@ -23,6 +23,23 @@
     }
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -103,6 +120,14 @@
     cursor: pointer;
 }
 
+.buttons button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: var(--cell-ignored-background);
+    color: var(--text-secondary);
+}
+
 .buttons button:hover {
     background-color: var(--cell-ignored-background);
     color: var(--text-primary, #fff);
@@ -130,13 +155,13 @@
 }
 
 .alert-overlay.closing {
-    animation: popOut 0.3s ease-in forwards;
+    animation: fadeOut 0.3s ease-in forwards;
     pointer-events: none;
 }
 
-.super-toast {
-    z-index: 9999999 !important;
-    position: relative;
+.container.closing {
+    animation: popOut 0.3s ease-in forwards;
+    pointer-events: none;
 }
 
 .alert-overlay {
@@ -146,11 +171,11 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 101;
-    backdrop-filter: blur(2px);
     animation: fadeIn 0.3s ease-out;
 }
 

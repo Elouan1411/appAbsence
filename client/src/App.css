@@ -60,7 +60,7 @@ body.light {
 }
 
 h2 {
-  color: var(--text-primary);
+    color: var(--text-primary);
 }
 
 .layout {
