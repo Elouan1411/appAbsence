@@ -1,16 +1,8 @@
 .dark {
-    --header-background-color: color-mix(
-        in srgb,
-        #1e1e24,
-        #fff 7.000000000000001%
-    );
+    --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
 }
 .light {
-    --header-background-color: color-mix(
-        in srgb,
-        #fff,
-        #181d1f 7.000000000000001%
-    );
+    --header-background-color: color-mix(in srgb, #fff, #181d1f 7.000000000000001%);
 }
 
 .dropzone-container {
@@ -245,7 +237,7 @@ main {
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
-    z-index: 100;
+    z-index: 1000;
     border: 1px solid var(--border-color);
     border-radius: 10px 10px 0px 0px;
 }

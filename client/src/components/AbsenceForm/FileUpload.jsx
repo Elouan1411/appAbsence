@@ -7,6 +7,12 @@ import trashIcon from "../../assets/trash.svg";
 import toast from "react-hot-toast";
 
 const FileUpload = ({ files, setFiles }) => {
+    // Helper to check extensions
+    const ALLOWED_EXTENSIONS = {
+        images: ["jpg", "jpeg", "png", "heic", "heif"],
+        docs: ["pdf"],
+    };
+
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -39,6 +45,7 @@ const FileUpload = ({ files, setFiles }) => {
     const handleFileSelect = (e) => {
         const selectedFiles = Array.from(e.target.files);
         addFiles(selectedFiles);
+        e.target.value = null; // Reset input to allow re-selection of same file
     };
 
     const truncateFileName = (name, maxLength = 20) => {
@@ -47,25 +54,26 @@ const FileUpload = ({ files, setFiles }) => {
         const extension = name.split(".").pop();
         const nameWithoutExt = name.substring(0, name.lastIndexOf("."));
         const half = Math.floor((maxLength - 3 - extension.length - 1) / 2);
-        return `${nameWithoutExt.substring(0, half)}...${nameWithoutExt.slice(
-            -half
-        )}.${extension}`;
+        return `${nameWithoutExt.substring(0, half)}...${nameWithoutExt.slice(-half)}.${extension}`;
     };
 
     const addFiles = (newFiles) => {
         const MAX_SIZE = 15 * 1024 * 1024; // 15MB
         const validFiles = newFiles.filter((file) => {
             if (file.size > MAX_SIZE) {
-                toast.error(
-                    `Le fichier ${truncateFileName(
-                        file.name
-                    )} dépasse la limite de 15Mo.`
-                );
+                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 15Mo.`);
                 return false;
             }
-            toast.success(
-                `Le fichier ${truncateFileName(file.name)} a été ajouté.`
-            );
+            const extension = file.name.split(".").pop().toLowerCase();
+            const isAllowedImage = ALLOWED_EXTENSIONS.images.includes(extension);
+            const isAllowedDoc = ALLOWED_EXTENSIONS.docs.includes(extension);
+
+            if (!isAllowedImage && !isAllowedDoc) {
+                console.log(extension);
+                toast.error(`L'extension du fichier ${truncateFileName(file.name)} n'est pas supportée.`);
+                return false;
+            }
+            toast.success(`Le fichier ${truncateFileName(file.name)} a été ajouté.`);
             return true;
         });
 
@@ -93,91 +101,49 @@ const FileUpload = ({ files, setFiles }) => {
     };
 
     return (
-        <div>
-            <div className="file-upload-container">
-                <h2 className="file-upload-title">
-                    Justificatifs{" "}
-                    <span className="optional-text">(Optionnel)</span>
-                </h2>
+        <div className="file-upload-container">
+            <h2 className="file-upload-title">
+                Justificatifs <span className="optional-text">(Optionnel)</span>
+            </h2>
 
-                <div
-                    className={`dropzone ${isDragging ? "dragging" : ""}`}
-                    onDragEnter={handleDragEnter}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={triggerFileInput}
-                >
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileSelect}
-                        style={{ display: "none" }}
-                        multiple
-                    />
+            <div
+                className={`dropzone ${isDragging ? "dragging" : ""}`}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={triggerFileInput}
+            >
+                <input type="file" ref={fileInputRef} onChange={handleFileSelect} style={{ display: "none" }} multiple />
 
-                    <div className="cloud-icon-container">
-                        <img
-                            src={cloudIcon}
-                            alt="Upload"
-                            width="24"
-                            height="24"
-                        />
-                    </div>
-
-                    <p className="dropzone-text">
-                        Cliquez ou glissez vos fichiers ici
-                    </p>
-                    <p className="dropzone-subtext">PDF, JPG, PNG (Max 15Mo)</p>
+                <div className="cloud-icon-container">
+                    <img src={cloudIcon} alt="Upload" width="24" height="24" />
                 </div>
 
-                {files.length > 0 && (
-                    <div className="file-list">
-                        {files.map((file, index) => (
-                            <div
-                                key={index}
-                                className="file-item"
-                                onClick={() => removeFile(file)}
-                                title="Supprimer le fichier"
-                            >
-                                <div className="file-info">
-                                    <span className="file-icon pdf-icon">
-                                        <img
-                                            src={fileIcon}
-                                            alt="File"
-                                            width="20"
-                                            height="20"
-                                        />
-                                    </span>
-                                    <span
-                                        className="file-name"
-                                        onClick={(e) => downloadFile(e, file)}
-                                        title="Télécharger le fichier"
-                                    >
-                                        {file.name}
-                                    </span>
-                                </div>
-                                <span className="upload-success deletable">
-                                    <img
-                                        src={checkIcon}
-                                        alt="Success"
-                                        className="icon-state-success"
-                                        width="20"
-                                        height="20"
-                                    />
-                                    <img
-                                        src={trashIcon}
-                                        alt="Delete"
-                                        className="icon-state-delete"
-                                        width="20"
-                                        height="20"
-                                    />
+                <p className="dropzone-text">Cliquez ou glissez vos fichiers ici</p>
+                <p className="dropzone-subtext">PDF, JPG, JPEG, PNG, HEIC, HEIF (Max 15Mo)</p>
+            </div>
+
+            {files.length > 0 && (
+                <div className="file-list">
+                    {files.map((file, index) => (
+                        <div key={index} className="file-item" onClick={() => removeFile(file)} title="Supprimer le fichier">
+                            <div className="file-info">
+                                <span className="file-icon pdf-icon">
+                                    <img src={fileIcon} alt="File" width="20" height="20" />
+                                </span>
+                                <span className="file-name" onClick={(e) => downloadFile(e, file)} title="Télécharger le fichier">
+                                    {file.name}
                                 </span>
                             </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                            <span className="upload-success deletable">
+                                <img src={checkIcon} alt="Success" className="icon-state-success" width="20" height="20" />
+                                <img src={trashIcon} alt="Delete" className="icon-state-delete" width="20" height="20" />
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
