@@ -162,8 +162,13 @@ export default function ValidationView({ selectedItem, reload }) {
                                 <div className="motif-box">
                                     <span className="label">Motif déclaré</span>
                                     <p className="motif-text">
-                                        {selectedItem.motif ??
-                                            "Aucun motif précisé."}
+                                        <b>
+                                            {selectedItem.motif ??
+                                                "Aucun motif précisé."}
+                                        </b>
+                                        {selectedItem.commentaire
+                                            ? ` : ${selectedItem.commentaire}`
+                                            : ""}
                                     </p>
                                 </div>
 

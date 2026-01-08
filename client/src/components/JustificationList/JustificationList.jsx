@@ -8,16 +8,11 @@ import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 import dateFormatter from "../../functions/dateFormatter";
 import ValidationModal from "../ValidationJustification/ValidationView";
 import { useTheme } from "../../hooks/useTheme";
+import { motif_translation } from "../../constants/motif_translation";
+import firstCharUppercase from "../../functions/firstCharUppercase";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const columnOrder = [
-    "numeroEtudiant",
-    "nom",
-    "prenom",
-    "debut",
-    "fin",
-    "motif",
-];
+const columnOrder = ["numeroEtudiant", "nom", "prenom", "debut", "fin", "motif", "commentaire"];
 
 function JustificationList({ selectedId, setSelectedItem, reload }) {
     const [rowData, setRowData] = useState([]);
@@ -49,13 +44,10 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
     async function handleFetchJustification() {
         try {
             setLoading(true);
-            const response = await fetch(
-                "http://localhost:3000/justification/new",
-                {
-                    method: "GET",
-                    credentials: "include",
-                }
-            );
+            const response = await fetch("http://localhost:3000/justification/new", {
+                method: "GET",
+                credentials: "include",
+            });
 
             if (!response.ok) throw new Error("Erreur HTTP " + response.status);
 
@@ -64,20 +56,22 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
             const processedData = result.map((item) => {
                 if (item.liste_creneaux && item.liste_creneaux.length > 0) {
                     let new_creneaux = JSON.parse(item.liste_creneaux);
-                    const sortedByStart = [...new_creneaux].sort(
-                        (a, b) => new Date(a.debut) - new Date(b.debut)
-                    );
+                    const sortedByStart = [...new_creneaux].sort((a, b) => new Date(a.debut) - new Date(b.debut));
                     console.log(sortedByStart);
 
-                    const sortedByEnd = [...new_creneaux].sort(
-                        (a, b) => new Date(b.fin) - new Date(a.fin)
-                    );
+                    const sortedByEnd = [...new_creneaux].sort((a, b) => new Date(b.fin) - new Date(a.fin));
+
+                    const subMotif = item.motif.split("|");
+                    const motifTitle = motif_translation[subMotif[0].trim()] || subMotif[0].trim();
+                    const commentaire = firstCharUppercase(subMotif[1]).trim();
 
                     return {
                         ...item,
                         debut: sortedByStart[0].debut,
                         fin: sortedByEnd[0].fin,
                         liste_creneaux: new_creneaux,
+                        motif: motifTitle,
+                        commentaire: commentaire,
                     };
                 }
 
@@ -141,10 +135,7 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
             {loading ? (
                 <p>En chargement...</p>
             ) : (
-                <div
-                    className="justification-list-container"
-                    style={{ flex: 1 }}
-                >
+                <div className="justification-list-container" style={{ flex: 1 }}>
                     <AgGridReact
                         rowData={rowData}
                         columnDefs={colDefs}
