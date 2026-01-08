@@ -315,25 +315,25 @@ function RollCallList({ criteria, dateTime, subject }) {
     return (
         <div
             style={{
-                marginTop: "2rem",
+                marginTop: "1rem",
                 width: "100%",
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
             }}
         >
+            <Toaster position="top-right" reverseOrder={false} />
             <div
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: "1rem",
                 }}
             >
-                <h2>Liste d'appel</h2>
+                <h2 style={{ verticalAlign: "bottom" }}>Liste d'appel</h2>
                 <button
                     className="validate-btn"
-                    style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}
+                    style={{ fontSize: "1rem", marginTop: "0rem" }}
                     onClick={handleValidateRollCall}
                 >
                     Valider l'appel

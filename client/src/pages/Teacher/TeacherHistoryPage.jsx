@@ -10,10 +10,14 @@ import { useTheme } from "../../hooks/useTheme";
 import toast from "react-hot-toast";
 import "../../style/icon.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import { lightTheme, darkTheme } from "../../constants/grid";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
+    const { user } = useAuth();
+    const [rowData, setRowData] = useState([]);
+    const theme = useTheme();
     const { user } = useAuth();
     const [rowData, setRowData] = useState([]);
     const theme = useTheme();
@@ -257,19 +261,14 @@ function TeacherHistoryPage() {
                 flexDirection: "column",
             }}
         >
+            <Toaster position="top-right" reverseOrder={false} />
             <Title>Historique des Appels</Title>
-            <div
-                className={
-                    theme === "dark"
-                        ? "ag-theme-alpine-dark"
-                        : "ag-theme-alpine"
-                }
-                style={{ flex: 1, width: "100%", marginTop: "1rem" }}
-            >
+            <div style={{ flex: 1, width: "100%", marginTop: "1rem" }}>
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
+                    theme={theme === "dark" ? darkTheme : lightTheme}
                     pagination={true}
                     paginationPageSize={100}
                 />
