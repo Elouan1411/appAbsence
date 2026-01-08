@@ -500,7 +500,7 @@ main {
 
 span,
 p {
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
 }
 
 .student-list {

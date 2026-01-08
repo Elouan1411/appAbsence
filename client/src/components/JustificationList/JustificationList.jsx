@@ -11,151 +11,158 @@ import { useTheme } from "../../hooks/useTheme";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = [
-  "numeroEtudiant",
-  "nom",
-  "prenom",
-  "debut",
-  "fin",
-  "motif",
+    "numeroEtudiant",
+    "nom",
+    "prenom",
+    "debut",
+    "fin",
+    "motif",
 ];
 
-function JustificationList({ selectedId, setSelectedItem }) {
-  const [rowData, setRowData] = useState([]);
-  const [colDefs, setColDefs] = useState([]);
-  const [loading, setLoading] = useState(false);
+function JustificationList({ selectedId, setSelectedItem, reload }) {
+    const [rowData, setRowData] = useState([]);
+    const [colDefs, setColDefs] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-  const theme = useTheme();
+    const theme = useTheme();
 
-  const autoSizeStrategy = useMemo(() => {
-    return {
-      type: "fitCellContents",
-      skipHeader: true,
-      scaleUpToFitGridWidth: true,
-    };
-  }, []);
-
-  const defaultColDef = useMemo(() => {
-    return {
-      flex: 1,
-      minWidth: 100,
-      filter: true,
-      sortable: true,
-      resizable: true,
-      wrapText: true,
-      autoHeight: true,
-    };
-  }, []);
-
-  async function handleFetchJustification() {
-    try {
-      setLoading(true);
-      const response = await fetch("http://localhost:3000/justification/new", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Erreur HTTP " + response.status);
-
-      const result = await response.json();
-      console.log(result);
-      const processedData = result.map((item) => {
-        if (item.liste_creneaux && item.liste_creneaux.length > 0) {
-          let new_creneaux = JSON.parse(item.liste_creneaux);
-          const sortedByStart = [...new_creneaux].sort(
-            (a, b) => new Date(a.debut) - new Date(b.debut)
-          );
-          console.log(sortedByStart);
-
-          const sortedByEnd = [...new_creneaux].sort(
-            (a, b) => new Date(b.fin) - new Date(a.fin)
-          );
-
-          return {
-            ...item,
-            debut: sortedByStart[0].debut,
-            fin: sortedByEnd[0].fin,
-            liste_creneaux: new_creneaux,
-          };
-        }
-
-        return item;
-      });
-
-      console.log("Données traitées :", processedData);
-      setRowData(processedData);
-    } catch (err) {
-      console.error("Erreur de fetch: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    handleFetchJustification();
-  }, []);
-
-  useEffect(() => {
-    if (rowData && rowData.length > 0) {
-      const generatedColumns = columnOrder.map((key) => {
-        if (key == "debut" || key == "fin") {
-          return {
-            headerName: HEADER_DISPLAY_NAMES[key] || key,
-            field: key,
-            valueFormatter: (params) => dateFormatter(params.value),
-          };
-        }
+    const autoSizeStrategy = useMemo(() => {
         return {
-          headerName: HEADER_DISPLAY_NAMES[key] || key,
-          field: key,
+            type: "fitCellContents",
+            skipHeader: true,
+            scaleUpToFitGridWidth: true,
         };
-      });
-      setColDefs(generatedColumns);
+    }, []);
+
+    const defaultColDef = useMemo(() => {
+        return {
+            flex: 1,
+            minWidth: 100,
+            filter: true,
+            sortable: true,
+            resizable: true,
+            wrapText: true,
+            autoHeight: true,
+        };
+    }, []);
+
+    async function handleFetchJustification() {
+        try {
+            setLoading(true);
+            const response = await fetch(
+                "http://localhost:3000/justification/new",
+                {
+                    method: "GET",
+                    credentials: "include",
+                }
+            );
+
+            if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+
+            const result = await response.json();
+            console.log(result);
+            const processedData = result.map((item) => {
+                if (item.liste_creneaux && item.liste_creneaux.length > 0) {
+                    let new_creneaux = JSON.parse(item.liste_creneaux);
+                    const sortedByStart = [...new_creneaux].sort(
+                        (a, b) => new Date(a.debut) - new Date(b.debut)
+                    );
+                    console.log(sortedByStart);
+
+                    const sortedByEnd = [...new_creneaux].sort(
+                        (a, b) => new Date(b.fin) - new Date(a.fin)
+                    );
+
+                    return {
+                        ...item,
+                        debut: sortedByStart[0].debut,
+                        fin: sortedByEnd[0].fin,
+                        liste_creneaux: new_creneaux,
+                    };
+                }
+
+                return item;
+            });
+
+            console.log("Données traitées :", processedData);
+            setRowData(processedData);
+        } catch (err) {
+            console.error("Erreur de fetch: " + err.message);
+        } finally {
+            setLoading(false);
+        }
     }
-  }, [rowData]);
 
-  const rowSelection = useMemo(() => {
-    return {
-      mode: "multiRow",
+    useEffect(() => {
+        handleFetchJustification();
+        setSelectedItem(null);
+    }, [reload]);
+
+    useEffect(() => {
+        if (rowData && rowData.length > 0) {
+            const generatedColumns = columnOrder.map((key) => {
+                if (key == "debut" || key == "fin") {
+                    return {
+                        headerName: HEADER_DISPLAY_NAMES[key] || key,
+                        field: key,
+                        valueFormatter: (params) => dateFormatter(params.value),
+                    };
+                }
+                return {
+                    headerName: HEADER_DISPLAY_NAMES[key] || key,
+                    field: key,
+                };
+            });
+            setColDefs(generatedColumns);
+        }
+    }, [rowData]);
+
+    const rowSelection = useMemo(() => {
+        return {
+            mode: "multiRow",
+        };
+    }, []);
+
+    const handleRowClick = (event) => {
+        console.log(event.data);
+        setSelectedItem(event.data);
     };
-  }, []);
 
-  const handleRowClick = (event) => {
-    console.log(event.data);
-    setSelectedItem(event.data);
-  };
-
-  return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        paddingRight: 10,
-        paddingLeft: 10,
-      }}
-    >
-      {loading ? (
-        <p>En chargement...</p>
-      ) : (
-        <div className="justification-list-container" style={{ flex: 1 }}>
-          <AgGridReact
-            rowData={rowData}
-            columnDefs={colDefs}
-            defaultColDef={defaultColDef}
-            theme={theme == "dark" ? darkTheme : lightTheme}
-            rowSelection={rowSelection}
-            pagination={true}
-            paginationPageSize={10}
-            paginationPageSizeSelector={[10, 20, 50, 100]}
-            localeText={AG_GRID_LOCALE_FR}
-            autoSizeStrategy={autoSizeStrategy}
-            onRowClicked={handleRowClick}
-            style={{ width: "100%", height: "100%" }}
-          />
+    return (
+        <div
+            style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                paddingRight: 10,
+                paddingLeft: 10,
+            }}
+        >
+            {loading ? (
+                <p>En chargement...</p>
+            ) : (
+                <div
+                    className="justification-list-container"
+                    style={{ flex: 1 }}
+                >
+                    <AgGridReact
+                        rowData={rowData}
+                        columnDefs={colDefs}
+                        defaultColDef={defaultColDef}
+                        theme={theme == "dark" ? darkTheme : lightTheme}
+                        rowSelection={rowSelection}
+                        pagination={true}
+                        paginationPageSize={10}
+                        paginationPageSizeSelector={[10, 20, 50, 100]}
+                        localeText={AG_GRID_LOCALE_FR}
+                        autoSizeStrategy={autoSizeStrategy}
+                        onRowClicked={handleRowClick}
+                        style={{ width: "100%", height: "100%" }}
+                    />
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }
 
 export default JustificationList;
