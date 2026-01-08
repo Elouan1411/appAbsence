@@ -245,11 +245,15 @@ function RollCallList({ criteria, dateTime, subject }) {
         const numberList = absentStudents.map((s) => s.numero);
         const loginList = absentStudents.map((s) => s.loginENT);
 
+        const formatDate = (date, time) => {
+            return date.replaceAll("-", "") + time.replaceAll(":", "");
+        }
+
         const payload = {
             number: numberList,
             login: loginList,
-            start: `${dateTime.date} ${dateTime.startTime}:00`,
-            end: `${dateTime.date} ${dateTime.endTime}:00`,
+            start: formatDate(dateTime.date, dateTime.startTime),
+            end: formatDate(dateTime.date, dateTime.endTime),
             loginProf: user,
             code: subject,
         };
@@ -322,7 +326,6 @@ function RollCallList({ criteria, dateTime, subject }) {
                 flexDirection: "column",
             }}
         >
-            <Toaster position="top-right" reverseOrder={false} />
             <div
                 style={{
                     display: "flex",
