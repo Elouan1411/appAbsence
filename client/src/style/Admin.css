@@ -469,9 +469,6 @@ main {
   color: var(--text-primary);
 }
 
-.creneaux-container {
-}
-
 .date-item {
   width: 100%;
   height: 4vh;
