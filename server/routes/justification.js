@@ -53,7 +53,21 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
     res.json(rows);
   });
 });
-
+//Récupération des documents justificatifs d'une justification
+router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
+  const ID = req.params.id;
+  fs.readdir("./upload", (err, files) => {
+    if (err) {
+      res.status(404).json([]);
+    } else {
+      const result = files.filter((file) => {
+        const fileId = file.split("-")[0];
+        return fileId == ID || file === `${ID}.pdf`;
+      });
+      res.status(200).json(result);
+    }
+  });
+});
 // Récupération d'une justification particulière
 router.get("/:id", verifyToken, isOwner, (req, res) => {
   const ID = req.params.id;

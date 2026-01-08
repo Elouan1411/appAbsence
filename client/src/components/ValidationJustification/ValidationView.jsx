@@ -6,27 +6,18 @@ import CustomLoader from "../common/CustomLoader";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function ValidationView({ selectedItem }) {
-  console.log(selectedItem.liste_creneaux);
-  const [data, setData] = useState(selectedItem);
-  console.log("Data liste creneaux : ", data.liste_creneaux);
-  const [isLoading, setLoading] = useState(false);
-  const [file, setFile] = useState("");
+const URL_FILE = "http://localhost:3000/upload/";
 
-  data.liste_creneaux.forEach((creneau) => {
-    console.log(`Créneau ${creneau.id} : `, creneau);
-  });
+export default function ValidationView({ selectedItem }) {
+  const [isLoading, setLoading] = useState(false);
 
   const [isHeaderOpen, setIsHeaderOpen] = useState(true);
   const [isPdfOpen, setPdfOpen] = useState(true);
 
-  if (isLoading || !data) {
-    if (isLoading) {
-      return <CustomLoader />;
-    } else {
-      return null;
-    }
-  }
+  const [documents, setDocuments] = useState([]);
+  const [docIndex, setDocIndex] = useState(0);
+
+  if (!selectedItem) return null;
 
   const handleConfirmValidation = async () => {
     const confirmed = await alertConfirm(
@@ -41,6 +32,47 @@ export default function ValidationView({ selectedItem }) {
   const handleValidate = () => {
     console.log("Je valide");
   };
+
+  const handleLoadDocuments = async () => {
+    setDocuments([]);
+    setDocIndex(0);
+
+    if (
+      !selectedItem.liste_creneaux ||
+      selectedItem.liste_creneaux.length === 0
+    ) {
+      return;
+    }
+
+    const id = Math.min(
+      ...selectedItem.liste_creneaux.map((justification) => justification.id)
+    );
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:3000/justification/documents/" + id,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      const filesNameArray = await response.json();
+      setDocuments(filesNameArray);
+    } catch (error) {
+      console.error("Erreur de chargement des documents", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadDocuments();
+  }, [selectedItem]);
+
+  const file = documents.length > 0 ? documents[docIndex] : null;
+
   return (
     <div className="validation-view-container">
       <div className="validation-view-content">
@@ -59,28 +91,29 @@ export default function ValidationView({ selectedItem }) {
                 <div className="info-grid">
                   <div className="info-item">
                     <span className="label">Numéro étudiant</span>
-                    <span className="value">{data.numeroEtudiant ?? "-"}</span>
+                    <span className="value">
+                      {selectedItem.numeroEtudiant ?? "-"}
+                    </span>
                   </div>
                   <div className="info-item">
                     <span className="label">Nom</span>
-                    <span className="value">{data.nom ?? "-"}</span>
+                    <span className="value">{selectedItem.nom ?? "-"}</span>
                   </div>
                   <div className="info-item">
                     <span className="label">Prénom</span>
-                    <span className="value">{data.prenom ?? "-"}</span>
+                    <span className="value">{selectedItem.prenom ?? "-"}</span>
                   </div>
                 </div>
                 <div className="motif-box">
                   <span className="label">Motif déclaré</span>
                   <p className="motif-text">
-                    {data.motif ?? "Aucun motif précisé."}
+                    {selectedItem.motif ?? "Aucun motif précisé."}
                   </p>
                 </div>
 
                 <div className="creneaux-container">
-                  {data.liste_creneaux?.map((creneau, index) => (
+                  {selectedItem.liste_creneaux?.map((creneau, index) => (
                     <div className="date-item" key={index}>
-                      {" "}
                       <div className="date-id">
                         <span className="id-absence">
                           Absence n° {index + 1}
@@ -109,19 +142,46 @@ export default function ValidationView({ selectedItem }) {
               onClick={() => setPdfOpen((o) => !o)}
             >
               <h3 className="section-title">
-                Documents justificatifs ({data.list?.length || 0})
+                Documents justificatifs ({documents.length})
               </h3>
               <span className={`chevron ${isPdfOpen ? "open" : ""}`} />
             </button>
 
             {isPdfOpen && (
               <div className="section-content pdf-wrapper fade-in">
-                <PDFDocument file={file} />
+                {isLoading ? (
+                  <CustomLoader />
+                ) : documents.length > 0 ? (
+                  <>
+                    {documents.length > 1 && (
+                      <div className="doc-buttons-container">
+                        {documents.map((_, index) => (
+                          <button
+                            key={index}
+                            className={`doc-button ${
+                              index === docIndex ? "active" : ""
+                            }`}
+                            onClick={() => setDocIndex(index)}
+                          >
+                            Document {index + 1}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="pdf-single-view">
+                      <PDFDocument key={file} file={URL_FILE + file} />
+                    </div>
+                  </>
+                ) : (
+                  <p>Aucun document trouvé</p>
+                )}
               </div>
             )}
           </section>
         </div>
       </div>
+
       <footer className="validation-footer">
         <div className="button-container">
           <Button

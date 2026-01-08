@@ -232,6 +232,7 @@ main {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .section-header {
@@ -264,9 +265,6 @@ main {
   margin: 15px 5px 0px 5px;
 }
 
-.section:last-child .section-header {
-  margin-top: 10px;
-}
 .section-title {
   margin: 0;
   font-size: 1.1rem;
@@ -293,6 +291,10 @@ main {
   padding: 1.5rem;
   border-radius: 0 0 10px 10px;
   background-color: var(--modal-bg) !important;
+}
+
+.section-content > p {
+  text-align: center;
 }
 
 .info-grid {
@@ -350,11 +352,13 @@ main {
 
 .pdf-wrapper {
   min-height: 400px;
-  max-height: 50vh;
   display: flex;
   justify-content: center;
+  padding: 10px;
 }
-
+.pdf-content {
+  padding: 10px 0;
+}
 .action-button {
   padding: 0rem 1.5rem;
   width: 25%;
@@ -510,4 +514,42 @@ p {
 .student-list {
   height: 100%;
   margin: 0px 5px 15px 5px;
+}
+
+.doc-buttons-container {
+  background-color: var(--header-background-color);
+  height: 40%;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+}
+
+.doc-button {
+  all: unset;
+  width: 15%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-secondary);
+  font-weight: 700;
+  transition: 0.3s ease-in-out;
+  border-radius: 15px;
+}
+.doc-button:hover {
+  cursor: pointer;
+  background-color: var(--modal-bg);
+  transition: 0.3s ease-in-out;
+}
+
+.doc-button.active {
+  background-color: var(--background-color);
+}
+
+.pdf-container {
+  min-height: 450px;
 }
