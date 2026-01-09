@@ -52,7 +52,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 //Récupération des documents justificatifs d'une justification
 router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
     const ID = req.params.id;
-    fs.readdir("./upload", (err, files) => {
+    fs.readdir("./upload/justification", (err, files) => {
         if (err) {
             res.status(404).json([]);
         } else {
@@ -68,7 +68,7 @@ router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
 router.get("/:id", verifyToken, isOwner, (req, res) => {
     const ID = req.params.id;
     let result = [];
-    fs.readdir("./upload", (err, files) => {
+    fs.readdir("./upload/justification", (err, files) => {
         if (err) {
             res.status(404).json([]);
         } else {
@@ -96,7 +96,7 @@ router.get("/:id", verifyToken, isOwner, (req, res) => {
 router.get("/admin/:id", verifyToken, isAdmin, (req, res) => {
     const ID = req.params.id;
     let result = [];
-    fs.readdir("./upload", (err, files) => {
+    fs.readdir("./upload/justification", (err, files) => {
         if (err) {
             res.status(404).json([]);
         } else {
