@@ -3,6 +3,7 @@ const { verifyToken, isAdmin, isOwner, isAdminOrOwner } = require("../middleware
 const router = express.Router();
 const db = require("../database/db");
 const fs = require("fs");
+const { validateJustificationInput } = require("../utils/justificationSecurity");
 
 /*****************************************
  *             Méthodes GET
@@ -173,7 +174,6 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
 /*****************************************
  *             Méthodes POST
  *****************************************/
-const { validateJustificationInput } = require("../utils/justificationSecurity");
 
 //Publication d'une justification
 router.post("/", verifyToken, (req, res) => {
