@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Title from "../../components/common/Title";
+import PageTitle from "../../components/common/PageTitle";
 import ReasonInput from "../../components/AbsenceForm/ReasonInput";
 import PeriodAbsence from "../../components/AbsenceForm/PeriodAbsence";
 import FileUpload from "../../components/AbsenceForm/FileUpload";
@@ -174,8 +174,8 @@ const StudentJustificationPage = () => {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const fileData = new FormData();
-                    // Naming convention: idAbsJustifiee-justN-YYYYMMDDMMSS
-                    const customName = `${firstJustificationId}-just${i + 1}-${timestamp}`;
+                    // Naming convention: idAbsJustifiee-docN-YYYYMMDDMMSS
+                    const customName = `${firstJustificationId}-doc${i + 1}-${timestamp}`;
 
                     fileData.append("file", file);
                     fileData.append("fileName", customName);
@@ -200,7 +200,7 @@ const StudentJustificationPage = () => {
 
     return (
         <div className="studentJustificationPage">
-            <Title>Justifier une absence</Title>
+            <PageTitle title="Justifier une absence" />
             <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} />
             <hr className="section-divider" />
             <ReasonInput

@@ -5,6 +5,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import "../../../style/VerticalBar.css";
 import getIconClass from "../../../functions/getIconClass";
 import NavItem from "./NavItem";
+import React from "react";
 
 function VerticalBar({ notificationCount = 0 }) {
     const { logout } = useAuth();

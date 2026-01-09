@@ -6,7 +6,7 @@ import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
 import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
-
+//bfuiegz
 export const routesConfig = [
     {
         path: "/admin",
@@ -32,7 +32,7 @@ export const routesConfig = [
         allowedRoles: ["student"],
         children: [
             { index: true, label: "Mon Espace", element: <StudentHomePage /> },
-            { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage /> },
+            { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
         ],
     },
 ];
