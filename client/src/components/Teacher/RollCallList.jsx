@@ -241,13 +241,6 @@ function RollCallList({ criteria, dateTime, subject }) {
         console.log("Sending Absence Payload:", payload);
 
         try {
-            const responseAbsence = await fetch("http://localhost:3000/absence/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-                credentials: "include",
-            });
-
             const responseAppel = await fetch("http://localhost:3000/appel/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -257,6 +250,19 @@ function RollCallList({ criteria, dateTime, subject }) {
                     loginProf: payload.loginProf,
                     code: payload.code,
                 }),
+                credentials: "include",
+            });
+
+            let idAppel = null;
+            if (responseAppel.ok) {
+                const data = await responseAppel.json();
+                idAppel = data.id;
+            }
+
+            const responseAbsence = await fetch("http://localhost:3000/absence/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...payload, idAppel }),
                 credentials: "include",
             });
 

@@ -55,10 +55,10 @@ router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const { start, end, loginProf, code } = req.body;
   let sql = `INSERT INTO Appel (debut, fin, loginProfesseur, codeMatiere)
                         VALUES(?, ?, ?, ?)`;
-  db.run(sql, [start, end, loginProf, code], (err) => {
+  db.run(sql, [start, end, loginProf, code], function (err) {
     if (err) return console.error(err.message);
 
-    res.status(200).json([]);
+    res.status(200).json({ id: this.lastID });
   });
 });
 
