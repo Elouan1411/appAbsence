@@ -230,6 +230,11 @@
     mask-image: url("../assets/history.svg");
 }
 
+.icon-absences {
+    -webkit-mask-image: url("../assets/absences.svg");
+    mask-image: url("../assets/absences.svg");
+}
+
 .icon-justification-student {
     -webkit-mask-image: url("../assets/user-round-x.svg");
     mask-image: url("../assets/justification.svg");

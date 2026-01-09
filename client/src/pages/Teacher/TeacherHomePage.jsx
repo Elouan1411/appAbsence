@@ -1,5 +1,5 @@
 import React from "react";
-import Title from "../../components/common/Title";
+import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -13,7 +13,7 @@ function TeacherHomePage() {
   };
   return (
     <div>
-      <Title>Page d'accueil enseignant</Title>
+      <PageTitle title="Page d'accueil enseignant" icon="tableau-de-bord" />
       <Button onClick={handleSignOut}>Se déconnecter</Button>
     </div>
   );

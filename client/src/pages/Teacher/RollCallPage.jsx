@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import Title from "../../components/common/Title";
+import "../../style/Teacher.css";
 import RollCallList from "../../components/Teacher/RollCallList";
 import SelectGroup from "../../components/Teacher/SelectGroup";
 import SelectTime from "../../components/Teacher/SelectTime";
 import SelectSubject from "../../components/Teacher/SelectSubject";
+import PageTitle from "../../components/common/PageTitle";
 
 function RollCallPage() {
   const [selection, setSelection] = useState(null);
@@ -11,26 +12,29 @@ function RollCallPage() {
   const [subject, setSubject] = useState("");
 
   return (
-    <div style={{ padding: "1rem", height: "97.5%", display: "flex", flexDirection: "column" }}>
-      <Title>Faire l'appel</Title>  
+    <div className="page-container">
+      <PageTitle title="Faire l'appel" icon="appel" />  
       
-      <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", flexWrap: "wrap"}}>
+      <div className="select-container">
           <SelectGroup 
             onValidate={(sel) => setSelection(sel)} 
             date={dateTime.date}
-            style={{ flex: 2, minWidth: "300px" }}
+            className="select-item-large"
+            initialData={null} 
           />
 
            <SelectTime 
              onChange={setDateTime} 
-             style={{ flex: 1, minWidth: "300px" }}
+             value={dateTime}
+             className="select-item"
            />
 
            <SelectSubject 
              onSelect={setSubject} 
              promo={selection?.promo}
              pair={selection?.semestre}
-             style={{ flex: 1, minWidth: "300px" }}
+             className="select-item"
+             value={subject} 
            />
       </div>
 
