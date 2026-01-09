@@ -47,7 +47,7 @@
     align-items: center;
     height: auto;
     min-height: 15vh;
-    width: 30vh;
+    width: 40vh;
     background-color: var(--card-bg);
     z-index: 1000;
     border-radius: 25px;
@@ -192,4 +192,8 @@
     width: calc(100% - 20px);
     padding: 10px;
     background-color: var(--header-background-color) !important;
+}
+
+.checkbox-container {
+    padding: 10px 0px 20px 0px;
 }

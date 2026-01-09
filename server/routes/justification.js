@@ -238,8 +238,7 @@ router.post("/", verifyToken, (req, res) => {
 router.put("/validate/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
     let body = req.body;
-    console.log(body);
-    let validite = Number(body.value != "deny");
+    let validite = body.value == "validate" ? 0 : body.value == "deny" ? 1 : 3;
     let motifValidite = body.reason;
     if (motifValidite == undefined) {
         motifValidite = "";
