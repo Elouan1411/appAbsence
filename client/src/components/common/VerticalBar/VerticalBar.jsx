@@ -3,6 +3,8 @@ import { useAuth } from "../../../hooks/useAuth";
 import { routesConfig } from "../../../routes.config";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import "../../../style/VerticalBar.css";
+import getIconClass from "../../../functions/getIconClass";
+import NavItem from "./NavItem";
 
 function VerticalBar({ notificationCount = 0 }) {
     const { logout } = useAuth();
@@ -31,14 +33,6 @@ function VerticalBar({ notificationCount = 0 }) {
     const currentRoleConfig = routesConfig.find((route) => route.allowedRoles.includes(role));
     const menuLinks = currentRoleConfig ? currentRoleConfig.children : [];
 
-    const getIconClass = (label) => {
-        return `icon-${label
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/\s+/g, "-")}`;
-    };
-
     return (
         <nav className={`sidebar ${isMenuOpen ? "open" : ""} ${isDarkMode ? "dark" : "light"}`}>
             <button className="vertical-bar-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -50,16 +44,7 @@ function VerticalBar({ notificationCount = 0 }) {
                     {menuLinks.map((link, index) => {
                         const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
-                        return (
-                            <li key={index} className="nav-item">
-                                <NavLink to={to} end={link.index} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                                    <span className={`icon ${getIconClass(link.label)}`}></span>
-                                    <span className="label">{link.label}</span>
-
-                                    {!isMenuOpen && <span className="tooltip">{link.label}</span>}
-                                </NavLink>
-                            </li>
-                        );
+                        return <NavItem link={link} index={index} to={to} isMenuOpen={isMenuOpen} />;
                     })}
                 </ul>
 
