@@ -112,6 +112,7 @@ function TeacherHistoryPage() {
                                 loginProf: user,
                                 debut: params.data.debut,
                                 fin: params.data.fin,
+                                idAppel: params.data.idAppel,
                             }),
                             credentials: "include",
                         }

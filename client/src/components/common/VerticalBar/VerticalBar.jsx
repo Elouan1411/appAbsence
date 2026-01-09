@@ -45,7 +45,7 @@ function VerticalBar({ notificationCount = 0 }) {
                     {menuLinks.map((link, index) => {
                         const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
-                        return <NavItem link={link} index={index} to={to} isMenuOpen={isMenuOpen} />;
+                        return <NavItem key={index} link={link} index={index} to={to} isMenuOpen={isMenuOpen} />;
                     })}
                 </ul>
 
