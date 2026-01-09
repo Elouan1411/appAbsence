@@ -32,20 +32,25 @@ router.delete("/", verifyToken, isAdmin, (req, res) => {
 router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     let body = req.body;
 
-    let sql = "SELECT * FROM Eleve ";
+    let sql = "SELECT * FROM Eleve";
+    let params = [];
+    let conditions = [];
 
-    let first = true;
+    // Liste blanche des colonnes autorisées pour éviter l'injection SQL via les noms de colonnes
+    const allowedColumns = ["numero", "loginENT", "Promo", "groupeTD", "groupeTP", "nom", "prenom", "promoPair", "groupeTDPair", "groupeTPPair"];
 
     for (let key in body) {
-        if (first) {
-            sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
-            first = false;
-            continue;
+        if (allowedColumns.includes(key) && body[key]) {
+            conditions.push(`${key} LIKE ?`);
+            params.push(`%${body[key]}%`);
         }
-        sql += "AND " + key + " LIKE '%" + body[key] + "%' ";
     }
 
-    db.all(sql, [], (err, rows) => {
+    if (conditions.length > 0) {
+        sql += " WHERE " + conditions.join(" AND ");
+    }
+
+    db.all(sql, params, (err, rows) => {
         if (err) return console.error(err.message);
         let data = rows;
         sql = "SELECT * FROM RSE WHERE code IN ( SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
