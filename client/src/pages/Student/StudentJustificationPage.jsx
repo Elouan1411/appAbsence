@@ -174,7 +174,7 @@ const StudentJustificationPage = () => {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const fileData = new FormData();
-                    // Naming convention: idAbsJustifiee-justN-YYYYMMDDMMSS
+                    // Naming convention: idAbsJustifiee-docN-YYYYMMDDMMSS
                     const customName = `${firstJustificationId}-doc${i + 1}-${timestamp}`;
 
                     fileData.append("file", file);
