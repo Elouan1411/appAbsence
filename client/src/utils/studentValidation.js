@@ -1,16 +1,5 @@
 // Nom des colonnes finales dans la grid
-const EXPECTED_HEADERS = [
-    "numero",
-    "loginENT",
-    "nom",
-    "prenom",
-    "promo",
-    "groupeTD",
-    "groupeTP",
-    "promoPair",
-    "groupeTDPair",
-    "groupeTPPair",
-];
+const EXPECTED_HEADERS = ["numero", "loginENT", "nom", "prenom", "promo", "groupeTD", "groupeTP", "promoPair", "groupeTDPair", "groupeTPPair"];
 
 // Regex pour matcher les en-têtes du fichier
 const HEADER_MATCH_PATTERNS = {
@@ -23,8 +12,7 @@ const HEADER_MATCH_PATTERNS = {
     // user, username, user_name, pseudo, compte,
     // ainsi que toute chaîne contenant "ent" ou "ldap" entouré d'espaces ou d'underscores
     // (ex : " ent", "_ent", " ent ", "_ent_", etc.)
-    loginENT:
-        /^(login([\s_-]??ent)?|id(entifiant)?|user([\s_-]??name)?|pseudo|compte|.*[\s_-]??ent[\s_-]??.*|.*[\s_-]??ldap[\s_-]??.*)$/i,
+    loginENT: /^(login([\s_-]??ent)?|id(entifiant)?|user([\s_-]??name)?|pseudo|compte|.*[\s_-]??ent[\s_-]??.*|.*[\s_-]??ldap[\s_-]??.*)$/i,
 
     // Match :
     // 'nom', 'nom_de_famille', 'nom de famille', 'lastname', 'familyname', 'family_name', 'name'
@@ -40,13 +28,11 @@ const HEADER_MATCH_PATTERNS = {
 
     // Match : 'groupe td', 'gpe td', 'gpr td', 'td groupe', 'g.td', 't.d.', 'td', 'travaux dirigé', 'travaux dirigés',
     // 'td-travaux-dirige', 'groupe-travaux-diriges', etc.
-    groupeTD:
-        /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?d\.?)|(travaux[\s_-]?dirig[eé]s?))([\s_-]?(groupe|n[o°]?))?$/i,
+    groupeTD: /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?d\.?)|(travaux[\s_-]?dirig[eé]s?))([\s_-]?(groupe|n[o°]?))?$/i,
 
     // Match : 'groupe tp', 'gpe tp', 'gpr tp', 'tp groupe', 'g.tp', 't.p.', 'tp', 'travaux pratique', 'travaux pratiques',
     // 'tp-travaux-pratique', 'groupe-travaux-pratiques', etc.
-    groupeTP:
-        /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?$/i,
+    groupeTP: /^(groupe|gp(e|r)|g\.?)?[\s_-]?((t\.?p\.?)|(travaux[\s_-]?pratiqu[eé]s?))([\s_-]?(groupe|n[o°]?))?$/i,
 
     // Match : 'promo pair', 'promotion pair', 'année paire', 'annee 2', 'promo p2', etc.
     promoPair: /^(promo(tion)?|anne[eé]?e?)[\s_-]?\(?(pair|2|p2|s2)\)?$/i,
@@ -69,10 +55,10 @@ const DATA_REGEX = {
     prenom: /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/,
     promo: /^(l[1-3]|m[1-2])$/i,
     groupeTD: /^td[1-9]$/i,
-    groupeTP: /^tp[1-9][a-z]$/i,
+    groupeTP: /^tp[1-9][a-z]?$/i,
     promoPair: /^(l[1-3]|m[1-2])$/i,
     groupeTDPair: /^td[1-9]$/i,
-    groupeTPPair: /^tp[1-9][a-z]$/i,
+    groupeTPPair: /^tp[1-9][a-z]?$/i,
 };
 
 /**
@@ -97,26 +83,16 @@ function matchHeader(cellHeader) {
 function validateStudentData(row) {
     const errors = {};
 
-    if (!DATA_REGEX.numero.test(String(row["numero"] || "").trim()))
-        errors["numero"] = true;
-    if (!DATA_REGEX.loginENT.test(String(row["loginENT"] || "").trim()))
-        errors["loginENT"] = true;
-    if (!DATA_REGEX.nom.test(String(row["nom"] || "").trim()))
-        errors["nom"] = true;
-    if (!DATA_REGEX.prenom.test(String(row["prenom"] || "").trim()))
-        errors["prenom"] = true;
-    if (!DATA_REGEX.promo.test(String(row["promo"] || "").trim()))
-        errors["promo"] = true;
-    if (!DATA_REGEX.groupeTD.test(String(row["groupeTD"] || "").trim()))
-        errors["groupeTD"] = true;
-    if (!DATA_REGEX.groupeTP.test(String(row["groupeTP"] || "").trim()))
-        errors["groupeTP"] = true;
-    if (!DATA_REGEX.promoPair.test(String(row["promoPair"] || "").trim()))
-        errors["promoPair"] = true;
-    if (!DATA_REGEX.groupeTDPair.test(String(row["groupeTDPair"] || "").trim()))
-        errors["groupeTDPair"] = true;
-    if (!DATA_REGEX.groupeTPPair.test(String(row["groupeTPPair"] || "").trim()))
-        errors["groupeTPPair"] = true;
+    if (!DATA_REGEX.numero.test(String(row["numero"] || "").trim())) errors["numero"] = true;
+    if (!DATA_REGEX.loginENT.test(String(row["loginENT"] || "").trim())) errors["loginENT"] = true;
+    if (!DATA_REGEX.nom.test(String(row["nom"] || "").trim())) errors["nom"] = true;
+    if (!DATA_REGEX.prenom.test(String(row["prenom"] || "").trim())) errors["prenom"] = true;
+    if (!DATA_REGEX.promo.test(String(row["promo"] || "").trim())) errors["promo"] = true;
+    if (!DATA_REGEX.groupeTD.test(String(row["groupeTD"] || "").trim())) errors["groupeTD"] = true;
+    if (!DATA_REGEX.groupeTP.test(String(row["groupeTP"] || "").trim())) errors["groupeTP"] = true;
+    if (!DATA_REGEX.promoPair.test(String(row["promoPair"] || "").trim())) errors["promoPair"] = true;
+    if (!DATA_REGEX.groupeTDPair.test(String(row["groupeTDPair"] || "").trim())) errors["groupeTDPair"] = true;
+    if (!DATA_REGEX.groupeTPPair.test(String(row["groupeTPPair"] || "").trim())) errors["groupeTPPair"] = true;
 
     return errors;
 }
@@ -139,9 +115,4 @@ const HEADER_DISPLAY_NAMES = {
     commentaire: "Commentaire",
 };
 
-export {
-    validateStudentData,
-    matchHeader,
-    EXPECTED_HEADERS,
-    HEADER_DISPLAY_NAMES,
-};
+export { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };
