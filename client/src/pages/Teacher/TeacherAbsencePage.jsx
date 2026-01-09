@@ -233,7 +233,7 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <PageTitle title="Historique des Appels" icon="absences" />
+            <PageTitle title="Historique des Absences" icon="absences" />
             <div className="grid-container">
                 <AgGridReact
                     rowData={rowData}

@@ -31,7 +31,6 @@ function TeacherHistoryPage() {
             );
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 setRowData(data);
             }
         } catch (error) {

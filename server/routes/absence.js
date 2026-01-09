@@ -75,8 +75,8 @@ router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
     LEFT JOIN JustificationAbsence J ON (
       A.numeroEtudiant = J.numeroEtudiant 
-      AND Ap.debut <= J.debut 
-      AND Ap.fin >= J.fin
+      AND Ap.debut >= J.debut 
+      AND Ap.fin <= J.fin
     )
     WHERE Ap.loginProfesseur = ?
     ORDER BY Ap.debut DESC
