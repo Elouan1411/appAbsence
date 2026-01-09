@@ -12,11 +12,11 @@ function importExcelInDB(filepath, fileExtension, promo) {
     return new Promise(async (resolve, reject) => {
         console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
 
-        // //TEMP
-        // //TELECHARGER SUR MON ORDI LE FICHIER :
-        // const fs = require("fs");
-        // fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
-        // // FIN TEMP
+        //TEMP
+        //TELECHARGER SUR MON ORDI LE FICHIER :
+        const fs = require("fs");
+        fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
+        // FIN TEMP
 
         try {
             const workbook = new exceljs.Workbook();
@@ -61,16 +61,14 @@ function importExcelInDB(filepath, fileExtension, promo) {
                 const login = row.getCell(2).value;
                 const nom = row.getCell(3).value;
                 const prenom = row.getCell(4).value;
-                const groupeTD = row.getCell(5).value;
-                const groupeTP = row.getCell(6).value;
+                const promo = row.getCell(5).value;
+                const groupeTD = row.getCell(6).value;
+                const groupeTP = row.getCell(7).value;
+                const promoPair = row.getCell(8).value;
+                const groupeTDPair = row.getCell(9).value;
+                const groupeTPPair = row.getCell(10).value;
 
-                if (!numero && !login) continue;
-
-                const promoPair = promo;
-                const groupeTDPair = groupeTD;
-                const groupeTPPair = groupeTP;
-
-                outputData.push(numero, login, promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair);
+                outputData.push(numero, login, nom, prenom, promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair);
 
                 placeholders.push("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             }
@@ -81,7 +79,7 @@ function importExcelInDB(filepath, fileExtension, promo) {
             }
 
             const sql =
-                `INSERT OR REPLACE INTO Eleve (numero, loginENT, Promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
+                `INSERT OR REPLACE INTO Eleve (numero, loginENT, nom, prenom, Promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
                 placeholders.join(", ");
 
             console.log(`[DEBUG] Executing Bulk Insert for ${placeholders.length} records...`);
