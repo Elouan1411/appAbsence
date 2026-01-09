@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import "../../style/icon.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { lightTheme, darkTheme } from "../../constants/grid";
+import PageTitle from "../../components/common/PageTitle";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -22,21 +23,15 @@ function TeacherHistoryPage() {
     const fetchHistory = async () => {
         if (!user) return;
         try {
-            const response = await fetch(
-                `http://localhost:3000/absence/history/:${user}`,
-                {
-                    credentials: "include",
-                }
-            );
+            const response = await fetch(`http://localhost:3000/absence/history/:${user}`, {
+                credentials: "include",
+            });
             if (response.ok) {
                 const data = await response.json();
                 setRowData(data);
             }
         } catch (error) {
-            console.error(
-                "Erreur lors de la récupération de l'historique:",
-                error
-            );
+            console.error("Erreur lors de la récupération de l'historique:", error);
         }
     };
 
@@ -95,27 +90,19 @@ function TeacherHistoryPage() {
     const ActionRenderer = (params) => {
         const handleDelete = async () => {
             //  if (window.confirm(`Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
-            if (
-                await alertConfirm(
-                    "Êtes-vous sûr ?",
-                    `Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`
-                )
-            ) {
+            if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
                 try {
-                    const response = await fetch(
-                        "http://localhost:3000/absence",
-                        {
-                            method: "DELETE",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                id: params.data.numeroEtudiant,
-                                loginProf: user,
-                                debut: params.data.debut,
-                                fin: params.data.fin,
-                            }),
-                            credentials: "include",
-                        }
-                    );
+                    const response = await fetch("http://localhost:3000/absence", {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            id: params.data.numeroEtudiant,
+                            loginProf: user,
+                            debut: params.data.debut,
+                            fin: params.data.fin,
+                        }),
+                        credentials: "include",
+                    });
                     if (response.ok) {
                         toast.success("Absence supprimée avec succès");
                         fetchHistory();
@@ -182,14 +169,8 @@ function TeacherHistoryPage() {
                     const month = parseInt(valueStr.substring(4, 6), 10) - 1;
                     const day = parseInt(valueStr.substring(6, 8), 10);
 
-                    const hour =
-                        valueStr.length >= 10
-                            ? parseInt(valueStr.substring(8, 10), 10)
-                            : 0;
-                    const min =
-                        valueStr.length >= 12
-                            ? parseInt(valueStr.substring(10, 12), 10)
-                            : 0;
+                    const hour = valueStr.length >= 10 ? parseInt(valueStr.substring(8, 10), 10) : 0;
+                    const min = valueStr.length >= 12 ? parseInt(valueStr.substring(10, 12), 10) : 0;
 
                     const date = new Date(year, month, day, hour, min);
 
@@ -258,7 +239,7 @@ function TeacherHistoryPage() {
                 flexDirection: "column",
             }}
         >
-            <Title>Historique des Appels</Title>
+            <PageTitle title={"Historique des appels"} icon={"icon-history"} />
             <div style={{ flex: 1, width: "100%", marginTop: "1rem" }}>
                 <AgGridReact
                     rowData={rowData}

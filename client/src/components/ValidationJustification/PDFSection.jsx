@@ -2,7 +2,7 @@ import React from "react";
 import CustomLoader from "../common/CustomLoader";
 import PDFDocument from "../common/PDFDocument";
 
-const URL_FILE = "http://localhost:3000/upload/";
+const URL_FILE = "http://localhost:3000/upload/justification/";
 
 function PDFSection({ setDocIndex, file, isLoading, docIndex, documents }) {
     return (

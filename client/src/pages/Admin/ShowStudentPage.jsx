@@ -5,7 +5,7 @@ import PageTitle from "../../components/common/PageTitle";
 function ShowStudentPage() {
     return (
         <div className="showStudentPage">
-            <PageTitle title="Liste des élèves" />
+            <PageTitle title="Liste des élèves" icon={"icon-student-list"} />
             <div className="studentListContainer">
                 <StudentList />
             </div>

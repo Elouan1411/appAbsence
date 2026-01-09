@@ -199,30 +199,32 @@ const StudentJustificationPage = () => {
     };
 
     return (
-        <div className="studentJustificationPage">
-            <PageTitle title="Justifier une absence" />
-            <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} />
-            <hr className="section-divider" />
-            <ReasonInput
-                reason={reason}
-                comment={comment}
-                onReasonChange={(val) => {
-                    setReason(val);
-                    if (val) setReasonError(false);
-                }}
-                onCommentChange={(val) => {
-                    setComment(val);
-                    if (val) setReasonError(false);
-                }}
-                error={reasonError}
-            />
-            <hr className="section-divider" />
-            <FileUpload files={files} setFiles={setFiles} />
+        <div className="student-justification-container">
+            <PageTitle title="Justifier une absence" icon={"icon-justification-student"} />
+            <div className="studentJustificationPage">
+                <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} />
+                <hr className="section-divider" />
+                <ReasonInput
+                    reason={reason}
+                    comment={comment}
+                    onReasonChange={(val) => {
+                        setReason(val);
+                        if (val) setReasonError(false);
+                    }}
+                    onCommentChange={(val) => {
+                        setComment(val);
+                        if (val) setReasonError(false);
+                    }}
+                    error={reasonError}
+                />
+                <hr className="section-divider" />
+                <FileUpload files={files} setFiles={setFiles} />
 
-            <div style={{ marginTop: "30px" }}>
-                <Button onClick={handleSubmit} className="submit-button" disabled={isSubmitting}>
-                    {isSubmitting ? <CustomLoader /> : "Envoyer la justification"}
-                </Button>
+                <div style={{ marginTop: "30px" }}>
+                    <Button onClick={handleSubmit} className="submit-button" disabled={isSubmitting}>
+                        {isSubmitting ? <CustomLoader /> : "Envoyer la justification"}
+                    </Button>
+                </div>
             </div>
         </div>
     );

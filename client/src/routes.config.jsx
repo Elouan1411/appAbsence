@@ -13,25 +13,25 @@ export const routesConfig = [
         allowedRoles: ["admin"],
 
         children: [
-            { index: true, label: "Tableau de bord", element: <AdminHomePage /> },
-            { path: "import", label: "Importer Élèves", element: <ImportStudentsPage /> },
-            { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage /> },
+            { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
+            { path: "import", label: "Importer Élèves", element: <ImportStudentsPage />, icon: "icon-import-student" },
+            { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage />, icon: "icon-student-list" },
         ],
     },
     {
         path: "/teacher",
         allowedRoles: ["teacher"],
         children: [
-            { index: true, label: "Tableau de bord", element: <TeacherHomePage /> },
-            { path: "rollcall", label: "Appel", element: <RollCallPage /> },
-            { path: "history", label: "Historique", element: <TeacherHistoryPage /> },
+            { index: true, label: "Accueil", element: <TeacherHomePage />, icon: "icon-home" },
+            { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
+            { path: "history", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
         ],
     },
     {
         path: "/dashboard",
         allowedRoles: ["student"],
         children: [
-            { index: true, label: "Mon Espace", element: <StudentHomePage /> },
+            { index: true, label: "Mon Espace", element: <StudentHomePage />, icon: "icon-home" },
             { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
         ],
     },
