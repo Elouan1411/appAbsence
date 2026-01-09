@@ -5,13 +5,10 @@ import Grid from "../../components/ImportStudentsPage/Grid";
 import Button from "../../components/common/Button"; // Notre composant bouton
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
-import {
-    matchHeader,
-    validateStudentData,
-    HEADER_DISPLAY_NAMES,
-} from "../../utils/studentValidation";
+import { matchHeader, validateStudentData, HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import PageTitle from "../../components/common/PageTitle";
 
 function ImportStudentsPage() {
     //TODO: (@elouan) gérer cas si nom de colonne vide
@@ -25,9 +22,7 @@ function ImportStudentsPage() {
         const match = matchHeader(newName);
 
         if (!match) {
-            toast.error(
-                `Le nom "${newName}" ne correspond à aucune colonne attendue.`
-            );
+            toast.error(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
             return;
         }
 
@@ -62,16 +57,12 @@ function ImportStudentsPage() {
             });
         });
 
-        toast.success(
-            `Super, la colonne est désormais sous le bon nom : "${match}" !`
-        );
+        toast.success(`Super, la colonne est désormais sous le bon nom : "${match}" !`);
     };
 
     const handleDeleteColumn = (colId) => {
         // on retire la colonne de la definitions des colonnes
-        setColDefs((currentCols) =>
-            currentCols.filter((col) => col.field !== colId)
-        );
+        setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
 
         setRowData((currentRows) => {
             return currentRows.map((row) => {
@@ -84,9 +75,7 @@ function ImportStudentsPage() {
     };
 
     const handleDeleteRow = (rowIndex) => {
-        setRowData((currentRows) =>
-            currentRows.filter((_, index) => index !== rowIndex)
-        );
+        setRowData((currentRows) => currentRows.filter((_, index) => index !== rowIndex));
         toast.success("Ligne supprimée avec succès.");
     };
 
@@ -108,9 +97,7 @@ function ImportStudentsPage() {
     };
 
     const confirm = () => {
-        const confirmed = alertConfirm(
-            "Êtes-vous surs de vouloir sauvegarder ?"
-        );
+        const confirmed = alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
         if (confirmed) {
             handleSaveAndSend();
         }
@@ -135,13 +122,9 @@ function ImportStudentsPage() {
         }
 
         // Vérification si y a la présence de colonne ignorées
-        const hasIgnoredCols = colDefs.some((col) =>
-            col.field.startsWith("_ignored_")
-        );
+        const hasIgnoredCols = colDefs.some((col) => col.field.startsWith("_ignored_"));
         if (hasIgnoredCols) {
-            toast.error(
-                "Il y a des colonnes ignorées (grisées) !\nImportation impossible"
-            );
+            toast.error("Il y a des colonnes ignorées (grisées) !\nImportation impossible");
             return;
         }
 
@@ -168,15 +151,12 @@ function ImportStudentsPage() {
         formData.append("promo", "L3");
 
         try {
-            const response = await fetch(
-                `http://localhost:3000/eleve/studentList`,
-                {
-                    method: "POST",
-                    headers: {},
-                    credentials: "include",
-                    body: formData,
-                }
-            );
+            const response = await fetch(`http://localhost:3000/eleve/studentList`, {
+                method: "POST",
+                headers: {},
+                credentials: "include",
+                body: formData,
+            });
 
             const values = await response.json();
             if (response.ok) {
@@ -193,10 +173,7 @@ function ImportStudentsPage() {
         //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
         //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
         <div>
-            <div className="title-container">
-                <span className="icon-big icon-importer-eleves"></span>
-                <Title>Importer un groupe d'étudiants</Title>
-            </div>
+            <PageTitle title="Importer Élèves" />
             <div className="content-container">
                 {rowData.length > 0 ? (
                     <div style={{ marginTop: 20, width: "100%" }}>
@@ -208,9 +185,7 @@ function ImportStudentsPage() {
                             }}
                         >
                             {/* Le Bouton de sauvegarde */}
-                            <Button onClick={confirm}>
-                                Sauvegarder et Envoyer les modifications
-                            </Button>
+                            <Button onClick={confirm}>Sauvegarder et Envoyer les modifications</Button>
                         </div>
 
                         <Grid
@@ -224,10 +199,7 @@ function ImportStudentsPage() {
                         />
                     </div>
                 ) : (
-                    <ImportZone
-                        setRowData={setRowData}
-                        setColDefs={setColDefs}
-                    />
+                    <ImportZone setRowData={setRowData} setColDefs={setColDefs} />
                 )}
             </div>
         </div>

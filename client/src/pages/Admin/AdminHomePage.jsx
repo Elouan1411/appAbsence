@@ -6,6 +6,7 @@ import CardContainer from "../../components/common/CardContainer";
 import JustificationList from "../../components/JustificationList/JustificationList";
 import ValidationView from "../../components/ValidationJustification/ValidationView";
 import { useNavigate } from "react-router-dom";
+import PageTitle from "../../components/common/PageTitle";
 
 function AdminHomePage() {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -55,11 +56,7 @@ function AdminHomePage() {
 
     return (
         <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
-            <div className="title-container">
-                <span className="icon-big icon-tableau-de-bord"></span>
-                <Title>Tableau de bord</Title>
-            </div>
-
+            <PageTitle title="Tableau de bord" />
             <CardContainer>
                 <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"} />
                 <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
