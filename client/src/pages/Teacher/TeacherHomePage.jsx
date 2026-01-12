@@ -2,7 +2,6 @@ import React from "react";
 import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import { useAuth } from "../../hooks/useAuth";
-import PageTitle from "../../components/common/PageTitle";
 
 function TeacherHomePage() {
     const { logout } = useAuth();
@@ -14,7 +13,7 @@ function TeacherHomePage() {
     };
     return (
         <div>
-            <PageTitle title="Page d'accueil enseignant" icon="tableau-de-bord" />
+            <PageTitle title="Page d'accueil enseignant" icon="icon-home" />
             <Button onClick={handleSignOut}>Se déconnecter</Button>
         </div>
     );

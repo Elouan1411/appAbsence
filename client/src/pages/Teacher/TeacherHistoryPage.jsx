@@ -11,7 +11,6 @@ import { useTheme } from "../../hooks/useTheme";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import RollCallList from "../../components/Teacher/RollCallList";
 import BackButton from "../../components/common/BackButton";
-import PageTitle from "../../components/common/PageTitle";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -169,7 +168,7 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <PageTitle title="Historique des Appels" icon="historique" />
+            <PageTitle title="Historique des Appels" icon="icon-history" />
             <div className="grid-container">
                 <AgGridReact
                     rowData={rowData}

@@ -5,7 +5,6 @@ import SelectGroup from "../../components/Teacher/SelectGroup";
 import SelectTime from "../../components/Teacher/SelectTime";
 import SelectSubject from "../../components/Teacher/SelectSubject";
 import PageTitle from "../../components/common/PageTitle";
-import PageTitle from "../../components/common/PageTitle";
 
 function RollCallPage() {
     const [selection, setSelection] = useState(null);
@@ -14,7 +13,7 @@ function RollCallPage() {
 
     return (
         <div className="page-container">
-            <PageTitle title="Faire l'appel" icon="appel" />
+            <PageTitle title="Faire l'appel" icon="icon-rollcall" />
 
             <div className="select-container">
                 <SelectGroup onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} />
