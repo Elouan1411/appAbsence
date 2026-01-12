@@ -7,6 +7,7 @@ import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
+import React from "react";
 //bfuiegz
 export const routesConfig = [
     {
