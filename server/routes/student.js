@@ -153,7 +153,7 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
         const fileExtension = path.extname(fileObject.originalFilename);
         const fileName = `${promo}_${timestamp}${fileExtension}`;
         // Fix: Go up one level from 'routes' to 'server' then 'upload'
-        const targetPath = path.join(__dirname, "../upload", fileName);
+        const targetPath = path.join(__dirname, "../upload/student-list", fileName);
 
         // Copy file to the upload directory
         fs.copyFile(fileObject.filepath, targetPath, async (err) => {

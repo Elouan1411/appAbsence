@@ -23,21 +23,15 @@ function TeacherHistoryPage() {
     const fetchHistory = async () => {
         if (!user) return;
         try {
-            const response = await fetch(
-                `http://localhost:3000/appel/:${user}`,
-                {
-                    credentials: "include",
-                }
-            );
+            const response = await fetch(`http://localhost:3000/appel/:${user}`, {
+                credentials: "include",
+            });
             if (response.ok) {
                 const data = await response.json();
                 setRowData(data);
             }
         } catch (error) {
-            console.error(
-                "Erreur lors de la récupération de l'historique:",
-                error
-            );
+            console.error("Erreur lors de la récupération de l'historique:", error);
         }
     };
 
@@ -51,7 +45,7 @@ function TeacherHistoryPage() {
             promo: callData.promo,
             groupeTD: callData.groupeTD,
             groupeTP: callData.groupeTP,
-            semestre: callData.libelle.includes("S1") || callData.libelle.includes("S3") || callData.libelle.includes("S5") ? "1" : "2" 
+            semestre: callData.libelle.includes("S1") || callData.libelle.includes("S3") || callData.libelle.includes("S5") ? "1" : "2",
         };
         setSelectedCall({ callId: callData.idAppel, callData, groupData });
     };
@@ -81,11 +75,11 @@ function TeacherHistoryPage() {
                         const hour = parseInt(valueStr.substring(8, 10), 10);
                         const min = parseInt(valueStr.substring(10, 12), 10);
                         const date = new Date(year, month, day, hour, min);
-                         if (!isNaN(date.getTime())) {
+                        if (!isNaN(date.getTime())) {
                             return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
                         }
                     }
-                    
+
                     const date = new Date(params.value);
                     if (!isNaN(date.getTime())) {
                         return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
@@ -107,29 +101,29 @@ function TeacherHistoryPage() {
                 field: "promo",
                 headerName: "Promo",
                 filter: true,
-                width: 100
+                width: 100,
             },
             {
                 field: "groupeTD",
                 headerName: "TD",
                 filter: true,
-                width: 100
+                width: 100,
             },
-             {
+            {
                 field: "groupeTP",
                 headerName: "TP",
                 filter: true,
-                 width: 100
-            }
+                width: 100,
+            },
         ],
         []
     );
 
-     const defaultColDef = useMemo(
+    const defaultColDef = useMemo(
         () => ({
             resizable: true,
             sortable: true,
-            filter: true
+            filter: true,
         }),
         []
     );
@@ -140,14 +134,14 @@ function TeacherHistoryPage() {
         const strEnd = String(callData.fin);
 
         const parse = (str) => {
-             if(!str || str.length < 12) return { date: "", time: "" };
-             const year = str.substring(0, 4);
-             const month = str.substring(4, 6);
-             const day = str.substring(6, 8);
-             const hour = str.substring(8, 10);
-             const min = str.substring(10, 12);
-             return { date: `${year}-${month}-${day}`, time: `${hour}:${min}` };
-        }
+            if (!str || str.length < 12) return { date: "", time: "" };
+            const year = str.substring(0, 4);
+            const month = str.substring(4, 6);
+            const day = str.substring(6, 8);
+            const hour = str.substring(8, 10);
+            const min = str.substring(10, 12);
+            return { date: `${year}-${month}-${day}`, time: `${hour}:${min}` };
+        };
         const start = parse(strStart);
         const end = parse(strEnd);
         return { date: start.date, startTime: start.time, endTime: end.time };
@@ -158,11 +152,11 @@ function TeacherHistoryPage() {
         return (
             <div className="page-container">
                 <div className="page-header">
-                    <BackButton onClick={handleBack} label=""/>
+                    <BackButton onClick={handleBack} label="" />
                     <PageTitle title={`Modifier l'appel - ${selectedCall.callData.libelle}`} icon="appel" />
                 </div>
-                 <RollCallList 
-                    criteria={selectedCall.groupData} 
+                <RollCallList
+                    criteria={selectedCall.groupData}
                     dateTime={dateTime}
                     subject={selectedCall.callData.codeMatiere ?? selectedCall.callData.code}
                     callId={selectedCall.callId}
@@ -174,7 +168,7 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <PageTitle title="Historique des Appels" icon="historique" />
+            <PageTitle title="Historique des Appels" icon="icon-history" />
             <div className="grid-container">
                 <AgGridReact
                     rowData={rowData}
@@ -184,7 +178,7 @@ function TeacherHistoryPage() {
                     pagination={true}
                     paginationPageSize={100}
                     onRowClicked={handleRowClick}
-                    rowStyle={{ cursor: 'pointer' }}
+                    rowStyle={{ cursor: "pointer" }}
                 />
             </div>
         </div>

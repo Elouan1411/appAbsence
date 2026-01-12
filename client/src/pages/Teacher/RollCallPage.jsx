@@ -7,44 +7,25 @@ import SelectSubject from "../../components/Teacher/SelectSubject";
 import PageTitle from "../../components/common/PageTitle";
 
 function RollCallPage() {
-  const [selection, setSelection] = useState(null);
-  const [dateTime, setDateTime] = useState({ date: "", startTime: "", endTime: "" });
-  const [subject, setSubject] = useState("");
+    const [selection, setSelection] = useState(null);
+    const [dateTime, setDateTime] = useState({ date: "", startTime: "", endTime: "" });
+    const [subject, setSubject] = useState("");
 
-  return (
-    <div className="page-container">
-      <PageTitle title="Faire l'appel" icon="appel" />  
-      
-      <div className="select-container">
-          <SelectGroup 
-            onValidate={(sel) => setSelection(sel)} 
-            date={dateTime.date}
-            className="select-item-large"
-            initialData={null} 
-          />
+    return (
+        <div className="page-container">
+            <PageTitle title="Faire l'appel" icon="icon-rollcall" />
 
-           <SelectTime 
-             onChange={setDateTime} 
-             value={dateTime}
-             className="select-item"
-           />
+            <div className="select-container">
+                <SelectGroup onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} />
 
-           <SelectSubject 
-             onSelect={setSubject} 
-             promo={selection?.promo}
-             pair={selection?.semestre}
-             className="select-item"
-             value={subject} 
-           />
-      </div>
+                <SelectTime onChange={setDateTime} value={dateTime} className="select-item" />
 
-      <RollCallList 
-        criteria={selection} 
-        dateTime={dateTime}
-        subject={subject}
-      />
-    </div>
-  );
+                <SelectSubject onSelect={setSubject} promo={selection?.promo} pair={selection?.semestre} className="select-item" value={subject} />
+            </div>
+
+            <RollCallList criteria={selection} dateTime={dateTime} subject={subject} />
+        </div>
+    );
 }
 
 export default RollCallPage;

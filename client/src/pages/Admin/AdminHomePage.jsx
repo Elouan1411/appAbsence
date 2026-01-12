@@ -56,7 +56,7 @@ function AdminHomePage() {
 
     return (
         <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
-            <PageTitle title="Tableau de bord" />
+            <PageTitle title="Tableau de bord" icon={"icon-board-table"} />
             <CardContainer>
                 <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"} />
                 <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />

@@ -5,7 +5,7 @@ import "../../style/Student.css";
 function StudentHomePage() {
     return (
         <div>
-            <PageTitle title="Accueil" />
+            <PageTitle title="Mon espace" icon={"icon-home"} />
         </div>
     );
 }

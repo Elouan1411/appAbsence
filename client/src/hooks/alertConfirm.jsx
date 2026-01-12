@@ -10,9 +10,9 @@ export function alertConfirm(title, message, toInput = false) {
                     title={title}
                     message={message}
                     toInput={toInput}
-                    onConfirm={(motifSaisi) => {
+                    onConfirm={(motifSaisi, type) => {
                         toast.remove(t.id);
-                        resolve({ isConfirmed: true, motif: motifSaisi });
+                        resolve({ isConfirmed: true, motif: motifSaisi, type: type });
                     }}
                     onCancel={() => {
                         toast.remove(t.id);

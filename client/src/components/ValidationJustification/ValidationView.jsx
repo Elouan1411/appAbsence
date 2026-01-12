@@ -20,8 +20,8 @@ export default function ValidationView({ selectedItem, reload }) {
     if (!selectedItem) return null;
 
     const handleConfirmValidation = async () => {
-        const confirmed = await alertConfirm("Attention", "Êtes-vous surs de vouloir valider cette absence ?");
-        if (confirmed) {
+        const result = await alertConfirm("Attention", "Êtes-vous surs de vouloir valider cette absence ?");
+        if (result.isConfirmed) {
             handleUpdate(true);
         }
     };
@@ -30,11 +30,11 @@ export default function ValidationView({ selectedItem, reload }) {
         const result = await alertConfirm("Attention", "Êtes-vous surs de vouloir refuser cette absence ?", true);
 
         if (result.isConfirmed) {
-            handleUpdate(false, result.motif);
+            handleUpdate(false, result.motif, result.type);
         }
     };
 
-    const handleUpdate = (validate, reason = "") => {
+    const handleUpdate = (validate, reason = "", type = 1) => {
         try {
             selectedItem.liste_creneaux.forEach(async (element) => {
                 setValidationLoading(true);
@@ -45,7 +45,7 @@ export default function ValidationView({ selectedItem, reload }) {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        value: validate ? "validate" : "deny",
+                        value: validate ? "validate" : type == false ? "deny" : "modification",
                         reason: reason != "" ? reason : "Justificatifs valides",
                     }),
                 });

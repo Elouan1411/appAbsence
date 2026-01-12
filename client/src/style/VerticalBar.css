@@ -174,15 +174,15 @@
     background-color: var(--accent-color);
 }
 
-.icon-tableau-de-bord {
+.icon-board-table {
     -webkit-mask-image: url("../assets/dashboard.svg");
     mask-image: url("../assets/dashboard.svg");
 }
 
-.icon-mon-espace {
+/* .icon-my-space {
     -webkit-mask-image: url("../assets/dashboard.svg");
     mask-image: url("../assets/dashboard.svg");
-}
+} */
 
 .icon-settings {
     -webkit-mask-image: url("../assets/settings.svg");
@@ -209,23 +209,23 @@
     mask-image: url("../assets/moon.svg");
 }
 
-.icon-importer-eleves {
+.icon-import-student {
     -webkit-mask-image: url("../assets/import.svg");
     mask-image: url("../assets/import.svg");
     rotate: 90deg;
 }
 
-.icon-liste-des-eleves {
+.icon-student-list {
     -webkit-mask-image: url("../assets/student_list.svg");
     mask-image: url("../assets/student_list.svg");
 }
 
-.icon-appel {
+.icon-rollcall {
     -webkit-mask-image: url("../assets/roll_call.svg");
     mask-image: url("../assets/roll_call.svg");
 }
 
-.icon-historique {
+.icon-history {
     -webkit-mask-image: url("../assets/history.svg");
     mask-image: url("../assets/history.svg");
 }
@@ -238,6 +238,11 @@
 .icon-justification-student {
     -webkit-mask-image: url("../assets/justification.svg");
     mask-image: url("../assets/justification.svg");
+}
+
+.icon-home {
+    -webkit-mask-image: url("../assets/home.svg");
+    mask-image: url("../assets/home.svg");
 }
 
 .label {

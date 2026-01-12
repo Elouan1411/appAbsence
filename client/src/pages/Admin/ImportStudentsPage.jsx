@@ -173,7 +173,7 @@ function ImportStudentsPage() {
         //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
         //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
         <div>
-            <PageTitle title="Importer Élèves" />
+            <PageTitle title="Importer Élèves" icon={"icon-import-student"} />
             <div className="content-container">
                 {rowData.length > 0 ? (
                     <div style={{ marginTop: 20, width: "100%" }}>

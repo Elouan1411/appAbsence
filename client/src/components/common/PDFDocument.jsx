@@ -43,29 +43,14 @@ export default function PDFDocument({ file }) {
     return (
         <div className="pdf-content">
             <div className="pdf-container">
-                <Document
-                    file={file}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    loading="Chargement du PDF..."
-                >
-                    <Page
-                        pageNumber={pageNumber}
-                        width={595}
-                        renderAnnotationLayer={false}
-                        renderTextLayer={false}
-                        height={height}
-                    />
+                <Document file={file} onLoadSuccess={onDocumentLoadSuccess} loading="Chargement du PDF...">
+                    <Page pageNumber={pageNumber} width={595} renderAnnotationLayer={false} renderTextLayer={false} height={height} />
                 </Document>
             </div>
             <div className="pdf-buttons">
                 <div className="pdf-toolbar">
                     {pageNumber > 1 ? (
-                        <button
-                            onClick={() =>
-                                setPageNumber((p) => Math.max(p - 1, 1))
-                            }
-                            disabled={pageNumber === 1}
-                        >
+                        <button onClick={() => setPageNumber((p) => Math.max(p - 1, 1))} disabled={pageNumber === 1}>
                             <span className="icon-previous-button"></span>
                         </button>
                     ) : (
@@ -74,13 +59,8 @@ export default function PDFDocument({ file }) {
                     <span className="page-text">
                         Page {pageNumber} / {numPages}
                     </span>
-                    {numPages > 1 ? (
-                        <button
-                            onClick={() =>
-                                setPageNumber((p) => Math.min(p + 1, numPages))
-                            }
-                            disabled={pageNumber === numPages}
-                        >
+                    {numPages > 1 && pageNumber < numPages ? (
+                        <button onClick={() => setPageNumber((p) => Math.min(p + 1, numPages))} disabled={pageNumber === numPages}>
                             <span className="icon-next-button"></span>
                         </button>
                     ) : (
