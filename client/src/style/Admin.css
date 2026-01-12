@@ -542,3 +542,54 @@ p {
 .pdf-container {
     min-height: 450px;
 }
+
+.add-teacher-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 100%;
+}
+
+.content-import {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-import > .add-button {
+    width: 10%;
+    padding: 0;
+}
+
+.add-separator {
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 40%;
+}
+
+.add-separator::before,
+.add-separator::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.add-separator::before {
+    margin-right: 10px;
+}
+
+.add-separator::after {
+    margin-left: 10px;
+}
+
+.add-separator span {
+    white-space: nowrap;
+    font-size: 20px;
+    color: var(--primary-color);
+}

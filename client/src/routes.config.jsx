@@ -8,6 +8,7 @@ import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import React from "react";
+import AddTeacherPage from "./pages/Admin/AddTeacherPage";
 //bfuiegz
 export const routesConfig = [
     {
@@ -18,6 +19,7 @@ export const routesConfig = [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
             { path: "import", label: "Importer Élèves", element: <ImportStudentsPage />, icon: "icon-import-student" },
             { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage />, icon: "icon-student-list" },
+            { path: "teacherlist", label: "Liste des Professeurs", element: <AddTeacherPage />, icon: "icon-student-list" },
         ],
     },
     {
