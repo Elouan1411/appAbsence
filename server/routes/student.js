@@ -114,15 +114,59 @@ router.get("/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-router.post("/", verifyToken, isAdmin, (req, res) => {
-    let { number, login, name, forname, promo, td, tp, promop, tdp, tpp } = req.body;
-    const sql = `INSERT INTO Eleve (numero, loginENT, Promo, groupeTD, groupeTP, nom, prenom, promoPair, groupeTDPair, groupeTPPair)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+router.post("/add", verifyToken, isAdmin, (req, res) => {
+    const { numeroEtudiant, loginENT, nom, prenom, promo, groupeTD, groupeTP, rse = [] } = req.body;
 
-    db.run(sql, [number, login, name, forname, promo, td, tp, promop, tdp, tpp], (err) => {
-        if (err) return console.error(err.message);
+    const handleRSE = () => {
+        if (!Array.isArray(rse) || rse.length === 0) return;
 
-        console.log("Values have been add successfully.");
+        rse.forEach((element) => {
+            const sqlRSE = "INSERT INTO RSEAnnee (numeroEtudiant, codeRSE) VALUES (?, ?)";
+            if (element && element.code) {
+                db.run(sqlRSE, [numeroEtudiant, element.code], (err) => {
+                    if (err) console.error("Erreur ajout RSE:", err.message);
+                });
+            }
+        });
+    };
+
+    const sqlCheck = `SELECT count(*) as count FROM Eleve WHERE numero = ?`;
+
+    db.get(sqlCheck, [numeroEtudiant], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            return res.status(500).json({ error: "Erreur serveur vérification." });
+        }
+
+        if (row.count > 0) {
+            const sqlUpdate = `UPDATE Eleve 
+                               SET loginENT = ?, nom = ?, prenom = ?, Promo = ?, 
+                                   groupeTD = ?, groupeTP = ?, promoPair = ?, 
+                                   groupeTDPair = ?, groupeTPPair = ?
+                               WHERE numero = ?`;
+
+            db.run(sqlUpdate, [loginENT, nom, prenom, promo, groupeTD, groupeTP, promo, groupeTD, groupeTP, numeroEtudiant], function (err) {
+                if (err) {
+                    console.error(err.message);
+                    return res.status(500).json({ error: "Erreur mise à jour." });
+                }
+                handleRSE();
+
+                res.status(200).json({ message: "Mise à jour effectuée." });
+            });
+        } else {
+            const sqlInsert = `INSERT INTO Eleve (numero, loginENT, nom, prenom, Promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair)
+                               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+            db.run(sqlInsert, [numeroEtudiant, loginENT, nom, prenom, promo, groupeTD, groupeTP, promo, groupeTD, groupeTP], function (err) {
+                if (err) {
+                    console.error(err.message);
+                    return res.status(500).json({ error: "Erreur insertion." });
+                }
+                handleRSE();
+                res.status(201).json({ message: "Étudiant ajouté." });
+            });
+        }
     });
 });
 

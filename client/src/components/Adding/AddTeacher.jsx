@@ -1,23 +1,22 @@
-import React, { useState, useRef } from "react";
-import ImportZone from "../../components/ImportStudentsPage/ImportZone";
-import Title from "../../components/common/Title";
-import Grid from "../../components/ImportStudentsPage/Grid";
-import Button from "../../components/common/Button"; // Notre composant bouton
-import ExcelJS from "exceljs";
-import "../../style/Admin.css";
-import { matchHeader, validateStudentData, HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
+import React from "react";
+import { useState } from "react";
+import ImportZone from "./AddStudents/ImportZoneTeacher";
+import PageTitle from "../common/PageTitle";
+import Button from "../common/Button";
+import Separator from "./Separator";
+import { useRef } from "react";
+import { matchHeader, validateTeacherData, HEADER_DISPLAY_NAMES } from "../../utils/teacherValidation";
+import Grid from "./AddStudents/Grid";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
-import PageTitle from "../../components/common/PageTitle";
+import ExcelJS from "exceljs";
 
-function ImportStudentsPage() {
-    //TODO: (@elouan) gérer cas si nom de colonne vide
+function AddTeacherPage({ openModal }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
 
     const gridRef = useRef(null);
 
-    // fonction appelée via el Context de la Grid depius EditableHeader
     const handleRename = (colId, newName) => {
         const match = matchHeader(newName);
 
@@ -35,7 +34,7 @@ function ImportStudentsPage() {
                 delete newRow[colId];
 
                 // re-valider la ligne
-                newRow._errors = validateStudentData(newRow);
+                newRow._errors = validateTeacherData(newRow);
                 return newRow;
             });
         });
@@ -84,7 +83,7 @@ function ImportStudentsPage() {
         const updatedData = params.data;
 
         // On recalcule les erreurs pour cette ligne
-        const errors = validateStudentData(updatedData);
+        const errors = validateTeacherData(updatedData);
 
         // On met à jour l'objet _errors
         updatedData._errors = errors;
@@ -96,9 +95,10 @@ function ImportStudentsPage() {
         });
     };
 
-    const confirm = () => {
-        const confirmed = alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
-        if (confirmed) {
+    const confirm = async () => {
+        const result = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
+        console.log(result);
+        if (result.isConfirmed) {
             handleSaveAndSend();
         }
     };
@@ -129,7 +129,7 @@ function ImportStudentsPage() {
         }
 
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Students");
+        const worksheet = workbook.addWorksheet("Teachers");
 
         worksheet.columns = colDefs.map((col) => ({
             header: col.field,
@@ -148,10 +148,9 @@ function ImportStudentsPage() {
 
         const formData = new FormData();
         formData.append("file", fileToSend);
-        formData.append("promo", "L3");
 
         try {
-            const response = await fetch(`http://localhost:3000/eleve/studentList`, {
+            const response = await fetch(`http://localhost:3000/teacher/teacherList`, {
                 method: "POST",
                 headers: {},
                 credentials: "include",
@@ -168,13 +167,9 @@ function ImportStudentsPage() {
             toast.error("Erreur réseau", error);
         }
     };
-
     return (
-        //TODO: (@killian) afficher pop up confirmation avant de sauvegarder (+ warning si ya encore des cellules en rouge)
-        //TODO: (@killian ou @elouan) bouton pour supprimer le tableau en cours d'import (revenir à l'etat de base de la page)
-        <div>
-            <PageTitle title="Importer Élèves" icon={"icon-import-student"} />
-            <div className="content-container">
+        <div className="add-teacher-container">
+            <div className="add-teacher-content">
                 {rowData.length > 0 ? (
                     <div style={{ marginTop: 20, width: "100%" }}>
                         <div
@@ -184,7 +179,6 @@ function ImportStudentsPage() {
                                 justifyContent: "flex-end",
                             }}
                         >
-                            {/* Le Bouton de sauvegarde */}
                             <Button onClick={confirm}>Sauvegarder et Envoyer les modifications</Button>
                         </div>
 
@@ -199,11 +193,17 @@ function ImportStudentsPage() {
                         />
                     </div>
                 ) : (
-                    <ImportZone setRowData={setRowData} setColDefs={setColDefs} />
+                    <div className="content-import">
+                        <ImportZone setRowData={setRowData} setColDefs={setColDefs} />
+                        <Separator>ou alors ajoutez un professeur</Separator>
+                        <Button className="add-button" onClick={openModal}>
+                            Ajouter
+                        </Button>
+                    </div>
                 )}
             </div>
         </div>
     );
 }
 
-export default ImportStudentsPage;
+export default AddTeacherPage;

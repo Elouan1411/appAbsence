@@ -3,7 +3,7 @@
     height: 30vh;
     background-color: var(--card-bg);
     border-radius: 25px;
-    border: 2px var(--primary-color) solid;
+    border: 4px var(--primary-color) dashed;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,7 +31,6 @@
 
 .content-container {
     width: 100%;
-    height: 95vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -96,6 +95,7 @@
 }
 
 .title-container {
+    width: calc(100% - 15px - 30px);
     height: 8vh;
     display: flex;
     align-items: center;
@@ -543,13 +543,17 @@ p {
     min-height: 450px;
 }
 
+.add-teacher-container {
+    height: 100%;
+    width: 100%;
+}
 .add-teacher-content {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 90vh;
     width: 100%;
+    height: 100%;
 }
 
 .content-import {
@@ -566,7 +570,7 @@ p {
 }
 
 .add-separator {
-    margin: 20px;
+    padding: 50px;
     display: flex;
     align-items: center;
     text-align: center;
@@ -577,7 +581,7 @@ p {
 .add-separator::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
 }
 
 .add-separator::before {
@@ -591,5 +595,69 @@ p {
 .add-separator span {
     white-space: nowrap;
     font-size: 20px;
-    color: var(--primary-color);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.adding-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.adding-content {
+    width: calc(100% - 10px);
+    height: calc(88.5vh - 15px);
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.adding-container > div.dashboard-tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--primary-color);
+    width: fit-content;
+    border-bottom: none;
+    border-bottom: 2px solid var(--border-color);
+    width: calc(100% - 20px);
+    margin-top: 15px;
+}
+
+.adding-student-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content .input {
+    gap: 10px;
+    margin-top: 20px;
+}
+.modal-content .input > input {
+    width: calc(100% - 2rem);
+    max-width: 2000px;
+}
+
+.modal-content .input > input:focus {
+    border-color: var(--primary-color);
+}
+.modal-content .input-error-form {
+    background-color: transparent;
+}
+.input-error-form > input {
+    background-color: rgba(255, 0, 0, 0.4);
+}
+
+.modal-content .input .label-container p {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
 }

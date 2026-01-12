@@ -1,0 +1,168 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100vh;
+    height: 70vh;
+    max-width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 1rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color, #eee);
+    background-color: var(--background-color);
+    flex-shrink: 0;
+}
+.footer-buttons {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2vw;
+}
+
+.footer-buttons button {
+    padding: 0;
+}
+
+.btn-submit {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 20px;
+    border: 4px solid var(--primary-color);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    border: 4px solid var(--primary-color);
+}
+.rse-section {
+    margin-top: 20px;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    margin-bottom: 1rem;
+}
+
+.rse-section p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rse-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rse-chip:hover {
+    background-color: color-mix(in srgb, var(--background-color) 90%, var(--text-primary) 10%);
+    border-color: #bbb;
+}
+
+.rse-chip.selected {
+    background-color: color-mix(in srgb, var(--primary-color) 80%, #fff 20%);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
+    color: white;
+}
+
+.rse-chip.selected span {
+    color: white;
+}

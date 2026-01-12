@@ -1,5 +1,4 @@
 import AdminHomePage from "./pages/Admin/AdminHomePage";
-import ImportStudentsPage from "./pages/Admin/ImportStudentsPage";
 import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
@@ -7,8 +6,7 @@ import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
-import React from "react";
-import AddTeacherPage from "./pages/Admin/AddTeacherPage";
+import AddingPage from "./pages/Admin/AddingPage";
 //bfuiegz
 export const routesConfig = [
     {
@@ -17,9 +15,8 @@ export const routesConfig = [
 
         children: [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
-            { path: "import", label: "Importer Élèves", element: <ImportStudentsPage />, icon: "icon-import-student" },
+            { path: "add", label: "Ajouter des étudiants / professeurs", element: <AddingPage />, icon: "icon-adding-group" },
             { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage />, icon: "icon-student-list" },
-            { path: "teacherlist", label: "Liste des Professeurs", element: <AddTeacherPage />, icon: "icon-student-list" },
         ],
     },
     {

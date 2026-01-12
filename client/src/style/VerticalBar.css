@@ -245,6 +245,11 @@
     mask-image: url("../assets/home.svg");
 }
 
+.icon-adding-group {
+    -webkit-mask-image: url("../assets/add-group.svg");
+    mask-image: url("../assets/add-group.svg");
+}
+
 .label {
     margin-left: 14px;
     font-weight: 500;

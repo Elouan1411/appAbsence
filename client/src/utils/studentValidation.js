@@ -115,4 +115,4 @@ const HEADER_DISPLAY_NAMES = {
     commentaire: "Commentaire",
 };
 
-export { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };
+export { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES, DATA_REGEX };

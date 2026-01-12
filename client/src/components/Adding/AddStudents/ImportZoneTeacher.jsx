@@ -2,14 +2,9 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
-import "../../style/Admin.css";
+import "../../../style/Admin.css";
 import toast from "react-hot-toast";
-import {
-    validateStudentData,
-    matchHeader,
-    EXPECTED_HEADERS,
-    HEADER_DISPLAY_NAMES,
-} from "../../utils/studentValidation";
+import { validateTeacherData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES } from "../../../utils/teacherValidation";
 import EditableHeader from "./EditableHeader";
 
 function ImportZone({ setRowData, setColDefs }) {
@@ -39,11 +34,7 @@ function ImportZone({ setRowData, setColDefs }) {
                         if (rowNumber > 1) {
                             // On ignore la ligne d'en-tête
                             const val = cellData.value;
-                            if (
-                                val !== null &&
-                                val !== undefined &&
-                                val.toString().trim() !== ""
-                            ) {
+                            if (val !== null && val !== undefined && val.toString().trim() !== "") {
                                 hasData = true;
                             }
                         }
@@ -55,8 +46,7 @@ function ImportZone({ setRowData, setColDefs }) {
                     headerName = "Sans nom";
                 }
 
-                const mappedKey =
-                    headerName === "Sans nom" ? null : matchHeader(headerName);
+                const mappedKey = headerName === "Sans nom" ? null : matchHeader(headerName);
 
                 fileHeaders.push({
                     name: headerName, // nom de la colonne que le client a fourni
@@ -71,29 +61,19 @@ function ImportZone({ setRowData, setColDefs }) {
             EXPECTED_HEADERS.forEach((expectedKey) => {
                 gridColumns.push({
                     field: expectedKey, // nom de la vrai colonne attendue
-                    headerName:
-                        HEADER_DISPLAY_NAMES[expectedKey] || expectedKey, // nom d'affichage propre
+                    headerName: HEADER_DISPLAY_NAMES[expectedKey] || expectedKey, // nom d'affichage propre
                     cellClassRules: {
                         // ajout de la règle pour mettre en rouge les cellules qui ont des erreurs
                         "cell-error": (params) => {
-                            return (
-                                params.data._errors &&
-                                params.data._errors[expectedKey]
-                            );
+                            return params.data._errors && params.data._errors[expectedKey];
                         },
                         "cell-autofilled": (params) => {
-                            return (
-                                params.data._autoFilled &&
-                                params.data._autoFilled[expectedKey]
-                            );
+                            return params.data._autoFilled && params.data._autoFilled[expectedKey];
                         },
                     },
                     tooltipValueGetter: (params) => {
                         // hover
-                        if (
-                            params.data._autoFilled &&
-                            params.data._autoFilled[expectedKey]
-                        ) {
+                        if (params.data._autoFilled && params.data._autoFilled[expectedKey]) {
                             return "Valeur remplie automatiquement (copié)";
                         }
                         return undefined;
@@ -111,8 +91,7 @@ function ImportZone({ setRowData, setColDefs }) {
                         headerComponent: EditableHeader, // Composant éditable pour changer le titre
                         cellClass: "cell-ignored", // Style grisé
                         editable: false, // On empêche l'édition car ignoré
-                        tooltipValueGetter: () =>
-                            "Le nom de la colonne n'est pas reconnu par le système",
+                        tooltipValueGetter: () => "Le nom de la colonne n'est pas reconnu par le système",
                     });
                 }
             });
@@ -128,12 +107,7 @@ function ImportZone({ setRowData, setColDefs }) {
                 fileHeaders.forEach((fh) => {
                     const cellValue = row.getCell(fh.index).value;
                     // const cleanValue = typeof cellValue === "object" && cellValue?.result ? cellValue.result : cellValue;
-                    const cleanValue =
-                        cellValue &&
-                        typeof cellValue === "object" &&
-                        "result" in cellValue
-                            ? cellValue.result
-                            : cellValue;
+                    const cleanValue = cellValue && typeof cellValue === "object" && "result" in cellValue ? cellValue.result : cellValue;
 
                     if (fh.mappedKey) {
                         // Colonne reconnue -> on utilise la clé standard
@@ -162,7 +136,7 @@ function ImportZone({ setRowData, setColDefs }) {
                 }
 
                 // validation des données (fond rouge sur les cases avec erreurs)
-                const errors = validateStudentData(rowItem);
+                const errors = validateTeacherData(rowItem);
                 rowItem._errors = errors;
 
                 data.push(rowItem);
@@ -171,10 +145,7 @@ function ImportZone({ setRowData, setColDefs }) {
             if (setRowData) setRowData(data);
             console.log(`${data.length} lignes importées localement.`);
         } catch (error) {
-            console.error(
-                "Erreur lors de la lecture du fichier Excel :",
-                error
-            );
+            console.error("Erreur lors de la lecture du fichier Excel :", error);
             toast.error("Impossible de lire le fichier Excel.");
         }
     };
@@ -205,11 +176,7 @@ function ImportZone({ setRowData, setColDefs }) {
         <div {...getRootProps()} className="dropzone-container">
             <input {...getInputProps()} />
             <Import size={40} className="import-icon" />
-            {isDragActive ? (
-                <p>Déposez le fichier ici...</p>
-            ) : (
-                <p>Glissez-déposez vos fichiers ici...</p>
-            )}
+            {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
         </div>
     );
 }
