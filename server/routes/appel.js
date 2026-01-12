@@ -26,7 +26,7 @@ router.get("/", verifyToken, isAdminOrTeacher, (req, res) => {
 router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   let login = req.params.login.substring(1);
   const sql =
-    "SELECT idAppel, debut, fin, loginProfesseur, libelle FROM Appel, Matiere WHERE loginProfesseur = ? AND Appel.codeMatiere = Matiere.code";
+    "SELECT idAppel, debut, fin, loginProfesseur, libelle, Appel.codeMatiere, Appel.promo, groupeTD, groupeTP FROM Appel, Matiere WHERE loginProfesseur = ? AND Appel.codeMatiere = Matiere.code";
   db.all(sql, [login], (err, rows) => {
     if (err) return console.error(err.message);
 
@@ -52,10 +52,10 @@ router.get("/info/:id", verifyToken, isTeacher, (req, res) => {
 
 // Publication d'un appel
 router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
-  const { start, end, loginProf, code } = req.body;
-  let sql = `INSERT INTO Appel (debut, fin, loginProfesseur, codeMatiere)
-                        VALUES(?, ?, ?, ?)`;
-  db.run(sql, [start, end, loginProf, code], function (err) {
+  const { start, end, loginProf, code, promo, groupeTD, groupeTP } = req.body;
+  let sql = `INSERT INTO Appel (debut, fin, loginProfesseur, codeMatiere, promo, groupeTD, groupeTP)
+                        VALUES(?, ?, ?, ?, ?, ?, ?)`;
+  db.run(sql, [start, end, loginProf, code, promo, groupeTD, groupeTP], function (err) {
     if (err) return console.error(err.message);
 
     res.status(200).json({ id: this.lastID });

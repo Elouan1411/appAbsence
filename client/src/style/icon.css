@@ -33,3 +33,7 @@
     -webkit-mask-image: url(../assets/x.svg);
 }
 
+.icon-previous {
+    mask-image: url(../assets/previous.svg);
+    -webkit-mask-image: url(../assets/previous.svg);
+}

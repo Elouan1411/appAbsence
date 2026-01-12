@@ -75,8 +75,8 @@ router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
     LEFT JOIN JustificationAbsence J ON (
       A.numeroEtudiant = J.numeroEtudiant 
-      AND Ap.debut <= J.debut 
-      AND Ap.fin >= J.fin
+      AND Ap.debut >= J.debut 
+      AND Ap.fin <= J.fin
     )
     WHERE Ap.loginProfesseur = ?
     ORDER BY Ap.debut DESC
@@ -112,6 +112,18 @@ router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
+// Récupération des absences d'un appel spécifique
+router.get("/appel/:idAppel", verifyToken, isAdminOrTeacher, (req, res) => {
+  const { idAppel } = req.params;
+
+  const sql = "SELECT * FROM Absence WHERE idAppel = ?";
+
+  db.all(sql, [idAppel], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(200).json(rows);
+  });
+});
+
 /*****************************************
  *            Méthodes POST
  *****************************************/
@@ -139,7 +151,7 @@ router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
  *****************************************/
 
 // Suppression d'une absence
-router.delete("/", verifyToken, isAdminOrOwner("loginProf"), (req, res) => {
+router.delete("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const { id, idAppel } = req.body;
   
   const sql = `DELETE FROM Absence WHERE numeroEtudiant = ? AND idAppel = ?`;

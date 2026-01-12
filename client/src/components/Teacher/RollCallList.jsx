@@ -14,9 +14,10 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
 
-function RollCallList({ criteria, dateTime, subject }) {
+function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
     const [rowData, setRowData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialAbsences, setInitialAbsences] = useState([]); 
     const [gridApi, setGridApi] = useState(null);
     const theme = useTheme();
     const { user } = useAuth();
@@ -148,7 +149,23 @@ function RollCallList({ criteria, dateTime, subject }) {
                 if (response.ok) {
                     const data = await response.json();
 
-                    data.forEach((s) => (s.attendanceStatus = "present"));
+                    let absencesForCall = [];
+                    if (callId) {
+                         try {
+                            const absResponse = await fetch(`http://localhost:3000/absence/appel/${callId}`, { credentials: "include" });
+                            if (absResponse.ok) {
+                                absencesForCall = await absResponse.json();
+                                setInitialAbsences(absencesForCall.map(a => a.numeroEtudiant));
+                            }
+                         } catch (e) {
+                             console.error("Error fetching absences for call:", e);
+                         }
+                    }
+
+                    data.forEach((s) => {
+                        const isAbsent = absencesForCall.some(a => a.numeroEtudiant === s.numero);
+                        s.attendanceStatus = isAbsent ? "absent" : "present";
+                    });
 
                     const studentIds = data.map((s) => s.numero);
                     if (studentIds.length > 0) {
@@ -193,7 +210,7 @@ function RollCallList({ criteria, dateTime, subject }) {
     };
 
     const handleValidateRollCall = async () => {
-        if (!subject) {
+        if (subject === null || subject === undefined || subject === "") {
             toast.error("Veuillez sélectionner une matière.");
             return;
         }
@@ -207,7 +224,6 @@ function RollCallList({ criteria, dateTime, subject }) {
             return;
         }
 
-        // Filter for absent students
         const absentStudents = [];
         gridApi.forEachNode((node) => {
             if (node.data.attendanceStatus === "absent") {
@@ -218,65 +234,129 @@ function RollCallList({ criteria, dateTime, subject }) {
         console.log("Absent students:", absentStudents);
 
         if (absentStudents.length === 0) {
-            // if(!confirm("Aucun absent sélectionné. Valider quand même (tout le monde présent) ?")) return;
-            if (await alertConfirm("Aucun absent sélectionné", "Valider quand même (tout le monde présent) ?")) return;
+            const decision = await alertConfirm("Aucun absent sélectionné", "Valider quand même (tout le monde présent) ?");
+            if (!decision.isConfirmed) return;
         }
-
-        const numberList = absentStudents.map((s) => s.numero);
-        const loginList = absentStudents.map((s) => s.loginENT);
 
         const formatDate = (date, time) => {
             return date.replaceAll("-", "") + time.replaceAll(":", "");
         }
 
-        const payload = {
-            number: numberList,
-            login: loginList,
-            start: formatDate(dateTime.date, dateTime.startTime),
-            end: formatDate(dateTime.date, dateTime.endTime),
-            loginProf: user,
-            code: subject,
-        };
+        if (callId) {
+            const currentAbsentIds = absentStudents.map(s => s.numero);
+            const addedAbsences = absentStudents.filter(s => !initialAbsences.includes(s.numero));
+            const removedAbsenceIds = initialAbsences.filter(id => !currentAbsentIds.includes(id));
 
-        console.log("Sending Absence Payload:", payload);
+            let success = true;
 
-        try {
-            const responseAppel = await fetch("http://localhost:3000/appel/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    start: payload.start,
-                    end: payload.end,
-                    loginProf: payload.loginProf,
-                    code: payload.code,
-                }),
-                credentials: "include",
-            });
-
-            let idAppel = null;
-            if (responseAppel.ok) {
-                const data = await responseAppel.json();
-                idAppel = data.id;
+            if (addedAbsences.length > 0) {
+                 const numberList = addedAbsences.map(s => s.numero);
+                 const loginList = addedAbsences.map(s => s.loginENT);
+                 
+                 try {
+                     const response = await fetch("http://localhost:3000/absence/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            number: numberList,
+                            login: loginList,
+                            idAppel: callId
+                        }),
+                        credentials: "include",
+                    });
+                     if (!response.ok) success = false;
+                 } catch(e) { success = false; console.error(e); }
             }
 
-            const responseAbsence = await fetch("http://localhost:3000/absence/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...payload, idAppel }),
-                credentials: "include",
-            });
-
-            if (responseAbsence.ok && responseAppel.ok) {
-                toast.success("Appel validé avec succès !", { duration: 3000 });
+            if (removedAbsenceIds.length > 0) {
+                 for (const studentId of removedAbsenceIds) {
+                     try {
+                        const response = await fetch("http://localhost:3000/absence/", {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" },
+                             body: JSON.stringify({
+                                id: studentId,
+                                idAppel: callId
+                            }),
+                            credentials: "include",
+                        });
+                        if (!response.ok) success = false;
+                     } catch(e) { success = false; console.error(e); }
+                 }
+            }
+            
+            if (success) {
+                toast.success("Appel mis à jour avec succès !");
+                 setInitialAbsences(currentAbsentIds); 
+                 if (onSuccess) onSuccess();
             } else {
-                let errText = "";
-                if (!responseAbsence.ok) errText += "Erreur absence: " + (await responseAbsence.text()) + ". ";
-                if (!responseAppel.ok) errText += "Erreur appel: " + (await responseAppel.text());
-                toast.error("Erreur validation: " + errText);
+                toast.error("Erreur lors de la mise à jour de l'appel.");
             }
-        } catch (err) {
-            console.error(err);
-            toast.error("Erreur réseau");
+
+        } else {
+            // creer appel
+            const numberList = absentStudents.map((s) => s.numero);
+            const loginList = absentStudents.map((s) => s.loginENT);
+
+            const payload = {
+                number: numberList,
+                login: loginList,
+                start: formatDate(dateTime.date, dateTime.startTime),
+                end: formatDate(dateTime.date, dateTime.endTime),
+                loginProf: user,
+                code: subject,
+                promo: criteria.promo,
+                groupeTD: criteria.groupeTD,
+                groupeTP: criteria.groupeTP
+            };
+
+            console.log("Sending Absence Payload:", payload);
+
+            try {
+                const responseAppel = await fetch("http://localhost:3000/appel/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        start: payload.start,
+                        end: payload.end,
+                        loginProf: payload.loginProf,
+                        code: payload.code,
+                        promo: payload.promo,
+                        groupeTD: payload.groupeTD,
+                        groupeTP: payload.groupeTP
+                    }),
+                    credentials: "include",
+                });
+
+                let idAppel = null;
+                if (responseAppel.ok) {
+                    const data = await responseAppel.json();
+                    idAppel = data.id;
+                }
+
+                const responseAbsence = await fetch("http://localhost:3000/absence/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                        number: numberList, 
+                        login: loginList, 
+                        idAppel 
+                    }),
+                    credentials: "include",
+                });
+
+                if (responseAbsence.ok && responseAppel.ok) {
+                    toast.success("Appel validé avec succès !", { duration: 3000 });
+                } else {
+                    let errText = "";
+                    if (!responseAbsence.ok) errText += "Erreur absence: " + (await responseAbsence.text()) + ". ";
+                    if (!responseAppel.ok) errText += "Erreur appel: " + (await responseAppel.text());
+                    toast.error("Erreur validation: " + errText);
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("Erreur réseau");
+            }
         }
     };
 

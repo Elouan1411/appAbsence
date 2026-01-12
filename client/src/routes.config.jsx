@@ -6,6 +6,8 @@ import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
 import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
+import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
+import React from "react";
 //bfuiegz
 export const routesConfig = [
     {
@@ -25,6 +27,7 @@ export const routesConfig = [
             { index: true, label: "Accueil", element: <TeacherHomePage />, icon: "icon-home" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "history", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
+            { path: "absence", label: "Absences", element: <TeacherAbsencePage /> },
         ],
     },
     {
