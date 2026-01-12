@@ -658,6 +658,13 @@ span.loading-text {
 
 .card-absence-left {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+}
+
+.card-absence-info {
+    display: flex;
     flex-direction: column;
     gap: 16px;
 }
@@ -841,4 +848,139 @@ span.loading-text {
 .empty-state {
     color: var(--text-secondary);
     font-style: italic;
+}
+
+.selection-checkbox-wrapper {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 0;
+}
+
+.card-absence.selection-mode .selection-checkbox-wrapper {
+    width: 40px;
+    opacity: 1;
+    margin-right: 0;
+}
+
+.action-button-wrapper {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.2s ease-out;
+}
+
+.action-button-wrapper.hidden {
+    opacity: 0;
+    transform: translateX(10px);
+    pointer-events: none;
+}
+
+.selection-checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    margin-right: 16px;
+}
+
+[data-theme="dark"] .selection-checkbox {
+    border-color: #4b5563;
+}
+
+.card-absence.selected .selection-checkbox {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Selected Card State */
+.card-absence.selection-mode {
+    cursor: pointer;
+}
+
+.card-absence.selected {
+    border: 1px solid var(--primary-color);
+    background-color: rgba(62, 126, 134, 0.05);
+}
+
+[data-theme="dark"] .card-absence.selected {
+    background-color: rgba(62, 126, 134, 0.15);
+}
+
+.floating-action-bar {
+    position: sticky;
+    bottom: 32px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    z-index: 50;
+    justify-content: space-between;
+    animation: slideUp 0.3s ease-out;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] .floating-action-bar {
+    background-color: #1e293b;
+    border: 1px solid var(--border-color);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.fab-count-circle {
+    background-color: white;
+    color: var(--primary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.fab-text {
+    color: white;
+    font-weight: 500;
+}
+
+.btn-fab-justify {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-fab-justify:hover {
+    background-color: rgba(255, 255, 255, 0.3);
 }
