@@ -200,8 +200,8 @@ const StudentJustificationPage = () => {
 
     return (
         <div className="student-justification-container">
-            <PageTitle title="Justifier une absence" icon={"icon-justification-student"} />
             <div className="studentJustificationPage">
+                <PageTitle title="Justifier une absence" icon={"icon-justification-student"} />
                 <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} />
                 <hr className="section-divider" />
                 <ReasonInput
