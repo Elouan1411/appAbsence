@@ -10,6 +10,32 @@ import EditableHeader from "./EditableHeader";
 function ImportZone({ setRowData, setColDefs }) {
     const processExcel = async (file) => {
         try {
+            // --- ÉTAPE 1 : Récupérer les IDs existants pour détecter les doublons ---
+            const existingIds = new Set();
+            try {
+                // Adapte l'URL selon ton environnement
+                const response = await fetch("http://localhost:3000/eleve/allID", {
+                    method: "GET",
+                    credentials: "include", // Important pour passer les cookies/sessions
+                });
+
+                if (response.ok) {
+                    const dbData = await response.json();
+                    // dbData = [{ numeroEtudiant: "123456" }, ...]
+                    dbData.forEach((row) => {
+                        if (row.numero) {
+                            existingIds.add(String(row.numero));
+                        }
+                    });
+                }
+                console.log(existingIds);
+            } catch (err) {
+                console.error("Erreur lors de la récupération des IDs pour doublons", err);
+                // On ne bloque pas l'import, mais on avertit
+                toast.error("Impossible de vérifier les doublons en base (serveur injoignable ?)");
+            }
+
+            // --- ÉTAPE 2 : Lecture du fichier Excel ---
             const buffer = await file.arrayBuffer();
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(buffer);
@@ -18,21 +44,18 @@ function ImportZone({ setRowData, setColDefs }) {
             const data = [];
 
             // check header
-            const fileHeaders = []; // { name: "nom", index: 1, mappedKey: "Nom" | null }
+            const fileHeaders = [];
             const headerRow = worksheet.getRow(1);
 
             // parse header and add in fileHeaders
             headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                // includeEmpty -> pou' les colonnes vides
                 let headerName = cell.value?.toString().trim() || "";
 
-                // Si le header est vide, on vérifie si la colonne contient des données
                 if (!headerName) {
                     const column = worksheet.getColumn(colNumber);
                     let hasData = false;
                     column.eachCell((cellData, rowNumber) => {
                         if (rowNumber > 1) {
-                            // On ignore la ligne d'en-tête
                             const val = cellData.value;
                             if (val !== null && val !== undefined && val.toString().trim() !== "") {
                                 hasData = true;
@@ -40,18 +63,16 @@ function ImportZone({ setRowData, setColDefs }) {
                         }
                     });
 
-                    // Si la colonne est vide de données, on l'ignore complètement
                     if (!hasData) return;
-
                     headerName = "Sans nom";
                 }
 
                 const mappedKey = headerName === "Sans nom" ? null : matchHeader(headerName);
 
                 fileHeaders.push({
-                    name: headerName, // nom de la colonne que le client a fourni
-                    index: colNumber, // l'index de la colonne que le client a fourni
-                    mappedKey: mappedKey, // nom de la vrai colonne attendue
+                    name: headerName,
+                    index: colNumber,
+                    mappedKey: mappedKey,
                 });
             });
 
@@ -60,10 +81,9 @@ function ImportZone({ setRowData, setColDefs }) {
             // on parcourt les headers attendus
             EXPECTED_HEADERS.forEach((expectedKey) => {
                 gridColumns.push({
-                    field: expectedKey, // nom de la vrai colonne attendue
-                    headerName: HEADER_DISPLAY_NAMES[expectedKey] || expectedKey, // nom d'affichage propre
+                    field: expectedKey,
+                    headerName: HEADER_DISPLAY_NAMES[expectedKey] || expectedKey,
                     cellClassRules: {
-                        // ajout de la règle pour mettre en rouge les cellules qui ont des erreurs
                         "cell-error": (params) => {
                             return params.data._errors && params.data._errors[expectedKey];
                         },
@@ -72,7 +92,6 @@ function ImportZone({ setRowData, setColDefs }) {
                         },
                     },
                     tooltipValueGetter: (params) => {
-                        // hover
                         if (params.data._autoFilled && params.data._autoFilled[expectedKey]) {
                             return "Valeur remplie automatiquement (copié)";
                         }
@@ -84,13 +103,12 @@ function ImportZone({ setRowData, setColDefs }) {
             // celles du fichier client qui n'ont pas matché
             fileHeaders.forEach((fh) => {
                 if (!fh.mappedKey) {
-                    // On l'ajoute à la fin du tableau
                     gridColumns.push({
-                        field: `_ignored_${fh.name}_${fh.index}`, // Préfixe + index pour éviter collision (car nom peut être identique "Sans nom")
+                        field: `_ignored_${fh.name}_${fh.index}`,
                         headerName: fh.name,
-                        headerComponent: EditableHeader, // Composant éditable pour changer le titre
-                        cellClass: "cell-ignored", // Style grisé
-                        editable: false, // On empêche l'édition car ignoré
+                        headerComponent: EditableHeader,
+                        cellClass: "cell-ignored",
+                        editable: false,
                         tooltipValueGetter: () => "Le nom de la colonne n'est pas reconnu par le système",
                     });
                 }
@@ -106,14 +124,11 @@ function ImportZone({ setRowData, setColDefs }) {
 
                 fileHeaders.forEach((fh) => {
                     const cellValue = row.getCell(fh.index).value;
-                    // const cleanValue = typeof cellValue === "object" && cellValue?.result ? cellValue.result : cellValue;
                     const cleanValue = cellValue && typeof cellValue === "object" && "result" in cellValue ? cellValue.result : cellValue;
 
                     if (fh.mappedKey) {
-                        // Colonne reconnue -> on utilise la clé standard
                         rowItem[fh.mappedKey] = cleanValue;
                     } else {
-                        // Colonne ignorée -> on stocke sous la clé ignorée pour affichage (avec index)
                         rowItem[`_ignored_${fh.name}_${fh.index}`] = cleanValue;
                     }
                 });
@@ -135,9 +150,14 @@ function ImportZone({ setRowData, setColDefs }) {
                     rowItem._autoFilled.groupeTPPair = true;
                 }
 
-                // validation des données (fond rouge sur les cases avec erreurs)
+                // validation des données
                 const errors = validateStudentData(rowItem);
                 rowItem._errors = errors;
+
+                // --- ÉTAPE 3 : Vérification du doublon BDD ---
+                if (rowItem.numero && existingIds.has(String(rowItem.numero))) {
+                    rowItem._isDuplicate = true; // Flag pour le style CSS
+                }
 
                 data.push(rowItem);
             });

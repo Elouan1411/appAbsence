@@ -45,6 +45,15 @@
     color: var(--autofilled-color);
 }
 
+.cell-warnings {
+    background-color: var(--);
+}
+
+.row-duplicate-db {
+    background-color: #3b82f6 !important; /* Orange très clair */
+    color: white; /* Texte orange foncé */
+}
+
 .cell-ignored {
     background-color: var(--cell-ignored-background);
     color: var(--cell-ignored-color);

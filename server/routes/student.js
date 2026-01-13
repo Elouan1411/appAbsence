@@ -73,6 +73,17 @@ router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
+router.get("/allID", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT numero FROM Eleve";
+
+    db.all(sql, (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Erreur de récupération ID" });
+        }
+        return res.status(200).json(data);
+    });
+});
+
 /*****************************************
  *             Méthodes POST
  *****************************************/

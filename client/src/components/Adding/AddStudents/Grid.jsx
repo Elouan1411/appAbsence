@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
 import { lightTheme, darkTheme } from "../../../constants/grid";
 import { useTheme } from "../../../hooks/useTheme";
-
 import { CircleX } from "lucide-react";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -47,6 +46,15 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
         ];
     }, [colDefs]);
 
+    // --- Règle pour colorer la ligne si c'est un doublon ---
+    const rowClassRules = useMemo(() => {
+        return {
+            "row-duplicate-db": (params) => {
+                return params.data && params.data._isDuplicate;
+            },
+        };
+    }, []);
+
     const theme = useTheme();
 
     return (
@@ -60,6 +68,8 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                 context={{ onRename, onDelete, onDeleteRow }}
                 onCellValueChanged={onCellValueChanged}
                 tooltipShowDelay={600}
+                // Ajout de la règle CSS pour les lignes
+                rowClassRules={rowClassRules}
             />
         </div>
     );
