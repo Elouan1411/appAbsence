@@ -1,8 +1,17 @@
 import React from "react";
 import { Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
 
-const AbsenceCard = ({ subject, startTime, endTime, isSelectionMode, isSelected, onToggle }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle }) => {
+    const navigate = useNavigate();
+
+    const handleJustify = () => {
+        navigate("/dashboard/justification", {
+            state: { prefilledPeriod: [fullPeriod] },
+        });
+    };
+
     return (
         <div
             className={`card-absence ${isSelectionMode ? "selection-mode" : ""} ${isSelected ? "selected" : ""}`}
@@ -33,7 +42,9 @@ const AbsenceCard = ({ subject, startTime, endTime, isSelectionMode, isSelected,
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    <button className="btn-justifier">Justifier</button>
+                    <button className="btn-justifier" onClick={handleJustify}>
+                        Justifier
+                    </button>
                 </div>
             </div>
         </div>

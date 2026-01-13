@@ -12,9 +12,12 @@
     gap: 8px;
     position: relative;
 }
-.title-container {
+
+div.title-container {
     margin-left: 0;
     margin-right: 0;
+    width: calc(100% - 20px);
+    margin-bottom: 1vh;
 }
 
 button.btn-select .lucide {
@@ -541,6 +544,22 @@ div.react-datepicker__time-container .react-datepicker__time .react-datepicker__
 
 .period-card.period-error:hover {
     border-color: #dc2626;
+}
+
+.period-card.period-disabled {
+    cursor: not-allowed;
+    position: relative;
+    border-color: var(--autofilled-color);
+}
+
+/* TODO : bloquer le click sur les dates */
+.period-card.period-disabled::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(245, 245, 245, 0.706);
+    border-radius: inherit;
+    z-index: 10;
 }
 
 .input-error {

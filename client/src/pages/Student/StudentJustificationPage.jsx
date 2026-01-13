@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
 import ReasonInput from "../../components/AbsenceForm/ReasonInput";
 import PeriodAbsence from "../../components/AbsenceForm/PeriodAbsence";
@@ -16,6 +17,20 @@ const StudentJustificationPage = () => {
     const [reasonError, setReasonError] = useState(false);
     const [periodError, setPeriodError] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [automaticPeriod, setAutomaticPeriod] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state && location.state.prefilledPeriod) {
+            const periodsWithIds = location.state.prefilledPeriod.map((p) => ({
+                ...p,
+                id: Date.now(),
+            }));
+            setPeriod(periodsWithIds);
+            setPeriodError(false);
+            setAutomaticPeriod(true);
+        }
+    }, [location.state]);
 
     const periodsOverlap = (p1, p2) => {
         if (!p1.start || !p1.end || !p2.start || !p2.end) return false;
@@ -202,7 +217,7 @@ const StudentJustificationPage = () => {
         <div className="student-justification-container">
             <div className="studentJustificationPage">
                 <PageTitle title="Justifier une absence" icon={"icon-justification-student"} />
-                <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} />
+                <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} automaticPeriod={automaticPeriod} />
                 <hr className="section-divider" />
                 <ReasonInput
                     reason={reason}
