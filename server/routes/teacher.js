@@ -8,6 +8,17 @@ const path = require("path");
 const fs = require("fs");
 const exceljs = require("exceljs");
 
+router.get("/allLoginENT", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT loginENT FROM Professeur";
+
+    db.all(sql, (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Erreur de récupération ID" });
+        }
+        return res.status(200).json(data);
+    });
+});
+
 router.post("/add", verifyToken, isAdmin, (req, res) => {
     const { loginENT, nom, prenom } = req.body;
 

@@ -5,7 +5,7 @@ import PageTitle from "../common/PageTitle";
 import Button from "../common/Button";
 import Separator from "./Separator";
 import { useRef } from "react";
-import { matchHeader, validateTeacherData, HEADER_DISPLAY_NAMES } from "../../utils/teacherValidation";
+import { matchHeader, validateTeacherData, HEADER_DISPLAY_NAMES, calculateDuplicateRow } from "../../utils/teacherValidation";
 import Grid from "./AddStudents/Grid";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
@@ -14,8 +14,43 @@ import ExcelJS from "exceljs";
 function AddTeacherPage({ openModal }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
+    const [hasErrors, setHasErrors] = useState(false);
+    const [hasDuplicate, setHasDuplicate] = useState(false);
 
     const gridRef = useRef(null);
+
+    const handleInitialDataLoad = async (newRows) => {
+        let detectedError = false;
+        let detectedDuplicate = false;
+
+        const processedRowsPromises = newRows.map(async (row) => {
+            const errors = validateTeacherData(row);
+            row._errors = errors;
+
+            if (Object.keys(errors).length > 0) {
+                detectedError = true;
+            }
+
+            try {
+                const isDuplicate = await calculateDuplicateRow(row);
+                row._isDuplicate = isDuplicate; // On attache le flag doublon
+
+                if (isDuplicate) {
+                    detectedDuplicate = true;
+                }
+            } catch (error) {
+                console.error("Erreur check doublon init", error);
+            }
+
+            return row;
+        });
+
+        const processedRows = await Promise.all(processedRowsPromises);
+
+        setHasErrors(detectedError);
+        setHasDuplicate(detectedDuplicate);
+        setRowData(processedRows);
+    };
 
     const handleRename = (colId, newName) => {
         const match = matchHeader(newName);
@@ -78,7 +113,9 @@ function AddTeacherPage({ openModal }) {
         toast.success("Ligne supprimée avec succès.");
     };
 
-    const handleCellValueChanged = (params) => {
+    const handleCellValueChanged = async (params) => {
+        setHasDuplicate(false);
+        setHasErrors(false);
         // params.data contient la ligne modifiée
         const updatedData = params.data;
 
@@ -87,25 +124,29 @@ function AddTeacherPage({ openModal }) {
 
         // On met à jour l'objet _errors
         updatedData._errors = errors;
+        if (Object.keys(updatedData._errors).length > 0) {
+            setHasErrors(true);
+        }
+
+        try {
+            const isDuplicate = await calculateDuplicateRow(updatedData);
+            if (isDuplicate) {
+                setHasDuplicate(true);
+            }
+            updatedData._isDuplicate = isDuplicate;
+        } catch (error) {
+            console.error("Erreur lors de la vérification du doublon", error);
+        }
 
         // On force le rafraichissement de la ligne pour appliquer les styles (rouge/pas rouge)
-        params.api.refreshCells({
+        params.api.redrawRows({
             rowNodes: [params.node],
             force: true,
         });
     };
-
-    const confirm = async () => {
-        const result = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
-        console.log(result);
-        if (result.isConfirmed) {
-            handleSaveAndSend();
-        }
-    };
-
     const handleSaveAndSend = async () => {
         if (!gridRef.current || !gridRef.current.api) {
-            console.error("La grille n'est pas initialisée");
+            toast.error("La grille n'est pas initialisée");
             return;
         }
 
@@ -114,14 +155,11 @@ function AddTeacherPage({ openModal }) {
             modifiedRows.push(node.data);
         });
 
-        console.log("Données à sauvegarder :", modifiedRows);
-
         if (modifiedRows.length === 0) {
             toast.error("Le tableau est vide !");
             return;
         }
 
-        // Vérification si y a la présence de colonne ignorées
         const hasIgnoredCols = colDefs.some((col) => col.field.startsWith("_ignored_"));
         if (hasIgnoredCols) {
             toast.error("Il y a des colonnes ignorées (grisées) !\nImportation impossible");
@@ -135,6 +173,36 @@ function AddTeacherPage({ openModal }) {
             header: col.field,
             key: col.field,
         }));
+
+        let hasErrors = false;
+        let duplicates = [];
+
+        for (const row of modifiedRows) {
+            const length = Object.keys(validateTeacherData(row)).length;
+            const duplicate = await calculateDuplicateRow(row);
+            if (length > 0) {
+                hasErrors = true;
+            }
+            if (duplicate) {
+                duplicates.push(row);
+            }
+        }
+        if (hasErrors) {
+            toast.error("Veuillez corriger les données non-conformes.");
+            return;
+        }
+
+        if (duplicates.length > 0) {
+            let duplicateStr = "Ces numéros étudiant existent déjà dans la base de données :\n";
+            for (const duplicate of duplicates) {
+                duplicateStr += `- ${duplicate.loginENT}\n`;
+            }
+
+            const duplicateConfirmed = await alertConfirm("👥 Êtes-vous surs de vouloir écraser les données ?", duplicateStr);
+            if (!duplicateConfirmed.isConfirmed) {
+                return;
+            }
+        }
         worksheet.addRows(modifiedRows);
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -149,22 +217,26 @@ function AddTeacherPage({ openModal }) {
         const formData = new FormData();
         formData.append("file", fileToSend);
 
-        try {
-            const response = await fetch(`http://localhost:3000/teacher/teacherList`, {
-                method: "POST",
-                headers: {},
-                credentials: "include",
-                body: formData,
-            });
+        const result = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
 
-            const values = await response.json();
-            if (response.ok) {
-                toast.success("Données envoyées avec succès.");
-            } else {
-                toast.error("Une erreur est survenue.");
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`http://localhost:3000/teacher/teacherList`, {
+                    method: "POST",
+                    headers: {},
+                    credentials: "include",
+                    body: formData,
+                });
+
+                const values = await response.json();
+                if (response.ok) {
+                    toast.success("Données envoyées avec succès.");
+                } else {
+                    toast.error("Une erreur est survenue.");
+                }
+            } catch (error) {
+                toast.error("Erreur réseau", error);
             }
-        } catch (error) {
-            toast.error("Erreur réseau", error);
         }
     };
     return (
@@ -172,14 +244,24 @@ function AddTeacherPage({ openModal }) {
             <div className="add-teacher-content">
                 {rowData.length > 0 ? (
                     <div style={{ marginTop: 20, width: "100%" }}>
-                        <div
-                            style={{
-                                marginBottom: 10,
-                                display: "flex",
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <Button onClick={confirm}>Sauvegarder et Envoyer les modifications</Button>
+                        <div className="indicator-container">
+                            {hasDuplicate && (
+                                <div className="duplicate-container">
+                                    <div className="rectangle">
+                                        <div className="color-box" />
+                                        <p>Lignes dupliquées dans la base de données</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {hasErrors && (
+                                <div className="error-container">
+                                    <div className="rectangle">
+                                        <div className="color-box" />
+                                        <p>Cellules non-conformes</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <Grid
@@ -191,10 +273,13 @@ function AddTeacherPage({ openModal }) {
                             onDeleteRow={handleDeleteRow} // On passe la fonction de suppression de ligne
                             onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
                         />
+                        <div className="grid-button-container" style={{}}>
+                            <Button onClick={handleSaveAndSend}>Sauvegarder</Button>
+                        </div>
                     </div>
                 ) : (
                     <div className="content-import">
-                        <ImportZone setRowData={setRowData} setColDefs={setColDefs} />
+                        <ImportZone setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
                         <Separator>ou alors ajoutez un professeur</Separator>
                         <Button className="add-button" onClick={openModal}>
                             Ajouter
