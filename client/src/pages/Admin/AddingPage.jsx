@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import AddingTabs from "../../components/Adding/AddingTabs";
 import PageTitle from "../../components/common/PageTitle";
-import AddStudents from "../../components/Adding/AddStudents";
-import AddTeacherPage from "../../components/Adding/AddTeacher";
 import "../../style/Admin.css";
 import FormModal from "../../components/Adding/FormModal";
 import toast from "react-hot-toast";
+import DataImport from "../../components/Adding/DataImport";
 
 function AddingPage() {
     const [activeTab, setActiveTab] = useState("student");
@@ -48,7 +47,9 @@ function AddingPage() {
         <div className="adding-container">
             <PageTitle icon="icon-adding-group" title="Ajouter des étudiants / professeurs" />
             <AddingTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            <div className="adding-content">{activeTab == "student" ? <AddStudents openModal={openModal} /> : <AddTeacherPage openModal={openModal} />}</div>
+            <div className="adding-content">
+                <DataImport type={activeTab} openModal={openModal} />
+            </div>
 
             <FormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode={activeTab} onSubmit={handleSubmit} />
         </div>

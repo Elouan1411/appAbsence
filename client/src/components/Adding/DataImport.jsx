@@ -1,17 +1,25 @@
-import React from "react";
-import { useState } from "react";
-import ImportZone from "./AddStudents/ImportZoneTeacher";
-import PageTitle from "../common/PageTitle";
+import React, { useState, useRef } from "react";
+import Grid from "./Grid";
+import {
+    HEADER_DISPLAY_NAMES as TEACHER_HEADER_DISPLAY_NAMES,
+    calculateDuplicateRow as calculateTeacherDuplicateRow,
+    validateTeacherData,
+    matchHeader as teacherMatchHeader,
+} from "../../utils/teacherValidation";
+import {
+    HEADER_DISPLAY_NAMES as STUDENT_HEADER_DISPLAY_NAMES,
+    calculateDuplicateRow as calculateStudentDuplicateRow,
+    validateStudentData,
+    matchHeader as studentMatchHeader,
+} from "../../utils/studentValidation";
+import ImportZone from "./ImportZone";
 import Button from "../common/Button";
 import Separator from "./Separator";
-import { useRef } from "react";
-import { matchHeader, validateTeacherData, HEADER_DISPLAY_NAMES, calculateDuplicateRow } from "../../utils/teacherValidation";
-import Grid from "./AddStudents/Grid";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import ExcelJS from "exceljs";
 
-function AddTeacherPage({ openModal }) {
+function DataImport({ type, openModal }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const [hasErrors, setHasErrors] = useState(false);
@@ -19,12 +27,17 @@ function AddTeacherPage({ openModal }) {
 
     const gridRef = useRef(null);
 
+    // Définition des labels et classes dynamiques
+    const entityLabel = type === "student" ? "étudiant" : "professeur";
+    const containerClass = type === "student" ? "adding-student-container" : "add-teacher-container";
+    const contentClass = type === "student" ? "content-container" : "add-teacher-content"; // Assure-toi que ces classes existent dans ton CSS
+
     const handleInitialDataLoad = async (newRows) => {
         let detectedError = false;
         let detectedDuplicate = false;
 
         const processedRowsPromises = newRows.map(async (row) => {
-            const errors = validateTeacherData(row);
+            const errors = type === "student" ? validateStudentData(row) : validateTeacherData(row);
             row._errors = errors;
 
             if (Object.keys(errors).length > 0) {
@@ -32,8 +45,8 @@ function AddTeacherPage({ openModal }) {
             }
 
             try {
-                const isDuplicate = await calculateDuplicateRow(row);
-                row._isDuplicate = isDuplicate; // On attache le flag doublon
+                const isDuplicate = type === "student" ? await calculateStudentDuplicateRow(row) : await calculateTeacherDuplicateRow(row);
+                row._isDuplicate = isDuplicate;
 
                 if (isDuplicate) {
                     detectedDuplicate = true;
@@ -53,38 +66,30 @@ function AddTeacherPage({ openModal }) {
     };
 
     const handleRename = (colId, newName) => {
-        const match = matchHeader(newName);
+        const match = type === "student" ? studentMatchHeader(newName) : teacherMatchHeader(newName);
 
         if (!match) {
             toast.error(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
             return;
         }
 
-        // remapper les données
         setRowData((currentRows) => {
             return currentRows.map((row) => {
                 const newRow = { ...row };
                 newRow[match] = newRow[colId];
-                // on supprime la clé avec _ignored_ devant
                 delete newRow[colId];
-
-                // re-valider la ligne
-                newRow._errors = validateTeacherData(newRow);
+                newRow._errors = type === "student" ? validateStudentData(newRow) : validateTeacherData(newRow);
                 return newRow;
             });
         });
 
-        // on met à jour la colonne cible avec le bon nom d'affichage
         setColDefs((currentCols) => {
-            // 1. On retire la colonne ignorée
             const filtered = currentCols.filter((col) => col.field !== colId);
-
-            // 2. On met à jour le headerName de la colonne qui vient d'être peuplée
             return filtered.map((col) => {
                 if (col.field === match) {
                     return {
                         ...col,
-                        headerName: HEADER_DISPLAY_NAMES[match] || match,
+                        headerName: type === "student" ? STUDENT_HEADER_DISPLAY_NAMES[match] || match : TEACHER_HEADER_DISPLAY_NAMES[match] || match,
                     };
                 }
                 return col;
@@ -95,9 +100,7 @@ function AddTeacherPage({ openModal }) {
     };
 
     const handleDeleteColumn = (colId) => {
-        // on retire la colonne de la definitions des colonnes
         setColDefs((currentCols) => currentCols.filter((col) => col.field !== colId));
-
         setRowData((currentRows) => {
             return currentRows.map((row) => {
                 const newRow = { ...row };
@@ -116,20 +119,17 @@ function AddTeacherPage({ openModal }) {
     const handleCellValueChanged = async (params) => {
         setHasDuplicate(false);
         setHasErrors(false);
-        // params.data contient la ligne modifiée
         const updatedData = params.data;
 
-        // On recalcule les erreurs pour cette ligne
-        const errors = validateTeacherData(updatedData);
-
-        // On met à jour l'objet _errors
+        const errors = type === "student" ? validateStudentData(updatedData) : validateTeacherData(updatedData);
         updatedData._errors = errors;
+
         if (Object.keys(updatedData._errors).length > 0) {
             setHasErrors(true);
         }
 
         try {
-            const isDuplicate = await calculateDuplicateRow(updatedData);
+            const isDuplicate = type === "student" ? await calculateStudentDuplicateRow(updatedData) : await calculateTeacherDuplicateRow(updatedData);
             if (isDuplicate) {
                 setHasDuplicate(true);
             }
@@ -138,12 +138,12 @@ function AddTeacherPage({ openModal }) {
             console.error("Erreur lors de la vérification du doublon", error);
         }
 
-        // On force le rafraichissement de la ligne pour appliquer les styles (rouge/pas rouge)
         params.api.redrawRows({
             rowNodes: [params.node],
             force: true,
         });
     };
+
     const handleSaveAndSend = async () => {
         if (!gridRef.current || !gridRef.current.api) {
             toast.error("La grille n'est pas initialisée");
@@ -167,7 +167,7 @@ function AddTeacherPage({ openModal }) {
         }
 
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Teachers");
+        const worksheet = workbook.addWorksheet(type);
 
         worksheet.columns = colDefs.map((col) => ({
             header: col.field,
@@ -178,24 +178,26 @@ function AddTeacherPage({ openModal }) {
         let duplicates = [];
 
         for (const row of modifiedRows) {
-            const length = Object.keys(validateTeacherData(row)).length;
-            const duplicate = await calculateDuplicateRow(row);
-            if (length > 0) {
-                hasErrors = true;
-            }
-            if (duplicate) {
-                duplicates.push(row);
-            }
+            const length = type === "student" ? Object.keys(validateStudentData(row)).length : Object.keys(validateTeacherData(row)).length;
+            // Correction ici: Ajout du await manquant pour le prof
+            const duplicate = type === "student" ? await calculateStudentDuplicateRow(row) : await calculateTeacherDuplicateRow(row);
+
+            if (length > 0) hasErrors = true;
+            if (duplicate) duplicates.push(row);
         }
+
         if (hasErrors) {
             toast.error("Veuillez corriger les données non-conformes.");
             return;
         }
 
         if (duplicates.length > 0) {
-            let duplicateStr = "Ces numéros étudiant existent déjà dans la base de données :\n";
+            let duplicateStr =
+                type === "student"
+                    ? "Ces numéros étudiant existent déjà dans la base de données :\n"
+                    : "Ces identifiants ENT existent déjà dans la base de données :\n";
             for (const duplicate of duplicates) {
-                duplicateStr += `- ${duplicate.loginENT}\n`;
+                duplicateStr += `- ${type === "student" ? duplicate.numero : duplicate.loginENT}\n`;
             }
 
             const duplicateConfirmed = await alertConfirm("👥 Êtes-vous surs de vouloir écraser les données ?", duplicateStr);
@@ -206,29 +208,29 @@ function AddTeacherPage({ openModal }) {
         worksheet.addRows(modifiedRows);
 
         const buffer = await workbook.xlsx.writeBuffer();
-
-        const blob = new Blob([buffer], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const fileToSend = new File([blob], "modifications.xlsx", {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
+        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        const fileToSend = new File([blob], "modifications.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 
         const formData = new FormData();
         formData.append("file", fileToSend);
 
-        const result = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?");
+        // Ajout spécifique pour les étudiants (si nécessaire selon ta logique précédente)
+        if (type === "student") {
+            formData.append("promo", "L3");
+        }
 
-        if (result.isConfirmed) {
+        const confirmed = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?", "Vos changements seront irréversibles");
+
+        // Correction ici: Utilisation de 'confirmed' au lieu de 'result'
+        if (confirmed.isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/teacher/teacherList`, {
+                const response = await fetch(type === "student" ? `http://localhost:3000/eleve/studentList` : `http://localhost:3000/teacher/teacherList`, {
                     method: "POST",
                     headers: {},
                     credentials: "include",
                     body: formData,
                 });
 
-                const values = await response.json();
                 if (response.ok) {
                     toast.success("Données envoyées avec succès.");
                 } else {
@@ -239,9 +241,10 @@ function AddTeacherPage({ openModal }) {
             }
         }
     };
+
     return (
-        <div className="add-teacher-container">
-            <div className="add-teacher-content">
+        <div className={containerClass}>
+            <div className={contentClass}>
                 {rowData.length > 0 ? (
                     <div style={{ marginTop: 20, width: "100%" }}>
                         <div className="indicator-container">
@@ -267,20 +270,21 @@ function AddTeacherPage({ openModal }) {
                         <Grid
                             rowData={rowData}
                             colDefs={colDefs}
-                            gridRef={gridRef} // On passe la ref ici
-                            onRename={handleRename} // On passe la fonction de renommage
-                            onDelete={handleDeleteColumn} // On passe la fonction de suppression
-                            onDeleteRow={handleDeleteRow} // On passe la fonction de suppression de ligne
-                            onCellValueChanged={handleCellValueChanged} // Recalcul des erreurs à l'édition
+                            gridRef={gridRef}
+                            onRename={handleRename}
+                            onDelete={handleDeleteColumn}
+                            onDeleteRow={handleDeleteRow}
+                            onCellValueChanged={handleCellValueChanged}
                         />
-                        <div className="grid-button-container" style={{}}>
+                        <div className="grid-button-container">
                             <Button onClick={handleSaveAndSend}>Sauvegarder</Button>
                         </div>
                     </div>
                 ) : (
                     <div className="content-import">
-                        <ImportZone setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
-                        <Separator>ou alors ajoutez un professeur</Separator>
+                        {/* On passe le type à ImportZone */}
+                        <ImportZone type={type} setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
+                        <Separator>ou alors ajoutez un {entityLabel}</Separator>
                         <Button className="add-button" onClick={openModal}>
                             Ajouter
                         </Button>
@@ -291,4 +295,4 @@ function AddTeacherPage({ openModal }) {
     );
 }
 
-export default AddTeacherPage;
+export default DataImport;

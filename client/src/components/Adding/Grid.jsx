@@ -1,8 +1,8 @@
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
-import { lightTheme, darkTheme } from "../../../constants/grid";
-import { useTheme } from "../../../hooks/useTheme";
+import { lightTheme, darkTheme } from "../../constants/grid";
+import { useTheme } from "../../hooks/useTheme";
 import { CircleX } from "lucide-react";
 
 ModuleRegistry.registerModules([AllCommunityModule]);

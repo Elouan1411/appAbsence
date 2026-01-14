@@ -2,40 +2,61 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
-import "../../../style/Admin.css";
+import "../../style/Admin.css";
 import toast from "react-hot-toast";
-import { validateTeacherData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES } from "../../../utils/teacherValidation";
 import EditableHeader from "./EditableHeader";
 
-function ImportZone({ setRowData, setColDefs }) {
+// Import Student Utils
+import {
+    validateStudentData,
+    matchHeader as matchStudentHeader,
+    EXPECTED_HEADERS as EXPECTED_STUDENT_HEADERS,
+    HEADER_DISPLAY_NAMES as STUDENT_DISPLAY_NAMES,
+} from "../../utils/studentValidation";
+
+// Import Teacher Utils
+import {
+    validateTeacherData,
+    matchHeader as matchTeacherHeader,
+    EXPECTED_HEADERS as EXPECTED_TEACHER_HEADERS,
+    HEADER_DISPLAY_NAMES as TEACHER_DISPLAY_NAMES,
+} from "../../utils/teacherValidation";
+
+function ImportZone({ setRowData, setColDefs, type }) {
+    // Configuration selon le type
+    const isStudent = type === "student";
+
+    const validateData = isStudent ? validateStudentData : validateTeacherData;
+    const matchHeader = isStudent ? matchStudentHeader : matchTeacherHeader;
+    const expectedHeaders = isStudent ? EXPECTED_STUDENT_HEADERS : EXPECTED_TEACHER_HEADERS;
+    const headerDisplayNames = isStudent ? STUDENT_DISPLAY_NAMES : TEACHER_DISPLAY_NAMES;
+    const idField = isStudent ? "numero" : "loginENT"; // Champ clé pour check doublon
+    const checkIdEndpoint = isStudent ? "http://localhost:3000/eleve/allID" : "http://localhost:3000/teacher/allLoginENT";
+
     const processExcel = async (file) => {
         try {
-            // --- ÉTAPE 1 : Récupérer les IDs existants pour détecter les doublons ---
+            // --- ÉTAPE 1 : Check doublons ---
             const existingIds = new Set();
             try {
-                // Adapte l'URL selon ton environnement
-                const response = await fetch("http://localhost:3000/teacher/allLoginENT", {
+                const response = await fetch(checkIdEndpoint, {
                     method: "GET",
-                    credentials: "include", // Important pour passer les cookies/sessions
+                    credentials: "include",
                 });
 
                 if (response.ok) {
                     const dbData = await response.json();
-                    // dbData = [{ numeroEtudiant: "123456" }, ...]
                     dbData.forEach((row) => {
-                        if (row.loginENT) {
-                            existingIds.add(String(row.loginENT));
+                        if (row[idField]) {
+                            existingIds.add(String(row[idField]));
                         }
                     });
                 }
-                console.log(existingIds);
             } catch (err) {
-                console.error("Erreur lors de la récupération des IDs pour doublons", err);
-                // On ne bloque pas l'import, mais on avertit
-                toast.error("Impossible de vérifier les doublons en base (serveur injoignable ?)");
+                console.error("Erreur check doublons", err);
+                toast.error("Impossible de vérifier les doublons en base.");
             }
 
-            // --- ÉTAPE 2 : Lecture du fichier Excel ---
+            // --- ÉTAPE 2 : Lecture Excel ---
             const buffer = await file.arrayBuffer();
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(buffer);
@@ -43,26 +64,20 @@ function ImportZone({ setRowData, setColDefs }) {
             const worksheet = workbook.worksheets[0];
             const data = [];
 
-            // check header
+            // Parsing Header
             const fileHeaders = [];
             const headerRow = worksheet.getRow(1);
 
-            // parse header and add in fileHeaders
             headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                 let headerName = cell.value?.toString().trim() || "";
 
                 if (!headerName) {
+                    // Logique "Sans nom" (identique à avant)
                     const column = worksheet.getColumn(colNumber);
                     let hasData = false;
                     column.eachCell((cellData, rowNumber) => {
-                        if (rowNumber > 1) {
-                            const val = cellData.value;
-                            if (val !== null && val !== undefined && val.toString().trim() !== "") {
-                                hasData = true;
-                            }
-                        }
+                        if (rowNumber > 1 && cellData.value) hasData = true;
                     });
-
                     if (!hasData) return;
                     headerName = "Sans nom";
                 }
@@ -76,20 +91,17 @@ function ImportZone({ setRowData, setColDefs }) {
                 });
             });
 
+            // Construction colonnes Grid
             const gridColumns = [];
 
-            // on parcourt les headers attendus
-            EXPECTED_HEADERS.forEach((expectedKey) => {
+            // Colonnes attendues
+            expectedHeaders.forEach((expectedKey) => {
                 gridColumns.push({
                     field: expectedKey,
-                    headerName: HEADER_DISPLAY_NAMES[expectedKey] || expectedKey,
+                    headerName: headerDisplayNames[expectedKey] || expectedKey,
                     cellClassRules: {
-                        "cell-error": (params) => {
-                            return params.data._errors && params.data._errors[expectedKey];
-                        },
-                        "cell-autofilled": (params) => {
-                            return params.data._autoFilled && params.data._autoFilled[expectedKey];
-                        },
+                        "cell-error": (params) => params.data._errors && params.data._errors[expectedKey],
+                        "cell-autofilled": (params) => params.data._autoFilled && params.data._autoFilled[expectedKey],
                     },
                     tooltipValueGetter: (params) => {
                         if (params.data._autoFilled && params.data._autoFilled[expectedKey]) {
@@ -100,7 +112,7 @@ function ImportZone({ setRowData, setColDefs }) {
                 });
             });
 
-            // celles du fichier client qui n'ont pas matché
+            // Colonnes ignorées
             fileHeaders.forEach((fh) => {
                 if (!fh.mappedKey) {
                     gridColumns.push({
@@ -109,16 +121,16 @@ function ImportZone({ setRowData, setColDefs }) {
                         headerComponent: EditableHeader,
                         cellClass: "cell-ignored",
                         editable: false,
-                        tooltipValueGetter: () => "Le nom de la colonne n'est pas reconnu par le système",
+                        tooltipValueGetter: () => "Le nom de la colonne n'est pas reconnu",
                     });
                 }
             });
 
             if (setColDefs) setColDefs(gridColumns);
 
-            // écriture des données dans la grille
+            // Parsing des lignes
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return; // Skip header
+                if (rowNumber === 1) return;
 
                 let rowItem = {};
 
@@ -133,39 +145,32 @@ function ImportZone({ setRowData, setColDefs }) {
                     }
                 });
 
+                // Autofill (Spécifique étudiant ou générique si besoin)
                 rowItem._autoFilled = {};
 
-                if (!rowItem.promoPair) {
-                    rowItem.promoPair = rowItem.promo;
-                    rowItem._autoFilled.promoPair = true;
-                }
+                // On applique l'autofill pour les paires (fonctionne pour les 2 si les champs existent)
+                ["promo", "groupeTD", "groupeTP"].forEach((field) => {
+                    if (rowItem[field] && !rowItem[`${field}Pair`]) {
+                        rowItem[`${field}Pair`] = rowItem[field];
+                        rowItem._autoFilled[`${field}Pair`] = true;
+                    }
+                });
 
-                if (!rowItem.groupeTDPair) {
-                    rowItem.groupeTDPair = rowItem.groupeTD;
-                    rowItem._autoFilled.groupeTDPair = true;
-                }
-
-                if (!rowItem.groupeTPPair) {
-                    rowItem.groupeTPPair = rowItem.groupeTP;
-                    rowItem._autoFilled.groupeTPPair = true;
-                }
-
-                // validation des données
-                const errors = validateTeacherData(rowItem);
+                // Validation
+                const errors = validateData(rowItem);
                 rowItem._errors = errors;
 
-                // --- ÉTAPE 3 : Vérification du doublon BDD ---
-                if (rowItem.loginENT && existingIds.has(String(rowItem.loginENT))) {
-                    rowItem._isDuplicate = true; // Flag pour le style CSS
+                // Check doublon BDD
+                if (rowItem[idField] && existingIds.has(String(rowItem[idField]))) {
+                    rowItem._isDuplicate = true;
                 }
 
                 data.push(rowItem);
             });
 
             if (setRowData) setRowData(data);
-            console.log(`${data.length} lignes importées localement.`);
         } catch (error) {
-            console.error("Erreur lors de la lecture du fichier Excel :", error);
+            console.error("Erreur lecture Excel :", error);
             toast.error("Impossible de lire le fichier Excel.");
         }
     };
@@ -176,21 +181,16 @@ function ImportZone({ setRowData, setColDefs }) {
             if (!file) return;
 
             const extension = file.name.split(".").pop().toLowerCase();
-            if (extension !== "xlsx" && extension !== "csv") {
-                toast.error("Extension de fichier invalide.");
+            if (extension !== "xlsx") {
+                toast.error("Seuls les fichiers .xlsx sont acceptés.");
                 return;
             }
-
-            if (extension === "xlsx") {
-                processExcel(file);
-            }
+            processExcel(file);
         },
-        [setRowData, setColDefs]
+        [setRowData, setColDefs, type]
     );
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-    });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
     return (
         <div {...getRootProps()} className="dropzone-container">
