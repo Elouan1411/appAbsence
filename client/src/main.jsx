@@ -10,17 +10,13 @@ import { Toaster } from "react-hot-toast";
 
 const root = createRoot(document.getElementById("root"));
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 root.render(
     <StrictMode>
         <AuthProvider>
             <BrowserRouter>
                 <App />
-                <Toaster position="top-right" reverseOrder={false} />
             </BrowserRouter>
         </AuthProvider>
     </StrictMode>

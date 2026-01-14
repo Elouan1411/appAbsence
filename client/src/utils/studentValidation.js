@@ -83,17 +83,14 @@ function matchHeader(cellHeader) {
 async function calculateDuplicateRow(row) {
     const warnings = {};
 
-    const data = await fetch("http://localhost:3000/student/allID", {
+    const data = await fetch("http://localhost:3000/eleve/allID", {
         method: "GET",
         credentials: "include",
     });
     const numeros = await data.json();
 
-    if (row.numero in numeros) {
-        warnings.numero = true;
-    }
-
-    return warnings;
+    const estPresent = numeros.some((item) => item.numero === row.numero);
+    return estPresent;
 }
 function validateStudentData(row) {
     const errors = {};

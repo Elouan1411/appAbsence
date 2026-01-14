@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import Title from "../components/common/Title";
 import Subtitle from "../components/common/Subtitle";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 function LoginPage() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
@@ -15,10 +16,8 @@ function LoginPage() {
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("J'essaye de me connecter");
         try {
             const role = await login(user, password);
-            console.log(`Role : ${role} | Type : ${typeof role}`);
             if (role === "admin") {
                 navigate("/admin/", { replace: true });
             } else if (role === "teacher") {
@@ -28,8 +27,9 @@ function LoginPage() {
             } else {
                 navigate("/error", { replace: true });
             }
+            toast.success("Connexion réussie.");
         } catch (error) {
-            setError(error);
+            toast.error(error.message.replaceAll('"', ""));
         }
     };
 

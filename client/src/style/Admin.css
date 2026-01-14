@@ -45,12 +45,8 @@
     color: var(--autofilled-color);
 }
 
-.cell-warnings {
-    background-color: var(--);
-}
-
 .row-duplicate-db {
-    background-color: #3b82f6 !important; /* Orange très clair */
+    background-color: var(--primary-color) !important; /* Orange très clair */
     color: white; /* Texte orange foncé */
 }
 
@@ -669,4 +665,54 @@ p {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-secondary);
+}
+
+.grid-button-container button {
+    width: 15%;
+    max-width: 200px;
+    min-width: 150px;
+}
+.grid-button-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5vh;
+}
+
+.indicator-container {
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+.indicator-container > div {
+    height: 2vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.rectangle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-box {
+    width: 2vw;
+    height: 3px;
+}
+
+.error-container .color-box {
+    background-color: var(--error-color);
+}
+
+.duplicate-container .color-box {
+    background-color: var(--primary-color);
 }
