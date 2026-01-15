@@ -218,10 +218,12 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             toast.error("Veuillez saisir un identifiant ENT d'un enseignant.");
             return;
         }
-        const estPresent = await isLoginInDatabase(loginENT);
-        if (!estPresent) {
-            toast.error("L'identifiant ne correspond à aucun enseignant.");
-            return;
+        if (role === "admin") {
+            const estPresent = await isLoginInDatabase(loginENT);
+            if (!estPresent) {
+                toast.error("L'identifiant ne correspond à aucun enseignant.");
+                return;
+            }
         }
         if (subject === null || subject === undefined || subject === "") {
             toast.error("Veuillez sélectionner une matière.");
@@ -365,6 +367,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
 
                 if (responseAbsence.ok && responseAppel.ok) {
                     toast.success("Appel validé avec succès !", { duration: 3000 });
+                    if (onSuccess) onSuccess();
                 } else {
                     let errText = "";
                     if (!responseAbsence.ok) errText += "Erreur absence: " + (await responseAbsence.text()) + ". ";
@@ -378,7 +381,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
         }
     };
 
-    if (!criteria) {
+    if (!criteria || !criteria.promo) {
         return (
             <div
                 style={{

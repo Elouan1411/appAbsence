@@ -1,11 +1,21 @@
 export default async function isLoginInDatabase(login) {
-    const data = await fetch("http://localhost:3000/teacher/allLoginENT", {
-        method: "GET",
-        credentials: "include",
-    });
-    const logins = await data.json();
+    try {
+        const data = await fetch("http://localhost:3000/teacher/allLoginENT", {
+            method: "GET",
+            credentials: "include",
+        });
 
-    const estPresent = logins.some((item) => item.loginENT === login);
-    console.log("Est présent: ", estPresent);
-    return estPresent;
+        if (!data.ok) {
+            console.error("Error checking login in database:", data.status);
+            return false;
+        }
+
+        const logins = await data.json();
+        const estPresent = logins.some((item) => item.loginENT === login);
+        console.log("Est présent: ", estPresent);
+        return estPresent;
+    } catch (error) {
+        console.error("Network error checking login:", error);
+        return false;
+    }
 }
