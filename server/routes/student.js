@@ -90,39 +90,39 @@ router.get("/allID", verifyToken, isAdmin, (req, res) => {
 
 //Récupération d'un étudiant avec un id particulier ainsi que les RSE et matières associées
 router.get("/:id", verifyToken, isAdmin, (req, res) => {
-    let id = req.params.id.substring(1);
+    let id = req.params.id;
     let sql = `SELECT * FROM Eleve WHERE numero = ?`;
-    let result = [];
     db.all(sql, [id], (err, rows) => {
         if (err) {
             return console.error(err.message);
         }
-        result = rows;
+        res.status(200).json(rows);
     });
 
-    sql = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
-    db.all(sql, [id], (err, rows) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        let rse = {};
-        for (let i in rows) {
-            rse[i["code"]] = i["libelle"];
-        }
-        result.push(rse);
-    });
+    // sql = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
+    // db.all(sql, [id], (err, rows) => {
+    //     if (err) {
+    //         return console.error(err.message);
+    //     }
+    //     let rse = {};
+    //     for (let i in rows) {
+    //         rse[i["code"]] = i["libelle"];
+    //     }
+    //     result.push(rse);
+    // });
 
-    sql = "SELECT codeMatiere FROM RelationMatiereEleve WHERE numeroEleve = ?";
-    db.all(sql, [id], (err, rows) => {
-        if (err) return console.error(err.message);
+    // sql = "SELECT codeMatiere FROM RelationMatiereEleve WHERE numeroEleve = ?";
+    // db.all(sql, [id], (err, rows) => {
+    //     if (err) return console.error(err.message);
 
-        let matiere = [];
-        for (let i of rows) {
-            matiere.push(i["codeMatiere"]);
-        }
-        result.push(matiere);
-        res.status(200).json(result);
-    });
+    //     let matiere = [];
+    //     for (let i of rows) {
+    //         matiere.push(i["codeMatiere"]);
+    //     }
+    //     result.push(matiere);
+    //     console.log(result);
+    //     res.status(200).json(result);
+    // });
 });
 
 router.post("/add", verifyToken, isAdmin, (req, res) => {
