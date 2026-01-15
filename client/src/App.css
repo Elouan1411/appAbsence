@@ -38,7 +38,7 @@ body.dark {
 }
 
 body.light {
-    --background-color: #ffffff;
+    --background-color: #fafafa;
     --card-bg: #ffffff;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;

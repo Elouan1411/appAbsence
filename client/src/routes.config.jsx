@@ -7,6 +7,7 @@ import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import AddingPage from "./pages/Admin/AddingPage";
+import StudentDetailPage from "./pages/Admin/StudentDetailPage";
 //bfuiegz
 export const routesConfig = [
     {
@@ -18,6 +19,7 @@ export const routesConfig = [
             { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
             { path: "studentlist", label: "Liste des étudiants", element: <ShowStudentPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
+            { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
         ],
     },
     {

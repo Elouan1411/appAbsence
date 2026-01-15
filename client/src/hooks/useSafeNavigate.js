@@ -1,4 +1,3 @@
-// useSafeNavigate.js
 import { useNavigate } from "react-router-dom";
 import { alertConfirm } from "./alertConfirm";
 import { useUnsaved } from "../context/UnsavedContext";
