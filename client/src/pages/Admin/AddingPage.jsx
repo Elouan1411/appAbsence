@@ -59,7 +59,7 @@ function AddingPage() {
     };
     return (
         <div className="adding-container">
-            <PageTitle icon="icon-adding-group" title="Ajouter des étudiants / professeurs" />
+            <PageTitle icon="icon-adding-group" title="Ajouter des étudiants / enseignants" />
             <AddingTabs activeTab={activeTab} setActiveTab={handleTabChange} />
             <div className="adding-content">
                 <DataImport type={activeTab} openModal={openModal} setHasUnsavedImport={setHasUnsavedImport} />

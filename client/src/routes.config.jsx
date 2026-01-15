@@ -15,8 +15,9 @@ export const routesConfig = [
 
         children: [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
-            { path: "add", label: "Ajouter des étudiants / professeurs", element: <AddingPage />, icon: "icon-adding-group" },
-            { path: "studentlist", label: "Liste des Élèves", element: <ShowStudentPage />, icon: "icon-student-list" },
+            { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
+            { path: "studentlist", label: "Liste des étudiants", element: <ShowStudentPage />, icon: "icon-student-list" },
+            { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
         ],
     },
     {
