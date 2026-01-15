@@ -7,6 +7,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { pdfjs } from "react-pdf";
 import { Toaster } from "react-hot-toast";
+import { UnsavedProvider } from "./context/UnsavedContext.jsx";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -15,9 +16,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.m
 root.render(
     <StrictMode>
         <AuthProvider>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
+            <UnsavedProvider>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </UnsavedProvider>
         </AuthProvider>
     </StrictMode>
 );
