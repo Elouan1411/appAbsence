@@ -5,13 +5,27 @@ import "../../style/Admin.css";
 import FormModal from "../../components/Adding/FormModal";
 import toast from "react-hot-toast";
 import DataImport from "../../components/Adding/DataImport";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 function AddingPage() {
     const [activeTab, setActiveTab] = useState("student");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [hasUnsavedImport, setHasUnsavedImport] = useState(false);
 
     const openModal = () => {
         setIsModalOpen(true);
+    };
+
+    const handleTabChange = async (nextTab) => {
+        if (nextTab === activeTab) return;
+
+        if (hasUnsavedImport) {
+            const result = await alertConfirm("Souhaitez-vous vraiment quitter cet onglet ?", "Les données importées seront perdues.");
+
+            if (!result.isConfirmed) return;
+        }
+
+        setActiveTab(nextTab);
     };
 
     const handleSubmit = async (data) => {
@@ -46,9 +60,9 @@ function AddingPage() {
     return (
         <div className="adding-container">
             <PageTitle icon="icon-adding-group" title="Ajouter des étudiants / professeurs" />
-            <AddingTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <AddingTabs activeTab={activeTab} setActiveTab={handleTabChange} />
             <div className="adding-content">
-                <DataImport type={activeTab} openModal={openModal} />
+                <DataImport type={activeTab} openModal={openModal} setHasUnsavedImport={setHasUnsavedImport} />
             </div>
 
             <FormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode={activeTab} onSubmit={handleSubmit} />

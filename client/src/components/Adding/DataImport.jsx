@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Grid from "./Grid";
 import {
     HEADER_DISPLAY_NAMES as TEACHER_HEADER_DISPLAY_NAMES,
@@ -18,14 +18,30 @@ import Separator from "./Separator";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import ExcelJS from "exceljs";
+import "../../style/icon.css";
 
-function DataImport({ type, openModal }) {
+function DataImport({ type, openModal, setHasUnsavedImport }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const [hasErrors, setHasErrors] = useState(false);
     const [hasDuplicate, setHasDuplicate] = useState(false);
 
     const gridRef = useRef(null);
+
+    useEffect(() => {
+        setRowData([]);
+    }, [type]);
+
+    useEffect(() => {
+        setHasUnsavedImport(rowData.length > 0);
+    }, [rowData, setHasUnsavedImport]);
+
+    const confirmClose = async () => {
+        const result = await alertConfirm("Souhaitez-vous vraiment quitter cette page ?", "Les données ne seront pas sauvegardées.");
+        if (result.isConfirmed) {
+            setRowData([]);
+        }
+    };
 
     // Définition des labels et classes dynamiques
     const entityLabel = type === "student" ? "étudiant" : "professeur";
@@ -246,38 +262,45 @@ function DataImport({ type, openModal }) {
         <div className={containerClass}>
             <div className={contentClass}>
                 {rowData.length > 0 ? (
-                    <div style={{ marginTop: 20, width: "100%" }}>
-                        <div className="indicator-container">
-                            {hasDuplicate && (
-                                <div className="duplicate-container">
-                                    <div className="rectangle">
-                                        <div className="color-box" />
-                                        <p>Lignes dupliquées dans la base de données</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            {hasErrors && (
-                                <div className="error-container">
-                                    <div className="rectangle">
-                                        <div className="color-box" />
-                                        <p>Cellules non-conformes</p>
-                                    </div>
-                                </div>
-                            )}
+                    <div className="all-import-container">
+                        <div className="import-header">
+                            <button className="close-import-button" onClick={confirmClose}>
+                                <span className="icon-x" />
+                            </button>
                         </div>
+                        <div className="import-container">
+                            <div className="indicator-container">
+                                {hasDuplicate && (
+                                    <div className="duplicate-container">
+                                        <div className="rectangle">
+                                            <div className="color-box" />
+                                            <p>Lignes dupliquées dans la base de données</p>
+                                        </div>
+                                    </div>
+                                )}
 
-                        <Grid
-                            rowData={rowData}
-                            colDefs={colDefs}
-                            gridRef={gridRef}
-                            onRename={handleRename}
-                            onDelete={handleDeleteColumn}
-                            onDeleteRow={handleDeleteRow}
-                            onCellValueChanged={handleCellValueChanged}
-                        />
-                        <div className="grid-button-container">
-                            <Button onClick={handleSaveAndSend}>Sauvegarder</Button>
+                                {hasErrors && (
+                                    <div className="error-container">
+                                        <div className="rectangle">
+                                            <div className="color-box" />
+                                            <p>Cellules non-conformes</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Grid
+                                rowData={rowData}
+                                colDefs={colDefs}
+                                gridRef={gridRef}
+                                onRename={handleRename}
+                                onDelete={handleDeleteColumn}
+                                onDeleteRow={handleDeleteRow}
+                                onCellValueChanged={handleCellValueChanged}
+                            />
+                            <div className="grid-button-container">
+                                <Button onClick={handleSaveAndSend}>Sauvegarder</Button>
+                            </div>
                         </div>
                     </div>
                 ) : (
