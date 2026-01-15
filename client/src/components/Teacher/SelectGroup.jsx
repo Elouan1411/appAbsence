@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectGroup({ onValidate, date, style }) {
+function SelectGroup({ onValidate, date, style, initialSelection }) {
     const [promos, setPromos] = useState([]);
     const [TD, setTD] = useState([]);
     const [TP, setTP] = useState([]);
@@ -21,6 +21,24 @@ function SelectGroup({ onValidate, date, style }) {
     const [selectedSemestre, setSelectedSemestre] = useState(() => getSemesterFromDate(date));
     const [selectedTD, setSelectedTD] = useState("");
     const [selectedTP, setSelectedTP] = useState("");
+
+    useEffect(() => {
+        if (initialSelection) {
+            console.log("Setting initial selection:", initialSelection);
+            setSelectedPromo(initialSelection.promo || "");
+            
+            if (initialSelection.semestre) {
+                setSelectedSemestre(initialSelection.semestre);
+            }
+            
+            setSelectedTD(initialSelection.groupeTD || "");
+            setSelectedTP(initialSelection.groupeTP || "");
+
+            if (initialSelection.promo && initialSelection.semestre) {
+                fetchGroups(initialSelection.promo, initialSelection.semestre);
+            }
+        }
+    }, [initialSelection]);
 
     useEffect(() => {
         if (date) {

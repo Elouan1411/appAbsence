@@ -35,6 +35,28 @@ router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
+router.get("/recent/:login", verifyToken, isAdminOrTeacher, (req, res) => {
+    let login = req.params.login.substring(1);
+    const sql = `
+        SELECT DISTINCT Appel.codeMatiere, Matiere.libelle, Appel.promo, Appel.groupeTD, Appel.groupeTP, MAX(debut) as last_date
+        FROM Appel
+        JOIN Matiere ON Appel.codeMatiere = Matiere.code
+        WHERE loginProfesseur = ?
+        GROUP BY Appel.codeMatiere, Appel.promo, Appel.groupeTD, Appel.groupeTP
+        ORDER BY last_date DESC
+        LIMIT 15
+    `;
+    
+    db.all(sql, [login], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            return res.status(500).json({ error: "Erreur serveur" });
+        }
+        res.status(200).json(rows);
+    });
+});
+
+
 //Sélection des informations d'un appel à partir d'un id d'appel
 router.get("/info/:id", verifyToken, isTeacher, (req, res) => {
   const sql = "SELECT * FROM Appel WHERE idAppel = ?";
