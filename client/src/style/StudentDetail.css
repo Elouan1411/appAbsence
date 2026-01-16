@@ -4,3 +4,63 @@
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
+
+.absence-list-container {
+    margin-top: 20px;
+    width: 100%;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.absence-list-subcontainer {
+    width: 100%;
+    flex: 1;
+    background-color: var(--card-bg);
+    border-radius: 15px;
+}
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.button-container > button {
+    all: unset;
+    width: 40px;
+    height: 40px;
+}
+.button-container button > .icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    transition: 0.5s ease-in-out;
+}
+
+.button-container button:hover > .icon {
+    cursor: pointer;
+    background-color: var(--text-primary);
+    transition: 0.5s ease-in-out;
+}
+
+.justification-badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+.no-justified-badge {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+}
+
+.justified-badge {
+    background-color: var(--justified-badge-bg);
+    color: var(--justified-badge-text);
+}
+
+.card-absence-subject span {
+    font-size: 15px;
+}

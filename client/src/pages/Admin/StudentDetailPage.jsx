@@ -6,6 +6,7 @@ import PersonalInformations from "../../components/StudentDetailPage/PersonalInf
 import { useUnsaved } from "../../context/UnsavedContext";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import "../../style/StudentDetail.css";
+import AbsenceList from "../../components/StudentDetailPage/AbsenceList";
 
 const emptyStudent = {
     prenom: "",
@@ -25,6 +26,7 @@ function StudentDetailPage() {
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false);
     const [student, setStudent] = useState(emptyStudent);
+    const [absences, setAbsences] = useState([]);
 
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -83,11 +85,17 @@ function StudentDetailPage() {
     return (
         <div className="student-detail-container">
             <PageTitle title="Détail étudiant" icon="icon-school" />
-            <button onClick={toggleEditing}>{editing ? "Sauvegarder" : "Modifier"}</button>
+            <div className="button-container">
+                <button onClick={handleGoBack}>
+                    <span className="icon icon-previous"></span>
+                </button>
+                <button onClick={toggleEditing}>
+                    <span className={editing ? "icon icon-save" : "icon icon-edit"} />
+                </button>
+            </div>
 
             <PersonalInformations student={student} loading={loading} editing={editing} setEditing={setEditing} onChange={handleChange} />
-
-            <button onClick={handleGoBack}>Revenir en arrière</button>
+            <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} />
         </div>
     );
 }

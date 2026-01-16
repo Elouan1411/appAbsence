@@ -5,31 +5,32 @@ import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle }) => {
-    const navigate = useNavigate();
-    const { hasUnsavedChanges } = useUnsaved();
-    const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom }) => {
+    // const navigate = useNavigate();
+    // const { hasUnsavedChanges } = useUnsaved();
+    // const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
-    const handleJustify = () => {
-        safeNavigate("/dashboard/justification", {
-            state: { prefilledPeriod: [fullPeriod] },
-        });
-    };
+    // const handleJustify = () => {
+    //     safeNavigate("/dashboard/justification", {
+    //         state: { prefilledPeriod: [fullPeriod] },
+    //     });
+    // };
 
     return (
-        <div
-            className={`card-absence ${isSelectionMode ? "selection-mode" : ""} ${isSelected ? "selected" : ""}`}
-            onClick={isSelectionMode ? onToggle : undefined}
-        >
+        <div className={`card-absence`}>
             <div className="card-absence-left">
-                <div className={`selection-checkbox-wrapper ${isSelectionMode ? "visible" : ""}`}>
-                    <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div>
+                <div className={`selection-checkbox-wrapper`}>
+                    {/* <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div> */}
                 </div>
 
                 <div className="card-absence-info">
                     <div className="card-absence-header">
-                        <h3 className="card-absence-subject">{subject}</h3>
-                        <span className="card-absence-badge">Action requise</span>
+                        <h3 className="card-absence-subject">
+                            {subject} ({courseType}){" "}
+                            <span>
+                                avec {prenom} {nom.toUpperCase()}
+                            </span>
+                        </h3>
                     </div>
                     <div className="card-absence-time">
                         <div className="time-block">
@@ -43,14 +44,19 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
                     </div>
                 </div>
             </div>
+            <div>
+                <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
+                    {justified ? "Justifiée" : "Non justifiée"}
+                </span>
+            </div>
 
-            <div className="card-absence-right">
+            {/* <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
                     <button className="btn-justifier" onClick={handleJustify}>
                         Justifier
                     </button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };
