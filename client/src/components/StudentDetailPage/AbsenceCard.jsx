@@ -44,10 +44,13 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                     </div>
                 </div>
             </div>
-            <div>
+            <div className="right-buttons-container">
                 <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
                     {justified ? "Justifiée" : "Non justifiée"}
                 </span>
+                <button className="delete-button">
+                    <span className="icon icon-trash" />
+                </button>
             </div>
 
             {/* <div className="card-absence-right">

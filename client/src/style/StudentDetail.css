@@ -18,6 +18,7 @@
     flex: 1;
     background-color: var(--card-bg);
     border-radius: 15px;
+    padding: 20px;
 }
 .button-container {
     width: 100%;
@@ -63,4 +64,36 @@
 
 .card-absence-subject span {
     font-size: 15px;
+}
+
+.right-buttons-container {
+    width: 7%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.delete-button {
+    all: unset;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 20px;
+}
+.delete-button span {
+    transition: 0.5s ease-in-out;
+}
+
+.delete-button:hover span {
+    cursor: pointer;
+    background-color: red;
+    transform: scale(1.5);
+    transition: 0.5s ease-in-out;
+}
+
+h3 {
+    color: var(--text-primary);
 }
