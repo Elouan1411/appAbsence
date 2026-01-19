@@ -20,6 +20,7 @@ function StudentHomePage() {
     const { user } = useAuth();
     const [absences, setAbsences] = useState([]);
     const [pendingAbsences, setPendingAbsences] = useState([]);
+    const [archivedAbsences, setArchivedAbsences] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -35,6 +36,7 @@ function StudentHomePage() {
                         subject: abs.nomMatiere || abs.codeMatiere,
                         start: String(abs.debut),
                         end: String(abs.fin),
+                        status: "todo",
                     }));
                     setAbsences(mappedAbsences);
                 })
@@ -48,18 +50,37 @@ function StudentHomePage() {
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => {
                     const mappedPending = data.map((abs) => ({
-                        id: abs.idAbsence,
+                        id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
                         subject: abs.nomMatiere || abs.codeMatiere,
                         start: String(abs.debut),
                         end: String(abs.fin),
+                        status: "pending",
                     }));
                     setPendingAbsences(mappedPending);
                 })
                 .catch((err) => console.error("Erreur fetch pending absences:", err));
+
+            // Fetch archived absences
+            fetch(`http://localhost:3000/absence/archived/:${user}`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => (res.ok ? res.json() : []))
+                .then((data) => {
+                    const mappedArchived = data.map((abs) => ({
+                        id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
+                        subject: abs.nomMatiere || abs.codeMatiere,
+                        start: String(abs.debut),
+                        end: String(abs.fin),
+                        status: abs.validite === 0 ? "validated" : "refused",
+                    }));
+                    setArchivedAbsences(mappedArchived);
+                })
+                .catch((err) => console.error("Erreur fetch archived absences:", err));
         }
     }, [user]);
 
-    const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : [];
+    const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : archivedAbsences;
 
     // Groupement par date
     const absencesByDate = currentAbsences.reduce((acc, abs) => {
@@ -99,7 +120,7 @@ function StudentHomePage() {
     const counts = {
         todo: absences.length,
         pending: pendingAbsences.length,
-        archived: 0,
+        archived: archivedAbsences.length,
     };
 
     const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -152,14 +173,14 @@ function StudentHomePage() {
                                 isSelectionMode={isSelectionMode}
                                 isSelected={selectedIds.includes(absence.id)}
                                 onToggle={() => handleToggleAbsence(absence.id)}
-                                status={activeTab === "pending" ? "pending" : "todo"}
+                                status={absence.status}
                             />
                         ))}
                     </div>
                 ))}
                 {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
                 {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
-                {activeTab === "archived" && <div className="empty-state">Aucune archive.</div>}
+                {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
             </div>
             {isSelectionMode && selectedIds.length > 0 && (
                 <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />

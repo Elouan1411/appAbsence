@@ -16,8 +16,22 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
         });
     };
 
-    const badgeText = status === "todo" ? "Action requise" : status === "pending" ? "En attente de validation" : "Archivé";
-    const badgeClass = status === "todo" ? "card-absence-badge" : "card-absence-badge pending";
+    const getBadgeInfo = () => {
+        switch (status) {
+            case "todo":
+                return { text: "Action requise", className: "card-absence-badge" };
+            case "pending":
+                return { text: "En attente de validation", className: "card-absence-badge pending" };
+            case "validated":
+                return { text: "Justifiée", className: "card-absence-badge validated" };
+            case "refused":
+                return { text: "Refusée", className: "card-absence-badge refused" };
+            default:
+                return { text: "Archivé", className: "card-absence-badge" };
+        }
+    };
+
+    const { text: badgeText, className: badgeClass } = getBadgeInfo();
 
     return (
         <div

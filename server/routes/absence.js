@@ -69,7 +69,7 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
 // Récupération des absences n'ayant pas de justificatif
 router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
-
+    // we search for absences that have no justification or justification with status 3
     const sql = `
     SELECT 
       A.idAbsence,
@@ -91,7 +91,7 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
         AND J.fin >= Ap.fin
         AND J.validite IN (0, 1, 2)
     )
-  `; // J.validite = 3 => Justification non validée, info supplémentaire demandées
+  `;
 
     db.all(sql, [login], (err, rows) => {
         if (err) {
@@ -113,7 +113,8 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       Ap.debut,
       Ap.fin,
       Ap.codeMatiere,
-      M.libelle as nomMatiere
+      M.libelle as nomMatiere,
+      'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
@@ -126,9 +127,96 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
         AND J.fin >= Ap.fin
         AND J.validite IN (2)
     )
+    UNION ALL
+    SELECT
+      J.idAbsJustifiee as idAbsence,
+      J.numeroEtudiant,
+      E.loginENT as login,
+      J.debut,
+      J.fin,
+      NULL as codeMatiere,
+      'Justification anticipée' as nomMatiere,
+      'JUSTIFICATION' as type
+    FROM JustificationAbsence J
+    JOIN Eleve E ON J.numeroEtudiant = E.numero
+    WHERE E.loginENT = ?
+    AND J.validite IN (2)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Absence A
+        JOIN Appel Ap ON A.idAppel = Ap.idAppel
+        WHERE A.numeroEtudiant = J.numeroEtudiant
+        AND J.debut <= Ap.debut
+        AND J.fin >= Ap.fin
+    )
   `;
 
-    db.all(sql, [login], (err, rows) => {
+    db.all(sql, [login, login], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(rows);
+    });
+});
+
+// Récupération des absences archivées (validées ou refusées)
+router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
+    const login = req.params.login.substring(1);
+
+    const sql = `
+    SELECT 
+      A.idAbsence,
+      A.numeroEtudiant,
+      A.login,
+      Ap.debut,
+      Ap.fin,
+      Ap.codeMatiere,
+      M.libelle as nomMatiere,
+      (SELECT validite FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite IN (0, 1)
+       LIMIT 1) as validite,
+      'ABSENCE' as type
+    FROM Absence A
+    JOIN Appel Ap ON A.idAppel = Ap.idAppel
+    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    WHERE A.login = ?
+    AND EXISTS (
+        SELECT 1
+        FROM JustificationAbsence J
+        WHERE J.numeroEtudiant = A.numeroEtudiant
+        AND J.debut <= Ap.debut
+        AND J.fin >= Ap.fin
+        AND J.validite IN (0, 1)
+    )
+    UNION ALL
+    SELECT
+      J.idAbsJustifiee as idAbsence,
+      J.numeroEtudiant,
+      E.loginENT as login,
+      J.debut,
+      J.fin,
+      NULL as codeMatiere,
+      'Justification sans absence' as nomMatiere,
+      J.validite,
+      'JUSTIFICATION' as type
+    FROM JustificationAbsence J
+    JOIN Eleve E ON J.numeroEtudiant = E.numero
+    WHERE E.loginENT = ?
+    AND J.validite IN (0, 1)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Absence A
+        JOIN Appel Ap ON A.idAppel = Ap.idAppel
+        WHERE A.numeroEtudiant = J.numeroEtudiant
+        AND J.debut <= Ap.debut
+        AND J.fin >= Ap.fin
+    )
+  `;
+
+    db.all(sql, [login, login], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
