@@ -22,9 +22,9 @@ const StudentJustificationPage = () => {
 
     useEffect(() => {
         if (location.state && location.state.prefilledPeriod) {
-            const periodsWithIds = location.state.prefilledPeriod.map((p) => ({
+            const periodsWithIds = location.state.prefilledPeriod.map((p, index) => ({
                 ...p,
-                id: Date.now(),
+                id: Date.now() + index,
             }));
             setPeriod(periodsWithIds);
             setPeriodError(false);

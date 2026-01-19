@@ -546,22 +546,6 @@ div.react-datepicker__time-container .react-datepicker__time .react-datepicker__
     border-color: #dc2626;
 }
 
-.period-card.period-disabled {
-    cursor: not-allowed;
-    position: relative;
-    border-color: var(--autofilled-color);
-}
-
-/* TODO : bloquer le click sur les dates */
-.period-card.period-disabled::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(245, 245, 245, 0.706);
-    border-radius: inherit;
-    z-index: 10;
-}
-
 .input-error {
     background-color: rgba(255, 0, 0, 0.05) !important;
     border-color: #ef4444 !important;
@@ -711,6 +695,21 @@ span.loading-text {
     white-space: nowrap;
 }
 
+.card-absence-badge.pending {
+    background-color: var(--badge-pending-bg);
+    color: var(--badge-pending-text);
+}
+
+.card-absence-badge.validated {
+    background-color: var(--badge-validated-bg);
+    color: var(--badge-validated-text);
+}
+
+.card-absence-badge.refused {
+    background-color: var(--badge-refused-bg);
+    color: var(--badge-refused-text);
+}
+
 .card-absence-time {
     display: flex;
     gap: 32px;
@@ -830,8 +829,12 @@ span.loading-text {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    min-height: 200px;
 }
+
+.dashboard-content:not(:has(.card-absence)) {
+    min-height: 100px;
+}
+
 .dashboard-tabs:has(.dashboard-tab:first-child.active) + .dashboard-content {
     border-top-left-radius: 12px;
 }
