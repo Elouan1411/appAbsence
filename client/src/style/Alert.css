@@ -85,7 +85,15 @@
     padding: 10px 20px;
     text-align: center;
 }
-
+.content span {
+    margin-top: 0.5rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    font-size: 0.95rem;
+    text-align: left;
+}
 .content p {
     margin-top: 0.5rem;
     line-height: 1.4;

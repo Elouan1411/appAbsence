@@ -32,12 +32,15 @@ body.dark {
     --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
     --dashboard-content-bg: var(--card-bg);
     --badge-bg: rgba(239, 68, 68, 0.2);
+    --justified-badge-bg: rgba(68, 239, 68, 0.2);
     --badge-text: #f87171;
+    --justified-badge-text: #71f871;
     --tab-border-color: var(--border-color);
+    --row-duplicate: #3b83f697;
 }
 
 body.light {
-    --background-color: #ffffff;
+    --background-color: #fafafa;
     --card-bg: #ffffff;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;
@@ -57,9 +60,12 @@ body.light {
     --header-background-color: color-mix(in srgb, #fff, #181d1f 15.000000000000001%);
     --dashboard-content-bg: #ffffff;
     --badge-bg: #fee2e2;
+    --justified-badge-bg: #e2fee2;
     --badge-text: #ef4444;
+    --justified-badge-text: #44ef44;
     --dot-color: #f87171;
     --tab-border-color: #334155;
+    --row-duplicate: #649fff97;
 }
 
 .loading {
@@ -101,4 +107,8 @@ main {
     -webkit-mask-position: center;
     mask-position: center;
     flex-shrink: 0;
+}
+
+.toaster {
+    background-color: var(--cell-ignored-background);
 }

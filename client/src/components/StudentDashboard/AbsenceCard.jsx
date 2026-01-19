@@ -2,12 +2,16 @@ import React from "react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
+import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import { useUnsaved } from "../../context/UnsavedContext";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle }) => {
     const navigate = useNavigate();
+    const { hasUnsavedChanges } = useUnsaved();
+    const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
     const handleJustify = () => {
-        navigate("/dashboard/justification", {
+        safeNavigate("/dashboard/justification", {
             state: { prefilledPeriod: [fullPeriod] },
         });
     };

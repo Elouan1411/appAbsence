@@ -45,6 +45,11 @@
     color: var(--autofilled-color);
 }
 
+.row-duplicate-db {
+    background-color: var(--primary-color) !important; /* Orange très clair */
+    color: white; /* Texte orange foncé */
+}
+
 .cell-ignored {
     background-color: var(--cell-ignored-background);
     color: var(--cell-ignored-color);
@@ -95,7 +100,7 @@
 }
 
 .title-container {
-    width: calc(100% - 15px - 30px);
+    width: 90%;
     height: 8vh;
     display: flex;
     align-items: center;
@@ -660,4 +665,117 @@ p {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-secondary);
+}
+
+.grid-button-container button {
+    width: 20%;
+    max-width: 200px;
+    min-width: 150px;
+    height: 3vh;
+}
+.grid-button-container {
+    flex: 1;
+    width: 100%;
+    max-height: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5vh;
+}
+
+.indicator-container {
+    height: 5vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+.indicator-container > div {
+    height: 2vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.rectangle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-box {
+    width: 2vw;
+    height: 3px;
+}
+
+.error-container .color-box {
+    background-color: var(--error-color);
+}
+
+.duplicate-container .color-box {
+    background-color: var(--primary-color);
+}
+
+.import-container {
+    width: 100%;
+    height: calc(84vh - 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.all-import-container {
+    width: 100%;
+    height: 84vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.import-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.import-header > .close-import-button {
+    all: unset;
+    margin: 20px;
+    width: 40px;
+    height: 40px;
+    transform: rotate(0deg);
+
+    transition: 0.5s ease-in-out;
+}
+.close-import-button > span {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background-color: var(--primary-color, var(--text-secondary));
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    flex-shrink: 0;
+    transition: 0.5s ease-in-out;
+}
+
+.import-header > .close-import-button:hover {
+    cursor: pointer;
+    transform: rotate(270deg);
+}
+.import-header > .close-import-button:hover > span {
+    background-color: var(--text-primary);
+    transition: 0.5s ease-in-out;
 }

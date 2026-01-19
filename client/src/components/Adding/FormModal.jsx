@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import InputField from "../common/InputField";
 import "../../style/FormModal.css";
 import Button from "../common/Button";
+import "../../style/icon.css";
 
 import { DATA_REGEX } from "../../utils/studentValidation";
 
@@ -149,7 +150,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
                 <div className="modal-header">
                     <h2>{mode === "student" ? "Ajouter un Étudiant" : "Ajouter un Enseignant"}</h2>
                     <button className="close-btn" onClick={onClose}>
-                        &times;
+                        <span className="icon-x" />
                     </button>
                 </div>
 

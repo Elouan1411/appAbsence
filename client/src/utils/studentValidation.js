@@ -80,6 +80,18 @@ function matchHeader(cellHeader) {
     return null;
 }
 
+async function calculateDuplicateRow(row) {
+    const warnings = {};
+
+    const data = await fetch("http://localhost:3000/eleve/allID", {
+        method: "GET",
+        credentials: "include",
+    });
+    const numeros = await data.json();
+
+    const estPresent = numeros.some((item) => item.numero === row.numero);
+    return estPresent;
+}
 function validateStudentData(row) {
     const errors = {};
 
@@ -115,4 +127,4 @@ const HEADER_DISPLAY_NAMES = {
     commentaire: "Commentaire",
 };
 
-export { validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES, DATA_REGEX };
+export { calculateDuplicateRow, validateStudentData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES, DATA_REGEX };

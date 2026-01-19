@@ -44,6 +44,19 @@ function matchHeader(cellHeader) {
     return null;
 }
 
+async function calculateDuplicateRow(row) {
+    const warnings = {};
+
+    const data = await fetch("http://localhost:3000/teacher/allLoginENT", {
+        method: "GET",
+        credentials: "include",
+    });
+    const logins = await data.json();
+
+    const estPresent = logins.some((item) => item.loginENT === row.loginENT);
+    return estPresent;
+}
+
 function validateTeacherData(row) {
     const errors = {};
 
@@ -72,4 +85,4 @@ const HEADER_DISPLAY_NAMES = {
     commentaire: "Commentaire",
 };
 
-export { validateTeacherData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };
+export { calculateDuplicateRow, validateTeacherData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };

@@ -250,6 +250,21 @@
     mask-image: url("../assets/add-group.svg");
 }
 
+.icon-school {
+    -webkit-mask-image: url("../assets/school.svg");
+    mask-image: url("../assets/school.svg");
+}
+
+.icon-edit {
+    -webkit-mask-image: url("../assets/edit.svg");
+    mask-image: url("../assets/edit.svg");
+}
+
+.icon-save {
+    -webkit-mask-image: url("../assets/save.svg");
+    mask-image: url("../assets/save.svg");
+}
+
 .label {
     margin-left: 14px;
     font-weight: 500;

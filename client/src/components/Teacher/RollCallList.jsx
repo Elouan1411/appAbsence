@@ -13,14 +13,18 @@ import toast from "react-hot-toast";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
+import isLoginInDatabase from "../../functions/isLoginInDatabase";
 
-function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
+function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT }) {
     const [rowData, setRowData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [initialAbsences, setInitialAbsences] = useState([]); 
+    const [initialAbsences, setInitialAbsences] = useState([]);
     const [gridApi, setGridApi] = useState(null);
     const theme = useTheme();
-    const { user } = useAuth();
+    const { user, role } = useAuth();
+
+    const login = loginENT || user;
+    console.log(login);
 
     const PresenceRenderer = (params) => {
         const isPresentCol = params.colDef.field === "present";
@@ -151,19 +155,19 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
 
                     let absencesForCall = [];
                     if (callId) {
-                         try {
+                        try {
                             const absResponse = await fetch(`http://localhost:3000/absence/appel/${callId}`, { credentials: "include" });
                             if (absResponse.ok) {
                                 absencesForCall = await absResponse.json();
-                                setInitialAbsences(absencesForCall.map(a => a.numeroEtudiant));
+                                setInitialAbsences(absencesForCall.map((a) => a.numeroEtudiant));
                             }
-                         } catch (e) {
-                             console.error("Error fetching absences for call:", e);
-                         }
+                        } catch (e) {
+                            console.error("Error fetching absences for call:", e);
+                        }
                     }
 
                     data.forEach((s) => {
-                        const isAbsent = absencesForCall.some(a => a.numeroEtudiant === s.numero);
+                        const isAbsent = absencesForCall.some((a) => a.numeroEtudiant === s.numero);
                         s.attendanceStatus = isAbsent ? "absent" : "present";
                     });
 
@@ -210,6 +214,17 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
     };
 
     const handleValidateRollCall = async () => {
+        if (role == "admin" && loginENT == "") {
+            toast.error("Veuillez saisir un identifiant ENT d'un enseignant.");
+            return;
+        }
+        if (role === "admin") {
+            const estPresent = await isLoginInDatabase(loginENT);
+            if (!estPresent) {
+                toast.error("L'identifiant ne correspond à aucun enseignant.");
+                return;
+            }
+        }
         if (subject === null || subject === undefined || subject === "") {
             toast.error("Veuillez sélectionner une matière.");
             return;
@@ -240,59 +255,64 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
 
         const formatDate = (date, time) => {
             return date.replaceAll("-", "") + time.replaceAll(":", "");
-        }
+        };
 
         if (callId) {
-            const currentAbsentIds = absentStudents.map(s => s.numero);
-            const addedAbsences = absentStudents.filter(s => !initialAbsences.includes(s.numero));
-            const removedAbsenceIds = initialAbsences.filter(id => !currentAbsentIds.includes(id));
+            const currentAbsentIds = absentStudents.map((s) => s.numero);
+            const addedAbsences = absentStudents.filter((s) => !initialAbsences.includes(s.numero));
+            const removedAbsenceIds = initialAbsences.filter((id) => !currentAbsentIds.includes(id));
 
             let success = true;
 
             if (addedAbsences.length > 0) {
-                 const numberList = addedAbsences.map(s => s.numero);
-                 const loginList = addedAbsences.map(s => s.loginENT);
-                 
-                 try {
-                     const response = await fetch("http://localhost:3000/absence/", {
+                const numberList = addedAbsences.map((s) => s.numero);
+                const loginList = addedAbsences.map((s) => s.loginENT);
+
+                try {
+                    const response = await fetch("http://localhost:3000/absence/", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             number: numberList,
                             login: loginList,
-                            idAppel: callId
+                            idAppel: callId,
                         }),
                         credentials: "include",
                     });
-                     if (!response.ok) success = false;
-                 } catch(e) { success = false; console.error(e); }
+                    if (!response.ok) success = false;
+                } catch (e) {
+                    success = false;
+                    console.error(e);
+                }
             }
 
             if (removedAbsenceIds.length > 0) {
-                 for (const studentId of removedAbsenceIds) {
-                     try {
+                for (const studentId of removedAbsenceIds) {
+                    try {
                         const response = await fetch("http://localhost:3000/absence/", {
                             method: "DELETE",
                             headers: { "Content-Type": "application/json" },
-                             body: JSON.stringify({
+                            body: JSON.stringify({
                                 id: studentId,
-                                idAppel: callId
+                                idAppel: callId,
                             }),
                             credentials: "include",
                         });
                         if (!response.ok) success = false;
-                     } catch(e) { success = false; console.error(e); }
-                 }
+                    } catch (e) {
+                        success = false;
+                        console.error(e);
+                    }
+                }
             }
-            
+
             if (success) {
                 toast.success("Appel mis à jour avec succès !");
-                 setInitialAbsences(currentAbsentIds); 
-                 if (onSuccess) onSuccess();
+                setInitialAbsences(currentAbsentIds);
+                if (onSuccess) onSuccess();
             } else {
                 toast.error("Erreur lors de la mise à jour de l'appel.");
             }
-
         } else {
             // creer appel
             const numberList = absentStudents.map((s) => s.numero);
@@ -303,11 +323,11 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
                 login: loginList,
                 start: formatDate(dateTime.date, dateTime.startTime),
                 end: formatDate(dateTime.date, dateTime.endTime),
-                loginProf: user,
+                loginProf: login,
                 code: subject,
                 promo: criteria.promo,
                 groupeTD: criteria.groupeTD,
-                groupeTP: criteria.groupeTP
+                groupeTP: criteria.groupeTP,
             };
 
             console.log("Sending Absence Payload:", payload);
@@ -323,7 +343,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
                         code: payload.code,
                         promo: payload.promo,
                         groupeTD: payload.groupeTD,
-                        groupeTP: payload.groupeTP
+                        groupeTP: payload.groupeTP,
                     }),
                     credentials: "include",
                 });
@@ -337,16 +357,17 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
                 const responseAbsence = await fetch("http://localhost:3000/absence/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ 
-                        number: numberList, 
-                        login: loginList, 
-                        idAppel 
+                    body: JSON.stringify({
+                        number: numberList,
+                        login: loginList,
+                        idAppel,
                     }),
                     credentials: "include",
                 });
 
                 if (responseAbsence.ok && responseAppel.ok) {
                     toast.success("Appel validé avec succès !", { duration: 3000 });
+                    if (onSuccess) onSuccess();
                 } else {
                     let errText = "";
                     if (!responseAbsence.ok) errText += "Erreur absence: " + (await responseAbsence.text()) + ". ";
@@ -360,7 +381,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess }) {
         }
     };
 
-    if (!criteria) {
+    if (!criteria || !criteria.promo) {
         return (
             <div
                 style={{

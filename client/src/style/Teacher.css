@@ -55,7 +55,7 @@
 
 .back:hover {
     filter: brightness(1.1);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .back:active {
@@ -71,4 +71,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.login-input-container {
+    width: 100%;
+}
+.login-input-container .input input {
+    max-width: 98.5%;
+}
+.login-input-container .input p {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-secondary);
+}
+.login-input-container .input .label-container {
+    margin: 5px;
 }

@@ -7,6 +7,7 @@
     --text-primary: #333333;
     --text-secondary: #4b5563;
     --error-color: #ff6b6b;
+    --warning-color: #ffe0b2;
 }
 body {
     background-color: var(--background-color);
