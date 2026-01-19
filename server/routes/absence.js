@@ -66,6 +66,41 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     });
 });
 
+// Récupération des absences n'ayant pas de justificatif
+router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
+    const login = req.params.login.substring(1);
+
+    const sql = `
+    SELECT 
+      A.idAbsence,
+      A.numeroEtudiant,
+      A.login,
+      Ap.debut,
+      Ap.fin,
+      Ap.codeMatiere,
+      M.libelle as nomMatiere
+    FROM Absence A
+    JOIN Appel Ap ON A.idAppel = Ap.idAppel
+    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    WHERE A.login = ?
+    AND NOT EXISTS (
+        SELECT 1
+        FROM JustificationAbsence J
+        WHERE J.numeroEtudiant = A.numeroEtudiant
+        AND J.debut <= Ap.debut
+        AND J.fin >= Ap.fin
+        AND J.validite IN (0, 1, 2, 3)
+    )
+  `;
+
+    db.all(sql, [login], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(rows);
+    });
+});
+
 //Récupération de l'historique des absences pour un professeur (avec détails)
 router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     let loginProf = req.params.login.substring(1);

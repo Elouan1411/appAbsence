@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, X, ArrowRight } from "lucide-react";
 import PageTitle from "../../components/common/PageTitle";
 import "../../style/Student.css";
@@ -9,6 +9,7 @@ import parseTimestamp from "../../functions/parseTimestamp";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import { useAuth } from "../../hooks/useAuth";
 import { useUnsaved } from "../../context/UnsavedContext";
 
 function StudentHomePage() {
@@ -16,11 +17,34 @@ function StudentHomePage() {
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
-    //TODO:temp
-    const absences = [
-        { id: 1, subject: "Maths", start: "202601060800", end: "202601060900" },
-        { id: 2, subject: "Anglais", start: "202601061000", end: "202601061100" },
-    ];
+    const { user } = useAuth();
+    const [absences, setAbsences] = useState([]);
+
+    useEffect(() => {
+        if (user) {
+            fetch(`http://localhost:3000/absence/unjustified/:${user}`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
+                    }
+                    console.error("Erreur lors de la récupération des absences");
+                    return [];
+                })
+                .then((data) => {
+                    const mappedAbsences = data.map((abs) => ({
+                        id: abs.idAbsence,
+                        subject: abs.nomMatiere || abs.codeMatiere,
+                        start: String(abs.debut),
+                        end: String(abs.fin),
+                    }));
+                    setAbsences(mappedAbsences);
+                })
+                .catch((err) => console.error("Erreur fetch absences:", err));
+        }
+    }, [user]);
 
     // Groupement par date
     const absencesByDate = absences.reduce((acc, abs) => {
