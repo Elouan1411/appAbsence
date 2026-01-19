@@ -86,7 +86,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                         exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
                         key={p.id}
-                        className={`period-card ${errors[p.id] ? "period-error" : ""} ${automaticPeriod ? "period-disabled" : ""}`}
+                        className={`period-card ${errors[p.id] ? "period-error" : ""}`}
                         title={errors[p.id] || ""}
                     >
                         <div className="period-card-column">
@@ -118,19 +118,15 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                                 shouldCloseOnSelect={true}
                             />
                         </div>
-                        {!automaticPeriod && (
-                            <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
-                                <img src={trashIcon} alt="Delete" width="20" height="20" />
-                            </button>
-                        )}
+                        <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
+                            <img src={trashIcon} alt="Delete" width="20" height="20" />
+                        </button>
                     </motion.div>
                 ))}
             </AnimatePresence>
-            {!automaticPeriod && (
-                <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
-                    {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
-                </button>
-            )}
+            <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
+                {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
+            </button>
         </div>
     );
 };

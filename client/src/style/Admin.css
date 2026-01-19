@@ -100,7 +100,6 @@
 }
 
 .title-container {
-    width: 90%;
     height: 8vh;
     display: flex;
     align-items: center;
@@ -133,8 +132,11 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .justification-container {
+    width: 100%;
     flex: 1;
     min-height: 0;
     display: flex;
@@ -224,12 +226,13 @@ main {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .section-header {
     width: 100%;
     padding: 0.8rem 1.5rem;
-    background-color: var(--header-background-color);
+    background-color: var(--background-color);
     border: none;
     display: flex;
     justify-content: space-between;
@@ -238,7 +241,12 @@ main {
     transition: background-color 0.2s;
     z-index: 1000;
     border: 1px solid var(--border-color);
+
     border-radius: 10px 10px 0px 0px;
+}
+
+.section-header.active {
+    border-bottom-width: 0px;
 }
 
 .section-header:hover {
@@ -281,7 +289,9 @@ main {
 .section-content {
     padding: 1.5rem;
     border-radius: 0 0 10px 10px;
-    background-color: var(--modal-bg) !important;
+    background-color: var(--card-bg) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
 }
 
 .section-content > p {
@@ -296,11 +306,12 @@ main {
 }
 
 .info-item {
-    background: var(--header-background-color);
+    background: var(--background-color);
     padding: 0.8rem;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
 .info-item .label,
@@ -310,11 +321,14 @@ main {
     margin-bottom: 0.3rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin: 0;
 }
 
 .info-item .value {
     font-size: 1rem;
     font-weight: 500;
+    margin-left: 10px;
+    margin-top: 5px;
     color: var(--text-primary);
 }
 
@@ -324,10 +338,11 @@ main {
     gap: 5px;
     height: auto;
     min-height: 0;
-    background: var(--header-background-color);
+    background: var(--background-color);
     padding: 1rem;
     border-radius: 8px;
     color: var(--text-primary);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 .motif-box h3 {
     color: var(--text-secondary);
@@ -339,6 +354,7 @@ main {
     white-space: pre-wrap;
     word-break: break-all;
     margin: 0;
+    margin-left: 10px;
 }
 
 .pdf-wrapper {
@@ -441,6 +457,7 @@ main {
 }
 
 .homepage-subtitle-container {
+    width: calc(100% - 50px);
     background-color: var(--card-bg);
     margin: 0px 5px 1rem 5px;
     border-radius: 10px;
@@ -458,7 +475,7 @@ main {
 }
 .download-button-container button {
     all: unset;
-    background-color: var(--modal-bg);
+    background-color: var(--background-color);
 }
 .page-text {
     color: var(--text-primary);
@@ -467,13 +484,14 @@ main {
 .date-item {
     width: 100%;
     height: 4vh;
-    background-color: var(--header-background-color);
+    background-color: var(--background-color);
     margin-top: 1rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
 .date-content {
@@ -493,7 +511,7 @@ main {
 .id-absence {
     font-size: clamp(0.5rem, 2cqi, 1rem);
     font-weight: 700;
-    color: var(--text-secondary);
+    color: var(--primary-color);
     text-transform: uppercase;
 }
 
@@ -511,7 +529,7 @@ p {
 }
 
 .doc-buttons-container {
-    background-color: var(--header-background-color);
+    background-color: var(--background-color);
     height: 40%;
     border-radius: 15px;
     display: flex;
@@ -520,6 +538,7 @@ p {
     align-items: center;
     gap: 2px;
     padding: 5px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
 .doc-button {
@@ -541,7 +560,8 @@ p {
 }
 
 .doc-button.active {
-    background-color: var(--background-color);
+    background-color: var(--primary-color);
+    color: var(--background-color);
 }
 
 .pdf-container {
@@ -778,4 +798,11 @@ p {
 .import-header > .close-import-button:hover > span {
     background-color: var(--text-primary);
     transition: 0.5s ease-in-out;
+}
+
+.pdf-wrapper > .dashboard-tabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
 }

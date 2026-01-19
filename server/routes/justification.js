@@ -201,7 +201,7 @@ router.post("/", verifyToken, (req, res) => {
                     throw new Error("Invalid Date");
                 }
                 const pad = (n) => (n < 10 ? "0" + n : n);
-                let str = date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
+                let str = date.getFullYear().toString() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
 
                 if (withSeconds) {
                     str += pad(date.getSeconds());

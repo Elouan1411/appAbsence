@@ -32,13 +32,21 @@ body.dark {
     --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
     --dashboard-content-bg: var(--card-bg);
     --badge-bg: rgba(239, 68, 68, 0.2);
+    --justified-badge-bg: rgba(68, 239, 68, 0.2);
     --badge-text: #f87171;
+    --justified-badge-text: #71f871;
+    --badge-pending-bg: rgba(59, 130, 246, 0.2);
+    --badge-pending-text: #60a5fa;
+    --badge-validated-bg: rgba(34, 197, 94, 0.2);
+    --badge-validated-text: #4ade80;
+    --badge-refused-bg: rgba(239, 68, 68, 0.2);
+    --badge-refused-text: #f87171;
     --tab-border-color: var(--border-color);
     --row-duplicate: #3b83f697;
 }
 
 body.light {
-    --background-color: #fafafa;
+    --background-color: #fff;
     --card-bg: #ffffff;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;
@@ -58,7 +66,15 @@ body.light {
     --header-background-color: color-mix(in srgb, #fff, #181d1f 15.000000000000001%);
     --dashboard-content-bg: #ffffff;
     --badge-bg: #fee2e2;
+    --justified-badge-bg: #e2fee2;
     --badge-text: #ef4444;
+    --justified-badge-text: #44ef44;
+    --badge-pending-bg: #dbeafe;
+    --badge-pending-text: #1e40af;
+    --badge-validated-bg: #dcfce7;
+    --badge-validated-text: #166534;
+    --badge-refused-bg: #fef2f2;
+    --badge-refused-text: #b91c1c;
     --dot-color: #f87171;
     --tab-border-color: #334155;
     --row-duplicate: #649fff97;
