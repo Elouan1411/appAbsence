@@ -8,9 +8,13 @@ import FloatingActionBar from "../../components/StudentDashboard/FloatingActionB
 import parseTimestamp from "../../functions/parseTimestamp";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import { useUnsaved } from "../../context/UnsavedContext";
 
 function StudentHomePage() {
     const [activeTab, setActiveTab] = useState("todo");
+    const { hasUnsavedChanges } = useUnsaved();
+    const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
     //TODO:temp
     const absences = [
@@ -39,6 +43,19 @@ function StudentHomePage() {
 
         return acc;
     }, {});
+
+    const handleJustifySelectioned = (selectedIds) => {
+        const selectedPeriods = absences
+            .filter((abs) => selectedIds.includes(abs.id))
+            .map((abs) => ({
+                start: parseTimestamp(abs.start),
+                end: parseTimestamp(abs.end),
+            }));
+
+        safeNavigate("/dashboard/justification", {
+            state: { prefilledPeriod: selectedPeriods },
+        });
+    };
 
     //TODO:temp
     const counts = {
@@ -99,31 +116,11 @@ function StudentHomePage() {
                         ))}
                     </div>
                 ))}
-                {/* 
-                {activeTab === "todo" && (
-                    <div className="absences-list">
-                        <div className="absences-date-header">
-                            <h4 className="absences-list-header">LUNDI 06 JANVIER</h4>
-                            <div className="date-divider-line"></div>
-                        </div>
-                        {absences.map((absence) => (
-                            <AbsenceCard
-                                key={absence.id}
-                                subject={absence.subject}
-                                startTime={absence.startTime}
-                                endTime={absence.endTime}
-                                isSelectionMode={isSelectionMode}
-                                isSelected={selectedIds.includes(absence.id)}
-                                onToggle={() => handleToggleAbsence(absence.id)}
-                            />
-                        ))}
-                    </div>
-                )} */}
                 {activeTab === "pending" && <div className="empty-state">Aucune absence en cours.</div>}
                 {activeTab === "archived" && <div className="empty-state">Aucune archive.</div>}
             </div>
             {isSelectionMode && selectedIds.length > 0 && (
-                <FloatingActionBar count={selectedIds.length} onJustify={() => console.log("Justify", selectedIds)} />
+                <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
             )}
         </div>
     );
