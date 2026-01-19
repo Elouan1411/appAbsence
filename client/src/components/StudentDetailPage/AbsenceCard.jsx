@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
+import toast from "react-hot-toast";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
     // const navigate = useNavigate();
     // const { hasUnsavedChanges } = useUnsaved();
     // const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -15,6 +17,24 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
     //         state: { prefilledPeriod: [fullPeriod] },
     //     });
     // };
+
+    const handleDeleteAbsence = async () => {
+        console.log(idAbsence);
+        const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
+        if (confirmation.isConfirmed) {
+            try {
+                const result = await fetch("http://localhost:3000/absence/" + idAbsence, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+                const data = await result.json();
+                toast.success(data);
+                setToUpdate(true);
+            } catch (err) {
+                toast.error(err);
+            }
+        }
+    };
 
     return (
         <div className={`card-absence`}>
@@ -48,7 +68,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
                     {justified ? "Justifiée" : "Non justifiée"}
                 </span>
-                <button className="delete-button">
+                <button className="delete-button" onClick={() => handleDeleteAbsence()}>
                     <span className="icon icon-trash" />
                 </button>
                 <button className="absence-detail-button">

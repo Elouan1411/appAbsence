@@ -46,7 +46,7 @@ body.dark {
 }
 
 body.light {
-    --background-color: #fafafa;
+    --background-color: #fff;
     --card-bg: #ffffff;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;

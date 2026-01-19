@@ -22,7 +22,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 
 router.get("/:id", verifyToken, isAdmin, (req, res) => {
     const id = req.params.id;
-    const sql = `SELECT Appel.debut, Appel.fin, Professeur.nom, Professeur.prenom, Matiere.libelle,EXISTS (
+    const sql = `SELECT Absence.idAbsence,Appel.debut, Appel.fin, Professeur.nom, Professeur.prenom, Matiere.libelle,EXISTS (
         SELECT 1
         FROM JustificationAbsence
         WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence
@@ -331,6 +331,18 @@ router.delete("/", verifyToken, isAdminOrTeacher, (req, res) => {
     db.run(sql, [id, idAppel], function (err) {
         if (err) return res.status(500).json(err.message);
         res.status(200).json("L'absence a été supprimée avec succès.");
+    });
+});
+
+router.delete("/:idAbsence", verifyToken, isAdmin, (req, res) => {
+    const idAbsence = req.params.idAbsence;
+
+    const sql = "DELETE FROM Absence WHERE idAbsence = ?";
+    db.run(sql, [idAbsence], (err) => {
+        if (err) {
+            return res.status(401).json(err);
+        }
+        return res.status(200).json("Absence supprimée avec succès");
     });
 });
 
