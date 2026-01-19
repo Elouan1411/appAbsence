@@ -13,8 +13,8 @@ const fs = require("fs");
  *****************************************/
 
 //Suppression d'un élève
-router.delete("/", verifyToken, isAdmin, (req, res) => {
-    const id = req.body.id;
+router.delete("/:id", verifyToken, isAdmin, (req, res) => {
+    const id = req.params.id;
     const sql = `DELETE from Eleve WHERE numero == ?`;
     db.run(sql, [id], (err) => {
         if (err) {
@@ -92,37 +92,29 @@ router.get("/allID", verifyToken, isAdmin, (req, res) => {
 router.get("/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
     let sql = `SELECT * FROM Eleve WHERE numero = ?`;
+    let result = {};
     db.all(sql, [id], (err, rows) => {
         if (err) {
             return console.error(err.message);
         }
-        res.status(200).json(rows);
+        result = rows[0];
     });
 
-    // sql = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
-    // db.all(sql, [id], (err, rows) => {
-    //     if (err) {
-    //         return console.error(err.message);
-    //     }
-    //     let rse = {};
-    //     for (let i in rows) {
-    //         rse[i["code"]] = i["libelle"];
-    //     }
-    //     result.push(rse);
-    // });
+    sql = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
+    db.all(sql, [id], (err, rows) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        let rse = [];
+        console.log(rows);
+        for (let i of rows) {
+            rse.push(i);
+        }
 
-    // sql = "SELECT codeMatiere FROM RelationMatiereEleve WHERE numeroEleve = ?";
-    // db.all(sql, [id], (err, rows) => {
-    //     if (err) return console.error(err.message);
-
-    //     let matiere = [];
-    //     for (let i of rows) {
-    //         matiere.push(i["codeMatiere"]);
-    //     }
-    //     result.push(matiere);
-    //     console.log(result);
-    //     res.status(200).json(result);
-    // });
+        result["rse"] = rse;
+        console.log(result);
+        res.status(200).json(result);
+    });
 });
 
 router.post("/add", verifyToken, isAdmin, (req, res) => {
@@ -247,10 +239,12 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
 
 //Mise à jour des informations d'un élève
 router.put("/", verifyToken, isAdmin, (req, res) => {
-    const { number, name, forname, promo, td, tp } = req.body;
-    const sql = `UPDATE Eleve SET nom = ?, prenom = ?, promo = ?, groupeTD = ?, groupeTP = ? WHERE numero = ?`;
+    console.log(req.body);
+    const { nom, prenom, promo, groupeTD, groupeTP, loginENT, groupeTDPair, groupeTPPair, promoPair, numeroEtudiant } = req.body;
 
-    db.run(sql, [name, forname, promo, td, tp, number], (err) => {
+    const sql = `UPDATE Eleve SET nom = ?, prenom = ?,loginENT = ?, promo = ?, groupeTD = ?, groupeTP = ?, promoPair = ?, groupeTDPair = ?, groupeTPPair = ? WHERE numero = ?`;
+
+    db.run(sql, [nom, prenom, loginENT, promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair, numeroEtudiant], (err) => {
         if (err) return res.status(401).json(err.message);
 
         res.status(200).json("L'élève a été mis à jour avec succès.");

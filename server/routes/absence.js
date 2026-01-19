@@ -358,4 +358,37 @@ router.delete("/", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
+router.get("/allID/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
+    const numeroEtudiant = req.params.numeroEtudiant;
+    const sql = "SELECT idAbsence FROM Absence WHERE numeroEtudiant = ?";
+
+    db.all(sql, [numeroEtudiant], (err, rows) => {
+        if (err) {
+            return res.status(401).json(err);
+        }
+
+        return res.status(200).json(rows);
+    });
+});
+
+/*****************************************
+ *            Méthodes UPDATE
+ *****************************************/
+
+router.put("/:id", verifyToken, isAdmin, (req, res) => {
+    const id = req.params.id;
+    console.log("id :", id);
+    const { newNumeroEtudiant, newLoginENT } = req.body;
+
+    console.log("LoginENT: ", newLoginENT, ", numeroEtudiant: ", newNumeroEtudiant);
+
+    const sql = "UPDATE Absence SET numeroEtudiant = ?, login = ? WHERE idAbsence = ?";
+    db.run(sql, [parseInt(newNumeroEtudiant), newLoginENT, id], (err) => {
+        if (err) {
+            return res.status(401).json(err.message);
+        }
+        res.status(200).json("Les absences ont été mises à jour avec succès!");
+    });
+});
+
 module.exports = router;
