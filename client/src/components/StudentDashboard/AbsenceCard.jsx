@@ -5,7 +5,7 @@ import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle, status = "todo" }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle, status = "todo", reason, adminComment }) => {
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -19,7 +19,8 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
     const getBadgeInfo = () => {
         switch (status) {
             case "todo":
-                return { text: "Action requise", className: "card-absence-badge" };
+                let text = adminComment ? "Justificatif incomplet" : "Action requise";
+                return { text: text, className: "card-absence-badge" };
             case "pending":
                 return { text: "En attente de validation", className: "card-absence-badge pending" };
             case "validated":
@@ -58,6 +59,12 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
                             <span className="time-value">{endTime}</span>
                         </div>
                     </div>
+                    {(adminComment || reason) && (
+                        <div className="card-absence-reason" title={adminComment || reason}>
+                            <span className="reason-label">{adminComment ? "Remarque :" : "Motif :"}</span>
+                            <span className="reason-text">{adminComment || reason}</span>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -65,7 +72,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={handleJustify}>
-                            Justifier
+                            {adminComment ? "Modifier" : "Justifier"}
                         </button>
                     )}
                 </div>

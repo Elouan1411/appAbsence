@@ -37,6 +37,7 @@ function StudentHomePage() {
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: "todo",
+                        adminComment: abs.motifValidite,
                     }));
                     setAbsences(mappedAbsences);
                 })
@@ -55,6 +56,7 @@ function StudentHomePage() {
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: "pending",
+                        reason: abs.motif,
                     }));
                     setPendingAbsences(mappedPending);
                 })
@@ -73,6 +75,7 @@ function StudentHomePage() {
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: abs.validite === 0 ? "validated" : "refused",
+                        reason: abs.motif,
                     }));
                     setArchivedAbsences(mappedArchived);
                 })
@@ -174,6 +177,8 @@ function StudentHomePage() {
                                 isSelected={selectedIds.includes(absence.id)}
                                 onToggle={() => handleToggleAbsence(absence.id)}
                                 status={absence.status}
+                                reason={absence.reason}
+                                adminComment={absence.adminComment}
                             />
                         ))}
                     </div>
