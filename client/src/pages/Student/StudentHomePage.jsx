@@ -19,20 +19,16 @@ function StudentHomePage() {
 
     const { user } = useAuth();
     const [absences, setAbsences] = useState([]);
+    const [pendingAbsences, setPendingAbsences] = useState([]);
 
     useEffect(() => {
         if (user) {
+            // Fetch unjustified absences
             fetch(`http://localhost:3000/absence/unjustified/:${user}`, {
                 method: "GET",
                 credentials: "include",
             })
-                .then((res) => {
-                    if (res.ok) {
-                        return res.json();
-                    }
-                    console.error("Erreur lors de la récupération des absences");
-                    return [];
-                })
+                .then((res) => (res.ok ? res.json() : []))
                 .then((data) => {
                     const mappedAbsences = data.map((abs) => ({
                         id: abs.idAbsence,
@@ -43,11 +39,30 @@ function StudentHomePage() {
                     setAbsences(mappedAbsences);
                 })
                 .catch((err) => console.error("Erreur fetch absences:", err));
+
+            // Fetch pending absences
+            fetch(`http://localhost:3000/absence/in-progress/:${user}`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => (res.ok ? res.json() : []))
+                .then((data) => {
+                    const mappedPending = data.map((abs) => ({
+                        id: abs.idAbsence,
+                        subject: abs.nomMatiere || abs.codeMatiere,
+                        start: String(abs.debut),
+                        end: String(abs.fin),
+                    }));
+                    setPendingAbsences(mappedPending);
+                })
+                .catch((err) => console.error("Erreur fetch pending absences:", err));
         }
     }, [user]);
 
+    const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : [];
+
     // Groupement par date
-    const absencesByDate = absences.reduce((acc, abs) => {
+    const absencesByDate = currentAbsences.reduce((acc, abs) => {
         const startDate = parseTimestamp(abs.start);
         const endDate = parseTimestamp(abs.end);
 
@@ -81,10 +96,9 @@ function StudentHomePage() {
         });
     };
 
-    //TODO:temp
     const counts = {
-        todo: 2,
-        pending: 0,
+        todo: absences.length,
+        pending: pendingAbsences.length,
         archived: 0,
     };
 
@@ -110,10 +124,12 @@ function StudentHomePage() {
                 <PageTitle title="Mes Absences" icon="icon-home" />
                 <div className="dashboard-actions">
                     <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
-                    <button className="btn-select" onClick={toggleSelectionMode}>
-                        {isSelectionMode ? <X size={18} strokeWidth={2.5} /> : <List size={18} strokeWidth={2.5} />}
-                        {isSelectionMode ? "Annuler" : "Sélectionner"}
-                    </button>
+                    {activeTab === "todo" && absences.length > 0 && (
+                        <button className="btn-select" onClick={toggleSelectionMode}>
+                            {isSelectionMode ? <X size={18} strokeWidth={2.5} /> : <List size={18} strokeWidth={2.5} />}
+                            {isSelectionMode ? "Annuler" : "Sélectionner"}
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -136,11 +152,13 @@ function StudentHomePage() {
                                 isSelectionMode={isSelectionMode}
                                 isSelected={selectedIds.includes(absence.id)}
                                 onToggle={() => handleToggleAbsence(absence.id)}
+                                status={activeTab === "pending" ? "pending" : "todo"}
                             />
                         ))}
                     </div>
                 ))}
-                {activeTab === "pending" && <div className="empty-state">Aucune absence en cours.</div>}
+                {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
+                {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
                 {activeTab === "archived" && <div className="empty-state">Aucune archive.</div>}
             </div>
             {isSelectionMode && selectedIds.length > 0 && (

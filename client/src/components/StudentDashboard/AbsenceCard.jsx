@@ -5,7 +5,7 @@ import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle, status = "todo" }) => {
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -15,6 +15,9 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
             state: { prefilledPeriod: [fullPeriod] },
         });
     };
+
+    const badgeText = status === "todo" ? "Action requise" : status === "pending" ? "En attente de validation" : "Archivé";
+    const badgeClass = status === "todo" ? "card-absence-badge" : "card-absence-badge pending";
 
     return (
         <div
@@ -29,7 +32,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
                 <div className="card-absence-info">
                     <div className="card-absence-header">
                         <h3 className="card-absence-subject">{subject}</h3>
-                        <span className="card-absence-badge">Action requise</span>
+                        <span className={badgeClass}>{badgeText}</span>
                     </div>
                     <div className="card-absence-time">
                         <div className="time-block">
@@ -46,9 +49,11 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    <button className="btn-justifier" onClick={handleJustify}>
-                        Justifier
-                    </button>
+                    {status === "todo" && (
+                        <button className="btn-justifier" onClick={handleJustify}>
+                            Justifier
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

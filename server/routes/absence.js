@@ -89,7 +89,42 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
         WHERE J.numeroEtudiant = A.numeroEtudiant
         AND J.debut <= Ap.debut
         AND J.fin >= Ap.fin
-        AND J.validite IN (0, 1, 2, 3)
+        AND J.validite IN (0, 1, 2)
+    )
+  `; // J.validite = 3 => Justification non validée, info supplémentaire demandées
+
+    db.all(sql, [login], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(rows);
+    });
+});
+
+// Récupération des absences n'ayant pas de justificatif
+router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
+    const login = req.params.login.substring(1);
+
+    const sql = `
+    SELECT 
+      A.idAbsence,
+      A.numeroEtudiant,
+      A.login,
+      Ap.debut,
+      Ap.fin,
+      Ap.codeMatiere,
+      M.libelle as nomMatiere
+    FROM Absence A
+    JOIN Appel Ap ON A.idAppel = Ap.idAppel
+    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    WHERE A.login = ?
+    AND EXISTS (
+        SELECT 1
+        FROM JustificationAbsence J
+        WHERE J.numeroEtudiant = A.numeroEtudiant
+        AND J.debut <= Ap.debut
+        AND J.fin >= Ap.fin
+        AND J.validite IN (2)
     )
   `;
 
