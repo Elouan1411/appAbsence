@@ -78,7 +78,15 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
       Ap.debut,
       Ap.fin,
       Ap.codeMatiere,
-      M.libelle as nomMatiere
+      Ap.fin,
+      Ap.codeMatiere,
+      M.libelle as nomMatiere,
+      (SELECT motifValidite FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 3
+       LIMIT 1) as motifValidite
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
@@ -113,7 +121,14 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       Ap.debut,
       Ap.fin,
       Ap.codeMatiere,
+      Ap.codeMatiere,
       M.libelle as nomMatiere,
+      (SELECT motif FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 2
+       LIMIT 1) as motif,
       'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
@@ -134,8 +149,10 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       E.loginENT as login,
       J.debut,
       J.fin,
+      J.fin,
       NULL as codeMatiere,
       'Justification anticipée' as nomMatiere,
+      J.motif,
       'JUSTIFICATION' as type
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero
@@ -178,6 +195,12 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
        AND J.fin >= Ap.fin
        AND J.validite IN (0, 1)
        LIMIT 1) as validite,
+      (SELECT motif FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite IN (0, 1)
+       LIMIT 1) as motif,
       'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
@@ -201,6 +224,7 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       NULL as codeMatiere,
       'Justification sans absence' as nomMatiere,
       J.validite,
+      J.motif,
       'JUSTIFICATION' as type
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero

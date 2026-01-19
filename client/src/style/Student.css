@@ -735,6 +735,30 @@ span.loading-text {
     color: var(--text-primary);
 }
 
+.card-absence-reason {
+    margin-top: 4px;
+    display: flex;
+    gap: 6px;
+    font-size: 0.9rem;
+    max-width: 100%;
+    align-items: center;
+}
+
+.reason-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.reason-text {
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.9;
+}
+
 .card-absence-right {
     display: flex;
     align-items: center;

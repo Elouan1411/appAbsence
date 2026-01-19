@@ -8,3 +8,5 @@ server/upload/*
 !server/upload/.gitkeep
 /server/debug
 /server/server.log
+/server/database/*.db-shm
+/server/database/*.db-wal
