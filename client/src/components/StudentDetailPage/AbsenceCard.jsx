@@ -51,6 +51,9 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 <button className="delete-button">
                     <span className="icon icon-trash" />
                 </button>
+                <button className="absence-detail-button">
+                    <span className="icon icon-triple-dot" />
+                </button>
             </div>
 
             {/* <div className="card-absence-right">

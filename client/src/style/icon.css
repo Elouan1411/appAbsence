@@ -17,7 +17,7 @@
     mask-image: url(../assets/trash.svg);
     -webkit-mask-image: url(../assets/trash.svg);
 }
-    
+
 .icon-history {
     mask-image: url(../assets/history.svg);
     -webkit-mask-image: url(../assets/history.svg);
@@ -36,4 +36,9 @@
 .icon-previous {
     mask-image: url(../assets/previous.svg);
     -webkit-mask-image: url(../assets/previous.svg);
+}
+
+.icon-triple-dot {
+    mask-image: url(../assets/triple-dot.svg);
+    -webkit-mask-image: url(../assets/triple-dot.svg);
 }

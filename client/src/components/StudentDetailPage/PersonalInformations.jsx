@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomLoader from "../common/CustomLoader";
 import InputField from "../common/InputField";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import toast from "react-hot-toast";
 
-function PersonalInformations({ student, loading, editing, onChange }) {
+function PersonalInformations({ student, loading, editing, onChange, setStudent }) {
+    const [allRSE, setAllRSE] = useState([]);
+    const fetchAllRSE = async () => {
+        try {
+            const result = await fetch("http://localhost:3000/rse", {
+                method: "GET",
+                credentials: "include",
+            });
+            const data = await result.json();
+            setAllRSE(data);
+        } catch (err) {
+            toast.error(err);
+        }
+    };
+    useEffect(() => {
+        fetchAllRSE();
+    }, [fetchAllRSE]);
+
     if (loading) return <CustomLoader />;
 
     const renderInput = (label, field) => (
@@ -12,6 +30,28 @@ function PersonalInformations({ student, loading, editing, onChange }) {
             <InputField value={student[field]} disabled={!editing} onChange={(e) => onChange(field, e.target.value)} />
         </div>
     );
+
+    const handleRseChange = (rseOption) => {
+        if (editing) {
+            setStudent((prev) => {
+                const currentRseList = prev.rse;
+                const isAlreadySelected = currentRseList.some((item) => item.code === rseOption.code);
+
+                if (isAlreadySelected) {
+                    return {
+                        ...prev,
+                        rse: currentRseList.filter((item) => item.code !== rseOption.code),
+                    };
+                } else {
+                    return {
+                        ...prev,
+                        rse: [...currentRseList, rseOption],
+                    };
+                }
+            });
+            console.log(student);
+        }
+    };
 
     return (
         <div className="personal-info-container">
@@ -43,6 +83,20 @@ function PersonalInformations({ student, loading, editing, onChange }) {
                         {renderInput("Promo", "promoPair")}
                         {renderInput("Groupe TD", "groupeTDPair")}
                         {renderInput("Groupe TP", "groupeTPPair")}
+                    </div>
+                </div>
+
+                <div className="rse-section">
+                    <p>RSE (Sélection multiple)</p>
+                    <div className="chips-container">
+                        {allRSE.map((option) => {
+                            const isSelected = student.rse.some((item) => item.code === option.code);
+                            return (
+                                <div key={option.code} className={`rse-chip ${isSelected ? "selected" : ""}`} onClick={() => handleRseChange(option)}>
+                                    <span>{option.libelle}</span>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

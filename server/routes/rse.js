@@ -8,20 +8,20 @@ const db = require("../database/db");
 
 //Récupération de tous les RSE
 router.get("/", verifyToken, isAdmin, (req, res) => {
-  const sql = "SELECT * FROM RSE";
+    const sql = "SELECT * FROM RSE";
 
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
 
-    res.status(200).json(rows);
-  });
+        res.status(200).json(rows);
+    });
 });
 
 /*****************************************
  *             Méthodes POST
  *****************************************/
 
-// Récupération des RSE pour une liste d'étudiants 
+// Récupération des RSE pour une liste d'étudiants
 router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
     const { ids } = req.body;
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -44,7 +44,7 @@ router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
         }
 
         const rseMap = {};
-        rows.forEach(row => {
+        rows.forEach((row) => {
             if (!rseMap[row.numeroEtudiant]) {
                 rseMap[row.numeroEtudiant] = {};
             }
@@ -57,45 +57,45 @@ router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
 
 //Insertion d'un nouveau RSE
 router.post("/new", verifyToken, isAdmin, (req, res) => {
-  const { libelle, number } = req.body;
-  let sql = `INSERT INTO RSE (libelle)
+    const { libelle, number } = req.body;
+    let sql = `INSERT INTO RSE (libelle)
                                     VALUES(?)`;
 
-  db.run(sql, [libelle], (err) => {
-    if (err) return console.log(err.message);
-
-    sql = "SELECT COUNT(code) FROM RSE";
-
-    let code;
-
-    db.all(sql, [], (err, rows) => {
-      if (err) return console.log(err.message);
-
-      code = rows[0]["COUNT(code)"];
-
-      sql = `INSERT INTO RSEAnnee (numeroEtudiant, codeRSE)
-                                        VALUES(?, ?)`;
-
-      db.run(sql, [number, code], (err) => {
+    db.run(sql, [libelle], (err) => {
         if (err) return console.log(err.message);
 
-        res.status(200).json([]);
-      });
+        sql = "SELECT COUNT(code) FROM RSE";
+
+        let code;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) return console.log(err.message);
+
+            code = rows[0]["COUNT(code)"];
+
+            sql = `INSERT INTO RSEAnnee (numeroEtudiant, codeRSE)
+                                        VALUES(?, ?)`;
+
+            db.run(sql, [number, code], (err) => {
+                if (err) return console.log(err.message);
+
+                res.status(200).json([]);
+            });
+        });
     });
-  });
 });
 
 //Insertion d'un RSE pour un étudiant
 router.post("/", verifyToken, isAdmin, (req, res) => {
-  const { number, code } = req.body;
-  const sql = `INSERT INTO RSEAnnee (numeroEtudiant, codeRSE)
+    const { number, code } = req.body;
+    const sql = `INSERT INTO RSEAnnee (numeroEtudiant, codeRSE)
                                     VALUES(?, ?)`;
 
-  db.run(sql, [number, code], (err) => {
-    if (err) return console.log(err.message);
+    db.run(sql, [number, code], (err) => {
+        if (err) return console.log(err.message);
 
-    console.log("Values have been add successfully.");
-  });
+        console.log("Values have been add successfully.");
+    });
 });
 
 /*****************************************
@@ -103,13 +103,43 @@ router.post("/", verifyToken, isAdmin, (req, res) => {
  *****************************************/
 //Suppression d'un RSE pour un étudiant
 router.delete("/", verifyToken, isAdmin, (req, res) => {
-  const { id, code } = req.body;
-  const sql = `DELETE FROM RSEAnnee WHERE numeroEtudiant = ? AND codeRSE = ?`;
+    const { id, code } = req.body;
+    const sql = `DELETE FROM RSEAnnee WHERE numeroEtudiant = ? AND codeRSE = ?`;
 
-  db.run(sql, [id, code], (err) => {
-    if (err) return res.status(401).json(err.message);
+    db.run(sql, [id, code], (err) => {
+        if (err) return res.status(401).json(err.message);
 
-    res.status(200).json("Le RSE a été supprimé avec succès.");
-  });
+        res.status(200).json("Le RSE a été supprimé avec succès.");
+    });
+});
+router.put("/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
+    const numeroEtudiant = req.params.numeroEtudiant;
+    const { rse, newNumeroEtudiant } = req.body;
+
+    const deleteSQL = "DELETE FROM RSEAnnee WHERE numeroEtudiant = ?";
+    const insertSQL = "INSERT INTO RSEAnnee (numeroEtudiant, codeRSE) VALUES(?, ?)";
+
+    db.run(deleteSQL, [numeroEtudiant], (err) => {
+        if (err) {
+            return res.status(401).json(err);
+        }
+
+        const insertPromises = rse.map((element) => {
+            return new Promise((resolve, reject) => {
+                db.run(insertSQL, [newNumeroEtudiant, element.code], (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+        });
+
+        Promise.all(insertPromises)
+            .then(() => {
+                return res.status(200).json("Les RSE ont été mis à jour avec succès");
+            })
+            .catch((err) => {
+                return res.status(401).json(err);
+            });
+    });
 });
 module.exports = router;
