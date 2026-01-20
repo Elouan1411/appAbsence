@@ -65,30 +65,41 @@ router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
         }
     });
 });
+
 // Récupération d'une justification particulière
-router.get("/:id", verifyToken, isOwner, (req, res) => {
+router.get("/:id", verifyToken, (req, res) => {
     const ID = req.params.id;
     let result = [];
+
+    const sendResponse = (fileList) => {
+        const sql =
+            "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, validite, motifValidite, nom, prenom, login FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE idAbsJustifiee = ?";
+
+        db.all(sql, [ID], (err, rows) => {
+            if (err) return res.status(500).json(err.message);
+            if (rows.length === 0) return res.status(404).json("Justification non trouvée");
+
+            const userLogin = req.user.pwd.split("-")[0];
+
+            if (rows[0]["login"] === userLogin) {
+                rows[0]["list"] = fileList;
+                res.status(200).json(rows[0]);
+            } else {
+                res.status(403).json("Accès non autorisé à cette justification");
+            }
+        });
+    };
+
     fs.readdir("./upload/justification", (err, files) => {
         if (err) {
-            res.status(404).json([]);
+            sendResponse([]);
         } else {
             files.forEach((file) => {
-                if (file.split("-")[0] == ID || file.split("-")[0] == ID + ".pdf") {
+                if (file.split("-")[0] == ID) {
                     result.push(file);
                 }
             });
-        }
-    });
-    const sql =
-        "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, validite, motifValidite, nom, prenom, login FROM JustificationAbsence, Eleve WHERE idAbsJustifiee = ?";
-    db.all(sql, [ID], (err, rows) => {
-        if (decodedToken.pwd.split("-")[0] == rows[0]["login"]) {
-            if (err) return console.error(err.message);
-            rows[0]["list"] = result;
-            res.status(200).json(rows[0]);
-        } else {
-            res.status(403);
+            sendResponse(result);
         }
     });
 });

@@ -2,12 +2,14 @@ import AdminHomePage from "./pages/Admin/AdminHomePage";
 import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
+import StudentAbsenceDetailsPage from "./pages/Student/StudentAbsenceDetailsPage";
 import ShowStudentPage from "./pages/Admin/ShowStudentPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import AddingPage from "./pages/Admin/AddingPage";
 import StudentDetailPage from "./pages/Admin/StudentDetailPage";
+import React from "react";
 //bfuiegz
 export const routesConfig = [
     {
@@ -38,6 +40,7 @@ export const routesConfig = [
         children: [
             { index: true, label: "Mon Espace", element: <StudentHomePage />, icon: "icon-home" },
             { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
+            { path: "absence/:id", label: "Détail Absence", element: <StudentAbsenceDetailsPage />, icon: "icon-justification-student" },
         ],
     },
 ];

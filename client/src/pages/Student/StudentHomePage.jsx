@@ -50,14 +50,62 @@ function StudentHomePage() {
             })
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => {
-                    const mappedPending = data.map((abs) => ({
-                        id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
-                        subject: abs.nomMatiere || abs.codeMatiere,
-                        start: String(abs.debut),
-                        end: String(abs.fin),
-                        status: "pending",
-                        reason: abs.motif,
-                    }));
+                    // calculate groups to determine shared data (minId (for file), full list of periods)
+                    const groups = data.reduce((acc, abs) => {
+                        const key = abs.dateDemande || abs.idAbsence;
+                        if (!acc[key]) {
+                            acc[key] = {
+                                items: [],
+                                minId: abs.idAbsJustifiee,
+                            };
+                        }
+                        acc[key].items.push(abs);
+                        if (abs.idAbsJustifiee && (!acc[key].minId || abs.idAbsJustifiee < acc[key].minId)) {
+                            acc[key].minId = abs.idAbsJustifiee;
+                        }
+                        return acc;
+                    }, {});
+
+                    // Helper to parse DB date format YYYYMMDDHHMM or YYYYMMDDHHMMSS
+                    const parseDateStr = (str) => {
+                        if (!str) return new Date();
+                        const s = String(str);
+                        if (s.length < 12) return new Date(s);
+
+                        const y = parseInt(s.substring(0, 4));
+                        const m = parseInt(s.substring(4, 6)) - 1;
+                        const d = parseInt(s.substring(6, 8));
+                        const h = parseInt(s.substring(8, 10));
+                        const min = parseInt(s.substring(10, 12));
+
+                        return new Date(y, m, d, h, min);
+                    };
+
+                    const mappedPending = data.map((abs) => {
+                        const key = abs.dateDemande || abs.idAbsence;
+                        const group = groups[key];
+
+                        // Sort group items to create the full period list for details
+                        const sortedGroupItems = [...group.items].sort((a, b) => parseDateStr(a.debut) - parseDateStr(b.debut));
+
+                        const fullPeriods = sortedGroupItems.map((i) => ({
+                            start: parseDateStr(i.debut),
+                            end: parseDateStr(i.fin),
+                            id: i.idAbsJustifiee || i.idAbsence,
+                        }));
+
+                        return {
+                            id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
+                            subject: abs.nomMatiere || abs.codeMatiere,
+                            start: String(abs.debut),
+                            end: String(abs.fin),
+                            status: "pending",
+                            reason: abs.motif,
+                            justificationId: group.minId, // use min id for find file
+                            fullPeriodGroup: fullPeriods,
+                        };
+                    });
+
                     setPendingAbsences(mappedPending);
                 })
                 .catch((err) => console.error("Erreur fetch pending absences:", err));
@@ -169,6 +217,7 @@ function StudentHomePage() {
                         {absenceList.map((absence) => (
                             <AbsenceCard
                                 key={absence.id}
+                                id={absence.id}
                                 subject={absence.subject}
                                 startTime={absence.formattedStartTime}
                                 endTime={absence.formattedEndTime}
@@ -179,6 +228,8 @@ function StudentHomePage() {
                                 status={absence.status}
                                 reason={absence.reason}
                                 adminComment={absence.adminComment}
+                                justificationId={absence.justificationId}
+                                fullPeriodGroup={absence.fullPeriodGroup}
                             />
                         ))}
                     </div>

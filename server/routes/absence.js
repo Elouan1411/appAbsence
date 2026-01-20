@@ -129,7 +129,19 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
        AND J.fin >= Ap.fin
        AND J.validite = 2
        LIMIT 1) as motif,
-      'ABSENCE' as type
+      'ABSENCE' as type,
+      (SELECT idAbsJustifiee FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 2
+       LIMIT 1) as idAbsJustifiee,
+      (SELECT dateDemande FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 2
+       LIMIT 1) as dateDemande
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
@@ -153,7 +165,9 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       NULL as codeMatiere,
       'Justification anticipée' as nomMatiere,
       J.motif,
-      'JUSTIFICATION' as type
+      'JUSTIFICATION' as type,
+      J.idAbsJustifiee,
+      J.dateDemande
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero
     WHERE E.loginENT = ?
