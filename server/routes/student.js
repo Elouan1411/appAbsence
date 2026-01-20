@@ -103,29 +103,30 @@ router.get("/count", verifyToken, isAdmin, (req, res) => {
 //Récupération d'un étudiant avec un id particulier ainsi que les RSE et matières associées
 router.get("/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
-    let sql = `SELECT * FROM Eleve WHERE numero = ?`;
-    let result = {};
-    db.all(sql, [id], (err, rows) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        result = rows[0];
-    });
+    let sqlStudent = `SELECT * FROM Eleve WHERE numero = ?`;
+    let sqlRSE = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
 
-    sql = "SELECT * FROM RSE WHERE code IN (SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
-    db.all(sql, [id], (err, rows) => {
+    db.all(sqlStudent, [id], (err, rows) => {
         if (err) {
-            return console.error(err.message);
-        }
-        let rse = [];
-        console.log(rows);
-        for (let i of rows) {
-            rse.push(i);
+            console.error(err.message);
+            return res.status(500).json({ error: "Database error" });
         }
 
-        result["rse"] = rse;
-        console.log(result);
-        res.status(200).json(result);
+        if (!rows || rows.length === 0) {
+            return res.status(200).json({});
+        }
+        let result = rows[0];
+        db.all(sqlRSE, [id], (errRSE, rowsRSE) => {
+            if (errRSE) {
+                console.error(errRSE.message);
+                return res.status(500).json({ error: "Database error" });
+            }
+
+            result["rse"] = rowsRSE;
+
+            console.log(result);
+            res.status(200).json(result);
+        });
     });
 });
 

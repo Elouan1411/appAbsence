@@ -216,7 +216,7 @@ function StudentDetailPage() {
                 onChange={handleChange}
                 setStudent={(prev) => setNewStudent(prev)}
             />
-            <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} />
+            <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} student={student} />
             <Footer
                 handleConfirmModification={handleSave}
                 handleDeleteUser={handleDeleteStudent}

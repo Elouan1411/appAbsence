@@ -57,3 +57,8 @@
     mask-image: url(../assets/triple-dot.svg);
     -webkit-mask-image: url(../assets/triple-dot.svg);
 }
+
+.icon-export {
+    mask-image: url(../assets/export.svg);
+    -webkit-mask-image: url(../assets/export.svg);
+}

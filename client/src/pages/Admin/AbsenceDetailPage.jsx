@@ -22,14 +22,17 @@ function AbsenceDetailPage() {
                 credentials: "include",
             });
             const data = await result.json();
-            console.log(data);
-            setDebut(data[0].debut);
-            setFin(data[0].fin);
-            setNumeroEtudiant(data[0].numeroEtudiant);
-            setLoginProfesseur(data[0].loginProfesseur);
-            setMatiere(data[0].codeMatiere);
+
+            if (data && data.length > 0) {
+                setDebut(data[0].debut || 0);
+                setFin(data[0].fin || 0);
+                setNumeroEtudiant(data[0].numeroEtudiant || "");
+                setLoginProfesseur(data[0].loginProfesseur || "");
+                setMatiere(data[0].codeMatiere || 0);
+            }
         } catch (err) {
-            toast.error(err);
+            console.error(err);
+            toast.error(err.message || "Erreur récupération absence");
         }
     };
     const handleChange = (field, value) => {
@@ -44,6 +47,7 @@ function AbsenceDetailPage() {
         <div className="absence-detail-container">
             <PageTitle title={"Détail de l'absence"} icon={"icon-absences"} />
             <h3>Modifier l'absence de</h3>
+            <button onClick={() => setEditing(!editing)}>editing</button>
             <div className="absence-detail">
                 <ModificationAbsence
                     debut={debut}

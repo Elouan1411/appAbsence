@@ -34,14 +34,24 @@ function ModificationAbsence({
             });
 
             const data = await result.json();
-            setPrenomEtudiant(data[0].prenom);
-            setNomEtudiant(data[0].nom);
+            console.log(data);
+
+            if (data && Object.keys(data).length != 0) {
+                setPrenomEtudiant(data.prenom);
+                setNomEtudiant(data.nom);
+            } else {
+                setPrenomEtudiant("");
+                setNomEtudiant("");
+            }
         } catch (err) {
-            toast.error(err);
+            console.error(err);
+            toast.error(err.message || "Erreur récupération étudiant");
         }
     };
 
-    useEffect(() => {}, [numeroEtudiant]);
+    useEffect(() => {
+        fetchStudentNames();
+    }, [numeroEtudiant]);
     if (loading) return <CustomLoader />;
 
     return (
@@ -56,15 +66,15 @@ function ModificationAbsence({
                     <div className="info-grid">
                         <div className="info-item">
                             {/* <span className="label">{label}</span> */}
-                            <InputField value={numeroEtudiant} disabled={!editing} onChange={setNumeroEtudiant} />
+                            <InputField value={numeroEtudiant} disabled={!editing} onChange={(e) => setNumeroEtudiant(e.target.value)} />
                         </div>
                         <div className="info-item">
                             {/* <span className="label">{label}</span> */}
-                            <InputField value={prenomEtudiant} disabled={!editing} onChange={setPrenomEtudiant} />
+                            <InputField value={prenomEtudiant} disabled={true} onChange={setPrenomEtudiant} />
                         </div>
                         <div className="info-item">
                             {/* <span className="label">{label}</span> */}
-                            <InputField value={nomEtudiant} disabled={!editing} onChange={setNomEtudiant} />
+                            <InputField value={nomEtudiant} disabled={true} onChange={setNomEtudiant} />
                         </div>
                     </div>
                 </div>
