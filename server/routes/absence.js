@@ -98,18 +98,28 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
        AND J.debut <= Ap.debut 
        AND J.fin >= Ap.fin
        AND J.validite = 3
+       ORDER BY J.idAbsJustifiee DESC
        LIMIT 1) as motifValidite
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
     WHERE A.login = ?
-    AND NOT EXISTS (
-        SELECT 1
-        FROM JustificationAbsence J
-        WHERE J.numeroEtudiant = A.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
-        AND J.validite IN (0, 1, 2)
+    AND (
+        NOT EXISTS (
+            SELECT 1
+            FROM JustificationAbsence J
+            WHERE J.numeroEtudiant = A.numeroEtudiant
+            AND J.debut <= Ap.debut
+            AND J.fin >= Ap.fin
+        )
+        OR EXISTS (
+            SELECT 1
+            FROM JustificationAbsence J
+            WHERE J.numeroEtudiant = A.numeroEtudiant
+            AND J.debut <= Ap.debut
+            AND J.fin >= Ap.fin
+            AND J.validite = 3
+        )
     )
   `;
 
