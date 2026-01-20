@@ -1,5 +1,7 @@
 const db = require("../database/db");
 const exceljs = require("exceljs");
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Import students from an Excel file into the database (CSV supported)
@@ -14,7 +16,13 @@ function importExcelInDB(filepath, fileExtension, promo) {
 
         //TEMP
         //TELECHARGER SUR MON ORDI LE FICHIER :
-        const fs = require("fs");
+
+        const debugDir = path.join(__dirname, "../../debug"); // Adjust path depending on where your server root is
+        // Or simply use relative path if running from root:
+        if (!fs.existsSync("./debug")) {
+            fs.mkdirSync("./debug");
+        }
+
         fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
         // FIN TEMP
 

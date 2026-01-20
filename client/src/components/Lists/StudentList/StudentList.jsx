@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { lightTheme, darkTheme } from "../../constants/grid";
-import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
-import valueFormatter from "../../functions/valueFormatter";
+import { lightTheme, darkTheme } from "../../../constants/grid";
+import { AG_GRID_LOCALE_FR } from "../../../constants/fr-FR";
+import valueFormatter from "../../../functions/valueFormatter";
 import RseCell from "./RseCell";
-import { useTheme } from "../../hooks/useTheme";
-import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
-import "../../style/Admin.css";
-import { useUnsaved } from "../../context/UnsavedContext";
-import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import { useTheme } from "../../../hooks/useTheme";
+import { HEADER_DISPLAY_NAMES } from "../../../utils/studentValidation";
+import "../../../style/Admin.css";
+import { useUnsaved } from "../../../context/UnsavedContext";
+import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 

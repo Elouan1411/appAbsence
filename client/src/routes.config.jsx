@@ -3,14 +3,14 @@ import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
 import StudentAbsenceDetailsPage from "./pages/Student/StudentAbsenceDetailsPage";
-import ShowStudentPage from "./pages/Admin/ShowStudentPage";
+import ShowListsPage from "./pages/Admin/ShowListsPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import AddingPage from "./pages/Admin/AddingPage";
 import StudentDetailPage from "./pages/Admin/StudentDetailPage";
 import React from "react";
-//bfuiegz
+
 export const routesConfig = [
     {
         path: "/admin",
@@ -19,7 +19,7 @@ export const routesConfig = [
         children: [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
             { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
-            { path: "studentlist", label: "Liste des étudiants", element: <ShowStudentPage />, icon: "icon-student-list" },
+            { path: "lists", label: "Listes", element: <ShowListsPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
         ],
