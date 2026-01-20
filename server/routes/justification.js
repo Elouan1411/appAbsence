@@ -40,6 +40,22 @@ ORDER BY JustificationAbsence.dateDemande DESC`;
     });
 });
 
+router.get("/count", verifyToken, isAdmin, (req, res) => {
+    // const sql =
+    //   "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom, dateDemande FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2 GROUP BY dateDemande,numeroEtudiant;";
+    const sql = `SELECT COUNT(*) as total
+FROM (
+    SELECT 1 
+    FROM JustificationAbsence
+    WHERE validite = 2
+    GROUP BY dateDemande, numeroEtudiant
+);`;
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+        res.json(rows);
+    });
+});
+
 // Récupération de toutes les justifications
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql =
@@ -182,6 +198,7 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
         res.status(200).json(rows);
     });
 });
+
 /*****************************************
  *             Méthodes POST
  *****************************************/

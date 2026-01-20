@@ -144,6 +144,7 @@
 
 .admin-homepage-container {
     height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -471,13 +472,13 @@ main {
 }
 
 .homepage-subtitle-container {
-    width: calc(100% - 50px);
+    width: calc(100% - 30px);
     background-color: var(--card-bg);
     margin: 0px 5px 1rem 5px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     padding-left: 20px;
-    color: var(--text-secondary);
+    color: var(--primary-color);
 }
 
 .download-button-container {

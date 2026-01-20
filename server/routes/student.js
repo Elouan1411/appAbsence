@@ -6,6 +6,7 @@ const { importExcelInDB } = require("../utils/student");
 const formidable = require("formidable");
 const path = require("path");
 const fs = require("fs");
+const { error } = require("console");
 // exceljs import not needed here as it is used in utils
 
 /*****************************************
@@ -79,6 +80,17 @@ router.get("/allID", verifyToken, isAdmin, (req, res) => {
     db.all(sql, (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Erreur de récupération ID" });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+router.get("/count", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT COUNT(numero) AS nombre FROM Eleve";
+
+    db.all(sql, (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Erreur de récupération du nombre d'étudiant" });
         }
         return res.status(200).json(data);
     });
