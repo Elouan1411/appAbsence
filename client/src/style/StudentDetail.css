@@ -193,6 +193,16 @@ h3 {
 .save-student-button > span {
     color: white;
 }
+
+.subtitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
 .student-detail-container {
     position: relative;
     height: 100vh;
@@ -209,12 +219,6 @@ h3 {
     padding: 6px 12px;
     border-radius: 12px;
     font-weight: 700;
-}
-
-.absence-count-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .icon-button {
