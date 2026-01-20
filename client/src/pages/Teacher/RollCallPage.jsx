@@ -26,7 +26,7 @@ function RollCallPage() {
                 semestre: "1"
             });
             setSubject(sc.codeMatiere);
-            setDateTime({ date: "", startTime: "", endTime: "" });
+            setDateTime({ date: dateTime.date, startTime: dateTime.startTime, endTime: dateTime.endTime });
             window.history.replaceState({}, document.title);
         }
     }, [location]);
@@ -37,7 +37,7 @@ function RollCallPage() {
 
     const handleSuccess = () => {
         setSelection(null);
-        setDateTime({ date: "", startTime: "", endTime: "" });
+        setDateTime({ date: dateTime.date, startTime: dateTime.startTime, endTime: dateTime.endTime });
         setSubject("");
         setLoginENT("");
         setResetKey((prev) => prev + 1);

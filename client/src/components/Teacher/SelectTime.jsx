@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectTime({ onChange, style }) {
+function SelectTime({ onChange, style, value }) {
     const [date, setDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -11,13 +11,30 @@ function SelectTime({ onChange, style }) {
     ];
 
     useEffect(() => {
+        if (value && (value.date !== date || value.startTime !== startTime || value.endTime !== endTime)) {
+             if (value.date) setDate(value.date);
+             if (value.startTime) setStartTime(value.startTime);
+             if (value.endTime) setEndTime(value.endTime);
+        } else if (!value || (!value.date && !value.startTime)) {
+            
+        }
+    }, [value]);
+   
+    useEffect(() => {
+        if (value && value.date && value.startTime) {
+             setDate(value.date);
+             setStartTime(value.startTime);
+             setEndTime(value.endTime);
+             return; 
+        }
+
         const now = new Date();
         
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, "0");
         const day = String(now.getDate()).padStart(2, "0");
         const todayStr = `${year}-${month}-${day}`;
-        setDate(todayStr);
+        setDate(todayStr); 
 
         const currentHours = now.getHours();
         const currentMinutes = now.getMinutes();
@@ -36,9 +53,12 @@ function SelectTime({ onChange, style }) {
             }
         }
 
-        setStartTime(selectedSlot);
-        setEndTime(addMinutes(selectedSlot, 90));
-    }, []);
+        if (!date) setDate(todayStr);
+        if (!startTime) {
+             setStartTime(selectedSlot);
+             setEndTime(addMinutes(selectedSlot, 90));
+        }
+    }, []); 
 
     const addMinutes = (timeStr, minutesToAdd) => {
         if (!timeStr) return "";
