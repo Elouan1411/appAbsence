@@ -10,6 +10,7 @@ import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import AddingPage from "./pages/Admin/AddingPage";
 import StudentDetailPage from "./pages/Admin/StudentDetailPage";
 import React from "react";
+import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
 
 export const routesConfig = [
     {
@@ -22,6 +23,7 @@ export const routesConfig = [
             { path: "lists", label: "Listes", element: <ShowListsPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
+            { path: "absencedetail/:absenceId", label: "Détail absence", element: <AbsenceDetailPage /> },
         ],
     },
     {
