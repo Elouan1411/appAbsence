@@ -19,6 +19,17 @@ router.get("/allLoginENT", verifyToken, isAdmin, (req, res) => {
     });
 });
 
+router.get("/all", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT * FROM Professeur";
+
+    db.all(sql, (err, rows) => {
+        if (err) {
+            return res.status(401).json({ error: "Erreur de récupération professeurs" });
+        }
+        return res.status(200).json(rows);
+    });
+});
+
 router.post("/add", verifyToken, isAdmin, (req, res) => {
     const { loginENT, nom, prenom } = req.body;
 
