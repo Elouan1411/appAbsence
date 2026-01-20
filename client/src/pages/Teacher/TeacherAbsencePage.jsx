@@ -222,6 +222,7 @@ function TeacherHistoryPage() {
                     theme={theme === "dark" ? darkTheme : lightTheme}
                     pagination={true}
                     paginationPageSize={100}
+                    domLayout="autoHeight"
                 />
             </div>
         </div>
