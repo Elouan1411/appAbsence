@@ -202,7 +202,7 @@ h3 {
     align-items: center;
 }
 
-.tab-count {
+.absence-count {
     background-color: var(--badge-bg);
     color: var(--badge-text);
     font-size: 1rem;

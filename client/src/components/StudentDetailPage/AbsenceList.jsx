@@ -43,7 +43,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                 <h2>Liste d'absences</h2>
                 {Object.values(absences).length > 0 && (
                     <div className="absence-count-container">
-                        <span className="tab-count">{Object.values(absences).length}</span>
+                        <span className="absence-count">{Object.values(absences).length}</span>
                         {student && (
                             <PDFDownloadLink
                                 document={<AbsencePdfDocument student={student} absences={absences} />}
