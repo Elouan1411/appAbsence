@@ -331,7 +331,7 @@ router.delete("/:id", verifyToken, isAdminOrOwner, (req, res) => {
     let id = req.params.id;
     let login = req.body.login;
 
-    const sql = `DELETE FROM JustficationAbsence WHERE idAbsJustifiee = ?`;
+    const sql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
 
     db.run(sql, [id], (err) => {
         if (err) return console.error(err.message);

@@ -28,10 +28,8 @@ const StudentAbsenceDetailsPage = () => {
     const isEditable = true;
 
     useEffect(() => {
-        // ... loadFiles ...
         const loadFiles = async (justifId) => {
             try {
-                // ... fetch logic ...
                 const response = await fetch(`http://localhost:3000/justification/${justifId}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
@@ -70,7 +68,6 @@ const StudentAbsenceDetailsPage = () => {
             if (location.state.dateDemande) {
                 setDateDemande(location.state.dateDemande);
             }
-            // ... strict period mapping ...
             if (location.state.prefilledPeriod) {
                 const periods = location.state.prefilledPeriod.map((p, idx) => ({
                     ...p,
@@ -98,7 +95,6 @@ const StudentAbsenceDetailsPage = () => {
         }
     }, [location.state]);
 
-    // ... handlers ...
     const handlePeriodChange = (newPeriods) => {
         const sortedPeriods = [...newPeriods].sort((a, b) => a.start - b.start);
         setPeriod(sortedPeriods);
@@ -106,7 +102,6 @@ const StudentAbsenceDetailsPage = () => {
     };
 
     const handleFilesChange = (newFiles) => {
-        // ... (as before)
         if (typeof newFiles === "function") {
             setFiles((prev) => {
                 const updated = newFiles(prev);
