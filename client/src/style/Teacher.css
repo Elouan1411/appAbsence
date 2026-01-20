@@ -76,14 +76,36 @@
 .login-input-container {
     width: 100%;
 }
+
 .login-input-container .input input {
     max-width: 98.5%;
 }
+
 .login-input-container .input p {
     font-weight: 700;
     font-size: 18px;
     color: var(--text-secondary);
 }
+
 .login-input-container .input .label-container {
     margin: 5px;
+}
+
+.recent-section {
+    margin-top: 2rem;
+}
+
+.recent-title {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.recent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.empty-message {
+    color: var(--text-secondary);
 }

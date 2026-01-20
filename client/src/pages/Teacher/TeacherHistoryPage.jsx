@@ -64,6 +64,7 @@ function TeacherHistoryPage() {
             {
                 headerName: "Date",
                 field: "debut",
+                cellDataType: "dateTime",
                 valueFormatter: (params) => {
                     if (!params.value) return "";
                     const valueStr = String(params.value);
@@ -88,8 +89,9 @@ function TeacherHistoryPage() {
                     return valueStr;
                 },
                 minWidth: 160,
-                filter: true,
+                filter: 'agDateColumnFilter',
                 sortable: true,
+                sort: 'desc',
             },
             {
                 field: "libelle",
@@ -166,6 +168,17 @@ function TeacherHistoryPage() {
         );
     }
 
+    const onSortChanged = (params) => {
+        const sortModel = params.api.getColumnState().filter((s) => s.sort);
+        const dateSort = sortModel.find((s) => s.colId === "debut");
+
+        if (!dateSort) {
+            params.api.applyColumnState({
+                state: [...sortModel, { colId: "debut", sort: "desc", sortIndex: sortModel.length }],
+            });
+        }
+    };
+
     return (
         <div className="page-container">
             <PageTitle title="Historique des Appels" icon="icon-history" />
@@ -180,6 +193,7 @@ function TeacherHistoryPage() {
                     onRowClicked={handleRowClick}
                     rowStyle={{ cursor: "pointer" }}
                     domLayout="autoHeight"
+                    onSortChanged={onSortChanged}
                 />
             </div>
         </div>

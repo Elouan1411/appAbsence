@@ -131,6 +131,7 @@ function TeacherHistoryPage() {
             {
                 headerName: "Date",
                 field: "debut",
+                cellDataType: "dateTime",
                 valueFormatter: (params) => {
                     if (!params.value) return "";
                     const valueStr = String(params.value);
@@ -162,8 +163,9 @@ function TeacherHistoryPage() {
                     return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
                 },
                 minWidth: 160,
-                filter: true,
+                filter: "agDateColumnFilter",
                 sortable: true,
+                sort: 'desc',
             },
             {
                 field: "nomMatiere",
@@ -211,6 +213,17 @@ function TeacherHistoryPage() {
         []
     );
 
+    const onSortChanged = (params) => {
+        const sortModel = params.api.getColumnState().filter((s) => s.sort);
+        const dateSort = sortModel.find((s) => s.colId === "debut");
+
+        if (!dateSort) {
+            params.api.applyColumnState({
+                state: [...sortModel, { colId: "debut", sort: "desc", sortIndex: sortModel.length }],
+            });
+        }
+    };
+
     return (
         <div className="page-container">
             <PageTitle title="Historique des Absences" icon="icon-absences" />
@@ -223,6 +236,7 @@ function TeacherHistoryPage() {
                     pagination={true}
                     paginationPageSize={100}
                     domLayout="autoHeight"
+                    onSortChanged={onSortChanged}
                 />
             </div>
         </div>
