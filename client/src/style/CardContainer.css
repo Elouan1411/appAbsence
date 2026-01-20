@@ -7,7 +7,8 @@
     padding: 1rem 0.4rem 1rem 0.4rem;
     flex-wrap: nowrap;
     overflow-x: auto;
-    scrollbar-width: none; 
+    scrollbar-width: none;
+    width: 100%;
 }
 
 .card-container::-webkit-scrollbar {

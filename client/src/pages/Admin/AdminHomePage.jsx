@@ -7,12 +7,15 @@ import JustificationList from "../../components/JustificationList/JustificationL
 import ValidationView from "../../components/ValidationJustification/ValidationView";
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
+import toast from "react-hot-toast";
 
 function AdminHomePage() {
     const [selectedItem, setSelectedItem] = useState(null);
     const containerRef = useRef(null);
     const [leftWidth, setLeftWidth] = useState(50);
     const [isResizing, setIsResizing] = useState(false);
+    const [numberOfStudents, setNumberOfStudents] = useState(0);
+    const [numberOfJustification, setNumberOfJustification] = useState(0);
 
     const [reloadJustifications, setReloadJustifications] = useState(0);
 
@@ -40,8 +43,55 @@ function AdminHomePage() {
                 }
             }
         },
-        [isResizing]
+        [isResizing],
     );
+
+    const handleFetchNumberOfStudents = useCallback(async () => {
+        try {
+            const result = await fetch("http://localhost:3000/eleve/count", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!result.ok) throw new Error("Erreur lors de la récupération");
+
+            const data = await result.json();
+
+            console.log(data[0]);
+
+            setNumberOfStudents(data[0].nombre);
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur de chargement des étudiants");
+        }
+    }, []);
+
+    const handleFetchNumberOfJustification = useCallback(async () => {
+        try {
+            const result = await fetch("http://localhost:3000/justification/count", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!result.ok) throw new Error("Erreur lors de la récupération");
+
+            const data = await result.json();
+
+            console.log(data[0]);
+
+            setNumberOfJustification(data[0].total);
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur de chargement des justifications");
+        }
+    }, []);
+
+    useEffect(() => {
+        handleFetchNumberOfStudents();
+        handleFetchNumberOfJustification();
+    }, [handleFetchNumberOfStudents]);
+
+    useEffect(() => {}, [handleFetchNumberOfJustification]);
 
     useEffect(() => {
         if (isResizing) {
@@ -58,17 +108,8 @@ function AdminHomePage() {
         <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
             <PageTitle title="Tableau de bord" icon={"icon-board-table"} />
             <CardContainer>
-                <DisplayCard title="Nombre d'etudiants" value="10" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Nombre d'absences" value="150" iconLink={"./src/assets/dashboard.svg"} />
-                <DisplayCard title="Exemple" value="10" iconLink="" />
+                <DisplayCard title="Nombre d'étudiants" value={numberOfStudents} iconLink={"./src/assets/school.svg"} />
+                <DisplayCard title="Justifications en cours" value={numberOfJustification} iconLink={"./src/assets/todo.svg"} />
             </CardContainer>
 
             <div className="homepage-subtitle-container">

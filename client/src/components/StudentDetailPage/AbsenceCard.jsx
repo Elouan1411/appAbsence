@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
@@ -17,6 +17,8 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
     //         state: { prefilledPeriod: [fullPeriod] },
     //     });
     // };
+    const { hasUnsavedChanges } = useUnsaved();
+    const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
     const handleDeleteAbsence = async () => {
         console.log(idAbsence);
@@ -72,7 +74,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                     <span className="icon icon-trash" />
                 </button>
                 <button className="absence-detail-button">
-                    <span className="icon icon-triple-dot" />
+                    <span className="icon icon-triple-dot" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
                 </button>
             </div>
 

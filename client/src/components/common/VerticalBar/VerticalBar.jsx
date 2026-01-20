@@ -53,7 +53,7 @@ function VerticalBar({ notificationCount = 0 }) {
                             return <NavItem key={index} link={link} index={index} to={location.pathname} isMenuOpen={isMenuOpen} />;
                         }
 
-                        if (!link.path?.includes("studentdetail")) {
+                        if (!link.path?.includes("studentdetail") && !link.path?.includes("absencedetail")) {
                             const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
                             return <NavItem key={index} link={link} index={index} to={to} isMenuOpen={isMenuOpen} />;
