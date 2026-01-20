@@ -40,11 +40,14 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
     return (
         <div className="absence-list-container">
             <div className="subtitle-container">
-                <h2>Liste d'absences</h2>
-                {Object.values(absences).length > 0 && (
-                    <div className="absence-count-container">
+                <div className="subtitle">
+                    <h2>Liste d'absences</h2>
+                    {Object.values(absences).length > 0 && (
                         <span className="absence-count">{Object.values(absences).length}</span>
-                        {student && (
+                    )}
+                </div>
+
+                {Object.values(absences).length > 0 && student && (
                             <PDFDownloadLink
                                 document={<AbsencePdfDocument student={student} absences={absences} />}
                                 fileName={`Absences_${student.nom}_${student.prenom}_${new Date().getFullYear()}.pdf`}
@@ -57,8 +60,6 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                                 )}
                             </PDFDownloadLink>
                         )}
-                    </div>
-                )}
             </div>
             <div className="absence-list-subcontainer">
                 {Object.values(absences).length > 0 ? (

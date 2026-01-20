@@ -30,10 +30,22 @@ router.get("/:id", verifyToken, isAdmin, (req, res) => {
 FROM Absence 
 INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
 INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT
-INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code WHERE numeroEtudiant = ?`;
+INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
+WHERE numeroEtudiant = ?`;
     db.all(sql, [id], (err, rows) => {
         if (err) {
             return res.status(500).json(err);
+        }
+        return res.status(200).json(rows);
+    });
+});
+
+router.get("/detail/:idAbsence", verifyToken, isAdmin, (req, res) => {
+    const idAbsence = req.params.idAbsence;
+    const sql = `SELECT * FROM Absence INNER JOIN Appel ON Absence.idAppel = Appel.idAppel WHERE idAbsence = ?`;
+    db.all(sql, [idAbsence], (err, rows) => {
+        if (err) {
+            return res.status(401).json(err);
         }
         return res.status(200).json(rows);
     });

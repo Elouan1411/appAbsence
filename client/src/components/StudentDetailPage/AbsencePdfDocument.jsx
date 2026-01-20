@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
     title: { 
         fontSize: 24, 
         textAlign: "center", 
+        fontWeight: "bold",
+        justifyContent: "center",
         marginBottom: 15, 
         color: "#112131" 
     },
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
         flexDirection: "row" 
     },
     col: { 
-        width: "25%", 
+        width: "20%", 
         borderStyle: "solid", 
         borderWidth: 1, 
         borderLeftWidth: 0, 
@@ -66,59 +68,66 @@ const AbsencePdfDocument = ({ student, absences }) => {
     const absenceList = Object.values(absences);
 
     return (
-        <Document style={styles.page}>
-            <Page size="A4">
+        <Document>
+            <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
-                    <Text>Relevé d'absences {currentYear}</Text>
-                </View>
-                <View style={styles.infoContainer}>
-                    <View>
-                        <Text>Nom : {student.nom} {student.prenom}</Text>
-                        <Text>Promo : {student.promo}</Text>
-                    </View>
-                    <View style={{ alignItems: "flex-end" }}>
-                        <Text>N° Étudiant : {student.numeroEtudiant}</Text>
-                        <Text>Login ENT : {student.loginENT}</Text>
+                    <Text style={styles.title}>Relevé d'absences {currentYear}</Text>
+
+                    <View style={styles.infoContainer}>
+                        <View>
+                            <Text>Nom : {student.nom} {student.prenom}</Text>
+                            <Text>Promo : {student.promo}</Text>
+                        </View>
+                        <View style={{ alignItems: "flex-end" }}>
+                            <Text>N° Étudiant : {student.numeroEtudiant}</Text>
+                            <Text>Login ENT : {student.loginENT}</Text>
+                        </View>
                     </View>
                 </View>
 
                 <View style={styles.table}>
                     <View style={styles.row}>
                         <View style={styles.col}>
-                            <Text>Date & Heure</Text>
+                            <Text style={[styles.cell, styles.headerCell]}>Date & Heure de début</Text>
                         </View>
                         <View style={styles.col}>
-                            <Text>Matière</Text>
+                            <Text style={[styles.cell, styles.headerCell]}>Date & Heure de fin</Text>
                         </View>
                         <View style={styles.col}>
-                            <Text>Prof</Text>
+                            <Text style={[styles.cell, styles.headerCell]}>Matière</Text>
                         </View>
                         <View style={styles.col}>
-                            <Text>Justifiée</Text>
+                            <Text style={[styles.cell, styles.headerCell]}>Enseignant</Text>
+                        </View>
+                        <View style={styles.col}>
+                            <Text style={[styles.cell, styles.headerCell]}>Justifiée</Text>
                         </View>
                     </View>
-                </View>
 
-                {absenceList.map((absence, index) => (
-                    <View key={index} style={styles.row}>
-                        <View style={styles.col}>
-                            <Text>{dateFormatter(absence.debut)}</Text>
+                    {absenceList.map((absence, index) => (
+                        <View key={index} style={styles.row}>
+                            <View style={styles.col}>
+                                <Text style={styles.cell}>{dateFormatter(absence.debut)}</Text>
+                            </View>
+                            <View style={styles.col}>
+                                <Text style={styles.cell}>{dateFormatter(absence.fin)}</Text>
+                            </View>
+                            <View style={styles.col}>
+                                <Text style={styles.cell}>
+                                {absence.libelle} ({absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"})
+                                </Text>
+                            </View>
+                            <View style={styles.col}>
+                                <Text style={styles.cell}>
+                                {absence.prenom} {absence.nom?.toUpperCase()}
+                                </Text>
+                            </View>
+                            <View style={styles.col}>
+                                <Text style={styles.cell}>{absence.justifie ? "Oui" : "Non"}</Text>
+                            </View>
                         </View>
-                        <View style={styles.col}>
-                            <Text>
-                            {absence.libelle} ({absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"})
-                            </Text>
-                        </View>
-                        <View style={styles.col}>
-                            <Text>
-                            {absence.prenom} {absence.nom?.toUpperCase()}
-                            </Text>
-                        </View>
-                        <View style={styles.col}>
-                            <Text>{absence.justifie ? "Oui" : "Non"}</Text>
-                        </View>
-                    </View>
-                ))}
+                    ))}
+                </View>
 
                 <Text style={styles.footer}>Généré le {new Date().toLocaleDateString("fr-FR")}</Text>
             </Page>
