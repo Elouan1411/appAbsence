@@ -4,8 +4,24 @@ import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
+import { Eye } from "lucide-react";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode, isSelected, onToggle, status = "todo", reason, adminComment }) => {
+const AbsenceCard = ({
+    id,
+    subject,
+    startTime,
+    endTime,
+    fullPeriod,
+    fullPeriodGroup,
+    isSelectionMode,
+    isSelected,
+    onToggle,
+    status = "todo",
+    reason,
+    adminComment,
+    justificationId,
+    dateDemande,
+}) => {
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -13,6 +29,19 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
     const handleJustify = () => {
         safeNavigate("/dashboard/justification", {
             state: { prefilledPeriod: [fullPeriod] },
+        });
+    };
+
+    const handleDetails = (e) => {
+        e.stopPropagation();
+        safeNavigate(`/dashboard/absence/${id}`, {
+            state: {
+                prefilledPeriod: fullPeriodGroup || [fullPeriod],
+                reason: reason,
+                adminComment: adminComment,
+                justificationId: justificationId,
+                dateDemande: dateDemande,
+            },
         });
     };
 
@@ -70,6 +99,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, isSelectionMode,
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
+                    <Eye className="icon-eye details-icon" onClick={handleDetails} />
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}

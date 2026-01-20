@@ -109,7 +109,7 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
     });
 });
 
-// Récupération des absences n'ayant pas de justificatif
+// Récupération des absences n'ayant pas de justificatif (en cours)
 router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
 
@@ -121,43 +121,38 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       Ap.debut,
       Ap.fin,
       Ap.codeMatiere,
-      Ap.codeMatiere,
       M.libelle as nomMatiere,
-      (SELECT motif FROM JustificationAbsence J 
-       WHERE J.numeroEtudiant = A.numeroEtudiant 
-       AND J.debut <= Ap.debut 
-       AND J.fin >= Ap.fin
-       AND J.validite = 2
-       LIMIT 1) as motif,
-      'ABSENCE' as type
+      J.motif,
+      'ABSENCE' as type,
+      J.idAbsJustifiee,
+      J.dateDemande
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
     WHERE A.login = ?
-    AND EXISTS (
-        SELECT 1
-        FROM JustificationAbsence J
-        WHERE J.numeroEtudiant = A.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
-        AND J.validite IN (2)
-    )
+    AND J.validite = 2
+
     UNION ALL
+
     SELECT
       J.idAbsJustifiee as idAbsence,
       J.numeroEtudiant,
       E.loginENT as login,
       J.debut,
       J.fin,
-      J.fin,
       NULL as codeMatiere,
       'Justification anticipée' as nomMatiere,
       J.motif,
-      'JUSTIFICATION' as type
+      'JUSTIFICATION' as type,
+      J.idAbsJustifiee,
+      J.dateDemande
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero
     WHERE E.loginENT = ?
-    AND J.validite IN (2)
+    AND J.validite = 2
     AND NOT EXISTS (
         SELECT 1
         FROM Absence A
@@ -189,32 +184,20 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       Ap.fin,
       Ap.codeMatiere,
       M.libelle as nomMatiere,
-      (SELECT validite FROM JustificationAbsence J 
-       WHERE J.numeroEtudiant = A.numeroEtudiant 
-       AND J.debut <= Ap.debut 
-       AND J.fin >= Ap.fin
-       AND J.validite IN (0, 1)
-       LIMIT 1) as validite,
-      (SELECT motif FROM JustificationAbsence J 
-       WHERE J.numeroEtudiant = A.numeroEtudiant 
-       AND J.debut <= Ap.debut 
-       AND J.fin >= Ap.fin
-       AND J.validite IN (0, 1)
-       LIMIT 1) as motif,
+      J.validite,
+      J.motif,
       'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
     WHERE A.login = ?
-    AND EXISTS (
-        SELECT 1
-        FROM JustificationAbsence J
-        WHERE J.numeroEtudiant = A.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
-        AND J.validite IN (0, 1)
-    )
+    AND J.validite IN (0, 1)
+
     UNION ALL
+
     SELECT
       J.idAbsJustifiee as idAbsence,
       J.numeroEtudiant,

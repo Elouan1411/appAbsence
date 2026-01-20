@@ -65,30 +65,41 @@ router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
         }
     });
 });
+
 // Récupération d'une justification particulière
-router.get("/:id", verifyToken, isOwner, (req, res) => {
+router.get("/:id", verifyToken, (req, res) => {
     const ID = req.params.id;
     let result = [];
+
+    const sendResponse = (fileList) => {
+        const sql =
+            "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, validite, motifValidite, nom, prenom, login FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE idAbsJustifiee = ?";
+
+        db.all(sql, [ID], (err, rows) => {
+            if (err) return res.status(500).json(err.message);
+            if (rows.length === 0) return res.status(404).json("Justification non trouvée");
+
+            const userLogin = req.user.pwd.split("-")[0];
+
+            if (rows[0]["login"] === userLogin) {
+                rows[0]["list"] = fileList;
+                res.status(200).json(rows[0]);
+            } else {
+                res.status(403).json("Accès non autorisé à cette justification");
+            }
+        });
+    };
+
     fs.readdir("./upload/justification", (err, files) => {
         if (err) {
-            res.status(404).json([]);
+            sendResponse([]);
         } else {
             files.forEach((file) => {
-                if (file.split("-")[0] == ID || file.split("-")[0] == ID + ".pdf") {
+                if (file.split("-")[0] == ID) {
                     result.push(file);
                 }
             });
-        }
-    });
-    const sql =
-        "SELECT idAbsJustifiee, numeroEtudiant, debut, fin, motif, validite, motifValidite, nom, prenom, login FROM JustificationAbsence, Eleve WHERE idAbsJustifiee = ?";
-    db.all(sql, [ID], (err, rows) => {
-        if (decodedToken.pwd.split("-")[0] == rows[0]["login"]) {
-            if (err) return console.error(err.message);
-            rows[0]["list"] = result;
-            res.status(200).json(rows[0]);
-        } else {
-            res.status(403);
+            sendResponse(result);
         }
     });
 });
@@ -259,37 +270,56 @@ router.put("/validate/:id", verifyToken, isAdmin, (req, res) => {
 
 //Mise à jour d'une justification
 
-router.put("/:id", verifyToken, isOwner, (req, res) => {
+router.put("/:id", verifyToken, (req, res) => {
     let body = req.body;
+    let id = req.params.id;
 
-    let id = req.params.ID.substring(1);
-    let motif = body.motif;
+    if (id && id.toString().startsWith("J-")) {
+        id = id.substring(2);
+    }
+    if (!body.justification && !body.start && !body.end) {
+        return res.status(400).json("Aucune donnée à mettre à jour");
+    }
 
-    let date = body["dateDebut"].split("-");
-    let heure = body["heureDebut"].split(":");
+    const formatToDB = (timestamp, withSeconds = false) => {
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) return null;
+        const pad = (n) => (n < 10 ? "0" + n : n);
+        let str = date.getFullYear().toString() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes());
 
-    let debut = date[0] + date[1] + date[2] + heure[0] + heure[1];
+        if (withSeconds) {
+            str += pad(date.getSeconds());
+        }
+        return str;
+    };
 
-    date = body["dateFin"].split("-");
-    heure = body["heureFin"].split(":");
+    let start = body.start ? formatToDB(body.start) : null;
+    let end = body.end ? formatToDB(body.end) : null;
+    let motif = body.justification;
 
-    let fin = date[0] + date[1] + date[2] + heure[0] + heure[1];
+    const login = req.user.pwd.split("-")[0];
+    const checkSql = "SELECT * FROM JustificationAbsence WHERE login = ? AND idAbsJustifiee = ?";
 
-    const sql = "SELECT * FROM JustificationAbsence WHERE login = ? AND idAbsJustifiee = ?";
-    const login = decodedToken.pwd.split("-")[0];
+    db.all(checkSql, [login, id], (err, rows) => {
+        if (err) return res.status(500).json(err.message);
+        if (rows.length === 0) return res.status(403).json("Non autorisé ou justification introuvable");
 
-    db.all(sql, [login, id], (err, rows) => {
-        if (err) return console.error(err.message);
-        if (rows.length > 0) {
-            const sql = `UPDATE JustificationAbsence SET debut = ?, fin = ?, motif = ? WHERE idAbsJustifiee = ?`;
+        const current = rows[0];
 
-            db.run(sql, [debut, fin, motif, id], (err) => {
-                if (err) {
-                    console.error(err.message);
-                    res.status(500);
-                } else res.status(200).json("La justification a été mise à jours");
-            });
-        } else res.status(403);
+        // Use new values or keep existing ones
+        const newStart = start || current.debut;
+        const newEnd = end || current.fin;
+        const newMotif = motif !== undefined ? motif : current.motif;
+
+        const updateSql = `UPDATE JustificationAbsence SET debut = ?, fin = ?, motif = ? WHERE idAbsJustifiee = ?`;
+
+        db.run(updateSql, [newStart, newEnd, newMotif, id], (err) => {
+            if (err) {
+                console.error(err.message);
+                return res.status(500).json(err.message);
+            }
+            res.status(200).json("La justification a été mise à jour");
+        });
     });
 });
 
@@ -301,7 +331,7 @@ router.delete("/:id", verifyToken, isAdminOrOwner, (req, res) => {
     let id = req.params.id;
     let login = req.body.login;
 
-    const sql = `DELETE FROM JustficationAbsence WHERE idAbsJustifiee = ?`;
+    const sql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
 
     db.run(sql, [id], (err) => {
         if (err) return console.error(err.message);

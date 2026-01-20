@@ -50,14 +50,67 @@ function StudentHomePage() {
             })
                 .then((res) => (res.ok ? res.json() : []))
                 .then((data) => {
-                    const mappedPending = data.map((abs) => ({
-                        id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
-                        subject: abs.nomMatiere || abs.codeMatiere,
-                        start: String(abs.debut),
-                        end: String(abs.fin),
-                        status: "pending",
-                        reason: abs.motif,
-                    }));
+                    // calculate groups to determine shared data (minId (for file), full list of periods)
+                    const groups = data.reduce((acc, abs) => {
+                        const key = abs.dateDemande || abs.idAbsence;
+                        if (!acc[key]) {
+                            acc[key] = {
+                                items: [],
+                                minId: abs.idAbsJustifiee,
+                            };
+                        }
+                        acc[key].items.push(abs);
+                        if (abs.idAbsJustifiee && (!acc[key].minId || abs.idAbsJustifiee < acc[key].minId)) {
+                            acc[key].minId = abs.idAbsJustifiee;
+                        }
+                        return acc;
+                    }, {});
+
+                    // Helper to parse DB date format YYYYMMDDHHMM or YYYYMMDDHHMMSS
+                    const parseDateStr = (str) => {
+                        if (!str) return new Date();
+                        const s = String(str);
+                        if (s.length < 12) return new Date(s);
+
+                        const y = parseInt(s.substring(0, 4));
+                        const m = parseInt(s.substring(4, 6)) - 1;
+                        const d = parseInt(s.substring(6, 8));
+                        const h = parseInt(s.substring(8, 10));
+                        const min = parseInt(s.substring(10, 12));
+                        let sec = 0;
+                        if (s.length >= 14) {
+                            sec = parseInt(s.substring(12, 14));
+                        }
+
+                        return new Date(y, m, d, h, min, sec);
+                    };
+
+                    const mappedPending = data.map((abs) => {
+                        const key = abs.dateDemande || abs.idAbsence;
+                        const group = groups[key];
+
+                        // Sort group items to create the full period list for details
+                        const sortedGroupItems = [...group.items].sort((a, b) => parseDateStr(a.debut) - parseDateStr(b.debut));
+
+                        const fullPeriods = sortedGroupItems.map((i) => ({
+                            start: parseDateStr(i.debut),
+                            end: parseDateStr(i.fin),
+                            id: i.idAbsJustifiee || i.idAbsence,
+                        }));
+
+                        return {
+                            id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
+                            subject: abs.nomMatiere || abs.codeMatiere,
+                            start: String(abs.debut),
+                            end: String(abs.fin),
+                            status: "pending",
+                            reason: abs.motif,
+                            justificationId: group.minId, // use min id for find file
+                            fullPeriodGroup: fullPeriods,
+                            dateDemande: parseDateStr(abs.dateDemande).getTime(),
+                        };
+                    });
+
                     setPendingAbsences(mappedPending);
                 })
                 .catch((err) => console.error("Erreur fetch pending absences:", err));
@@ -85,27 +138,43 @@ function StudentHomePage() {
 
     const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : archivedAbsences;
 
-    // Groupement par date
-    const absencesByDate = currentAbsences.reduce((acc, abs) => {
+    // add info in date
+    const enrichedAbsences = currentAbsences.map((abs) => {
         const startDate = parseTimestamp(abs.start);
         const endDate = parseTimestamp(abs.end);
+        const dateLabel = format(startDate, "EEEE dd MMMM", { locale: fr }).toUpperCase();
 
-        const dateKey = format(startDate, "EEEE dd MMMM", { locale: fr }).toUpperCase();
-
-        if (!acc[dateKey]) {
-            acc[dateKey] = [];
-        }
-
-        acc[dateKey].push({
+        return {
             ...abs,
             startDateObj: startDate,
             endDateObj: endDate,
             formattedStartTime: format(startDate, "HH:mm"),
             formattedEndTime: format(endDate, "HH:mm"),
-        });
+            dateLabel,
+        };
+    });
 
-        return acc;
-    }, {});
+    // sort decroissant
+    enrichedAbsences.sort((a, b) => b.startDateObj - a.startDateObj);
+
+    // group by date
+    const groupedAbsences = [];
+    enrichedAbsences.forEach((abs) => {
+        const lastGroup = groupedAbsences[groupedAbsences.length - 1];
+        if (lastGroup && lastGroup.dateLabel === abs.dateLabel) {
+            lastGroup.items.push(abs);
+        } else {
+            groupedAbsences.push({
+                dateLabel: abs.dateLabel,
+                items: [abs],
+            });
+        }
+    });
+
+    // sort croissant hours
+    groupedAbsences.forEach((group) => {
+        group.items.sort((a, b) => a.startDateObj - b.startDateObj);
+    });
 
     const handleJustifySelectioned = (selectedIds) => {
         const selectedPeriods = absences
@@ -160,15 +229,16 @@ function StudentHomePage() {
             <DashboardTabs activeTab={activeTab} setActiveTab={setActiveTab} counts={counts} />
 
             <div className="dashboard-content">
-                {Object.entries(absencesByDate).map(([dateLabel, absenceList]) => (
-                    <div key={dateLabel} className="absences-list">
+                {groupedAbsences.map((group) => (
+                    <div key={group.dateLabel} className="absences-list">
                         <div className="absences-date-header">
-                            <h4 className="absences-list-header">{dateLabel}</h4>
+                            <h4 className="absences-list-header">{group.dateLabel}</h4>
                             <div className="date-divider-line"></div>
                         </div>
-                        {absenceList.map((absence) => (
+                        {group.items.map((absence) => (
                             <AbsenceCard
                                 key={absence.id}
+                                id={absence.id}
                                 subject={absence.subject}
                                 startTime={absence.formattedStartTime}
                                 endTime={absence.formattedEndTime}
@@ -179,6 +249,9 @@ function StudentHomePage() {
                                 status={absence.status}
                                 reason={absence.reason}
                                 adminComment={absence.adminComment}
+                                justificationId={absence.justificationId}
+                                fullPeriodGroup={absence.fullPeriodGroup}
+                                dateDemande={absence.dateDemande}
                             />
                         ))}
                     </div>

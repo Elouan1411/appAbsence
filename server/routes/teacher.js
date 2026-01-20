@@ -2,7 +2,7 @@ const express = require("express");
 const { verifyToken, isAdmin, isAdminOrTeacher } = require("../middlewares/auth");
 const db = require("../database/db");
 const router = express.Router();
-const { importExcelInDB } = require("../utils/student");
+const { importTeachersInDB } = require("../utils/teacher");
 const formidable = require("formidable");
 const path = require("path");
 const fs = require("fs");
@@ -16,6 +16,17 @@ router.get("/allLoginENT", verifyToken, isAdmin, (req, res) => {
             return res.status(500).json({ error: "Erreur de récupération ID" });
         }
         return res.status(200).json(data);
+    });
+});
+
+router.get("/all", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT * FROM Professeur";
+
+    db.all(sql, (err, rows) => {
+        if (err) {
+            return res.status(401).json({ error: "Erreur de récupération professeurs" });
+        }
+        return res.status(200).json(rows);
     });
 });
 
@@ -54,7 +65,6 @@ router.post("/add", verifyToken, isAdmin, (req, res) => {
         }
     });
 });
-
 router.post("/teacherList", verifyToken, isAdmin, (req, res) => {
     const form = new formidable.IncomingForm();
 
@@ -70,53 +80,16 @@ router.post("/teacherList", verifyToken, isAdmin, (req, res) => {
             return res.status(400).json({ error: "Aucun fichier reçu." });
         }
 
-        try {
-            const workbook = new exceljs.Workbook();
-            await workbook.xlsx.readFile(uploadedFile.filepath);
-            const worksheet = workbook.getWorksheet(1);
-            const dbPromises = [];
-            worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber === 1) return;
-                const loginENT = row.getCell(1).text;
-                const nom = row.getCell(2).text;
-                const prenom = row.getCell(3).text;
+        const result = await importTeachersInDB(uploadedFile.filepath);
 
-                if (!loginENT || !nom) return;
+        fs.unlink(uploadedFile.filepath, (unlinkErr) => {
+            if (unlinkErr) console.error("Erreur suppression temp:", unlinkErr);
+        });
 
-                const p = new Promise((resolve, reject) => {
-                    const sqlCheck = `SELECT count(*) as count FROM Professeur WHERE loginENT = ?`;
-
-                    db.get(sqlCheck, [loginENT], (err, row) => {
-                        if (err) return reject(err);
-
-                        if (row.count > 0) {
-                            const sqlUpdate = `UPDATE Professeur SET nom = ?, prenom = ? WHERE loginENT = ?`;
-                            db.run(sqlUpdate, [nom, prenom, loginENT], function (err) {
-                                if (err) reject(err);
-                                else resolve("updated");
-                            });
-                        } else {
-                            const sqlInsert = `INSERT INTO Professeur (loginENT, nom, prenom) VALUES(?, ?, ?)`;
-                            db.run(sqlInsert, [loginENT, nom, prenom], function (err) {
-                                if (err) reject(err);
-                                else resolve("inserted");
-                            });
-                        }
-                    });
-                });
-
-                dbPromises.push(p);
-            });
-            await Promise.all(dbPromises);
-
-            fs.unlink(uploadedFile.filepath, (err) => {
-                if (err) console.error("Erreur suppression fichier temp:", err);
-            });
-
-            res.status(200).json({ message: "Importation des enseignants terminée avec succès." });
-        } catch (error) {
-            console.error("Erreur traitement Excel:", error);
-            res.status(500).json({ error: "Erreur lors du traitement du fichier Excel." });
+        if (result.success) {
+            res.status(200).json({ message: result.message });
+        } else {
+            res.status(500).json({ error: result.message });
         }
     });
 });

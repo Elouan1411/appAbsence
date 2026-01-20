@@ -2,13 +2,15 @@ import AdminHomePage from "./pages/Admin/AdminHomePage";
 import TeacherHomePage from "./pages/Teacher/TeacherHomePage";
 import StudentHomePage from "./pages/Student/StudentHomePage";
 import StudentJustificationPage from "./pages/Student/StudentJustificationPage";
-import ShowStudentPage from "./pages/Admin/ShowStudentPage";
+import StudentAbsenceDetailsPage from "./pages/Student/StudentAbsenceDetailsPage";
+import ShowListsPage from "./pages/Admin/ShowListsPage";
 import RollCallPage from "./pages/Teacher/RollCallPage";
 import TeacherHistoryPage from "./pages/Teacher/TeacherHistoryPage";
 import TeacherAbsencePage from "./pages/Teacher/TeacherAbsencePage";
 import AddingPage from "./pages/Admin/AddingPage";
 import StudentDetailPage from "./pages/Admin/StudentDetailPage";
-//bfuiegz
+import React from "react";
+
 export const routesConfig = [
     {
         path: "/admin",
@@ -17,7 +19,7 @@ export const routesConfig = [
         children: [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
             { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
-            { path: "studentlist", label: "Liste des étudiants", element: <ShowStudentPage />, icon: "icon-student-list" },
+            { path: "lists", label: "Listes", element: <ShowListsPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
         ],
@@ -38,6 +40,7 @@ export const routesConfig = [
         children: [
             { index: true, label: "Mon Espace", element: <StudentHomePage />, icon: "icon-home" },
             { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
+            { path: "absence/:id", label: "Détail Absence", element: <StudentAbsenceDetailsPage />, icon: "icon-justification-student" },
         ],
     },
 ];

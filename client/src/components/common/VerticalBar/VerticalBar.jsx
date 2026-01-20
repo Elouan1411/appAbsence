@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { routesConfig } from "../../../routes.config";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import "../../../style/VerticalBar.css";
 import getIconClass from "../../../functions/getIconClass";
 import NavItem from "./NavItem";
@@ -11,6 +11,7 @@ import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 function VerticalBar({ notificationCount = 0 }) {
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const hasUnsavedImport = false;
 
     const safeNavigate = useSafeNavigate(hasUnsavedImport);
@@ -47,6 +48,11 @@ function VerticalBar({ notificationCount = 0 }) {
             <div className="nav-container">
                 <ul className="nav-list">
                     {menuLinks.map((link, index) => {
+                        if (link.path === "absence/:id") {
+                            if (!location.pathname.includes("/absence/")) return null;
+                            return <NavItem key={index} link={link} index={index} to={location.pathname} isMenuOpen={isMenuOpen} />;
+                        }
+
                         if (!link.path?.includes("studentdetail")) {
                             const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 

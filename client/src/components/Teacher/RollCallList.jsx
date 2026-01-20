@@ -3,7 +3,7 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
-import RseCell from "../StudentList/RseCell";
+import RseCell from "../Lists/StudentList/RseCell";
 import "../../style/SelectGroups.css";
 import "../../style/icon.css";
 import { useTheme } from "../../hooks/useTheme";
@@ -126,7 +126,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             sortable: true,
             resizable: true,
         }),
-        []
+        [],
     );
 
     useEffect(() => {

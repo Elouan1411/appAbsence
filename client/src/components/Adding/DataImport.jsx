@@ -42,8 +42,6 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
             setRowData([]);
         }
     };
-
-    // Définition des labels et classes dynamiques
     const entityLabel = type === "student" ? "étudiant" : "professeur";
     const containerClass = type === "student" ? "adding-student-container" : "add-teacher-container";
     const contentClass = type === "student" ? "content-container" : "add-teacher-content"; // Assure-toi que ces classes existent dans ton CSS
@@ -133,22 +131,14 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
     };
 
     const handleCellValueChanged = async (params) => {
-        setHasDuplicate(false);
-        setHasErrors(false);
         const updatedData = params.data;
 
         const errors = type === "student" ? validateStudentData(updatedData) : validateTeacherData(updatedData);
         updatedData._errors = errors;
 
-        if (Object.keys(updatedData._errors).length > 0) {
-            setHasErrors(true);
-        }
-
         try {
             const isDuplicate = type === "student" ? await calculateStudentDuplicateRow(updatedData) : await calculateTeacherDuplicateRow(updatedData);
-            if (isDuplicate) {
-                setHasDuplicate(true);
-            }
+
             updatedData._isDuplicate = isDuplicate;
         } catch (error) {
             console.error("Erreur lors de la vérification du doublon", error);
@@ -158,6 +148,21 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
             rowNodes: [params.node],
             force: true,
         });
+
+        let globalHasError = false;
+        let globalHasDuplicate = false;
+
+        params.api.forEachNode((node) => {
+            if (node.data._errors && Object.keys(node.data._errors).length > 0) {
+                globalHasError = true;
+            }
+            if (node.data._isDuplicate) {
+                globalHasDuplicate = true;
+            }
+        });
+
+        setHasErrors(globalHasError);
+        setHasDuplicate(globalHasDuplicate);
     };
 
     const handleSaveAndSend = async () => {
@@ -195,7 +200,6 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
 
         for (const row of modifiedRows) {
             const length = type === "student" ? Object.keys(validateStudentData(row)).length : Object.keys(validateTeacherData(row)).length;
-            // Correction ici: Ajout du await manquant pour le prof
             const duplicate = type === "student" ? await calculateStudentDuplicateRow(row) : await calculateTeacherDuplicateRow(row);
 
             if (length > 0) hasErrors = true;
@@ -247,8 +251,11 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                     body: formData,
                 });
 
+                console.log(response);
                 if (response.ok) {
                     toast.success("Données envoyées avec succès.");
+                    setHasUnsavedImport(false);
+                    setRowData([]);
                 } else {
                     toast.error("Une erreur est survenue.");
                 }
