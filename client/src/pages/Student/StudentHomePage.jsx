@@ -77,8 +77,12 @@ function StudentHomePage() {
                         const d = parseInt(s.substring(6, 8));
                         const h = parseInt(s.substring(8, 10));
                         const min = parseInt(s.substring(10, 12));
+                        let sec = 0;
+                        if (s.length >= 14) {
+                            sec = parseInt(s.substring(12, 14));
+                        }
 
-                        return new Date(y, m, d, h, min);
+                        return new Date(y, m, d, h, min, sec);
                     };
 
                     const mappedPending = data.map((abs) => {
@@ -103,6 +107,7 @@ function StudentHomePage() {
                             reason: abs.motif,
                             justificationId: group.minId, // use min id for find file
                             fullPeriodGroup: fullPeriods,
+                            dateDemande: parseDateStr(abs.dateDemande).getTime(),
                         };
                     });
 
@@ -133,27 +138,43 @@ function StudentHomePage() {
 
     const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : archivedAbsences;
 
-    // Groupement par date
-    const absencesByDate = currentAbsences.reduce((acc, abs) => {
+    // add info in date
+    const enrichedAbsences = currentAbsences.map((abs) => {
         const startDate = parseTimestamp(abs.start);
         const endDate = parseTimestamp(abs.end);
+        const dateLabel = format(startDate, "EEEE dd MMMM", { locale: fr }).toUpperCase();
 
-        const dateKey = format(startDate, "EEEE dd MMMM", { locale: fr }).toUpperCase();
-
-        if (!acc[dateKey]) {
-            acc[dateKey] = [];
-        }
-
-        acc[dateKey].push({
+        return {
             ...abs,
             startDateObj: startDate,
             endDateObj: endDate,
             formattedStartTime: format(startDate, "HH:mm"),
             formattedEndTime: format(endDate, "HH:mm"),
-        });
+            dateLabel,
+        };
+    });
 
-        return acc;
-    }, {});
+    // sort decroissant
+    enrichedAbsences.sort((a, b) => b.startDateObj - a.startDateObj);
+
+    // group by date
+    const groupedAbsences = [];
+    enrichedAbsences.forEach((abs) => {
+        const lastGroup = groupedAbsences[groupedAbsences.length - 1];
+        if (lastGroup && lastGroup.dateLabel === abs.dateLabel) {
+            lastGroup.items.push(abs);
+        } else {
+            groupedAbsences.push({
+                dateLabel: abs.dateLabel,
+                items: [abs],
+            });
+        }
+    });
+
+    // sort croissant hours
+    groupedAbsences.forEach((group) => {
+        group.items.sort((a, b) => a.startDateObj - b.startDateObj);
+    });
 
     const handleJustifySelectioned = (selectedIds) => {
         const selectedPeriods = absences
@@ -208,13 +229,13 @@ function StudentHomePage() {
             <DashboardTabs activeTab={activeTab} setActiveTab={setActiveTab} counts={counts} />
 
             <div className="dashboard-content">
-                {Object.entries(absencesByDate).map(([dateLabel, absenceList]) => (
-                    <div key={dateLabel} className="absences-list">
+                {groupedAbsences.map((group) => (
+                    <div key={group.dateLabel} className="absences-list">
                         <div className="absences-date-header">
-                            <h4 className="absences-list-header">{dateLabel}</h4>
+                            <h4 className="absences-list-header">{group.dateLabel}</h4>
                             <div className="date-divider-line"></div>
                         </div>
-                        {absenceList.map((absence) => (
+                        {group.items.map((absence) => (
                             <AbsenceCard
                                 key={absence.id}
                                 id={absence.id}
@@ -230,6 +251,7 @@ function StudentHomePage() {
                                 adminComment={absence.adminComment}
                                 justificationId={absence.justificationId}
                                 fullPeriodGroup={absence.fullPeriodGroup}
+                                dateDemande={absence.dateDemande}
                             />
                         ))}
                     </div>
