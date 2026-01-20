@@ -16,6 +16,11 @@
 }
 
 .subtitle-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
     width: 100%;
 }
 .personal-info-subcontainer .info-item {
@@ -195,4 +200,45 @@ h3 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.tab-count {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.absence-count-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-button {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.icon-button:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.icon-button .icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--text-primary);
+    transition: background-color 0.2s;
+}
+
+.icon-button:hover .icon {
+    background-color: var(--primary-color);
 }
