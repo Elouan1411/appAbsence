@@ -5,6 +5,8 @@ const formidable = require("formidable");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 const heicConvert = require("heic-convert");
+const { verifyToken } = require("../middlewares/auth");
+const db = require("../database/db");
 
 /*****************************************
  *            Méthodes POST
@@ -134,6 +136,62 @@ router.post("/upload", (req, res) => {
             return res.status(500).json({ error: "Error processing file" });
         }
     });
+});
+
+/*****************************************
+ *           Méthodes DELETE
+ *****************************************/
+
+router.delete("/:name", verifyToken, (req, res) => {
+    const filename = req.params.name;
+    const uploadDir = path.join(__dirname, "../upload/justification");
+    const filepath = path.join(uploadDir, filename);
+
+    // Basic security
+    if (filename.includes("..") || filename.includes("/")) {
+        return res.status(400).json({ error: "Invalid filename" });
+    }
+
+    const parts = filename.split("-");
+    const justificationId = parts[0];
+    // filename format: id-docN-timestamp
+
+    if (!justificationId) {
+        return res.status(400).json({ error: "Invalid filename format" });
+    }
+
+    const userLogin = req.user.pwd.split("-")[0];
+    const userRole = req.user.pwd.split("-")[1];
+
+    const proceedToDelete = () => {
+        if (fs.existsSync(filepath)) {
+            try {
+                fs.unlinkSync(filepath);
+                res.status(200).json({ message: "File deleted" });
+            } catch (e) {
+                console.error("Error deleting file:", e);
+                res.status(500).json({ error: "Error deleting file" });
+            }
+        } else {
+            res.status(200).json({ message: "File not found but considered deleted" });
+        }
+    };
+
+    if (userRole === "admin") {
+        proceedToDelete();
+    } else {
+        // Check ownership
+        db.get("SELECT login FROM JustificationAbsence WHERE idAbsJustifiee = ?", [justificationId], (err, row) => {
+            if (err) return res.status(500).json({ error: "Database error" });
+            if (!row) return res.status(404).json({ error: "Justification not found" });
+
+            if (row.login === userLogin) {
+                proceedToDelete();
+            } else {
+                res.status(403).json({ error: "Unauthorized to delete this file" });
+            }
+        });
+    }
 });
 
 module.exports = router;

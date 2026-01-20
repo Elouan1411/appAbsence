@@ -20,6 +20,7 @@ const AbsenceCard = ({
     reason,
     adminComment,
     justificationId,
+    dateDemande,
 }) => {
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
@@ -39,6 +40,7 @@ const AbsenceCard = ({
                 reason: reason,
                 adminComment: adminComment,
                 justificationId: justificationId,
+                dateDemande: dateDemande,
             },
         });
     };
@@ -97,7 +99,7 @@ const AbsenceCard = ({
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    <Eye className="icon-eye details-icon" onClick={handleDetails} title="Voir les détails" />
+                    <Eye className="icon-eye details-icon" onClick={handleDetails} />
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}

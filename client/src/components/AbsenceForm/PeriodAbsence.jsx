@@ -27,7 +27,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
         const end = new Date(baseDate);
         end.setHours(18, 0, 0, 0);
 
-        setPeriod([...period, { id: Date.now(), start, end }]);
+        setPeriod([...period, { id: Date.now(), start, end, isNew: true }]);
     };
 
     const removePeriod = (id) => {
@@ -50,7 +50,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                 }
 
                 return { ...p, start: newStart, end: newEnd };
-            })
+            }),
         );
     };
 
@@ -70,7 +70,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                 }
 
                 return { ...p, start: newStart, end: newEnd };
-            })
+            }),
         );
     };
 

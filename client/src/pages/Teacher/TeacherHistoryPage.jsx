@@ -179,6 +179,7 @@ function TeacherHistoryPage() {
                     paginationPageSize={100}
                     onRowClicked={handleRowClick}
                     rowStyle={{ cursor: "pointer" }}
+                    domLayout="autoHeight"
                 />
             </div>
         </div>

@@ -431,6 +431,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                         pagination={true}
                         paginationPageSize={100}
                         localeText={AG_GRID_LOCALE_FR}
+                        domLayout="autoHeight"
                     />
                 </div>
             )}
