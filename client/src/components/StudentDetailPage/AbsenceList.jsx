@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import AbsenceCard from "./AbsenceCard";
 import dateFormatter from "../../functions/dateFormatter";
 
 function AbsenceList({ setLoading, userId, setAbsences, absences }) {
+    const [toUpdate, setToUpdate] = useState(false);
     const handleFetchAbsences = async () => {
         try {
             setLoading(true);
@@ -27,9 +28,18 @@ function AbsenceList({ setLoading, userId, setAbsences, absences }) {
         handleFetchAbsences();
     }, []);
 
+    useEffect(() => {
+        if (toUpdate) {
+            handleFetchAbsences();
+            setToUpdate(false);
+        }
+    }, [toUpdate]);
+
     return (
         <div className="absence-list-container">
-            <h2>Liste d'absences</h2>
+            <div className="subtitle-container">
+                <h2>Liste d'absences</h2>
+            </div>
             <div className="absence-list-subcontainer">
                 {Object.values(absences).length > 0 ? (
                     Object.values(absences).map((absence, index) => (
@@ -42,6 +52,8 @@ function AbsenceList({ setLoading, userId, setAbsences, absences }) {
                             nom={absence.nom}
                             prenom={absence.prenom}
                             courseType={absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"}
+                            idAbsence={absence.idAbsence}
+                            setToUpdate={setToUpdate}
                         />
                     ))
                 ) : (

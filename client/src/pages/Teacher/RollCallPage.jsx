@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../style/Teacher.css";
 import RollCallList from "../../components/Teacher/RollCallList";
 import SelectGroup from "../../components/Teacher/SelectGroup";
@@ -7,12 +7,29 @@ import SelectSubject from "../../components/Teacher/SelectSubject";
 import PageTitle from "../../components/common/PageTitle";
 import { useAuth } from "../../hooks/useAuth";
 import InputField from "../../components/common/InputField";
+import { useLocation } from "react-router-dom";
 
 function RollCallPage() {
     const [selection, setSelection] = useState(null);
     const [dateTime, setDateTime] = useState({ date: "", startTime: "", endTime: "" });
     const [subject, setSubject] = useState("");
     const [loginENT, setLoginENT] = useState("");
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state && location.state.shortcut) {
+            const sc = location.state.shortcut;
+            setSelection({
+                promo: sc.promo,
+                groupeTD: sc.groupeTD,
+                groupeTP: sc.groupeTP,
+                semestre: "1"
+            });
+            setSubject(sc.codeMatiere);
+            setDateTime({ date: "", startTime: "", endTime: "" });
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     const { role } = useAuth();
 
@@ -37,7 +54,7 @@ function RollCallPage() {
             )}
 
             <div className="select-container">
-                <SelectGroup key={resetKey} onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} />
+                <SelectGroup key={resetKey} onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} initialSelection={selection} />
 
                 <SelectTime onChange={setDateTime} value={dateTime} className="select-item" />
 

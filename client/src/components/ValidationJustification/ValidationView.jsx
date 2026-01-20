@@ -89,6 +89,12 @@ export default function ValidationView({ selectedItem, reload }) {
         handleLoadDocuments();
     }, [selectedItem]);
 
+    useEffect(() => {
+        if (documents.length == 0) {
+            setPdfOpen(false);
+        }
+    }, [documents]);
+
     const file = documents.length > 0 ? documents[docIndex] : null;
 
     return (

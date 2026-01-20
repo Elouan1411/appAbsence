@@ -55,7 +55,9 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
 
     return (
         <div className="personal-info-container">
-            <h2>Informations générales</h2>
+            <div className="subtitle-container">
+                <h2>Informations générales</h2>
+            </div>
 
             <div className="personal-info-subcontainer">
                 <div className="info-grid-container">

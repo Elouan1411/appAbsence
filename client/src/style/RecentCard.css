@@ -1,0 +1,77 @@
+.recent-card {
+    background: var(--card-bg, white);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    border: 1px solid var(--border-color, transparent);
+    color: var(--text-primary, #333);
+}
+
+.recent-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color, #e0e0e0);
+}
+
+.recent-card-info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+    color: var(--text-primary, #333);
+}
+
+.recent-card-info-row span {
+    font-weight: 500;
+}
+
+.recent-card .icon-promo {
+    background-color: var(--primary-color, #1976D2); 
+}
+
+.recent-card .icon-group {
+    background-color: #388E3C;
+}
+
+.recent-card .icon-subject {
+    background-color: #7B1FA2;
+}
+
+.recent-card-divider {
+    height: 1px;
+    background-color: var(--border-color, #f0f0f0);
+    margin: 0.5rem 0;
+}
+
+.recent-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.recent-card-date {
+    color: var(--text-secondary, #888);
+}
+
+.recent-card-action {
+    color: var(--primary-color, #2962FF);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.recent-card-action:hover {
+    text-decoration: underline;
+}

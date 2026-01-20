@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 
-function SelectSubject({ onSelect, promo, pair, style }) {
+function SelectSubject({ onSelect, promo, pair, style, value }) {
     const [subjects, setSubjects] = useState([]);
-    const [selectedSubject, setSelectedSubject] = useState("");
+    const [selectedSubject, setSelectedSubject] = useState(value || "");
+
+    useEffect(() => {
+        if (value !== undefined) {
+             setSelectedSubject(value);
+        }
+    }, [value]);
 
     useEffect(() => {
         async function fetchSubjects() {

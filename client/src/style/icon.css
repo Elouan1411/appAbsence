@@ -38,6 +38,21 @@
     -webkit-mask-image: url(../assets/previous.svg);
 }
 
+.icon-promo {
+    mask-image: url(../assets/student_list.svg);
+    -webkit-mask-image: url(../assets/student_list.svg);
+}
+
+.icon-group {
+    mask-image: url(../assets/add-group.svg);
+    -webkit-mask-image: url(../assets/add-group.svg);
+}
+
+.icon-subject {
+    mask-image: url(../assets/file_document.svg);
+    -webkit-mask-image: url(../assets/file_document.svg);
+}
+
 .icon-triple-dot {
     mask-image: url(../assets/triple-dot.svg);
     -webkit-mask-image: url(../assets/triple-dot.svg);
