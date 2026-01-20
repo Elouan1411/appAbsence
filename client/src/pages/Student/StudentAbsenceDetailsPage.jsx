@@ -25,7 +25,7 @@ const StudentAbsenceDetailsPage = () => {
 
     const { submit, isSubmitting } = useJustificationSubmit();
 
-    const isEditable = true;
+    const [isEditable, setIsEditable] = useState(true);
 
     useEffect(() => {
         const loadFiles = async (justifId) => {
@@ -82,8 +82,8 @@ const StudentAbsenceDetailsPage = () => {
             if (location.state.reason) {
                 const fullReason = location.state.reason;
                 const [parsedReason, parsedComment] = (fullReason || "").split(" | ");
-                const r = parsedReason || "autre";
-                const c = parsedComment || parsedReason || "";
+                const r = parsedReason;
+                const c = parsedComment || "";
                 setReason(r);
                 setComment(c);
                 validateReason(r, c);
