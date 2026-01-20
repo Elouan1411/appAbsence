@@ -6,6 +6,7 @@ import RecentCard from "../../components/Teacher/RecentCard";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import "../../style/Teacher.css";
 
 function TeacherHomePage() {
     const { logout, user } = useAuth();
@@ -53,9 +54,9 @@ function TeacherHomePage() {
         <div className="page-container">
             <PageTitle title="Page d'accueil enseignant" icon="icon-home" />
 
-            <div style={{ marginTop: "2rem" }}>
-                <h3 style={{ marginBottom: "1rem", color: "var(--text-primary)" }}>Reprendre un cours récent</h3>
-                <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: recentCourses.length > 4 ? "space-between" : "flex-start" }}>
+            <div className="recent-section">
+                <h3 className="recent-title">Reprendre un cours récent</h3>
+                <div className="recent-grid">
                     {recentCourses.map((course, index) => (
                         <RecentCard
                             key={index}
@@ -71,8 +72,7 @@ function TeacherHomePage() {
                             onClick={() => handleCardClick(course)}
                         />
                     ))}
-                    {recentCourses.length > 4 && Array.from({ length: 4 }).map((_, i) => <div key={`spacer-${i}`} style={{ width: "334px" }} />)}
-                    {recentCourses.length === 0 && <p style={{ color: "var(--text-secondary)" }}>Aucun cours récent trouvé.</p>}
+                    {recentCourses.length === 0 && <p className="empty-message">Aucun cours récent trouvé.</p>}
                 </div>
             </div>
         </div>

@@ -65,20 +65,6 @@ function VerticalBar({ notificationCount = 0 }) {
                     <ul className="nav-list">
                         <li className="nav-item">
                             <Link
-                                to="/notifications"
-                                className="nav-link"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    safeNavigate("/notifications");
-                                }}
-                            >
-                                <span className="icon icon-notification"></span>
-                                <span className="label">Notifications</span>
-                                {isMenuOpen && notificationCount > 0 && <span className="badge">{notificationCount}</span>}
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link
                                 to="/settings"
                                 className="nav-link"
                                 onClick={(e) => {
