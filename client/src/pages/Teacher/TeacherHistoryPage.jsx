@@ -13,7 +13,9 @@ import RollCallList from "../../components/Teacher/RollCallList";
 import BackButton from "../../components/common/BackButton";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import SearchInput from "../../components/common/SearchInput";
 import "../../style/icon.css";
+import "../../style/searchAgGrid.css";
 import "../../style/StudentDetail.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -22,6 +24,8 @@ function TeacherHistoryPage() {
     const { user } = useAuth();
     const [rowData, setRowData] = useState([]);
     const [selectedCall, setSelectedCall] = useState(null);
+    const [quickFilterText, setQuickFilterText] = useState("");
+    const [isSearchActive, setIsSearchActive] = useState(false);
     const theme = useTheme();
 
     const fetchHistory = async () => {
@@ -178,8 +182,9 @@ function TeacherHistoryPage() {
             resizable: true,
             sortable: true,
             filter: true,
+            floatingFilter: isSearchActive,
         }),
-        []
+        [isSearchActive]
     );
 
     const getParsedDateTime = (callData) => {
@@ -231,9 +236,35 @@ function TeacherHistoryPage() {
         }
     };
 
+    const toggleSearch = () => {
+        if (isSearchActive) {
+            setQuickFilterText("");
+        }
+        setIsSearchActive(!isSearchActive);
+    };
+
     return (
         <div className="page-container">
-            <PageTitle title="Historique des Appels" icon="icon-history" />
+            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <PageTitle title="Historique des Appels" icon="icon-history" />
+            </div>
+            <div className="search-wrapper-right">
+                {isSearchActive ? (
+                    <SearchInput 
+                        value={quickFilterText} 
+                        onChange={(e) => setQuickFilterText(e.target.value)} 
+                        placeholder="Rechercher dans l'historique..."
+                        onIconClick={toggleSearch}
+                    />
+                ) : (
+                    <button 
+                        onClick={toggleSearch}
+                        className="search-toggle-button"
+                    >
+                        <span className="icon icon-search search-icon-sized" />
+                    </button>
+                )}
+            </div>
             <div className="grid-container">
                 <AgGridReact
                     rowData={rowData}
@@ -246,6 +277,7 @@ function TeacherHistoryPage() {
                     rowStyle={{ cursor: "pointer" }}
                     domLayout="autoHeight"
                     onSortChanged={onSortChanged}
+                    quickFilterText={quickFilterText}
                 />
             </div>
         </div>
