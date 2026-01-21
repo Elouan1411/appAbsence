@@ -111,7 +111,7 @@ const AbsenceCard = ({
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    <Eye className="icon-eye details-icon" onClick={handleDetails} />
+                    {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />}
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}
