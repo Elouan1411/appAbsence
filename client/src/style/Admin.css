@@ -1000,3 +1000,29 @@ p {
     transform: scale(1.2);
     transition: 0.5s ease-in-out;
 }
+
+.dashboard-tabs.scrollable-tabs {
+    display: flex;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100%;
+    padding: 10px 5px;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+}
+
+.dashboard-tabs.scrollable-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.dashboard-tabs.scrollable-tabs .dashboard-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-width: fit-content;
+}
