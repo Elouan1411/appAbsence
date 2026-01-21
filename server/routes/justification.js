@@ -317,7 +317,7 @@ router.post("/", verifyToken, (req, res) => {
                 FROM JustificationAbsence 
                 WHERE numeroEtudiant = ? 
                 AND validite = 2 
-                AND (debut <= ? AND fin >= ?)
+                AND (debut < ? AND fin > ?)
             `;
 
             // On regarde si ya deja des justifications refusées sur cette periode
@@ -326,7 +326,7 @@ router.post("/", verifyToken, (req, res) => {
                 FROM JustificationAbsence 
                 WHERE numeroEtudiant = ? 
                 AND validite = 3 
-                AND (debut <= ? AND fin >= ?)
+                AND (debut < ? AND fin > ?)
             `;
 
             const insertNewJustification = () => {
