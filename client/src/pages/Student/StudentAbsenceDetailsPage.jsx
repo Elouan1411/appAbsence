@@ -44,12 +44,26 @@ const StudentAbsenceDetailsPage = () => {
 
                 if (data.list && Array.isArray(data.list) && data.list.length > 0) {
                     const filePromises = data.list.map(async (filename) => {
+                        // Récupere les fichiers avec les "beaux" noms mais en gardant les noms originaux pour la supression
                         try {
-                            const fileRes = await fetch(`http://localhost:3000/upload/justification/${filename}`);
+                            const fileRes = await fetch(`http://localhost:3000/justification/download/${filename}`, {
+                                credentials: "include",
+                            });
                             if (!fileRes.ok) return null;
                             const blob = await fileRes.blob();
-                            const file = new File([blob], filename, { type: blob.type });
+
+                            const contentDisposition = fileRes.headers.get("Content-Disposition");
+                            let prettyName = filename;
+                            if (contentDisposition) {
+                                const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                                if (filenameMatch && filenameMatch.length > 1) {
+                                    prettyName = filenameMatch[1];
+                                }
+                            }
+
+                            const file = new File([blob], prettyName, { type: blob.type });
                             file.isExisting = true;
+                            file.originalName = filename;
                             return file;
                         } catch (e) {
                             return null;

@@ -88,7 +88,7 @@ export const useJustificationSubmit = () => {
             // File Uploads
             // Only upload files that are not marked as existing
             if (files.length > 0 && targetId) {
-                const cleanId = String(targetId).replace(/^J-/, "");
+                const cleanId = String(targetId).replace(/^J-|^A-/, "");
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -113,7 +113,8 @@ export const useJustificationSubmit = () => {
             // File Deletion
             if (removedFiles.length > 0) {
                 for (const file of removedFiles) {
-                    const filename = file.name;
+                    // Use originalName if available (for renamed files), otherwise name
+                    const filename = file.originalName || file.name;
 
                     const response = await fetch(`http://localhost:3000/file/${filename}`, {
                         method: "DELETE",

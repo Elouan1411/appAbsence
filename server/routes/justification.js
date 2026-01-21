@@ -3,6 +3,7 @@ const { verifyToken, isAdmin, isOwner, isAdminOrOwner } = require("../middleware
 const router = express.Router();
 const db = require("../database/db");
 const fs = require("fs");
+const path = require("path");
 const { validateJustificationInput } = require("../utils/justificationSecurity");
 
 /*****************************************
@@ -78,6 +79,72 @@ router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
                 return fileId == ID || file === `${ID}.pdf`;
             });
             res.status(200).json(result);
+        }
+    });
+});
+
+// Téléchargement d'un justificatif avec renommage pour l'étudiant
+router.get("/download/:filename", verifyToken, (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, "../upload/justification", filename);
+
+    // Basic security
+    if (filename.includes("..") || filename.includes("/")) {
+        return res.status(400).send("Invalid filename");
+    }
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send("File not found");
+    }
+
+    // Extract parts from id-docX-date.pdf
+    const parts = filename.split("-");
+    const justificationId = parts[0];
+
+    if (!justificationId) {
+        return res.status(400).send("Invalid file format");
+    }
+
+    const userLogin = req.user.pwd.split("-")[0];
+    const userRole = req.user.pwd.split("-")[1];
+
+    // Check ownership
+    const sql = "SELECT login FROM JustificationAbsence WHERE idAbsJustifiee = ?";
+    db.get(sql, [justificationId], (err, row) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Server error");
+        }
+
+        if (!row) {
+            return res.status(404).send("Justification not found");
+        }
+
+        // Allow if admin or if the user is the owner
+        if (userRole === "admin" || row.login === userLogin) {
+            let downloadName = filename;
+
+            if (parts.length >= 2 && parts[1].startsWith("doc")) {
+                const docPart = parts[1];
+                const docIndex = parseInt(docPart.replace("doc", ""), 10);
+
+                if (!isNaN(docIndex)) {
+                    const ext = path.extname(filename);
+                    downloadName = `Justificatif ${docIndex}${ext}`;
+                }
+            }
+
+            res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+            res.download(filePath, downloadName, (err) => {
+                if (err) {
+                    console.error("Error downloading file:", err);
+                    if (!res.headersSent) {
+                        res.status(500).send("Error downloading file");
+                    }
+                }
+            });
+        } else {
+            return res.status(403).send("Unauthorized access to this file");
         }
     });
 });
