@@ -411,16 +411,59 @@ router.put("/:id", verifyToken, (req, res) => {
  *           Méthodes DELETE
  *****************************************/
 //Suppression justification
-router.delete("/:id", verifyToken, isAdminOrOwner, (req, res) => {
+router.delete("/:id", verifyToken, (req, res) => {
     let id = req.params.id;
-    let login = req.body.login;
+    const checkSql = `
+        SELECT JustificationAbsence.validite, Eleve.loginENT
+        FROM JustificationAbsence 
+        JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero 
+        WHERE JustificationAbsence.idAbsJustifiee = ?
+    `;
 
-    const sql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
+    db.get(checkSql, [id], (err, row) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json(err.message);
+        }
+        if (!row) return res.status(404).json("Justification non trouvée");
 
-    db.run(sql, [id], (err) => {
-        if (err) return console.error(err.message);
+        const userRole = req.user.pwd.split("-")[1];
+        const userLogin = req.user.pwd.split("-")[0];
 
-        res.status(200).json("La justification a été supprimée avec succès.");
+        // Check ownership if not admin
+        if (userRole !== "admin" && row.loginENT !== userLogin) {
+            return res.status(403).json("Vous n'êtes pas autorisé à supprimer cette justification.");
+        }
+
+        // Check status (only for students)
+        if (userRole !== "admin" && row.validite !== 2) {
+            return res.status(403).json("Seules les justifications en attente peuvent être supprimées.");
+        }
+
+        // Delete associated files
+        const uploadDir = path.join(__dirname, "../upload/justification");
+        fs.readdir(uploadDir, (err, files) => {
+            if (!err) {
+                files.forEach((file) => {
+                    if (file.startsWith(`${id}-`)) {
+                        try {
+                            fs.unlinkSync(path.join(uploadDir, file));
+                        } catch (unlinkErr) {
+                            console.error(`Error deleting file ${file}:`, unlinkErr);
+                        }
+                    }
+                });
+            } else {
+                console.error("Error reading upload directory:", err);
+            }
+
+            // Delete from DB
+            const sql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
+            db.run(sql, [id], (err) => {
+                if (err) return console.error(err.message);
+                res.status(200).json("La justification a été supprimée avec succès.");
+            });
+        });
     });
 });
 

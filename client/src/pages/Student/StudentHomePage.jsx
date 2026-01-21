@@ -214,6 +214,35 @@ function StudentHomePage() {
         }
     };
 
+    const handleAbsenceDeleted = (justificationId) => {
+        //
+        setPendingAbsences((prev) => prev.filter((abs) => abs.justificationId !== justificationId));
+
+        // Re-fetch todo list to show the absences again as unjustified
+        if (user) {
+            fetch(`http://localhost:3000/absence/unjustified/:${user}`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => (res.ok ? res.json() : []))
+                .then((data) => {
+                    const mappedAbsences = data.map((abs) => ({
+                        id: abs.idAbsence,
+                        subject: abs.nomMatiere || abs.codeMatiere,
+                        start: String(abs.debut),
+                        end: String(abs.fin),
+                        status: "todo",
+                        adminComment: abs.motifValidite,
+                        reason: abs.motif,
+                        justificationId: abs.idAbsJustifiee,
+                        dateDemande: abs.dateDemande,
+                    }));
+                    setAbsences(mappedAbsences);
+                })
+                .catch((err) => console.error("Erreur fetch absences:", err));
+        }
+    };
+
     return (
         <div className="studentJustificationPage">
             <div className="dashboard-header">
@@ -255,6 +284,7 @@ function StudentHomePage() {
                                 justificationId={absence.justificationId}
                                 fullPeriodGroup={absence.fullPeriodGroup}
                                 dateDemande={absence.dateDemande}
+                                onDelete={handleAbsenceDeleted}
                             />
                         ))}
                     </div>
