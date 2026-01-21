@@ -28,6 +28,29 @@ function TeacherHistoryPage() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const theme = useTheme();
 
+    const parseDateValue = (value) => {
+        if (!value) return null;
+        const valueStr = String(value);
+
+        if (valueStr.length >= 12 && !valueStr.includes("-")) {
+            const year = parseInt(valueStr.substring(0, 4), 10);
+            const month = parseInt(valueStr.substring(4, 6), 10) - 1;
+            const day = parseInt(valueStr.substring(6, 8), 10);
+            const hour = parseInt(valueStr.substring(8, 10), 10);
+            const min = parseInt(valueStr.substring(10, 12), 10);
+            const date = new Date(year, month, day, hour, min);
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+        }
+
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+            return date;
+        }
+        return null;
+    };
+
     const fetchHistory = async () => {
         if (!user) return;
         try {
@@ -115,29 +138,35 @@ function TeacherHistoryPage() {
                 cellDataType: "dateTime",
                 valueFormatter: (params) => {
                     if (!params.value) return "";
-                    const valueStr = String(params.value);
-
-                    if (valueStr.length >= 12 && !valueStr.includes("-")) {
-                        const year = parseInt(valueStr.substring(0, 4), 10);
-                        const month = parseInt(valueStr.substring(4, 6), 10) - 1;
-                        const day = parseInt(valueStr.substring(6, 8), 10);
-                        const hour = parseInt(valueStr.substring(8, 10), 10);
-                        const min = parseInt(valueStr.substring(10, 12), 10);
-                        const date = new Date(year, month, day, hour, min);
-                        if (!isNaN(date.getTime())) {
-                            return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
-                        }
-                    }
-
-                    const date = new Date(params.value);
-                    if (!isNaN(date.getTime())) {
-                        return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
-                    }
-
-                    return valueStr;
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
+                },
+                getQuickFilterText: (params) => {
+                    if (!params.value) return "";
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
                 },
                 minWidth: 160,
                 filter: 'agDateColumnFilter',
+                filterParams: {
+                    comparator: (filterLocalDateAtMidnight, cellValue) => {
+                        const cellDate = parseDateValue(cellValue);
+                        if (!cellDate) return -1;
+                        
+                        const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                        const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+
+                        if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
+                            return 0;
+                        }
+                        if (cellDateOnly < filterDateOnly) {
+                            return -1;
+                        }
+                        if (cellDateOnly > filterDateOnly) {
+                            return 1;
+                        }
+                    },
+                },
                 sortable: true,
                 sort: 'desc',
             },
