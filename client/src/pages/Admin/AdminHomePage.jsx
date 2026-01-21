@@ -91,7 +91,26 @@ function AdminHomePage() {
         handleFetchNumberOfJustification();
     }, [handleFetchNumberOfStudents]);
 
-    useEffect(() => {}, [handleFetchNumberOfJustification]);
+    const isFetching = useRef(false);
+
+    useEffect(() => {
+        // Auto-refresh every 5 seconds
+        const interval = setInterval(async () => {
+            if (isFetching.current) return;
+
+            isFetching.current = true;
+            try {
+                await handleFetchNumberOfJustification();
+                reload();
+            } catch (error) {
+                console.error("Auto-refresh error", error);
+            } finally {
+                isFetching.current = false;
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [handleFetchNumberOfJustification]);
 
     useEffect(() => {
         if (isResizing) {

@@ -14,7 +14,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = ["numeroEtudiant", "nom", "prenom", "debut", "fin", "motif", "commentaire"];
 
-function JustificationList({ selectedId, setSelectedItem, reload }) {
+function JustificationList({ selectedItem, setSelectedItem, reload }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -43,7 +43,8 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
 
     async function handleFetchJustification() {
         try {
-            setLoading(true);
+            if (rowData.length === 0) setLoading(true);
+
             const response = await fetch("http://localhost:3000/justification/new", {
                 method: "GET",
                 credentials: "include",
@@ -79,7 +80,18 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
             });
 
             console.log("Données traitées :", processedData);
-            setRowData(processedData);
+
+            if (JSON.stringify(processedData) !== JSON.stringify(rowData)) {
+                setRowData(processedData);
+
+                // Smart Selection Clearing - Only check if data changed
+                if (selectedItem) {
+                    const stillExists = processedData.find((item) => item.idAbsJustifiee === selectedItem.idAbsJustifiee);
+                    if (!stillExists) {
+                        setSelectedItem(null);
+                    }
+                }
+            }
         } catch (err) {
             console.error("Erreur de fetch: " + err.message);
         } finally {
@@ -89,7 +101,6 @@ function JustificationList({ selectedId, setSelectedItem, reload }) {
 
     useEffect(() => {
         handleFetchJustification();
-        setSelectedItem(null);
     }, [reload]);
 
     useEffect(() => {
