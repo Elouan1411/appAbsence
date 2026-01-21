@@ -38,6 +38,9 @@ function StudentHomePage() {
                         end: String(abs.fin),
                         status: "todo",
                         adminComment: abs.motifValidite,
+                        reason: abs.motif,
+                        justificationId: abs.idAbsJustifiee,
+                        dateDemande: abs.dateDemande,
                     }));
                     setAbsences(mappedAbsences);
                 })
@@ -242,7 +245,7 @@ function StudentHomePage() {
                                 subject={absence.subject}
                                 startTime={absence.formattedStartTime}
                                 endTime={absence.formattedEndTime}
-                                fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj }}
+                                fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}
                                 isSelectionMode={isSelectionMode}
                                 isSelected={selectedIds.includes(absence.id)}
                                 onToggle={() => handleToggleAbsence(absence.id)}

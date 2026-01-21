@@ -131,9 +131,10 @@ const StudentAbsenceDetailsPage = () => {
             return;
         }
 
-        const success = await submit(period, reason, comment, files, "update", id, removedFiles, dateDemande);
+        const targetId = location.state?.justificationId || id;
+        const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
-            navigate("/student/justification");
+            navigate("/dashboard");
         }
     };
 

@@ -328,7 +328,7 @@ router.put("/:id", verifyToken, (req, res) => {
         const newEnd = end || current.fin;
         const newMotif = motif !== undefined ? motif : current.motif;
 
-        const updateSql = `UPDATE JustificationAbsence SET debut = ?, fin = ?, motif = ? WHERE idAbsJustifiee = ?`;
+        const updateSql = `UPDATE JustificationAbsence SET debut = ?, fin = ?, motif = ?, validite = 2, motifValidite = '' WHERE idAbsJustifiee = ?`;
 
         db.run(updateSql, [newStart, newEnd, newMotif, id], (err) => {
             if (err) {
