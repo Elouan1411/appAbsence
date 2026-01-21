@@ -6,7 +6,7 @@ import SelectTime from "../../components/Teacher/SelectTime";
 import SelectSubject from "../../components/Teacher/SelectSubject";
 import PageTitle from "../../components/common/PageTitle";
 import { useAuth } from "../../hooks/useAuth";
-import InputField from "../../components/common/InputField";
+import SelectTeacher from "../../components/Teacher/SelectTeacher";
 import { useLocation } from "react-router-dom";
 
 function RollCallPage() {
@@ -47,13 +47,8 @@ function RollCallPage() {
         <div className="page-container">
             <PageTitle title="Faire l'appel" icon="icon-rollcall" />
 
-            {role == "admin" && (
-                <div className="login-input-container">
-                    <InputField value={loginENT} onChange={(e) => setLoginENT(e.target.value)} placeholder="identifiant" text="Identifiant ENT" />
-                </div>
-            )}
-
             <div className="select-container">
+                {role === "admin" && <SelectTeacher value={loginENT} onChange={setLoginENT} className="select-item" />}
                 <SelectGroup key={resetKey} onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} initialSelection={selection} />
 
                 <SelectTime onChange={setDateTime} value={dateTime} className="select-item" />
