@@ -43,6 +43,8 @@ body.dark {
     --badge-refused-text: #f87171;
     --tab-border-color: var(--border-color);
     --row-duplicate: #3b83f697;
+    --background-warning: #332701;
+    --warning-color: #ffcd39;
 }
 
 body.light {
@@ -78,6 +80,8 @@ body.light {
     --dot-color: #f87171;
     --tab-border-color: #334155;
     --row-duplicate: #649fff97;
+    --background-warning: #fff3cd;
+    --warning-color: #664d03;
 }
 
 .loading {
