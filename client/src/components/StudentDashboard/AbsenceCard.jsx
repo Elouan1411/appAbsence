@@ -26,6 +26,10 @@ const AbsenceCard = ({
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
+    const [reason_split, comment_split] = typeof reason === "string" ? reason.split(" | ") : ["", ""];
+    console.log("reason_split :", reason_split);
+    console.log("comment_split :", comment_split);
+
     const handleJustify = () => {
         safeNavigate("/dashboard/justification", {
             state: { prefilledPeriod: [fullPeriod] },
@@ -89,9 +93,17 @@ const AbsenceCard = ({
                         </div>
                     </div>
                     {(adminComment || reason) && (
-                        <div className="card-absence-reason" title={adminComment || reason}>
-                            <span className="reason-label">{adminComment ? "Remarque :" : "Motif :"}</span>
-                            <span className="reason-text">{adminComment || reason}</span>
+                        <div title={adminComment || reason}>
+                            <div className="card-absence-reason">
+                                <span className="reason-label">{adminComment ? "Remarque :" : "Motif :"}</span>
+                                <span className="reason-text">{adminComment || reason_split}</span>
+                            </div>
+                            {!adminComment && comment_split !== "" && comment_split !== undefined && (
+                                <div className="card-absence-reason">
+                                    <span className="reason-label">{"Commentaire :"}</span>
+                                    <span className="reason-text">{comment_split}</span>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -101,7 +113,7 @@ const AbsenceCard = ({
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
                     <Eye className="icon-eye details-icon" onClick={handleDetails} />
                     {status === "todo" && (
-                        <button className="btn-justifier" onClick={handleJustify}>
+                        <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}
                         </button>
                     )}

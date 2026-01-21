@@ -69,12 +69,20 @@ const StudentAbsenceDetailsPage = () => {
                 setDateDemande(location.state.dateDemande);
             }
             if (location.state.prefilledPeriod) {
-                const periods = location.state.prefilledPeriod.map((p, idx) => ({
+                let periods = location.state.prefilledPeriod.map((p, idx) => ({
                     ...p,
                     start: new Date(p.start),
                     end: new Date(p.end),
                     id: p.id || Date.now() + idx,
                 }));
+
+                // Filter out periods that are fully contained within another period
+                periods = periods.filter((p1) => {
+                    return !periods.some((p2) => {
+                        return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                    });
+                });
+
                 setPeriod(periods);
                 validatePeriods(periods);
             }
@@ -123,9 +131,10 @@ const StudentAbsenceDetailsPage = () => {
             return;
         }
 
-        const success = await submit(period, reason, comment, files, "update", id, removedFiles, dateDemande);
+        const targetId = location.state?.justificationId || id;
+        const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
-            navigate("/student/justification");
+            navigate("/dashboard");
         }
     };
 
