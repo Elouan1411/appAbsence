@@ -429,4 +429,18 @@ router.put("/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
+router.put("/modifyAppel/:id", verifyToken, isAdmin, (req, res) => {
+    const id = req.params.id;
+
+    const { newAppelId } = req.body;
+
+    const sql = "UPDATE Absence SET idAppel = ? WHERE idAbsence = ?";
+    db.run(sql, [newAppelId, id], (err) => {
+        if (err) {
+            return res.status(401).json(err.message);
+        }
+        res.status(200).json("Les absences ont été mises à jour avec succès!");
+    });
+});
+
 module.exports = router;

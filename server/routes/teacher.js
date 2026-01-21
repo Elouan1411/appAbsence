@@ -8,6 +8,32 @@ const path = require("path");
 const fs = require("fs");
 const exceljs = require("exceljs");
 
+router.get("/search", verifyToken, isAdminOrTeacher, (req, res) => {
+    const query = req.query.q;
+
+    if (!query || query.length < 2) {
+        return res.status(200).json([]);
+    }
+    const sql = `
+        SELECT loginENT, nom, prenom
+        FROM Professeur 
+        WHERE loginENT LIKE ? 
+           OR nom LIKE ? 
+           OR prenom LIKE ? 
+        LIMIT 10
+    `;
+
+    const searchTerm = `%${query}%`;
+
+    db.all(sql, [searchTerm, searchTerm, searchTerm], (err, rows) => {
+        if (err) {
+            console.error("Erreur recherche:", err.message);
+            return res.status(500).json({ error: "Erreur lors de la recherche" });
+        }
+        res.status(200).json(rows);
+    });
+});
+
 router.get("/allLoginENT", verifyToken, isAdmin, (req, res) => {
     const sql = "SELECT loginENT FROM Professeur";
 
@@ -25,6 +51,17 @@ router.get("/all", verifyToken, isAdmin, (req, res) => {
     db.all(sql, (err, rows) => {
         if (err) {
             return res.status(401).json({ error: "Erreur de récupération professeurs" });
+        }
+        return res.status(200).json(rows);
+    });
+});
+
+router.get("/:loginENT", verifyToken, isAdmin, (req, res) => {
+    const loginENT = req.params.loginENT;
+    const sql = "SELECT * FROM Professeur WHERE loginENT = ?";
+    db.all(sql, [loginENT], (err, rows) => {
+        if (err) {
+            return res.status(401).json({ error: "Erreur de récupération enseignant" });
         }
         return res.status(200).json(rows);
     });
