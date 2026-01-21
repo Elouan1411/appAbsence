@@ -311,8 +311,17 @@ router.post("/", verifyToken, (req, res) => {
             // Use client provided timestamp or fallback to server time
             let dateDemande = body.timestamp ? formatToDB(body.timestamp, true) : formatToDB(Date.now(), true);
 
+            // Step 1: Check for overlapping pending justifications (validite = 2)
+            const pendingOverlapSql = `
+                SELECT idAbsJustifiee 
+                FROM JustificationAbsence 
+                WHERE numeroEtudiant = ? 
+                AND validite = 2 
+                AND (debut <= ? AND fin >= ?)
+            `;
+
             // On regarde si ya deja des justifications refusées sur cette periode
-            const overlapSql = `
+            const refusedOverlapSql = `
                 SELECT idAbsJustifiee 
                 FROM JustificationAbsence 
                 WHERE numeroEtudiant = ? 
@@ -333,29 +342,42 @@ router.post("/", verifyToken, (req, res) => {
                 });
             };
 
-            db.all(overlapSql, [number, end, start], (err, rows) => {
+            // First verify no pending overlaps
+            db.all(pendingOverlapSql, [number, end, start], (err, pendingRows) => {
                 if (err) {
-                    console.error("Error checking overlaps:", err);
+                    console.error("Error checking pending overlaps:", err);
                     return res.status(500).json(err.message);
                 }
 
-                if (rows.length > 0) {
-                    // Si oui, on supprime les anciennes
-                    const idsToDelete = rows.map((r) => r.idAbsJustifiee);
-                    const deleteSql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee IN (${idsToDelete.join(",")})`;
-
-                    db.run(deleteSql, function (err) {
-                        if (err) {
-                            console.error("Error deleting refused justifications:", err);
-                            return res.status(500).json(err.message);
-                        }
-                        // Et on insère la nouvelle
-                        insertNewJustification();
-                    });
-                } else {
-                    // Sinon on cree une nouvelle justification normalement
-                    insertNewJustification();
+                if (pendingRows.length > 0) {
+                    return res.status(409).json("Une justification est déjà en attente de validation pour cette période.");
                 }
+
+                // If okay, check refused overlaps to clean them up
+                db.all(refusedOverlapSql, [number, end, start], (err, rows) => {
+                    if (err) {
+                        console.error("Error checking refused overlaps:", err);
+                        return res.status(500).json(err.message);
+                    }
+
+                    if (rows.length > 0) {
+                        // Si oui, on supprime les anciennes
+                        const idsToDelete = rows.map((r) => r.idAbsJustifiee);
+                        const deleteSql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee IN (${idsToDelete.join(",")})`;
+
+                        db.run(deleteSql, function (err) {
+                            if (err) {
+                                console.error("Error deleting refused justifications:", err);
+                                return res.status(500).json(err.message);
+                            }
+                            // Et on insère la nouvelle
+                            insertNewJustification();
+                        });
+                    } else {
+                        // Sinon on cree une nouvelle justification normalement
+                        insertNewJustification();
+                    }
+                });
             });
         } catch (e) {
             console.error("Error in POST /justification:", e);

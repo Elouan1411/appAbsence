@@ -128,8 +128,8 @@ export const useJustificationSubmit = () => {
             toast.success(mode === "create" ? "Justification envoyée !" : "Justification mise à jour !");
             return true;
         } catch (error) {
-            console.error("Submission error:", error);
-            toast.error("Une erreur est survenue lors de l'envoi.");
+            const cleanMessage = error.message.replace(/^"|"$/g, ""); // clean json string
+            toast.error(cleanMessage || "Une erreur est survenue lors de l'envoi.");
             return false;
         } finally {
             setIsSubmitting(false);
