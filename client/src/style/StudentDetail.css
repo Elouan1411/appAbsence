@@ -31,12 +31,13 @@
     max-width: 100vw;
 }
 .absence-list-container {
-    margin-top: 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
+    min-height: 0;
+    padding-bottom: 0;
+    flex-shrink: 0;
 }
 
 .absence-list-subcontainer {
@@ -49,9 +50,14 @@
     justify-content: flex-start;
     align-items: center;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-
     border: 1px solid var(--border-color);
+
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    overflow-x: hidden;
 }
+
 .student-detail-container > .button-container {
     width: calc(100% - 50px);
     display: flex;
@@ -165,12 +171,18 @@ h3 {
     gap: 20px;
     margin-bottom: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    z-index: 10;
 }
 
 .footer-container button {
     width: 10vw;
     min-width: 150px;
     padding: 0;
+    max-height: 3vh;
+    margin: 0;
 }
 .delete-student-button {
     background-color: var(--card-bg);
@@ -206,10 +218,30 @@ h3 {
 .student-detail-container {
     position: relative;
     height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    overflow: hidden;
+}
+
+.scrollable-content {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    gap: 20px;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    display: none;
 }
 
 .absence-count {
@@ -245,4 +277,20 @@ h3 {
 
 .icon-button:hover .icon {
     background-color: var(--primary-color);
+}
+.student-detail-container > .button-container,
+.page-title {
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.absence-list-container {
+    height: auto;
+    flex: unset;
+}
+
+.absence-list-subcontainer {
+    height: auto;
+    overflow: visible;
+    max-height: none;
 }

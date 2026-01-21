@@ -44,12 +44,26 @@ const StudentAbsenceDetailsPage = () => {
 
                 if (data.list && Array.isArray(data.list) && data.list.length > 0) {
                     const filePromises = data.list.map(async (filename) => {
+                        // Récupere les fichiers avec les "beaux" noms mais en gardant les noms originaux pour la supression
                         try {
-                            const fileRes = await fetch(`http://localhost:3000/upload/justification/${filename}`);
+                            const fileRes = await fetch(`http://localhost:3000/justification/download/${filename}`, {
+                                credentials: "include",
+                            });
                             if (!fileRes.ok) return null;
                             const blob = await fileRes.blob();
-                            const file = new File([blob], filename, { type: blob.type });
+
+                            const contentDisposition = fileRes.headers.get("Content-Disposition");
+                            let prettyName = filename;
+                            if (contentDisposition) {
+                                const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                                if (filenameMatch && filenameMatch.length > 1) {
+                                    prettyName = filenameMatch[1];
+                                }
+                            }
+
+                            const file = new File([blob], prettyName, { type: blob.type });
                             file.isExisting = true;
+                            file.originalName = filename;
                             return file;
                         } catch (e) {
                             return null;
@@ -69,12 +83,20 @@ const StudentAbsenceDetailsPage = () => {
                 setDateDemande(location.state.dateDemande);
             }
             if (location.state.prefilledPeriod) {
-                const periods = location.state.prefilledPeriod.map((p, idx) => ({
+                let periods = location.state.prefilledPeriod.map((p, idx) => ({
                     ...p,
                     start: new Date(p.start),
                     end: new Date(p.end),
                     id: p.id || Date.now() + idx,
                 }));
+
+                // Filter out periods that are fully contained within another period
+                periods = periods.filter((p1) => {
+                    return !periods.some((p2) => {
+                        return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                    });
+                });
+
                 setPeriod(periods);
                 validatePeriods(periods);
             }
@@ -123,9 +145,10 @@ const StudentAbsenceDetailsPage = () => {
             return;
         }
 
-        const success = await submit(period, reason, comment, files, "update", id, removedFiles, dateDemande);
+        const targetId = location.state?.justificationId || id;
+        const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
-            navigate("/student/justification");
+            navigate("/dashboard");
         }
     };
 

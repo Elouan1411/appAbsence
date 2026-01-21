@@ -832,3 +832,197 @@ p {
 .page-container {
     padding: 0;
 }
+
+.validation-view-container > .validation-footer > .button-container {
+    gap: 10px;
+}
+
+.anticipation-header {
+    width: calc(100% - 50px);
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    margin-left: 10px;
+}
+
+.no-absence-container {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.no-absence-container > span {
+    color: var(--text-secondary);
+}
+
+.date-item.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.date-item.clickable:hover {
+    background-color: var(--background-hover, #f1f5f9);
+    border-color: var(--primary-color);
+}
+
+.date-item.clickable.warning {
+    background-color: var(--background-warning);
+    border-color: var(--warning-color);
+}
+
+.date-item.active {
+    background-color: var(--background-hover, #f1f5f9);
+    border-color: var(--primary-color);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+}
+
+.badge-count {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.badge-warning {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+.badge-warning > span {
+    background-color: var(--warning-color);
+}
+.chevron-small {
+    width: 16px;
+    height: 16px;
+    background-image: url("../assets/down_arrow.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+    filter: invert(0.5);
+}
+
+.chevron-small.open {
+    transform: rotate(180deg);
+}
+
+.absences-dropdown {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-top: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 97.5%;
+}
+
+.sub-absence-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sub-absence-item:last-child {
+    border-bottom: none;
+}
+
+.sub-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dot-status {
+    width: 8px;
+    height: 8px;
+    background-color: var(--error-color);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.empty-sub-absence {
+    padding: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.not-complete-container {
+    background-color: var(--background-warning);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    border-left: 1px solid var(--border-color, #e2e8f0);
+    border-right: 1px solid var(--border-color, #e2e8f0);
+}
+.not-complete-container span {
+    color: var(--warning-color);
+    font-weight: 700;
+}
+
+.abs-warning {
+    background-color: var(--background-warning);
+    color: var(--warning-color);
+    padding: 4px;
+    border-radius: 15px;
+}
+.sub-absence-item > .absence-detail-button {
+    all: unset;
+}
+
+.sub-absence-item > .absence-detail-button {
+    border-radius: 100px;
+}
+
+.absence-detail-button:hover {
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    background-color: var(--background-color);
+}
+
+.absence-detail-button:hover span {
+    transform: scale(1.2);
+    transition: 0.5s ease-in-out;
+}
+
+.dashboard-tabs.scrollable-tabs {
+    display: flex;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100%;
+    padding: 10px 5px;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+}
+
+.dashboard-tabs.scrollable-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.dashboard-tabs.scrollable-tabs .dashboard-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-width: fit-content;
+}

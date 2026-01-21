@@ -11,7 +11,8 @@ main {
 }
 
 .absence-detail {
-    height: 40vh;
+    flex: 1;
+    margin-bottom: 15px;
     width: calc(100% - 50px);
     background-color: var(--card-bg);
     border-radius: 15px;
@@ -19,4 +20,137 @@ main {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 
     border: 1px solid var(--border-color);
+}
+
+.autocomplete-container {
+    position: relative;
+    width: 100%;
+    border-radius: 15px;
+    transition: 0.3s ease-in-out;
+}
+.info-grid {
+    display: flex;
+}
+
+.info-item {
+    width: 32%;
+}
+
+.info-grid > .active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: 0.3s ease-in-out;
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--card-bg, white);
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 10px;
+    max-height: 30px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    transition: 0.3s ease-in-out;
+}
+
+.suggestion-item:hover {
+    background-color: var(--primary-color);
+
+    transition: 0.3s ease-in-out;
+}
+.suggestion-item:hover span {
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+.suggestion-item span {
+    color: var(--text-secondary);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+.suggestion-number {
+    width: 15%;
+}
+.suggestion-preview {
+    left: 105%;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: transparent;
+    color: var(--text-primary);
+    padding: 10px;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.suggestion-preview::after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: -10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #333 transparent transparent;
+}
+
+.suggestion-item:hover .suggestion-preview {
+    display: block;
+}
+
+.selector-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.absence-detail-container > .button-container {
+    width: calc(100% - 50px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+}
+
+.absence-detail-container > .button-container > button {
+    all: unset;
+    width: 40px;
+    height: 40px;
+}
+
+.absence-detail-container > .button-container > button .icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    transition: 0.5s ease-in-out;
+}
+
+.absence-detail-container > .button-container > button:hover .icon {
+    cursor: pointer;
+    background-color: var(--text-primary);
+    transition: 0.5s ease-in-out;
 }

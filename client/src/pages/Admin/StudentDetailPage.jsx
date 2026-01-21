@@ -208,15 +208,17 @@ function StudentDetailPage() {
                 </button>
             </div>
 
-            <PersonalInformations
-                student={newStudent}
-                loading={loading}
-                editing={editing}
-                setEditing={setEditing}
-                onChange={handleChange}
-                setStudent={(prev) => setNewStudent(prev)}
-            />
-            <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} student={student} />
+            <div className="scrollable-content">
+                <PersonalInformations
+                    student={newStudent}
+                    loading={loading}
+                    editing={editing}
+                    setEditing={setEditing}
+                    onChange={handleChange}
+                    setStudent={(prev) => setNewStudent(prev)}
+                />
+                <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} student={student} />
+            </div>
             <Footer
                 handleConfirmModification={handleSave}
                 handleDeleteUser={handleDeleteStudent}

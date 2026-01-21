@@ -8,6 +8,25 @@ const { isAdminOrOwner, isAdminOrTeacher, verifyToken, isAdmin } = require("../m
  *            Méthodes GET
  *****************************************/
 
+router.get("/dates", verifyToken, isAdmin, (req, res) => {
+    const { debut, fin, numero } = req.query;
+    const sql = `
+        SELECT * FROM Absence 
+        INNER JOIN Appel ON Absence.idAppel = Appel.idAppel
+        INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
+        WHERE Appel.debut < ${fin} AND Appel.fin > ${debut}
+        AND numeroEtudiant = ${numero}
+    `;
+
+    db.all(sql, (err, rows) => {
+        if (err) {
+            return res.status(500).json(err);
+        }
+        console.log(rows);
+        return res.status(200).json(rows);
+    });
+});
+
 //Récupération de toutes les absences
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql = `
@@ -99,7 +118,28 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
        AND J.fin >= Ap.fin
        AND J.validite = 3
        ORDER BY J.idAbsJustifiee DESC
-       LIMIT 1) as motifValidite
+       LIMIT 1) as motifValidite,
+      (SELECT motif FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 3
+       ORDER BY J.idAbsJustifiee DESC
+       LIMIT 1) as motif,
+      (SELECT idAbsJustifiee FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 3
+       ORDER BY J.idAbsJustifiee DESC
+       LIMIT 1) as idAbsJustifiee,
+      (SELECT dateDemande FROM JustificationAbsence J 
+       WHERE J.numeroEtudiant = A.numeroEtudiant 
+       AND J.debut <= Ap.debut 
+       AND J.fin >= Ap.fin
+       AND J.validite = 3
+       ORDER BY J.idAbsJustifiee DESC
+       LIMIT 1) as dateDemande
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
@@ -180,8 +220,8 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
         WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
+        AND J.debut = Ap.debut
+        AND J.fin = Ap.fin
     )
   `;
 
@@ -240,8 +280,8 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
         WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
+        AND J.debut = Ap.debut
+        AND J.fin = Ap.fin
     )
   `;
 
@@ -401,6 +441,20 @@ router.put("/:id", verifyToken, isAdmin, (req, res) => {
 
     const sql = "UPDATE Absence SET numeroEtudiant = ?, login = ? WHERE idAbsence = ?";
     db.run(sql, [parseInt(newNumeroEtudiant), newLoginENT, id], (err) => {
+        if (err) {
+            return res.status(401).json(err.message);
+        }
+        res.status(200).json("Les absences ont été mises à jour avec succès!");
+    });
+});
+
+router.put("/modifyAppel/:id", verifyToken, isAdmin, (req, res) => {
+    const id = req.params.id;
+
+    const { newAppelId } = req.body;
+
+    const sql = "UPDATE Absence SET idAppel = ? WHERE idAbsence = ?";
+    db.run(sql, [newAppelId, id], (err) => {
         if (err) {
             return res.status(401).json(err.message);
         }
