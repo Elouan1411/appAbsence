@@ -10,3 +10,4 @@ server/upload/*
 /server/server.log
 /server/database/*.db-shm
 /server/database/*.db-wal
+/token_fac.txt
