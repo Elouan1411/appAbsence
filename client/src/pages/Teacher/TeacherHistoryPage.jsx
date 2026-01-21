@@ -11,6 +11,10 @@ import { useTheme } from "../../hooks/useTheme";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import RollCallList from "../../components/Teacher/RollCallList";
 import BackButton from "../../components/common/BackButton";
+import toast from "react-hot-toast";
+import { alertConfirm } from "../../hooks/alertConfirm";
+import "../../style/icon.css";
+import "../../style/StudentDetail.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -40,6 +44,10 @@ function TeacherHistoryPage() {
     }, [user]);
 
     const handleRowClick = (event) => {
+        if (event.event && event.event.target && event.event.target.closest(".delete-button")) {
+            return;
+        }
+
         const callData = event.data;
         const groupData = {
             promo: callData.promo,
@@ -57,6 +65,42 @@ function TeacherHistoryPage() {
     const handleSuccess = () => {
         setSelectedCall(null);
         fetchHistory();
+    };
+
+    const handleDelete = async (callId, libelle) => {
+        if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'appel de ${libelle} ?`)) {
+            try {
+                const response = await fetch(`http://localhost:3000/appel/${callId}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+                if (response.ok) {
+                    toast.success("Appel supprimé avec succès");
+                    fetchHistory();
+                } else {
+                    toast.error("Erreur lors de la suppression");
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("Erreur réseau");
+            }
+        }
+    };
+
+    const ActionRenderer = (params) => {
+        return (
+            <div className="right-buttons-container" style={{ width: "100%", justifyContent: "center" }}>
+                <button
+                    className="delete-button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(params.data.idAppel, params.data.libelle);
+                    }}
+                >
+                    <span className="icon icon-trash" />
+                </button>
+            </div>
+        );
     };
 
     const columnDefs = useMemo(
@@ -117,6 +161,14 @@ function TeacherHistoryPage() {
                 filter: true,
                 width: 100,
             },
+            {
+                headerName: "Actions",
+                cellRenderer: ActionRenderer,
+                width: 100,
+                sortable: false,
+                filter: false,
+                cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
+            },
         ],
         []
     );
@@ -155,7 +207,7 @@ function TeacherHistoryPage() {
             <div className="page-container">
                 <div className="page-header">
                     <BackButton onClick={handleBack} label="" />
-                    <PageTitle title={`Modifier l'appel - ${selectedCall.callData.libelle}`} icon="appel" />
+                    <PageTitle title={`Modifier l'appel - ${selectedCall.callData.libelle}`} icon="icon-rollcall" />
                 </div>
                 <RollCallList
                     criteria={selectedCall.groupData}

@@ -86,6 +86,15 @@ router.get("/info/:id", verifyToken, isTeacher, (req, res) => {
   });
 });
 
+router.delete("/:id", verifyToken, isAdminOrTeacher, (req, res) => {
+    const id = req.params.id;
+    const sql = "DELETE FROM Appel WHERE idAppel = ?";
+    db.run(sql, [id], function (err) {
+        if (err) return console.error(err.message);
+        res.status(200).json("Appel supprimé avec succès");
+    });
+});
+
 /*****************************************
  *             Méthodes POST
  *****************************************/

@@ -10,6 +10,7 @@ import PageTitle from "../../components/common/PageTitle";
 import { useTheme } from "../../hooks/useTheme";
 import toast from "react-hot-toast";
 import "../../style/icon.css";
+import "../../style/StudentDetail.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { lightTheme, darkTheme } from "../../constants/grid";
 
@@ -89,7 +90,6 @@ function TeacherHistoryPage() {
 
     const ActionRenderer = (params) => {
         const handleDelete = async () => {
-            //  if (window.confirm(`Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
             if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
                 try {
                     const response = await fetch("http://localhost:3000/absence", {
@@ -118,9 +118,15 @@ function TeacherHistoryPage() {
         };
 
         return (
-            <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
-                <button onClick={handleDelete} style={{ border: "none", background: "none", cursor: "pointer" }}>
-                    <span className="icon icon-trash" style={{ width: 18, height: 18, backgroundColor: "red" }} />
+            <div className="right-buttons-container" style={{ width: "100%", justifyContent: "center" }}>
+                <button
+                    className="delete-button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete();
+                    }}
+                >
+                    <span className="icon icon-trash" />
                 </button>
             </div>
         );
@@ -199,7 +205,7 @@ function TeacherHistoryPage() {
                 headerName: "Actions",
                 cellRenderer: ActionRenderer,
                 width: 100,
-                cellStyle: { display: "flex", justifyContent: "center" },
+                cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
             },
         ],
         [user]
