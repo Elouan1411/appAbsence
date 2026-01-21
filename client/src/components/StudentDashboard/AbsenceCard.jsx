@@ -5,6 +5,9 @@ import "../../style/Student.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { Eye } from "lucide-react";
+import trashIcon from "../../assets/trash.svg";
+import { alertConfirm } from "../../hooks/alertConfirm";
+import toast from "react-hot-toast";
 
 const AbsenceCard = ({
     id,
@@ -21,14 +24,13 @@ const AbsenceCard = ({
     adminComment,
     justificationId,
     dateDemande,
+    onDelete,
 }) => {
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
     const [reason_split, comment_split] = typeof reason === "string" ? reason.split(" | ") : ["", ""];
-    console.log("reason_split :", reason_split);
-    console.log("comment_split :", comment_split);
 
     const handleJustify = () => {
         safeNavigate("/dashboard/justification", {
@@ -47,6 +49,36 @@ const AbsenceCard = ({
                 dateDemande: dateDemande,
             },
         });
+    };
+
+    const handleDelete = async (e) => {
+        e.stopPropagation();
+        const confirmation = await alertConfirm("Êtes-vous sûr de vouloir supprimer cette justification ?");
+        console.log("Delete triggered for justificationId:", justificationId);
+        if (confirmation.isConfirmed) {
+            try {
+                const response = await fetch(`http://localhost:3000/justification/${justificationId}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+
+                console.log("apres api");
+
+                if (response.ok) {
+                    toast.success("Justification supprimée");
+                    onDelete(justificationId);
+                } else {
+                    toast.error("Erreur lors de la suppression");
+                }
+                console.log("ca a marché");
+            } catch (error) {
+                console.log("ca a pas marché");
+                console.error(error);
+                toast.error("Erreur serveur");
+            }
+        } else {
+            toast.error("Suppression annulée");
+        }
     };
 
     const getBadgeInfo = () => {
@@ -111,10 +143,15 @@ const AbsenceCard = ({
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    <Eye className="icon-eye details-icon" onClick={handleDetails} />
+                    {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />}
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}
+                        </button>
+                    )}
+                    {status === "pending" && (
+                        <button onClick={handleDelete} title="Supprimer" className="remove-justification-button">
+                            <img src={trashIcon} alt="Delete" width="20" height="20" />
                         </button>
                     )}
                 </div>
