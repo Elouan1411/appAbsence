@@ -41,9 +41,14 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
         };
     }, []);
 
+    const isFirstLoad = React.useRef(true);
+
     async function handleFetchJustification() {
         try {
-            if (rowData.length === 0) setLoading(true);
+            // Only show loading spinner on the very first load
+            if (isFirstLoad.current) {
+                setLoading(true);
+            }
 
             const response = await fetch("http://localhost:3000/justification/new", {
                 method: "GET",
@@ -96,6 +101,7 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
             console.error("Erreur de fetch: " + err.message);
         } finally {
             setLoading(false);
+            isFirstLoad.current = false;
         }
     }
 
