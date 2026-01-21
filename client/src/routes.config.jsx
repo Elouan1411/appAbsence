@@ -26,6 +26,7 @@ export const routesConfig = [
             { path: "settings", element: <SettingsPage /> },
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
             { path: "absencedetail/:absenceId", label: "Détail absence", element: <AbsenceDetailPage /> },
+            { path: "history", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
         ],
     },
     {

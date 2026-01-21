@@ -22,6 +22,15 @@ router.get("/", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
+//Séletion des appels de tous les enseignant 
+router.get("/all", verifyToken, isAdmin, (req, res) => {
+    const sql = "SELECT idAppel, debut, fin, loginProfesseur, Professeur.nom, Professeur.prenom, libelle, Appel.codeMatiere, Appel.promo, groupeTD, groupeTP FROM Appel JOIN Matiere ON Appel.codeMatiere = Matiere.code JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT";
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+        res.status(200).json(rows);
+    });
+})
+
 //Sélection des appels d'un enseignant
 router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   let login = req.params.login.substring(1);
@@ -29,8 +38,6 @@ router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     "SELECT idAppel, debut, fin, loginProfesseur, libelle, Appel.codeMatiere, Appel.promo, groupeTD, groupeTP FROM Appel, Matiere WHERE loginProfesseur = ? AND Appel.codeMatiere = Matiere.code";
   db.all(sql, [login], (err, rows) => {
     if (err) return console.error(err.message);
-
-    console.log(rows);
     res.status(200).json(rows);
   });
 });

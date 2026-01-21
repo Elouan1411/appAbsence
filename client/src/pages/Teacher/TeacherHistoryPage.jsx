@@ -21,7 +21,7 @@ import "../../style/StudentDetail.css";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
-    const { user } = useAuth();
+    const { user, role } = useAuth();
     const [rowData, setRowData] = useState([]);
     const [selectedCall, setSelectedCall] = useState(null);
     const [quickFilterText, setQuickFilterText] = useState("");
@@ -66,9 +66,28 @@ function TeacherHistoryPage() {
         }
     };
 
+    const fetchHistoryAdmin = async () => {
+        if (!user) return;
+        try {
+            const response = await fetch(`http://localhost:3000/appel/all`, {
+                credentials: "include",
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setRowData(data);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'historique:", error);
+        }
+    }
+
     useEffect(() => {
-        fetchHistory();
-    }, [user]);
+        if (role == "admin") {
+            fetchHistoryAdmin();
+        } else {
+            fetchHistory();
+        }
+    }, [role]);
 
     const handleRowClick = (event) => {
         if (event.event && event.event.target && event.event.target.closest(".delete-button")) {
@@ -91,7 +110,11 @@ function TeacherHistoryPage() {
 
     const handleSuccess = () => {
         setSelectedCall(null);
-        fetchHistory();
+        if (role == "admin") {
+            fetchHistoryAdmin();
+        } else {
+            fetchHistory();
+        }
     };
 
     const handleDelete = async (callId, libelle) => {
@@ -103,7 +126,11 @@ function TeacherHistoryPage() {
                 });
                 if (response.ok) {
                     toast.success("Appel supprimé avec succès");
-                    fetchHistory();
+                    if (role == "admin") {
+                        fetchHistoryAdmin();
+                    } else {
+                        fetchHistory();
+                    }
                 } else {
                     toast.error("Erreur lors de la suppression");
                 }
@@ -131,79 +158,100 @@ function TeacherHistoryPage() {
     };
 
     const columnDefs = useMemo(
-        () => [
-            {
-                headerName: "Date",
-                field: "debut",
-                cellDataType: "dateTime",
-                valueFormatter: (params) => {
-                    if (!params.value) return "";
-                    const date = parseDateValue(params.value);
-                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
-                },
-                getQuickFilterText: (params) => {
-                    if (!params.value) return "";
-                    const date = parseDateValue(params.value);
-                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
-                },
-                minWidth: 160,
-                filter: 'agDateColumnFilter',
-                filterParams: {
-                    comparator: (filterLocalDateAtMidnight, cellValue) => {
-                        const cellDate = parseDateValue(cellValue);
-                        if (!cellDate) return -1;
-                        
-                        const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
-                        const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
-
-                        if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
-                            return 0;
-                        }
-                        if (cellDateOnly < filterDateOnly) {
-                            return -1;
-                        }
-                        if (cellDateOnly > filterDateOnly) {
-                            return 1;
-                        }
+        () => {
+            const cols = [
+                {
+                    headerName: "Date",
+                    field: "debut",
+                    cellDataType: "dateTime",
+                    valueFormatter: (params) => {
+                        if (!params.value) return "";
+                        const date = parseDateValue(params.value);
+                        return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
                     },
+                    getQuickFilterText: (params) => {
+                        if (!params.value) return "";
+                        const date = parseDateValue(params.value);
+                        return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
+                    },
+                    minWidth: 160,
+                    filter: 'agDateColumnFilter',
+                    filterParams: {
+                        comparator: (filterLocalDateAtMidnight, cellValue) => {
+                            const cellDate = parseDateValue(cellValue);
+                            if (!cellDate) return -1;
+                            
+                            const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                            const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+
+                            if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
+                                return 0;
+                            }
+                            if (cellDateOnly < filterDateOnly) {
+                                return -1;
+                            }
+                            if (cellDateOnly > filterDateOnly) {
+                                return 1;
+                            }
+                        },
+                    },
+                    sortable: true,
+                    sort: 'desc',
+                }
+            ];
+
+            if (role === "admin") {
+                cols.push({
+                    headerName: "Professeur",
+                    valueGetter: (params) => {
+                        if (params.data && params.data.nom && params.data.prenom) {
+                            return `${params.data.nom.toUpperCase()} ${params.data.prenom}`;
+                        }
+                        return params.data ? params.data.loginProfesseur : "";
+                    },
+                    filter: true,
+                    flex: 1,
+                });
+            }
+
+            cols.push(
+                {
+                    field: "libelle",
+                    headerName: "Matière",
+                    filter: true,
+                    flex: 1,
                 },
-                sortable: true,
-                sort: 'desc',
-            },
-            {
-                field: "libelle",
-                headerName: "Matière",
-                filter: true,
-                flex: 1,
-            },
-            {
-                field: "promo",
-                headerName: "Promo",
-                filter: true,
-                width: 100,
-            },
-            {
-                field: "groupeTD",
-                headerName: "TD",
-                filter: true,
-                width: 100,
-            },
-            {
-                field: "groupeTP",
-                headerName: "TP",
-                filter: true,
-                width: 100,
-            },
-            {
-                headerName: "Actions",
-                cellRenderer: ActionRenderer,
-                width: 100,
-                sortable: false,
-                filter: false,
-                cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
-            },
-        ],
-        []
+                {
+                    field: "promo",
+                    headerName: "Promo",
+                    filter: true,
+                    width: 100,
+                },
+                {
+                    field: "groupeTD",
+                    headerName: "TD",
+                    filter: true,
+                    width: 100,
+                },
+                {
+                    field: "groupeTP",
+                    headerName: "TP",
+                    filter: true,
+                    width: 100,
+                },
+                {
+                    headerName: "Actions",
+                    cellRenderer: ActionRenderer,
+                    width: 100,
+                    sortable: false,
+                    filter: false,
+                    cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
+                }
+            );
+
+            return cols;
+        },
+        [role]
     );
 
     const defaultColDef = useMemo(
@@ -248,6 +296,7 @@ function TeacherHistoryPage() {
                     dateTime={dateTime}
                     subject={selectedCall.callData.codeMatiere ?? selectedCall.callData.code}
                     callId={selectedCall.callId}
+                    loginENT={selectedCall.callData.loginProfesseur}
                     onSuccess={handleSuccess}
                 />
             </div>
