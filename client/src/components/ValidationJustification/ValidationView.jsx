@@ -4,6 +4,8 @@ import PersonalInfos from "./PersonalInfos";
 import ListAbsence from "./ListAbsence";
 import PDFSection from "./PDFSection";
 import ValidationFooter from "./ValidationFooter";
+import toast from "react-hot-toast";
+import dateFormatter from "../../functions/dateFormatter";
 
 export default function ValidationView({ selectedItem, reload }) {
     const [isLoading, setLoading] = useState(false);
@@ -15,7 +17,10 @@ export default function ValidationView({ selectedItem, reload }) {
     const [documents, setDocuments] = useState([]);
     const [docIndex, setDocIndex] = useState(0);
 
+    const [listeAbsence, setListeAbsence] = useState([]);
     const [motif, setMotif] = useState("");
+
+    const [absencesBySlot, setAbsencesBySlot] = useState({});
 
     if (!selectedItem) return null;
 
@@ -97,6 +102,46 @@ export default function ValidationView({ selectedItem, reload }) {
 
     const file = documents.length > 0 ? documents[docIndex] : null;
 
+    const handleLoadAbsences = async () => {
+        try {
+            const creneaux = selectedItem.liste_creneaux;
+            console.log(creneaux);
+            if (!creneaux || creneaux.length === 0) return;
+
+            const promises = creneaux.map(async (creneau, index) => {
+                const params = new URLSearchParams({ debut: creneau.debut, fin: creneau.fin, numero: selectedItem.numeroEtudiant });
+                const response = await fetch(`http://localhost:3000/absence/dates?${params.toString()}`, {
+                    credentials: "include",
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (!response.ok) return { index, data: [] };
+
+                const data = await response.json();
+                console.log("data :", data);
+                return { index, data };
+            });
+
+            const results = await Promise.all(promises);
+
+            const newAbsenceMap = {};
+            results.forEach((res) => {
+                newAbsenceMap[res.index] = res.data;
+            });
+
+            console.log("Absences chargées:", newAbsenceMap);
+            setAbsencesBySlot(newAbsenceMap);
+        } catch (err) {
+            console.error(err);
+            toast.error("Impossible de charger les absences correspondantes");
+        }
+    };
+
+    useEffect(() => {
+        handleLoadAbsences();
+    }, [selectedItem]);
+
     return (
         <div className="validation-view-container">
             <div className="validation-view-content">
@@ -110,7 +155,8 @@ export default function ValidationView({ selectedItem, reload }) {
                         {isHeaderOpen && (
                             <div className="section-content fade-in">
                                 <PersonalInfos selectedItem={selectedItem} />
-                                <ListAbsence creneaux={selectedItem.liste_creneaux} />
+
+                                <ListAbsence creneaux={selectedItem.liste_creneaux} absencesBySlot={absencesBySlot} />
                             </div>
                         )}
                     </section>

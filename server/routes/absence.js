@@ -8,6 +8,25 @@ const { isAdminOrOwner, isAdminOrTeacher, verifyToken, isAdmin } = require("../m
  *            Méthodes GET
  *****************************************/
 
+router.get("/dates", verifyToken, isAdmin, (req, res) => {
+    const { debut, fin, numero } = req.query;
+    const sql = `
+        SELECT * FROM Absence 
+        INNER JOIN Appel ON Absence.idAppel = Appel.idAppel
+        INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
+        WHERE Appel.debut < ${fin} AND Appel.fin > ${debut}
+        AND numeroEtudiant = ${numero}
+    `;
+
+    db.all(sql, (err, rows) => {
+        if (err) {
+            return res.status(500).json(err);
+        }
+        console.log(rows);
+        return res.status(200).json(rows);
+    });
+});
+
 //Récupération de toutes les absences
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql = `
