@@ -37,7 +37,8 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
             sortable: true,
             resizable: true,
             wrapText: true,
-            autoHeight: true,
+            wrapText: false,
+            autoHeight: false,
         };
     }, []);
 
