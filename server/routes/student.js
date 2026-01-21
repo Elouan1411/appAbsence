@@ -29,6 +29,33 @@ router.delete("/:id", verifyToken, isAdmin, (req, res) => {
  *             Méthodes GET
  *****************************************/
 
+router.get("/search", verifyToken, isAdminOrTeacher, (req, res) => {
+    const query = req.query.q;
+
+    if (!query || query.length < 2) {
+        return res.status(200).json([]);
+    }
+    const sql = `
+        SELECT numero, nom, prenom, promo, loginENT 
+        FROM Eleve 
+        WHERE numero LIKE ? 
+           OR nom LIKE ? 
+           OR prenom LIKE ? 
+           OR loginENT LIKE ?
+        LIMIT 10
+    `;
+
+    const searchTerm = `%${query}%`;
+
+    db.all(sql, [searchTerm, searchTerm, searchTerm, searchTerm], (err, rows) => {
+        if (err) {
+            console.error("Erreur recherche:", err.message);
+            return res.status(500).json({ error: "Erreur lors de la recherche" });
+        }
+        res.status(200).json(rows);
+    });
+});
+
 //Sélection de tous les étudiants
 router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     let body = req.body;
@@ -124,7 +151,6 @@ router.get("/:id", verifyToken, isAdmin, (req, res) => {
 
             result["rse"] = rowsRSE;
 
-            console.log(result);
             res.status(200).json(result);
         });
     });
@@ -252,7 +278,6 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
 
 //Mise à jour des informations d'un élève
 router.put("/", verifyToken, isAdmin, (req, res) => {
-    console.log(req.body);
     const { nom, prenom, promo, groupeTD, groupeTP, loginENT, groupeTDPair, groupeTPPair, promoPair, numeroEtudiant } = req.body;
 
     const sql = `UPDATE Eleve SET nom = ?, prenom = ?,loginENT = ?, promo = ?, groupeTD = ?, groupeTP = ?, promoPair = ?, groupeTDPair = ?, groupeTPPair = ? WHERE numero = ?`;
