@@ -10,6 +10,8 @@ import { HEADER_DISPLAY_NAMES } from "../../../utils/teacherValidation";
 import "../../../style/Admin.css";
 import { useUnsaved } from "../../../context/UnsavedContext";
 import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
+import SearchInput from "../../common/SearchInput";
+import "../../../style/searchAgGrid.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -18,6 +20,8 @@ function TeacherList() {
     const [colDefs, setColDefs] = useState([]);
     const [loading, setLoading] = useState(false);
     const { setHasUnsavedChanges, hasUnsavedChanges } = useUnsaved();
+    const [quickFilterText, setQuickFilterText] = useState("");
+    const [isSearchActive, setIsSearchActive] = useState(false);
 
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
@@ -39,8 +43,9 @@ function TeacherList() {
             resizable: true,
             wrapText: true,
             autoHeight: true,
+            floatingFilter: isSearchActive,
         };
-    }, []);
+    }, [isSearchActive]);
 
     async function handleFetchStudents() {
         try {
@@ -92,8 +97,34 @@ function TeacherList() {
 
     console.log(rowData);
 
+    const toggleSearch = () => {
+        if (isSearchActive) {
+            setQuickFilterText("");
+        }
+        setIsSearchActive(!isSearchActive);
+    };
+
     return (
         <div className="student-list">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                <div className="search-wrapper-right" style={{ position: 'relative' }}>
+                    {isSearchActive ? (
+                        <SearchInput 
+                            value={quickFilterText} 
+                            onChange={(e) => setQuickFilterText(e.target.value)} 
+                            placeholder="Rechercher..."
+                            onIconClick={toggleSearch}
+                        />
+                    ) : (
+                        <button 
+                            onClick={toggleSearch}
+                            className="search-toggle-button"
+                        >
+                            <span className="icon icon-search search-icon-sized" />
+                        </button>
+                    )}
+                </div>
+            </div>
             {loading ? (
                 <p>En chargement...</p>
             ) : (
@@ -110,6 +141,7 @@ function TeacherList() {
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
                         autoSizeStrategy={autoSizeStrategy}
+                        quickFilterText={quickFilterText}
                     />
                 </div>
             )}

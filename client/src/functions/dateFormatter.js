@@ -51,3 +51,29 @@ export function semesterParity(date) {
         return 0;
     }
 }
+
+export function parseDateValue(value) {
+    if (!value) return null;
+    const valueStr = String(value);
+
+    // Format YYYYMMDDHHmm (12 chars)
+    if (valueStr.length >= 12 && !valueStr.includes("-") && !valueStr.includes(":")) {
+        const year = parseInt(valueStr.substring(0, 4), 10);
+        const month = parseInt(valueStr.substring(4, 6), 10) - 1;
+        const day = parseInt(valueStr.substring(6, 8), 10);
+        const hour = parseInt(valueStr.substring(8, 10), 10);
+        const min = parseInt(valueStr.substring(10, 12), 10);
+        const date = new Date(year, month, day, hour, min);
+        if (!isNaN(date.getTime())) {
+            return date;
+        }
+    }
+
+    // Try standard Date constructor (handles ISO strings, etc.)
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+        return date;
+    }
+    
+    return null;
+}

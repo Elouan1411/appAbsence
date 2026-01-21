@@ -13,12 +13,17 @@ import "../../style/icon.css";
 import "../../style/StudentDetail.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { lightTheme, darkTheme } from "../../constants/grid";
+import { parseDateValue } from "../../functions/dateFormatter";
+import SearchInput from "../../components/common/SearchInput";
+import "../../style/searchAgGrid.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
     const { user } = useAuth();
     const [rowData, setRowData] = useState([]);
+    const [quickFilterText, setQuickFilterText] = useState("");
+    const [isSearchActive, setIsSearchActive] = useState(false);
     const theme = useTheme();
 
     const fetchHistory = async () => {
@@ -140,36 +145,35 @@ function TeacherHistoryPage() {
                 cellDataType: "dateTime",
                 valueFormatter: (params) => {
                     if (!params.value) return "";
-                    const valueStr = String(params.value);
-
-                    if (valueStr.includes("-") && valueStr.includes(":")) {
-                        const date = new Date(valueStr);
-                        if (!isNaN(date.getTime())) {
-                            return format(date, "dd/MM/yyyy HH:mm", {
-                                locale: fr,
-                            });
-                        }
-                    }
-
-                    if (valueStr.length < 8) return valueStr;
-
-                    const year = parseInt(valueStr.substring(0, 4), 10);
-                    const month = parseInt(valueStr.substring(4, 6), 10) - 1;
-                    const day = parseInt(valueStr.substring(6, 8), 10);
-
-                    const hour = valueStr.length >= 10 ? parseInt(valueStr.substring(8, 10), 10) : 0;
-                    const min = valueStr.length >= 12 ? parseInt(valueStr.substring(10, 12), 10) : 0;
-
-                    const date = new Date(year, month, day, hour, min);
-
-                    if (isNaN(date.getTime())) {
-                        return valueStr;
-                    }
-
-                    return format(date, "dd/MM/yyyy HH:mm", { locale: fr });
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
+                },
+                getQuickFilterText: (params) => {
+                    if (!params.value) return "";
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
                 },
                 minWidth: 160,
                 filter: "agDateColumnFilter",
+                filterParams: {
+                    comparator: (filterLocalDateAtMidnight, cellValue) => {
+                        const cellDate = parseDateValue(cellValue);
+                        if (!cellDate) return -1;
+                        
+                        const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                        const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+
+                        if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
+                            return 0;
+                        }
+                        if (cellDateOnly < filterDateOnly) {
+                            return -1;
+                        }
+                        if (cellDateOnly > filterDateOnly) {
+                            return 1;
+                        }
+                    },
+                },
                 sortable: true,
                 sort: 'desc',
             },
@@ -215,8 +219,9 @@ function TeacherHistoryPage() {
         () => ({
             resizable: true,
             sortable: true,
+            floatingFilter: isSearchActive,
         }),
-        []
+        [isSearchActive]
     );
 
     const onSortChanged = (params) => {
@@ -230,9 +235,35 @@ function TeacherHistoryPage() {
         }
     };
 
+    const toggleSearch = () => {
+        if (isSearchActive) {
+            setQuickFilterText("");
+        }
+        setIsSearchActive(!isSearchActive);
+    };
+
     return (
         <div className="page-container">
-            <PageTitle title="Historique des Absences" icon="icon-absences" />
+            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <PageTitle title="Historique des Absences" icon="icon-absences" />
+            </div>
+            <div className="search-wrapper-right">
+                {isSearchActive ? (
+                    <SearchInput 
+                        value={quickFilterText} 
+                        onChange={(e) => setQuickFilterText(e.target.value)} 
+                        placeholder="Rechercher..."
+                        onIconClick={toggleSearch}
+                    />
+                ) : (
+                    <button 
+                        onClick={toggleSearch}
+                        className="search-toggle-button"
+                    >
+                        <span className="icon icon-search search-icon-sized" />
+                    </button>
+                )}
+            </div>
             <div className="grid-container">
                 <AgGridReact
                     rowData={rowData}
@@ -243,6 +274,7 @@ function TeacherHistoryPage() {
                     paginationPageSize={100}
                     domLayout="autoHeight"
                     onSortChanged={onSortChanged}
+                    quickFilterText={quickFilterText}
                 />
             </div>
         </div>

@@ -5,11 +5,13 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import valueFormatter from "../../functions/valueFormatter";
 import { HEADER_DISPLAY_NAMES } from "../../utils/studentValidation";
-import dateFormatter from "../../functions/dateFormatter";
+import dateFormatter, { parseDateValue } from "../../functions/dateFormatter";
 import ValidationModal from "../ValidationJustification/ValidationView";
 import { useTheme } from "../../hooks/useTheme";
 import { motif_translation } from "../../constants/motif_translation";
 import firstCharUppercase from "../../functions/firstCharUppercase";
+import SearchInput from "../common/SearchInput";
+import "../../style/searchAgGrid.css";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = ["numeroEtudiant", "nom", "prenom", "debut", "fin", "motif", "commentaire"];
@@ -18,6 +20,8 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [quickFilterText, setQuickFilterText] = useState("");
+    const [isSearchActive, setIsSearchActive] = useState(false);
 
     const theme = useTheme();
 
@@ -38,8 +42,9 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
             resizable: true,
             wrapText: false,
             autoHeight: false,
+            floatingFilter: isSearchActive,
         };
-    }, []);
+    }, [isSearchActive]);
 
     const isFirstLoad = React.useRef(true);
 
@@ -117,6 +122,27 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                         headerName: HEADER_DISPLAY_NAMES[key] || key,
                         field: key,
                         valueFormatter: (params) => dateFormatter(params.value),
+                        getQuickFilterText: (params) => dateFormatter(params.value),
+                        filter: 'agDateColumnFilter',
+                        filterParams: {
+                            comparator: (filterLocalDateAtMidnight, cellValue) => {
+                                const cellDate = parseDateValue(cellValue);
+                                if (!cellDate) return -1;
+                                
+                                const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                                const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+
+                                if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
+                                    return 0;
+                                }
+                                if (cellDateOnly < filterDateOnly) {
+                                    return -1;
+                                }
+                                if (cellDateOnly > filterDateOnly) {
+                                    return 1;
+                                }
+                            },
+                        },
                     };
                 }
                 return {
@@ -139,6 +165,13 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
         setSelectedItem(event.data);
     };
 
+    const toggleSearch = () => {
+        if (isSearchActive) {
+            setQuickFilterText("");
+        }
+        setIsSearchActive(!isSearchActive);
+    };
+
     return (
         <div
             style={{
@@ -149,6 +182,25 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 paddingLeft: 10,
             }}
         >
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                <div className="search-wrapper-right" style={{ position: 'relative' }}>
+                    {isSearchActive ? (
+                        <SearchInput 
+                            value={quickFilterText} 
+                            onChange={(e) => setQuickFilterText(e.target.value)} 
+                            placeholder="Rechercher..."
+                            onIconClick={toggleSearch}
+                        />
+                    ) : (
+                        <button 
+                            onClick={toggleSearch}
+                            className="search-toggle-button"
+                        >
+                            <span className="icon icon-search search-icon-sized" />
+                        </button>
+                    )}
+                </div>
+            </div>
             {loading ? (
                 <p>En chargement...</p>
             ) : (
@@ -166,6 +218,7 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                         autoSizeStrategy={autoSizeStrategy}
                         onRowClicked={handleRowClick}
                         style={{ width: "100%", height: "100%" }}
+                        quickFilterText={quickFilterText}
                     />
                 </div>
             )}
