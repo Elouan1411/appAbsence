@@ -53,6 +53,8 @@ function VerticalBar({ notificationCount = 0 }) {
                             return <NavItem key={index} link={link} index={index} to={location.pathname} isMenuOpen={isMenuOpen} />;
                         }
 
+                        if (!link.label) return null;
+
                         if (!link.path?.includes("studentdetail") && !link.path?.includes("absencedetail")) {
                             const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
@@ -63,19 +65,21 @@ function VerticalBar({ notificationCount = 0 }) {
 
                 <div className="sidebar-footer">
                     <ul className="nav-list">
-                        <li className="nav-item">
-                            <Link
-                                to="/settings"
-                                className="nav-link"
-                                onClick={(e) => {
+                        {role == "admin" && (
+                            <li className="nav-item">
+                                <NavLink
+                                    to="/admin/settings"
+                                    className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                                    onClick={(e) => {
                                     e.preventDefault();
-                                    safeNavigate("/settings");
+                                    safeNavigate("/admin/settings");
                                 }}
                             >
                                 <span className="icon icon-settings"></span>
                                 <span className="label">Paramètres</span>
-                            </Link>
+                            </NavLink>
                         </li>
+                        )}
                     </ul>
 
                     <div className="theme-toggle-container">

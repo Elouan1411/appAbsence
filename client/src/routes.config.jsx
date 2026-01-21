@@ -11,6 +11,7 @@ import AddingPage from "./pages/Admin/AddingPage";
 import StudentDetailPage from "./pages/Admin/StudentDetailPage";
 import React from "react";
 import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
+import SettingsPage from "./pages/Admin/SettingsPage";
 
 export const routesConfig = [
     {
@@ -22,6 +23,7 @@ export const routesConfig = [
             { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
             { path: "lists", label: "Listes", element: <ShowListsPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
+            { path: "settings", element: <SettingsPage /> },
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
             { path: "absencedetail/:absenceId", label: "Détail absence", element: <AbsenceDetailPage /> },
         ],

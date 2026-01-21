@@ -67,3 +67,8 @@
     mask-image: url(../assets/search.svg);
     -webkit-mask-image: url(../assets/search.svg);
 }
+
+.icon-edit {
+    mask-image: url(../assets/edit.svg);
+    -webkit-mask-image: url(../assets/edit.svg);
+}
