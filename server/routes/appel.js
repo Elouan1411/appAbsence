@@ -37,17 +37,35 @@ router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
 
 router.get("/recent/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     let login = req.params.login.substring(1);
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    let startSemester, endSemester;
+
+    if (currentMonth >= 8) {
+        const startYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+        const endYear = currentMonth === 0 ? currentYear : currentYear + 1;
+        startSemester = `${startYear}09010000`;
+        endSemester = `${endYear}11302359`;
+    } else {
+        startSemester = `${currentYear}01010000`;
+        endSemester = `${currentYear}08312359`;
+    }
+
     const sql = `
         SELECT DISTINCT Appel.codeMatiere, Matiere.libelle, Appel.promo, Appel.groupeTD, Appel.groupeTP, MAX(debut) as last_date
         FROM Appel
         JOIN Matiere ON Appel.codeMatiere = Matiere.code
-        WHERE loginProfesseur = ?
+        WHERE loginProfesseur = ? AND debut >= ? AND debut <= ?
         GROUP BY Appel.codeMatiere, Appel.promo, Appel.groupeTD, Appel.groupeTP
+        
         ORDER BY last_date DESC
         LIMIT 15
     `;
     
-    db.all(sql, [login], (err, rows) => {
+    db.all(sql, [login, startSemester, endSemester], (err, rows) => {
         if (err) {
             console.error(err.message);
             return res.status(500).json({ error: "Erreur serveur" });
