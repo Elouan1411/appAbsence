@@ -180,8 +180,8 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
         WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
+        AND J.debut = Ap.debut
+        AND J.fin = Ap.fin
     )
   `;
 
@@ -240,8 +240,8 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
         WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut <= Ap.debut
-        AND J.fin >= Ap.fin
+        AND J.debut = Ap.debut
+        AND J.fin = Ap.fin
     )
   `;
 
