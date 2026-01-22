@@ -78,8 +78,22 @@ function SettingsPage() {
         );
 
         if (isConfirmed) {
-            toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
-            setAdminLogin("");
+            try {
+                const response = await fetch(`http://localhost:3000/teacher/${adminLogin}/admin`, {
+                    method: "PUT",
+                    credentials: "include"
+                });
+
+                if (response.ok) {
+                    toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
+                    setAdminLogin("");
+                } else {
+                    toast.error("Erreur lors de l'ajout.");
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                toast.error("Erreur connexion serveur.");
+            }
         }
     };
 
