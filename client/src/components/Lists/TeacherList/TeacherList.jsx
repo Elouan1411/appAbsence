@@ -79,11 +79,25 @@ function TeacherList() {
         if (rowData && rowData.length > 0) {
             const firstObject = rowData[0];
             const generatedColumns = Object.keys(firstObject).map((key) => {
-                return {
+                const colDef = {
                     field: key,
                     headerName: HEADER_DISPLAY_NAMES[key] || key,
                     valueFormatter: valueFormatter,
                 };
+
+                if (key === "administrateur") {
+                    colDef.cellRenderer = (params) => {
+                        if (params.value === 1 || params.value === true) {
+                            return (
+                                <span className="role-badge admin">Administrateur</span>
+                            );
+                        }
+                        return <span className="role-badge teacher">Professeur</span>;
+
+                    }
+                };
+                colDef.cellStyle = { display: "flex", alignItems: "center" };
+                return colDef;
             });
             setColDefs(generatedColumns);
         }
