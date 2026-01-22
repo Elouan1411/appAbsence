@@ -8,6 +8,24 @@ const { isAdminOrOwner, isAdminOrTeacher, verifyToken, isAdmin } = require("../m
  *            Méthodes GET
  *****************************************/
 
+router.get("/all", verifyToken, isAdmin, (req, res) => {
+    const sql = `SELECT Absence.idAbsence,Appel.debut, Appel.fin, CONCAT(Professeur.prenom, ' ', Professeur.nom) AS professeur, Matiere.libelle,CONCAT(Eleve.prenom, ' ', Eleve.nom) AS eleve,EXISTS (
+        SELECT 1
+        FROM JustificationAbsence
+        WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence
+    ) AS justifie, Appel.groupeTD,Appel.groupeTP, Appel.promo
+FROM Absence 
+INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
+INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT
+INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
+INNER JOIN Eleve ON Absence.numeroEtudiant = Eleve.numero`;
+    db.all(sql, (err, rows) => {
+        if (err) {
+            return res.status(500).json(err);
+        }
+        return res.status(200).json(rows);
+    });
+});
 router.get("/dates", verifyToken, isAdmin, (req, res) => {
     const { debut, fin, numero } = req.query;
     const sql = `
@@ -61,7 +79,11 @@ WHERE numeroEtudiant = ?`;
 
 router.get("/detail/:idAbsence", verifyToken, isAdmin, (req, res) => {
     const idAbsence = req.params.idAbsence;
-    const sql = `SELECT * FROM Absence INNER JOIN Appel ON Absence.idAppel = Appel.idAppel WHERE idAbsence = ?`;
+    const sql = `SELECT *, EXISTS (
+        SELECT 1
+        FROM JustificationAbsence
+        WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence
+    ) AS justifie FROM Absence INNER JOIN Appel ON Absence.idAppel = Appel.idAppel WHERE idAbsence = ?`;
     db.all(sql, [idAbsence], (err, rows) => {
         if (err) {
             return res.status(401).json(err);

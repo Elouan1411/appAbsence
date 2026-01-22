@@ -82,6 +82,9 @@ export default function ValidationView({ selectedItem, reload }) {
             });
 
             const filesNameArray = await response.json();
+            if (filesNameArray.length == 0) {
+                setPdfOpen(false);
+            }
             setDocuments(filesNameArray);
         } catch (error) {
             console.error("Erreur de chargement des documents", error);
@@ -93,12 +96,6 @@ export default function ValidationView({ selectedItem, reload }) {
     useEffect(() => {
         handleLoadDocuments();
     }, [selectedItem]);
-
-    useEffect(() => {
-        if (documents.length == 0) {
-            setPdfOpen(false);
-        }
-    }, [documents]);
 
     const file = documents.length > 0 ? documents[docIndex] : null;
 
