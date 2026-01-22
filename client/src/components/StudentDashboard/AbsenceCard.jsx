@@ -124,16 +124,24 @@ const AbsenceCard = ({
                             <span className="time-value">{endTime}</span>
                         </div>
                     </div>
-                    {(adminComment || reason) && (
+                    {(reason || adminComment) && (
                         <div title={adminComment || reason}>
-                            <div className="card-absence-reason">
-                                <span className="reason-label">{adminComment ? "Remarque :" : "Motif :"}</span>
-                                <span className="reason-text">{adminComment || reason_split}</span>
-                            </div>
-                            {!adminComment && comment_split !== "" && comment_split !== undefined && (
+                            {reason && (
                                 <div className="card-absence-reason">
-                                    <span className="reason-label">{"Commentaire :"}</span>
+                                    <span className="reason-label">Motif :</span>
+                                    <span className="reason-text">{reason_split}</span>
+                                </div>
+                            )}
+                            {comment_split && (
+                                <div className="card-absence-reason">
+                                    <span className="reason-label">Commentaire :</span>
                                     <span className="reason-text">{comment_split}</span>
+                                </div>
+                            )}
+                            {adminComment && (
+                                <div className="card-absence-reason">
+                                    <span className="reason-label">Raison du refus :</span>
+                                    <span className="reason-text">{adminComment}</span>
                                 </div>
                             )}
                         </div>

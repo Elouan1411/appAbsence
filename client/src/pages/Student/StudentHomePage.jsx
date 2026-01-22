@@ -62,6 +62,7 @@ function StudentHomePage() {
                         end: String(abs.fin),
                         status: abs.validite === 0 ? "validated" : "refused",
                         reason: abs.motif,
+                        adminComment: abs.motifValidite,
                     }));
                     setArchivedAbsences(mappedArchived);
                 })
