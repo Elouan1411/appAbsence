@@ -248,6 +248,7 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       M.libelle as nomMatiere,
       J.validite,
       J.motif,
+      J.motifValidite,
       'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
@@ -270,6 +271,7 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       'Justification sans absence' as nomMatiere,
       J.validite,
       J.motif,
+      J.motifValidite,
       'JUSTIFICATION' as type
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero
