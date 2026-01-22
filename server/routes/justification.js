@@ -10,10 +10,40 @@ const { validateJustificationInput } = require("../utils/justificationSecurity")
  *             Méthodes GET
  *****************************************/
 
+router.get("/absence/:idAbsence", verifyToken, isAdmin, (req, res) => {
+    const idAbsence = req.params.idAbsence;
+    const sql = `SELECT 
+    idAbsJustifiee,
+    numeroEtudiant,
+    nom,
+    prenom,
+    groupeTD,
+    dateDemande,
+    motif,
+    validite,
+    json_group_array(
+        json_object(
+            'id', JustificationAbsence.idAbsJustifiee,
+            'debut', JustificationAbsence.debut, 
+            'fin', JustificationAbsence.fin
+        )
+    ) as liste_creneaux
+FROM JustificationAbsence
+LEFT JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero
+WHERE idAbsJustifiee = ?
+GROUP BY JustificationAbsence.dateDemande, JustificationAbsence.numeroEtudiant
+ORDER BY JustificationAbsence.dateDemande DESC`;
+
+    db.all(sql, [idAbsence], (err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+        return res.status(200).json(rows);
+    });
+});
 //Récupération des nouvelles justifications
 router.get("/new", verifyToken, isAdmin, (req, res) => {
-    // const sql =
-    //   "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom, dateDemande FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2 GROUP BY dateDemande,numeroEtudiant;";
     const sql = `SELECT 
     idAbsJustifiee,
     numeroEtudiant,
@@ -42,8 +72,6 @@ ORDER BY JustificationAbsence.dateDemande DESC`;
 });
 
 router.get("/count", verifyToken, isAdmin, (req, res) => {
-    // const sql =
-    //   "SELECT idAbsJustifiee,JustificationAbsence.numeroEtudiant,debut,fin,motif,nom,prenom, dateDemande FROM JustificationAbsence JOIN Eleve ON JustificationAbsence.numeroEtudiant = Eleve.numero WHERE JustificationAbsence.validite = 2 GROUP BY dateDemande,numeroEtudiant;";
     const sql = `SELECT COUNT(*) as total
 FROM (
     SELECT 1 

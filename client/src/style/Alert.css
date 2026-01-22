@@ -51,7 +51,9 @@
     background-color: var(--card-bg);
     z-index: 1000;
     border-radius: 25px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 0 1px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -67,7 +69,7 @@
 }
 
 .alert-title {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary, #fff);
     margin: 0;
@@ -91,7 +93,7 @@
     white-space: pre-wrap;
     word-break: break-word;
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     text-align: left;
 }
 .content p {

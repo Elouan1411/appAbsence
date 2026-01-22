@@ -149,6 +149,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-y: hidden;
 }
 .justification-container {
     width: 100%;
@@ -865,7 +866,7 @@ p {
 }
 
 .date-item.clickable:hover {
-    background-color: var(--background-hover, #f1f5f9);
+    background-color: var(--card-bg, #f1f5f9);
     border-color: var(--primary-color);
 }
 
@@ -875,7 +876,7 @@ p {
 }
 
 .date-item.active {
-    background-color: var(--background-hover, #f1f5f9);
+    background-color: var(--card-bg, #f1f5f9);
     border-color: var(--primary-color);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
