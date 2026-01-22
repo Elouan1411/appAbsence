@@ -112,11 +112,15 @@
 }
 
 
-@media (max-width: 768px) {
-    .Card {
+@media (max-width: 890px) {
+    .Card.cols-4,
+    .Card.cols-3,
+    .Card.cols-1 {
         grid-template-columns: 1fr;
         padding: 1.5rem;
-        gap: 1rem;
+    }
+    .select-container {
+        gap: 0;
     }
 }
 

@@ -78,8 +78,22 @@ function SettingsPage() {
         );
 
         if (isConfirmed) {
-            toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
-            setAdminLogin("");
+            try {
+                const response = await fetch(`http://localhost:3000/teacher/${adminLogin}/admin`, {
+                    method: "PUT",
+                    credentials: "include"
+                });
+
+                if (response.ok) {
+                    toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
+                    setAdminLogin("");
+                } else {
+                    toast.error("Erreur lors de l'ajout.");
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                toast.error("Erreur connexion serveur.");
+            }
         }
     };
 
@@ -246,118 +260,123 @@ function SettingsPage() {
                 )}
 
                 {activeTab === "subject" && (
-                    <div className="settings-subject-container">
-                        <div className="Card cols-3" style={{ marginBottom: '2rem' }}>
-                            <h2>
-                                {editingSubject ? "Modifier une matière" : "Ajouter une matière"}
-                            </h2>
-                            
-                            <div className="input-group">
-                                <label>Libellé de la matière</label>
-                                <input 
-                                    type="text" 
-                                    placeholder="Analyse syntaxique, Système..."
-                                    value={subjectLabel}
-                                    onChange={(e) => setSubjectLabel(e.target.value)}
-                                />
-                            </div>
+                    <div className="settings-subject-layout">
+                        <div className="settings-left-column">
+                            <div className="Card cols-2" style={{ marginBottom: '2rem'}}>
+                                <h2>
+                                    {editingSubject ? "Modifier une matière" : "Ajouter une matière"}
+                                </h2>
+                                
+                                <div className="input-group">
+                                    <label>Libellé de la matière</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Analyse syntaxique, Système..."
+                                        value={subjectLabel}
+                                        onChange={(e) => setSubjectLabel(e.target.value)}
+                                    />
+                                </div>
 
-                             <div className="input-group">
-                                <label>Promotion</label>
-                                <select 
-                                    value={promotion}
-                                    onChange={(e) => setPromotion(e.target.value)}
-                                >
-                                    <option value="">-- Sélectionner une promotion --</option>
-                                    {promotions.map(p => <option key={p} value={p}>{p}</option>)}
-                                </select>
-                            </div>
-
-                             <div className="input-group">
-                                <label>Semestre</label>
-                                <select 
-                                    value={semester}
-                                    onChange={(e) => setSemester(e.target.value)}
-                                >
-                                    <option value="">-- Sélectionner le semestre --</option>
-                                    <option value="Impair">Impair</option>
-                                    <option value="Pair">Pair</option>
-                                </select>
-                            </div>
-
-                            <div className="settings-btn-group">
-                                <button 
-                                    onClick={handleAddSubject}
-                                    className="validate-btn settings-btn-action"
-                                >
-                                    {editingSubject ? "Modifier" : "Ajouter"}
-                                </button>
-                                {editingSubject && (
-                                     <button 
-                                        onClick={handleCancelEdit}
-                                        className="validate-btn settings-btn-cancel"
+                                 <div className="input-group">
+                                    <label>Promotion</label>
+                                    <select 
+                                        value={promotion}
+                                        onChange={(e) => setPromotion(e.target.value)}
                                     >
-                                        Annuler
+                                        <option value="">-- Sélectionner une promotion --</option>
+                                        {promotions.map(p => <option key={p} value={p}>{p}</option>)}
+                                    </select>
+                                </div>
+
+                                 <div className="input-group">
+                                    <label>Semestre</label>
+                                    <select 
+                                        value={semester}
+                                        onChange={(e) => setSemester(e.target.value)}
+                                    >
+                                        <option value="">-- Sélectionner le semestre --</option>
+                                        <option value="Impair">Impair</option>
+                                        <option value="Pair">Pair</option>
+                                    </select>
+                                </div>
+
+                                <div className="settings-btn-group">
+                                    <button 
+                                        onClick={handleAddSubject}
+                                        className="validate-btn settings-btn-action"
+                                    >
+                                        {editingSubject ? "Modifier" : "Ajouter"}
                                     </button>
-                                )}
+                                    {editingSubject && (
+                                         <button 
+                                            onClick={handleCancelEdit}
+                                            className="validate-btn settings-btn-cancel"
+                                        >
+                                            Annuler
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
-                         <h3 className="settings-card-subtitle">Matières enregistrées</h3>
-                         
-                         <div className="Card cols-2 settings-filter-card">
-                             <div className="input-group">
-                                 <select 
-                                    value={filterPromo}
-                                    onChange={(e) => setFilterPromo(e.target.value)}
-                                >
-                                    <option value="">Toutes les promotions</option>
-                                    {promotions.map(p => <option key={p} value={p}>{p}</option>)}
-                                 </select>
+                        <div className="settings-right-column">
+                             
+                             <div className="Card cols-2 settings-filter-card">
+                                 <div className="input-group">
+                                     <select 
+                                        value={filterPromo}
+                                        onChange={(e) => setFilterPromo(e.target.value)}
+                                    >
+                                        <option value="">Toutes les promotions</option>
+                                        {promotions.map(p => <option key={p} value={p}>{p}</option>)}
+                                     </select>
+                                 </div>
+
+                                 <div className="input-group">
+                                     <select 
+                                        value={filterSemester}
+                                        onChange={(e) => setFilterSemester(e.target.value)}
+                                    >
+                                        <option value="">Tous les semestres</option>
+                                        <option value="Impair">Impair</option>
+                                        <option value="Pair">Pair</option>
+                                    </select>
+                                 </div>
                              </div>
 
-                             <div className="input-group">
-                                 <select 
-                                    value={filterSemester}
-                                    onChange={(e) => setFilterSemester(e.target.value)}
-                                >
-                                    <option value="">Tous les semestres</option>
-                                    <option value="Impair">Impair</option>
-                                    <option value="Pair">Pair</option>
-                                </select>
-                             </div>
-                         </div>
+                             <h3 className="settings-card-subtitle">Matières enregistrées</h3>
 
-                         <div className="settings-list-container">
-                            {filteredSubjects.length === 0 ? (
-                                <p style={{textAlign: 'center', color: 'var(--text-secondary)'}}>Aucune matière trouvée.</p>
-                            ) : (
-                                filteredSubjects.map(sub => (
-                                    <div key={sub.code} className="settings-list-item">
-                                        <div style={{ flex: 1 }}>
-                                            <div className="settings-item-info">{sub.libelle}</div>
-                                            <div className="settings-item-details">{sub.promo} • Semestre {sub.spair === 1 ? "Pair" : "Impair"}</div>
+                             <div className="settings-list-container">
+                                {filteredSubjects.length === 0 ? (
+                                    <p style={{textAlign: 'center', color: 'var(--text-secondary)'}}>Aucune matière trouvée.</p>
+                                ) : (
+                                    filteredSubjects.map(sub => (
+                                        <div key={sub.code} className="settings-list-item">
+                                            <div style={{ flex: 1 }}>
+                                                <div className="settings-item-info">{sub.libelle}</div>
+                                                <div className="settings-item-details">{sub.promo} • Semestre {sub.spair === 1 ? "Pair" : "Impair"}</div>
+                                            </div>
+                                            <div className="settings-item-actions">
+                                                <button 
+                                                    onClick={() => handleEditSubject(sub)}
+                                                    className="settings-icon-button"
+                                                    title="Modifier"
+                                                >
+                                                    <span className="icon settings-icon icon-edit" />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDeleteSubject(sub.code)}
+                                                    className="settings-icon-button"
+                                                    title="Supprimer"
+                                                >
+                                                    <span className="icon settings-icon icon-trash" />
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="settings-item-actions">
-                                            <button 
-                                                onClick={() => handleEditSubject(sub)}
-                                                className="settings-icon-button"
-                                                title="Modifier"
-                                            >
-                                                <span className="icon settings-icon icon-edit" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDeleteSubject(sub.code)}
-                                                className="settings-icon-button"
-                                                title="Supprimer"
-                                            >
-                                                <span className="icon settings-icon icon-trash" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                         </div>
+                                    ))
+                                )}
+                             </div>
+                        </div>
                     </div>
                 )}
 

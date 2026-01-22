@@ -83,6 +83,7 @@ const HEADER_DISPLAY_NAMES = {
     fin: "Date fin",
     motif: "Motif absence",
     commentaire: "Commentaire",
+    administrateur: "Rôle",
 };
 
 export { calculateDuplicateRow, validateTeacherData, matchHeader, EXPECTED_HEADERS, HEADER_DISPLAY_NAMES };
