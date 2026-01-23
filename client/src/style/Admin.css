@@ -1053,3 +1053,35 @@ p {
 .homepage-subtitle-container {
     margin-top: 10px;
 }
+
+.search-container-justification-admin {
+    padding: 16px;
+    border: 2px dashed var(--dropzone-border);
+    background-color: transparent;
+    color: var(--primary-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container-justification-admin.choice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s;
+}
+
+.adminJustificationPage {
+    max-width: 800px;
+    min-height: 710px;
+    height: auto;
+    width: 100%;
+}

@@ -13,6 +13,7 @@ import React from "react";
 import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
 import SettingsPage from "./pages/Admin/SettingsPage";
 import AbsencePage from "./pages/Admin/AbsencePage";
+import AdminJustificationPage from "./pages/Admin/AdminJustificationPage";
 
 export const routesConfig = [
     {
@@ -21,6 +22,7 @@ export const routesConfig = [
 
         children: [
             { index: true, label: "Tableau de bord", element: <AdminHomePage />, icon: "icon-board-table" },
+            { path: "justification", label: "Justifier", element: <AdminJustificationPage />, icon: "icon-justification-student" },
             { path: "add", label: "Ajouter des membres", element: <AddingPage />, icon: "icon-adding-group" },
             { path: "lists", label: "Listes", element: <ShowListsPage />, icon: "icon-student-list" },
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },

@@ -302,7 +302,12 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
 //Publication d'une justification
 router.post("/", verifyToken, (req, res) => {
     let body = req.body;
-    const userLogin = req.user.pwd.split("-")[0];
+    let userLogin = req.user.pwd.split("-")[0];
+    const userRole = req.user.pwd.split("-")[1];
+
+    if (userRole === "admin" && body.studentLogin) {
+        userLogin = body.studentLogin;
+    }
 
     // Security Check: Input Validation
     const validation = validateJustificationInput(body);
@@ -336,10 +341,8 @@ router.post("/", verifyToken, (req, res) => {
             let start = formatToDB(body.start);
             let end = formatToDB(body.end);
             let motif = body.justification;
-            // Use client provided timestamp or fallback to server time
             let dateDemande = body.timestamp ? formatToDB(body.timestamp, true) : formatToDB(Date.now(), true);
 
-            // Step 1: Check for overlapping pending justifications (validite = 2)
             const pendingOverlapSql = `
                 SELECT idAbsJustifiee 
                 FROM JustificationAbsence 
@@ -370,7 +373,6 @@ router.post("/", verifyToken, (req, res) => {
                 });
             };
 
-            // First verify no pending overlaps
             db.all(pendingOverlapSql, [number, end, start], (err, pendingRows) => {
                 if (err) {
                     console.error("Error checking pending overlaps:", err);
@@ -381,21 +383,28 @@ router.post("/", verifyToken, (req, res) => {
                     return res.status(409).json("Une justification est déjà en attente de validation pour cette période.");
                 }
 
-                // If okay, check refused overlaps to clean them up
-                db.all(refusedOverlapSql, [number, end, start], (err, rows) => {
+                db.all(refusedOverlapSql, [number, end, start], (err, refusedRows) => {
                     if (err) {
                         console.error("Error checking refused overlaps:", err);
                         return res.status(500).json(err.message);
                     }
 
-                    if (rows.length > 0) {
-                        // Si oui, on supprime les anciennes
-                        const idsToDelete = rows.map((r) => r.idAbsJustifiee);
+                    let idsToDelete = [];
+
+                    if (refusedRows.length > 0) {
+                        idsToDelete = [...idsToDelete, ...refusedRows.map((r) => r.idAbsJustifiee)];
+                    }
+
+                    if (userRole === "admin" && pendingRows.length > 0) {
+                        idsToDelete = [...idsToDelete, ...pendingRows.map((r) => r.idAbsJustifiee)];
+                    }
+
+                    if (idsToDelete.length > 0) {
                         const deleteSql = `DELETE FROM JustificationAbsence WHERE idAbsJustifiee IN (${idsToDelete.join(",")})`;
 
                         db.run(deleteSql, function (err) {
                             if (err) {
-                                console.error("Error deleting refused justifications:", err);
+                                console.error("Error deleting justifications:", err);
                                 return res.status(500).json(err.message);
                             }
                             // Et on insère la nouvelle

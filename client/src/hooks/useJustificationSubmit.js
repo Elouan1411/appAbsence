@@ -4,9 +4,10 @@ import toast from "react-hot-toast";
 export const useJustificationSubmit = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const submit = async (periods, reason, comment, files, mode = "create", existingId = null, removedFiles = [], originalDateDemande = null) => {
+    const submit = async (periods, reason, comment, files, mode = "create", existingId = null, removedFiles = [], originalDateDemande = null, studentLogin = null) => {
         setIsSubmitting(true);
         toast.dismiss();
+        const createdIds = [];
 
         const fullReason = comment ? `${reason} | ${comment}` : reason;
         const now = new Date();
@@ -30,6 +31,7 @@ export const useJustificationSubmit = () => {
                         end: new Date(p.end).getTime(),
                         justification: fullReason,
                         timestamp: now.getTime(),
+                        studentLogin: studentLogin,
                     };
 
                     const response = await fetch("http://localhost:3000/justification", {
@@ -43,6 +45,7 @@ export const useJustificationSubmit = () => {
                     const newId = await response.json();
 
                     if (!firstCreatedId) firstCreatedId = newId;
+                    createdIds.push(newId);
                 }
                 targetId = firstCreatedId;
             } else if (mode === "update" && existingId) {
@@ -126,11 +129,11 @@ export const useJustificationSubmit = () => {
             }
 
             toast.success(mode === "create" ? "Justification envoyée !" : "Justification mise à jour !");
-            return true;
+            return { success: true, ids: createdIds, targetId };
         } catch (error) {
             const cleanMessage = error.message.replace(/^"|"$/g, ""); // clean json string
             toast.error(cleanMessage || "Une erreur est survenue lors de l'envoi.");
-            return false;
+            return { success: false };
         } finally {
             setIsSubmitting(false);
         }
