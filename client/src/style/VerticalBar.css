@@ -11,8 +11,6 @@
     --icon-color: #ffffff;
     --hover-bg: #2b2b30;
     --active-bg: #2d2d36;
-    --sidebar-width-open: 260px;
-    --sidebar-width-closed: 80px;
     --toggle-bg: #2b2b30;
     --toggle-active-bg: #3f3f46;
     --toggle-text: var(--text-secondary);
@@ -35,7 +33,7 @@
     color: var(--text-secondary);
     display: flex;
     flex-direction: column;
-    padding: 15px 15px;
+    padding: 15px;
     transition: width 0.3s ease;
     width: var(--sidebar-width-closed);
     border-radius: 16px;
@@ -182,11 +180,6 @@
     mask-image: url("../assets/dashboard.svg");
 }
 
-/* .icon-my-space {
-    -webkit-mask-image: url("../assets/dashboard.svg");
-    mask-image: url("../assets/dashboard.svg");
-} */
-
 .icon-settings {
     -webkit-mask-image: url("../assets/settings.svg");
     mask-image: url("../assets/settings.svg");
@@ -267,10 +260,12 @@
     -webkit-mask-image: url("../assets/save.svg");
     mask-image: url("../assets/save.svg");
 }
+
 .icon-warning {
     mask-image: url("../assets/warning.svg");
     -webkit-mask-image: url("../assets/warning.svg");
 }
+
 .label {
     margin-left: 14px;
     font-weight: 500;
@@ -315,6 +310,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .sidebar:not(.open) .theme-toggle {
     justify-content: center;
 }
@@ -378,4 +374,129 @@
 .sidebar:not(.open) .nav-link:hover .tooltip {
     opacity: 1;
     visibility: visible;
+}
+
+.mobile-only-item {
+    display: none;
+}
+
+.nav-wrapper {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .nav-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .sidebar,
+    .sidebar.open,
+    .sidebar:not(.open) {
+        position: fixed;
+        bottom: 10px;
+        left: calc(50% - 10px);
+        transform: translateX(-50%);
+        width: 85vw;
+        max-width: 400px;
+        height: 65px;
+        background-color: var(--card-bg);
+        border-radius: 25px;
+        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.4);
+        margin: 10px;
+        padding: 0 20px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: none;
+    }
+
+    .vertical-bar-button,
+    .sidebar-footer,
+    .label,
+    .tooltip {
+        display: none;
+    }
+
+    .nav-container {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-list {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        gap: 0;
+    }
+
+    .nav-item {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .nav-link {
+        padding: 0;
+        margin: 0;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+    }
+
+    .nav-link:hover {
+        background-color: transparent;
+    }
+
+    .nav-link.active {
+        background-color: var(--primary-color);
+        box-shadow: 0 4px 10px rgba(62, 126, 134, 0.5);
+    }
+
+    .nav-link.active::before {
+        display: none;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        background-color: var(--text-primary);
+    }
+
+    .nav-link.active .icon {
+        background-color: var(--card-bg);
+    }
+
+    /* .nav-link:hover .icon {
+        background-color: var(--primary-color);
+        transition: 0.3s ease-in-out;
+    } */
+
+    .mobile-only-item {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .mobile-only-item .nav-item {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 }

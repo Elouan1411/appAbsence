@@ -7,33 +7,25 @@ import getIconClass from "../../../functions/getIconClass";
 import NavItem from "./NavItem";
 import React from "react";
 import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
+import { useTheme } from "../../../hooks/useTheme";
+import toggleTheme from "../../../functions/toggleTheme";
 
 function VerticalBar({ notificationCount = 0 }) {
     const { logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const hasUnsavedImport = false;
 
+    const theme = useTheme();
+    const isDarkMode = theme === "dark";
+    const hasUnsavedImport = false;
     const safeNavigate = useSafeNavigate(hasUnsavedImport);
+
     const handleSignOut = async () => {
-        console.log("ok");
         await logout();
         navigate("/", { replace: true });
-
-        try {
-        } catch (error) {}
     };
-    const [isMenuOpen, setIsMenuOpen] = useState(true);
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const savedTheme = sessionStorage.getItem("theme");
-        return savedTheme ? savedTheme === "dark" : true;
-    });
 
-    useEffect(() => {
-        const theme = isDarkMode ? "dark" : "light";
-        sessionStorage.setItem("theme", theme);
-        document.body.className = theme;
-    }, [isDarkMode]);
+    const [isMenuOpen, setIsMenuOpen] = useState(true);
     const { role } = useAuth();
 
     const currentRoleConfig = routesConfig.find((route) => route.allowedRoles.includes(role));
@@ -48,29 +40,31 @@ function VerticalBar({ notificationCount = 0 }) {
             <div className="nav-container">
                 <ul className="nav-list">
                     {menuLinks.map((link, index) => {
-                        if (link.path === "absence/:id") {
-                            if (!location.pathname.includes("/absence/")) return null;
-                            return <NavItem key={index} link={link} index={index} to={location.pathname} isMenuOpen={isMenuOpen} />;
-                        }
-
+                        if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return null;
                         if (!link.label) return null;
 
+                        const isMobileItem = link.path === "settingsmobile";
+
+                        const wrapperClass = `nav-wrapper ${isMobileItem ? "mobile-only-item" : ""}`;
                         if (!link.path?.includes("studentdetail") && !link.path?.includes("absencedetail")) {
                             const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
-                            return <NavItem key={index} link={link} index={index} to={to} isMenuOpen={isMenuOpen} />;
+                            return (
+                                <div key={index} className={wrapperClass}>
+                                    <NavItem link={link} index={index} to={to} isMenuOpen={isMenuOpen} />
+                                </div>
+                            );
                         }
                     })}
                 </ul>
 
                 <div className="sidebar-footer">
-                    <ul className="nav-list">
-                        {role == "admin" && (
-                            <li className="nav-item">
-                                <NavLink
-                                    to="/admin/settings"
-                                    className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
-                                    onClick={(e) => {
+                    {role === "admin" && (
+                        <li className="nav-item">
+                            <NavLink
+                                to="/admin/settings"
+                                className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                                onClick={(e) => {
                                     e.preventDefault();
                                     safeNavigate("/admin/settings");
                                 }}
@@ -79,11 +73,10 @@ function VerticalBar({ notificationCount = 0 }) {
                                 <span className="label">Paramètres</span>
                             </NavLink>
                         </li>
-                        )}
-                    </ul>
+                    )}
 
                     <div className="theme-toggle-container">
-                        <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={() => setIsDarkMode(!isDarkMode)}>
+                        <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={toggleTheme}>
                             <div className={`toggle-option ${!isDarkMode ? "active" : ""}`}>
                                 <span className="icon icon-sun"></span>
                                 {isMenuOpen && <span>Clair</span>}
