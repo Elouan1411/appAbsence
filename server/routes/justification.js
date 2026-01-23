@@ -449,6 +449,11 @@ router.put("/:id", verifyToken, (req, res) => {
 
         const current = rows[0];
 
+        // Block modification if validated (0) or refused finalized (1)
+        if (current.validite === 0 || current.validite === 1) {
+            return res.status(403).json("Modification impossible : la justification est déjà traitée.");
+        }
+
         // Use new values or keep existing ones
         const newStart = start || current.debut;
         const newEnd = end || current.fin;

@@ -6,7 +6,7 @@ import AbsenceCard from "../../components/StudentDashboard/AbsenceCard";
 import DashboardTabs from "../../components/StudentDashboard/DashboardTabs";
 import FloatingActionBar from "../../components/StudentDashboard/FloatingActionBar";
 import parseTimestamp from "../../functions/parseTimestamp";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useAuth } from "../../hooks/useAuth";
@@ -34,6 +34,7 @@ function StudentHomePage() {
                     const mappedAbsences = data.map((abs) => ({
                         id: abs.idAbsence,
                         subject: abs.nomMatiere || abs.codeMatiere,
+                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: "todo",
@@ -58,11 +59,13 @@ function StudentHomePage() {
                     const mappedArchived = data.map((abs) => ({
                         id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
                         subject: abs.nomMatiere || abs.codeMatiere,
+                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: abs.validite === 0 ? "validated" : "refused",
                         reason: abs.motif,
                         adminComment: abs.motifValidite,
+                        justificationId: abs.idAbsJustifiee,
                     }));
                     setArchivedAbsences(mappedArchived);
                 })
@@ -129,6 +132,7 @@ function StudentHomePage() {
                     return {
                         id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
                         subject: abs.nomMatiere || abs.codeMatiere,
+                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: "pending",
@@ -152,12 +156,15 @@ function StudentHomePage() {
         const endDate = parseTimestamp(abs.end);
         const dateLabel = format(startDate, "EEEE dd MMMM", { locale: fr }).toUpperCase();
 
+        const isMultiDay = !isSameDay(startDate, endDate);
+        const timeFormat = isMultiDay ? "dd/MM HH:mm" : "HH:mm";
+
         return {
             ...abs,
             startDateObj: startDate,
             endDateObj: endDate,
-            formattedStartTime: format(startDate, "HH:mm"),
-            formattedEndTime: format(endDate, "HH:mm"),
+            formattedStartTime: format(startDate, timeFormat),
+            formattedEndTime: format(endDate, timeFormat),
             dateLabel,
         };
     });
@@ -234,6 +241,7 @@ function StudentHomePage() {
                     const mappedAbsences = data.map((abs) => ({
                         id: abs.idAbsence,
                         subject: abs.nomMatiere || abs.codeMatiere,
+                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
                         start: String(abs.debut),
                         end: String(abs.fin),
                         status: "todo",
@@ -277,6 +285,7 @@ function StudentHomePage() {
                                 key={absence.id}
                                 id={absence.id}
                                 subject={absence.subject}
+                                teacher={absence.teacher}
                                 startTime={absence.formattedStartTime}
                                 endTime={absence.formattedEndTime}
                                 fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}

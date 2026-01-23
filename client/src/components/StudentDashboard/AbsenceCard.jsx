@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 const AbsenceCard = ({
     id,
     subject,
+    teacher,
     startTime,
     endTime,
     fullPeriod,
@@ -47,13 +48,14 @@ const AbsenceCard = ({
                 adminComment: adminComment,
                 justificationId: justificationId,
                 dateDemande: dateDemande,
+                status: status,
             },
         });
     };
 
     const handleDelete = async (e) => {
         e.stopPropagation();
-        const confirmation = await alertConfirm("Êtes-vous sûr de vouloir supprimer cette justification ?");
+        const confirmation = await alertConfirm("Suppression d'une justification", "Êtes-vous sûr de vouloir supprimer cette justification ?");
         console.log("Delete triggered for justificationId:", justificationId);
         if (confirmation.isConfirmed) {
             try {
@@ -111,7 +113,10 @@ const AbsenceCard = ({
 
                 <div className="card-absence-info">
                     <div className="card-absence-header">
-                        <h3 className="card-absence-subject">{subject}</h3>
+                        <div className="header-left">
+                            <h3 className="card-absence-subject">{subject}</h3>
+                            {teacher && <span className="teacher-name"> {teacher}</span>}
+                        </div>
                         <span className={badgeClass}>{badgeText}</span>
                     </div>
                     <div className="card-absence-time">

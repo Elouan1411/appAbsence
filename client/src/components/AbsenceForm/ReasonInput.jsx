@@ -1,11 +1,45 @@
 import React from "react";
 import "../../style/Student.css";
+import { FileText, MessageSquare } from "lucide-react";
 
-const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error }) => {
+const REASON_LABELS = {
+    maladie: "Maladie / Raison médicale",
+    "rdv-administratif": "Rendez-vous administratif",
+    "pb-transport": "Problème de transport",
+    autre: "Autre",
+};
+
+const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, readOnly }) => {
+    if (readOnly) {
+        return (
+            <div className="reason-readonly-container">
+                <div className="reason-readonly-grid">
+                    {/* Motif Card */}
+                    <div className="info-card reason-card">
+                        <div className="info-card-header">
+                            <FileText size={18} className="info-icon reason-icon" />
+                            <span className="info-card-title">Motif de l'absence</span>
+                        </div>
+                        <div className="info-value-box reason-value-box">{REASON_LABELS[reason] || reason || "Motif non spécifié"}</div>
+                    </div>
+
+                    {/* Commentaire Card */}
+                    <div className="info-card comment-card">
+                        <div className="info-card-header">
+                            <MessageSquare size={18} className="info-icon comment-icon" />
+                            <span className="info-card-title">Commentaire</span>
+                        </div>
+                        <div className="info-value-box comment-value-box">{comment || "Aucun commentaire"}</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="reason-input">
-            <div className="select-container">
-                <label htmlFor="reason" className="select-label">
+            <div className="select-container-student">
+                <label htmlFor="reason" className="section-title-student">
                     Motif de l'absence
                 </label>
 

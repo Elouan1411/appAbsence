@@ -3,11 +3,14 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
 import ReasonInput from "../../components/AbsenceForm/ReasonInput";
 import FileUpload from "../../components/AbsenceForm/FileUpload";
+import FileReadOnlyList from "../../components/AbsenceForm/FileReadOnlyList";
 import Button from "../../components/common/Button";
 import PeriodAbsence from "../../components/AbsenceForm/PeriodAbsence";
 import CustomLoader from "../../components/common/CustomLoader";
+import AbsenceStatus from "../../components/AbsenceForm/AbsenceStatus";
 import { useJustificationValidation } from "../../hooks/useJustificationValidation";
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 const StudentAbsenceDetailsPage = () => {
     const { id } = useParams();
@@ -20,15 +23,19 @@ const StudentAbsenceDetailsPage = () => {
     const [removedFiles, setRemovedFiles] = useState([]);
     const [period, setPeriod] = useState([]);
     const [dateDemande, setDateDemande] = useState(null);
+    const [refusalReason, setRefusalReason] = useState("");
+    const [status, setStatus] = useState("todo");
 
     const { errors, periodError, reasonError, validatePeriods, validateReason, validateAll } = useJustificationValidation();
 
     const { submit, isSubmitting } = useJustificationSubmit();
 
     const [isEditable, setIsEditable] = useState(true);
+    console.log("chargement de la page");
 
     useEffect(() => {
         const loadFiles = async (justifId) => {
+            console.log("chargement des fichiers");
             try {
                 const response = await fetch(`http://localhost:3000/justification/${justifId}`, {
                     method: "GET",
@@ -41,6 +48,10 @@ const StudentAbsenceDetailsPage = () => {
                 }
 
                 const data = await response.json();
+                console.log("data", data);
+                if (data.validite === 0 || data.validite === 1) {
+                    setIsEditable(false);
+                }
 
                 if (data.list && Array.isArray(data.list) && data.list.length > 0) {
                     const filePromises = data.list.map(async (filename) => {
@@ -78,7 +89,22 @@ const StudentAbsenceDetailsPage = () => {
             }
         };
 
+        console.log("lancement de useEffect");
+
         if (location.state) {
+            console.log("Status received:", location.state.status);
+            if (location.state.status === "validated" || location.state.status === "refused") {
+                setIsEditable(false);
+            }
+
+            if (location.state.status) {
+                setStatus(location.state.status);
+            }
+
+            if (location.state.adminComment) {
+                setRefusalReason(location.state.adminComment);
+            }
+
             if (location.state.dateDemande) {
                 setDateDemande(location.state.dateDemande);
             }
@@ -141,6 +167,10 @@ const StudentAbsenceDetailsPage = () => {
     };
 
     const handleUpdate = async () => {
+        const confirmation = await alertConfirm("Mise à jour de l'absence", "Voulez-vous vraiment mettre à jour cette absence ?");
+        if (!confirmation.isConfirmed) {
+            return;
+        }
         if (!validateAll(period, reason, comment)) {
             return;
         }
@@ -157,7 +187,16 @@ const StudentAbsenceDetailsPage = () => {
             <div className="studentJustificationPage">
                 <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
 
-                <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} automaticPeriod={false} />
+                <AbsenceStatus status={status} adminComment={refusalReason} />
+
+                <PeriodAbsence
+                    period={period}
+                    setPeriod={handlePeriodChange}
+                    errors={errors}
+                    error={periodError}
+                    automaticPeriod={false}
+                    readOnly={!isEditable}
+                />
 
                 <hr className="section-divider" />
 
@@ -173,16 +212,23 @@ const StudentAbsenceDetailsPage = () => {
                         validateReason(reason, val);
                     }}
                     error={reasonError}
+                    readOnly={!isEditable}
                 />
 
                 <hr className="section-divider" />
 
-                <FileUpload files={files} setFiles={handleFilesChange} />
-                <div style={{ marginTop: "30px" }}>
-                    <Button onClick={handleUpdate} className="submit-button" disabled={isSubmitting}>
-                        {isSubmitting ? <CustomLoader /> : "Modifier la justification"}
-                    </Button>
-                </div>
+                {isEditable ? (
+                    <>
+                        <FileUpload files={files} setFiles={handleFilesChange} />
+                        <div style={{ marginTop: "30px" }}>
+                            <Button onClick={handleUpdate} className="submit-button" disabled={isSubmitting}>
+                                {isSubmitting ? <CustomLoader /> : "Modifier la justification"}
+                            </Button>
+                        </div>
+                    </>
+                ) : (
+                    <FileReadOnlyList files={files} />
+                )}
             </div>
         </div>
     );

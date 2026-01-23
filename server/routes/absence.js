@@ -139,10 +139,13 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
        AND J.fin >= Ap.fin
        AND J.validite = 3
        ORDER BY J.idAbsJustifiee DESC
-       LIMIT 1) as dateDemande
+       LIMIT 1) as dateDemande,
+      P.nom as nomProf,
+      P.prenom as prenomProf
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
     WHERE A.login = ?
     AND (
         NOT EXISTS (
@@ -184,6 +187,8 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       Ap.fin,
       Ap.codeMatiere,
       M.libelle as nomMatiere,
+      P.nom as nomProf,
+      P.prenom as prenomProf,
       J.motif,
       'ABSENCE' as type,
       J.idAbsJustifiee,
@@ -191,6 +196,7 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
     JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
        AND J.debut <= Ap.debut 
        AND J.fin >= Ap.fin
@@ -207,6 +213,8 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
       J.fin,
       NULL as codeMatiere,
       'Justification anticipée' as nomMatiere,
+      NULL as nomProf,
+      NULL as prenomProf,
       J.motif,
       'JUSTIFICATION' as type,
       J.idAbsJustifiee,
@@ -246,13 +254,17 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       Ap.fin,
       Ap.codeMatiere,
       M.libelle as nomMatiere,
+      P.nom as nomProf,
+      P.prenom as prenomProf,
       J.validite,
       J.motif,
       J.motifValidite,
+      J.idAbsJustifiee,
       'ABSENCE' as type
     FROM Absence A
     JOIN Appel Ap ON A.idAppel = Ap.idAppel
     LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
     JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
        AND J.debut <= Ap.debut 
        AND J.fin >= Ap.fin
@@ -269,9 +281,12 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
       J.fin,
       NULL as codeMatiere,
       'Justification sans absence' as nomMatiere,
+      NULL as nomProf,
+      NULL as prenomProf,
       J.validite,
       J.motif,
       J.motifValidite,
+      J.idAbsJustifiee,
       'JUSTIFICATION' as type
     FROM JustificationAbsence J
     JOIN Eleve E ON J.numeroEtudiant = E.numero

@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 registerLocale("fr", fr);
 
-const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) => {
+const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, readOnly }) => {
     const addPeriod = () => {
         let baseDate = new Date();
 
@@ -76,7 +76,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
 
     return (
         <div>
-            <h2 className="period-title">Période(s) d'absence</h2>
+            <h3 className="section-title-student section-title-student-period">Période(s) d'absence</h3>
             <AnimatePresence initial={false} mode="popLayout">
                 {period.map((p) => (
                     <motion.div
@@ -99,7 +99,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                                 timeFormat="HH:mm"
                                 timeIntervals={30}
                                 dateFormat="dd MMM HH:mm"
-                                className="custom-datepicker-input"
+                                className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
                             />
                         </div>
@@ -114,19 +114,23 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod }) =>
                                 timeFormat="HH:mm"
                                 timeIntervals={30}
                                 dateFormat="dd MMM HH:mm"
-                                className="custom-datepicker-input"
+                                className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
                             />
                         </div>
-                        <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
-                            <img src={trashIcon} alt="Delete" width="20" height="20" />
-                        </button>
+                        {!readOnly && (
+                            <button onClick={() => removePeriod(p.id)} title="Supprimer" className="remove-period-button">
+                                <img src={trashIcon} alt="Delete" width="20" height="20" />
+                            </button>
+                        )}
                     </motion.div>
                 ))}
             </AnimatePresence>
-            <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
-                {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
-            </button>
+            {!readOnly && (
+                <button onClick={addPeriod} className={`add-period-button ${error ? "input-error" : ""}`}>
+                    {period.length < 1 ? "+ Ajouter une date/heure" : "+ Ajouter une autre date/heure (pour le même motif/justificatif)"}
+                </button>
+            )}
         </div>
     );
 };

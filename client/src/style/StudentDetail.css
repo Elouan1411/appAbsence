@@ -154,11 +154,6 @@ h3 {
     color: var(--text-primary);
 }
 
-.card-absence {
-    width: calc(100% - 88px);
-    /* background-color: var(--header-background-color); */
-}
-
 .footer-container {
     width: calc(100% - 10px);
     height: 5vh;

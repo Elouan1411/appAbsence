@@ -12,6 +12,7 @@ import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useJustificationValidation } from "../../hooks/useJustificationValidation";
 
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 const StudentJustificationPage = () => {
     const [reason, setReason] = useState("");
@@ -51,8 +52,8 @@ const StudentJustificationPage = () => {
 
         const hasFiles = files.length > 0;
         const message = hasFiles ? "Confirmer l'envoi de l'absence ?" : "Voulez vous envoyer l'absence sans justificatif ?";
-
-        if (window.confirm(message)) {
+        const confirmation = await alertConfirm("Envoie de l'absence", message);
+        if (confirmation.isConfirmed) {
             const success = await submit(period, reason, comment, files, "create");
             if (success) {
                 setReason("");

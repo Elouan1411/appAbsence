@@ -58,10 +58,15 @@ const FileUpload = ({ files, setFiles }) => {
     };
 
     const addFiles = (newFiles) => {
-        const MAX_SIZE = 15 * 1024 * 1024; // 15MB
+        const MAX_NB_FILES = 10;
+        if (files.length + newFiles.length > MAX_NB_FILES) {
+            toast.error(`Vous ne pouvez pas ajouter plus de ${MAX_NB_FILES} fichiers.`);
+            return;
+        }
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
         const validFiles = newFiles.filter((file) => {
             if (file.size > MAX_SIZE) {
-                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 15Mo.`);
+                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 10Mo.`);
                 return false;
             }
             const extension = file.name.split(".").pop().toLowerCase();
@@ -100,11 +105,19 @@ const FileUpload = ({ files, setFiles }) => {
         URL.revokeObjectURL(url);
     };
 
+    const formatFileSize = (bytes) => {
+        if (!bytes) return "0 B";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+    };
+
     return (
         <div className="file-upload-container">
-            <h2 className="file-upload-title">
+            <h3 className="section-title-student">
                 Justificatifs <span className="optional-text">(Optionnel)</span>
-            </h2>
+            </h3>
 
             <div
                 className={`dropzone ${isDragging ? "dragging" : ""}`}
@@ -121,20 +134,23 @@ const FileUpload = ({ files, setFiles }) => {
                 </div>
 
                 <p className="dropzone-text">Cliquez ou glissez vos fichiers ici</p>
-                <p className="dropzone-subtext">PDF, JPG, JPEG, PNG, HEIC, HEIF (Max 15Mo)</p>
+                <p className="dropzone-subtext">PDF, JPG, JPEG, PNG, HEIC, HEIF (Max 10Mo)</p>
             </div>
 
             {files.length > 0 && (
                 <div className="file-list">
                     {files.map((file, index) => (
-                        <div key={index} className="file-item" onClick={() => removeFile(file)} title="Supprimer le fichier">
+                        <div key={index} className="file-item file-item-readonly" onClick={() => removeFile(file)} title="Supprimer le fichier">
                             <div className="file-info">
                                 <span className="file-icon pdf-icon">
                                     <img src={fileIcon} alt="File" width="20" height="20" />
                                 </span>
-                                <span className="file-name" onClick={(e) => downloadFile(e, file)} title="Télécharger le fichier">
-                                    {file.name}
-                                </span>
+                                <div className="file-details">
+                                    <span className="file-name" onClick={(e) => downloadFile(e, file)} title="Télécharger le fichier">
+                                        {file.name}
+                                    </span>
+                                    <span className="file-size">{formatFileSize(file.size)}</span>
+                                </div>
                             </div>
                             <span className="upload-success deletable">
                                 <img src={checkIcon} alt="Success" className="icon-state-success" width="20" height="20" />

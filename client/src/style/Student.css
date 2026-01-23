@@ -6,7 +6,7 @@
     margin-right: auto;
 }
 
-.select-container {
+.select-container-student {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -16,7 +16,7 @@
 div.title-container {
     margin-left: 0;
     margin-right: 0;
-    width: calc(100% - 30px);
+    width: auto;
     margin-bottom: 1vh;
 }
 
@@ -61,6 +61,13 @@ button.btn-select .lucide {
     padding-right: 2.5rem;
     width: 100%;
     box-sizing: border-box;
+}
+
+.no-files-text {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 20px 0;
+    text-align: center;
 }
 
 .custom-select:focus {
@@ -187,9 +194,57 @@ button.btn-select .lucide {
     cursor: pointer;
 }
 
-.file-item:hover {
+.file-item:hover:not(.file-item-readonly) {
     background-color: var(--file-item-hover-bg);
     border-color: var(--file-item-hover-border);
+}
+
+.file-item-readonly:hover .file-name {
+    text-decoration: underline;
+}
+
+.file-action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.file-item-readonly:hover .file-action-icon {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.icon-download {
+    width: 20px;
+    height: 20px;
+    background-color: var(--text-secondary);
+    display: inline-block;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    transition:
+        transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 0.2s;
+}
+
+.file-item-readonly:hover .icon-download {
+    background-color: var(--primary-color);
+}
+[data-theme="dark"] .icon-download {
+    background-color: var(--text-secondary);
+}
+.file-item-readonly:active .icon-download {
+    transform: scale(0.75);
+}
+.file-item-readonly:active {
+    background-color: #f1f3f5;
+    transform: translateY(1px);
 }
 
 .file-info {
@@ -680,12 +735,16 @@ span.loading-text {
     flex-direction: row;
     align-items: center;
     gap: 0;
+    flex: 1; /* Allow taking available space */
+    min-width: 0; /* Critical for text truncation in nested flex */
 }
 
 .card-absence-info {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0; /* Critical for text truncation in nested flex */
+    width: 100%; /* Ensure it fills parent */
 }
 
 .card-absence-header {
@@ -699,6 +758,18 @@ span.loading-text {
     font-weight: 700;
     color: var(--text-primary);
     margin: 0;
+}
+
+.teacher-name {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
 }
 
 .card-absence-badge {
@@ -758,6 +829,7 @@ span.loading-text {
     font-size: 0.9rem;
     max-width: 100%;
     align-items: center;
+    overflow: hidden; /* Added to constrain children */
 }
 
 .reason-label {
@@ -765,6 +837,7 @@ span.loading-text {
     color: var(--text-secondary);
     white-space: nowrap;
     font-size: 0.85rem;
+    flex-shrink: 0; /* Prevent label from shrinking */
 }
 
 .reason-text {
@@ -773,6 +846,8 @@ span.loading-text {
     text-overflow: ellipsis;
     white-space: nowrap;
     opacity: 0.9;
+    flex: 1; /* Take remaining space */
+    min-width: 0; /* Allow truncation in flexbox */
 }
 
 .card-absence-right {
@@ -873,6 +948,9 @@ span.loading-text {
 
 .dashboard-content:not(:has(.card-absence)) {
     min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dashboard-tabs:has(.dashboard-tab:first-child.active) + .dashboard-content {
@@ -1065,4 +1143,273 @@ span.loading-text {
 
 .lucide.icon-eye {
     color: var(--primary-color);
+}
+
+.section-title-student {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.section-title-student.section-title-student-period {
+    margin-bottom: calc(1rem + 8px);
+}
+
+.readonly-comment-container {
+    margin-top: 12px;
+}
+
+.readonly-comment,
+.readonly-reason {
+    border-radius: 8px;
+    padding: 6px 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    display: block;
+}
+
+.custom-datepicker-input-readonly {
+    cursor: not-allowed;
+}
+
+.section-title-student.section-title-student-readonly {
+    margin-bottom: 0;
+}
+
+/* AbsenceStatus Component */
+.absence-status-card {
+    background-color: var(--input-bg);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-left: 5px solid transparent; /* Base border */
+    transition: all 0.2s ease;
+}
+
+.status-container-refused {
+    border-left-color: var(--error-color);
+}
+
+.status-container-pending {
+    border-left-color: var(--pending-color);
+}
+
+.status-container-validated {
+    border-left-color: var(--upload-success-color);
+}
+
+.status-container-archived {
+    border-left-color: var(--text-secondary);
+}
+
+.status-header {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 9999px; /* Pill shape */
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge-refused {
+    background-color: var(--badge-refused-bg);
+    color: var(--badge-refused-text);
+}
+
+.status-badge-pending {
+    background-color: var(--badge-pending-bg);
+    color: var(--badge-pending-text);
+}
+
+.status-badge-validated {
+    /* background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color); */
+    background-color: var(--badge-validated-bg);
+    color: var(--badge-validated-text);
+}
+
+.status-badge-archived {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.admin-comment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.admin-comment-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.admin-comment-box {
+    background-color: rgba(16, 185, 129, 0.08); /* Light green tint for success/valid feel, or adapt based on context. User image showed light green. */
+    /* If we want it dynamic based on status, we might need more specific classes. Assuming neutral or positive vibe from image. */
+    /* Let's stick to a generic nice background or use status color. The image showed green for "Justificatifs valides". */
+    /* Let's use a subtle background that works generally or specific if it's "Raison du refus" */
+    background-color: var(--bg-secondary);
+    padding: 16px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
+}
+
+/* Specific styling for refusal comment box if needed, overriding above */
+.status-container-refused .admin-comment-box {
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* ReasonInput ReadOnly */
+.reason-readonly-container {
+    margin-bottom: 24px;
+}
+
+.reason-readonly-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 768px) {
+    .reason-readonly-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.info-card {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color); /* Light border like typical cards */
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lucide.reason-icon {
+    color: #8b5cf6;
+}
+
+.lucide.comment-icon {
+    color: #f97316;
+}
+
+.info-card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+/* File ReadOnly Items */
+.file-item-readonly {
+    background-color: var(--file-item-bg);
+    border: 1px solid var(--file-item-border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.file-item-readonly:hover {
+    border-color: var(--file-item-hover-border);
+}
+
+/* Specific hover for deletable items (in FileUpload) */
+.file-item-readonly[title="Supprimer le fichier"]:hover {
+    border-color: var(--file-item-deletable-hover-border);
+    background-color: var(--file-item-deletable-hover-bg);
+    cursor: pointer;
+}
+
+.file-item-readonly .file-info {
+    display: flex;
+    align-items: center;
+}
+
+.file-item-readonly .file-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--file-icon-bg);
+    border-radius: 10px; /* Slight rounded corners for icon container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow for icon container */
+}
+
+/* Ensure the image inside the icon container fits well */
+.file-item-readonly .file-icon img {
+    width: 20px;
+    height: 20px;
+    filter: invert(36%) sepia(87%) saturate(378%) hue-rotate(120deg) brightness(93%) contrast(87%); /* Green filter approximation for the icon itself if it's black by default */
+}
+
+.file-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.file-item-readonly .file-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.file-size {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+/* Info Value Box Borders */
+.info-value-box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border for value boxes */
+}
+
+.reason-value-box {
+    background-color: rgba(139, 92, 246, 0.08); /* Violet tint */
+    border-color: rgba(139, 92, 246, 0.15); /* Slightly darker border */
+}
+
+.comment-value-box {
+    background-color: rgba(249, 115, 22, 0.08); /* Orange/Yellow tint */
+    border-color: rgba(249, 115, 22, 0.15); /* Slightly darker border */
 }

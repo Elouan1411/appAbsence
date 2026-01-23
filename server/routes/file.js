@@ -55,7 +55,7 @@ router.post("/upload", (req, res) => {
         uploadDir: uploadDir,
         keepExtensions: true,
         allowEmptyFiles: false,
-        maxFileSize: 50 * 1024 * 1024, // 50MB
+        maxFileSize: 100 * 1024 * 1024, // 100MB limit to prevent server overload
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -73,6 +73,23 @@ router.post("/upload", (req, res) => {
 
         if (!customName) {
             customName = path.parse(uploadedFile.originalFilename).name;
+        }
+
+        // Check file limit (max 10)
+        const MAX_NB_FILES = 10;
+        const justificationId = customName.split("-")[0];
+        if (justificationId) {
+            try {
+                const existingFiles = fs.readdirSync(uploadDir).filter((f) => f.startsWith(`${justificationId}-`));
+                if (existingFiles.length >= MAX_NB_FILES) {
+                    if (fs.existsSync(uploadedFile.filepath)) {
+                        fs.unlinkSync(uploadedFile.filepath);
+                    }
+                    return res.status(400).json({ error: `Limite de ${MAX_NB_FILES} fichiers atteinte pour cette justification.` });
+                }
+            } catch (err) {
+                console.error("Error checking file limit:", err);
+            }
         }
 
         const ext = path.extname(uploadedFile.originalFilename).toLowerCase();
