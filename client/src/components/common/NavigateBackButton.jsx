@@ -1,0 +1,20 @@
+import React from "react";
+import { useUnsaved } from "../../context/UnsavedContext";
+import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+
+function NavigateBackButton() {
+    const { hasUnsavedChanges } = useUnsaved();
+    const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+    const handleGoBack = () => {
+        safeNavigate(-1);
+    };
+    return (
+        <div className="button-container">
+            <button onClick={handleGoBack}>
+                <span className="icon icon-previous"></span>
+            </button>
+        </div>
+    );
+}
+
+export default NavigateBackButton;
