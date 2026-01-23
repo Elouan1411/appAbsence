@@ -37,7 +37,10 @@ function App() {
                 position="top-right"
                 reverseOrder={false}
                 toastOptions={{
-                    style: theme == "dark" ? { backgroundColor: "#2a2a30", color: "#FFF" } : {},
+                    style: {
+                        margin: 10,
+                        ...(theme === "dark" ? { backgroundColor: "#2a2a30", color: "#FFF" } : {}),
+                    },
                 }}
             />
         </>

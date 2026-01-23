@@ -126,10 +126,10 @@ function AdminHomePage() {
     return (
         <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
             <PageTitle title="Tableau de bord" icon={"icon-board-table"} />
-            <CardContainer>
+            {/* <CardContainer>
                 <DisplayCard title="Nombre d'étudiants" value={numberOfStudents} iconLink={"./src/assets/school.svg"} />
                 <DisplayCard title="Justifications en cours" value={numberOfJustification} iconLink={"./src/assets/todo.svg"} />
-            </CardContainer>
+            </CardContainer> */}
 
             <div className="homepage-subtitle-container">
                 <h2 className="homepage-subtitle">Justifier des absences</h2>
