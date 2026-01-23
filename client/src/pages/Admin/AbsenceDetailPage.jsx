@@ -12,6 +12,8 @@ import "../../style/StudentDetail.css";
 import JustificationAbsence from "../../components/AbsenceDetail/JustificationAbsence";
 import { motif_translation } from "../../constants/motif_translation";
 import firstCharUppercase from "../../functions/firstCharUppercase";
+import BackButton from "../../components/common/BackButton";
+import NavigateBackButton from "../../components/common/NavigateBackButton";
 
 function AbsenceDetailPage() {
     const { absenceId } = useParams();
@@ -207,11 +209,7 @@ function AbsenceDetailPage() {
     return (
         <div className="absence-detail-container">
             <PageTitle title={"Détail de l'absence"} icon={"icon-absences"} />
-            <div className="button-container">
-                <button onClick={handleGoBack}>
-                    <span className="icon icon-previous"></span>
-                </button>
-            </div>
+            <NavigateBackButton />
             <div className="absence-detail">
                 <ModificationAbsence
                     debut={debut}
