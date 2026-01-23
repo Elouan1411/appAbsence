@@ -10,6 +10,7 @@ import AbsenceList from "../../components/StudentDetailPage/AbsenceList";
 import Footer from "../../components/StudentDetailPage/Footer";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
+import NavigateBackButton from "../../components/common/NavigateBackButton";
 
 const emptyStudent = {
     prenom: "",
@@ -203,11 +204,8 @@ function StudentDetailPage() {
     return (
         <div className="student-detail-container">
             <PageTitle title="Détail étudiant" icon="icon-school" />
-            <div className="button-container">
-                <button onClick={handleGoBack}>
-                    <span className="icon icon-previous"></span>
-                </button>
-            </div>
+
+            <NavigateBackButton />
 
             <div className="scrollable-content">
                 <PersonalInformations
