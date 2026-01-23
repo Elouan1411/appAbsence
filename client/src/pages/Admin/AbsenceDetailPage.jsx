@@ -9,6 +9,9 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import "../../style/StudentDetail.css";
+import JustificationAbsence from "../../components/AbsenceDetail/JustificationAbsence";
+import { motif_translation } from "../../constants/motif_translation";
+import firstCharUppercase from "../../functions/firstCharUppercase";
 
 function AbsenceDetailPage() {
     const { absenceId } = useParams();
@@ -23,6 +26,8 @@ function AbsenceDetailPage() {
     const [matiere, setMatiere] = useState(0);
     const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isJustified, setJustified] = useState(false);
+    const [justification, setJustification] = useState([]);
 
     const [oldDebut, setOldDebut] = useState(0);
     const [oldFin, setOldFin] = useState(0);
@@ -36,6 +41,16 @@ function AbsenceDetailPage() {
     const handleGoBack = () => {
         safeNavigate(-1);
     };
+
+    useEffect(() => {
+        handleFetchJustification();
+    }, [isJustified]);
+
+    useEffect(() => {
+        if (debut != oldDebut || fin != oldFin || numeroEtudiant != oldNumeroEtudiant || oldMatiere != matiere || loginProfesseur != oldLoginProfesseur) {
+            setHasUnsavedChanges(true);
+        }
+    }, [debut, fin, numeroEtudiant, loginProfesseur, matiere]);
     const handleFetchAbsence = async () => {
         try {
             const result = await fetch("http://localhost:3000/absence/detail/" + absenceId, {
@@ -51,6 +66,7 @@ function AbsenceDetailPage() {
                 setNumeroEtudiant(data[0].numeroEtudiant || "");
                 setLoginProfesseur(data[0].loginProfesseur || "");
                 setMatiere(data[0].codeMatiere || 0);
+                setJustified(data[0].justifie == 1);
                 setOldDebut(data[0].debut || 0);
                 setOldFin(data[0].fin || 0);
                 setOldNumeroEtudiant(data[0].numeroEtudiant || "");
@@ -60,6 +76,42 @@ function AbsenceDetailPage() {
         } catch (err) {
             console.error(err);
             toast.error(err.message || "Erreur récupération absence");
+        }
+    };
+
+    const handleFetchJustification = async () => {
+        try {
+            const result = await fetch("http://localhost:3000/justification/absence/" + absenceId, {
+                method: "GET",
+                credentials: "include",
+            });
+            const data = await result.json();
+            const item = data[0];
+            console.log(item.liste_creneaux);
+            if (item.liste_creneaux && item.liste_creneaux.length > 0) {
+                let new_creneaux = JSON.parse(item.liste_creneaux);
+                const sortedByStart = [...new_creneaux].sort((a, b) => new Date(a.debut) - new Date(b.debut));
+
+                const sortedByEnd = [...new_creneaux].sort((a, b) => new Date(b.fin) - new Date(a.fin));
+
+                const subMotif = item.motif.split("|");
+                const motifTitle = motif_translation[subMotif[0].trim()] || subMotif[0].trim();
+                const commentaire = firstCharUppercase(subMotif[1] || "").trim() || "";
+
+                let newItem = {
+                    ...item,
+                    debut: sortedByStart[0].debut,
+                    fin: sortedByEnd[0].fin,
+                    liste_creneaux: new_creneaux,
+                    motif: motifTitle,
+                    commentaire: commentaire,
+                };
+                console.log(newItem);
+
+                setJustification(newItem);
+            }
+        } catch (err) {
+            console.error(err);
         }
     };
     const handleCancelChanges = async () => {
@@ -180,6 +232,7 @@ function AbsenceDetailPage() {
                     setGroupeTP={setGroupeTP}
                     promo={promo}
                 />
+                {isJustified && <JustificationAbsence justification={justification} />}
             </div>
             <Footer
                 editing={editing}

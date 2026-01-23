@@ -7,17 +7,19 @@ import "../../style/SelectGroups.css";
 import "../../style/SettingsPage.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
+import SubjectModal from "../../components/Admin/SubjectModal";
 
 function SettingsPage() {
     const [activeTab, setActiveTab] = useState("admin");
     const [adminLogin, setAdminLogin] = useState("");
     const [teachers, setTeachers] = useState([]);
-    const [subjectLabel, setSubjectLabel] = useState("");
-    const [promotion, setPromotion] = useState("");
-    const [semester, setSemester] = useState("");
+    
     const [promotions, setPromotions] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    
+    const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
     const [editingSubject, setEditingSubject] = useState(null);
+    
     const [filterPromo, setFilterPromo] = useState("");
     const [filterSemester, setFilterSemester] = useState("");
 
@@ -97,57 +99,44 @@ function SettingsPage() {
         }
     };
 
-    const handleAddSubject = async () => {
-        if (!subjectLabel || !promotion || !semester) {
-            toast.error("Veuillez remplir tous les champs.");
-            return;
-        }
-
+    const handleSaveSubject = async (formData) => {
+        const { libelle, promo, semester } = formData;
         const spairValue = semester === "Pair" ? 1 : 0;
 
         try {
+            let response;
             if (editingSubject) {
-                const response = await fetch(`http://localhost:3000/subject/${editingSubject.code}`, {
+                response = await fetch(`http://localhost:3000/subject/${editingSubject.code}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        libelle: subjectLabel,
-                        promo: promotion,
+                        libelle: libelle,
+                        promo: promo,
                         spair: spairValue
                     }),
                     credentials: "include"
                 });
-
-                if (response.ok) {
-                    toast.success("Matière modifiée avec succès !");
-                    setEditingSubject(null);
-                    fetchSubjects();
-                } else {
-                    toast.error("Erreur lors de la modification.");
-                }
             } else {
-                const response = await fetch("http://localhost:3000/subject/add", {
+                response = await fetch("http://localhost:3000/subject/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        libelle: subjectLabel,
-                        promo: promotion,
+                        libelle: libelle,
+                        promo: promo,
                         spair: spairValue
                     }),
                     credentials: "include"
                 });
-
-                if (response.ok) {
-                    toast.success("Matière ajoutée avec succès !");
-                    fetchSubjects();
-                } else {
-                    toast.error("Erreur lors de l'ajout.");
-                }
             }
-            
-            setSubjectLabel("");
-            setPromotion("");
-            setSemester("");
+
+            if (response.ok) {
+                toast.success(editingSubject ? "Matière modifiée avec succès !" : "Matière ajoutée avec succès !");
+                fetchSubjects();
+                setIsSubjectModalOpen(false);
+                setEditingSubject(null);
+            } else {
+                toast.error("Erreur lors de l'enregistrement.");
+            }
         } catch (err) {
             console.error(err);
             toast.error("Erreur de communication avec le serveur.");
@@ -155,17 +144,8 @@ function SettingsPage() {
     };
 
     const handleEditSubject = (subject) => {
-        setSubjectLabel(subject.libelle);
-        setPromotion(subject.promo);
-        setSemester(subject.spair === 1 ? "Pair" : "Impair");
         setEditingSubject(subject);
-    };
-
-    const handleCancelEdit = () => {
-        setSubjectLabel("");
-        setPromotion("");
-        setSemester("");
-        setEditingSubject(null);
+        setIsSubjectModalOpen(true);
     };
 
     const handleDeleteSubject = async (id) => {
@@ -208,7 +188,21 @@ function SettingsPage() {
 
     return (
         <div className="page-container">
-            <PageTitle title="Paramètres" icon="icon-settings" />
+            <PageTitle title="Paramètres" icon="icon-settings">
+                {activeTab === "subject" && (
+                     <button 
+                        className="validate-btn" 
+                        style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: '15px' }}
+                        onClick={() => {
+                            setEditingSubject(null);
+                            setIsSubjectModalOpen(true);
+                        }}
+                    >
+                        <span className="icon icon-plus" style={{ backgroundColor: 'white' }}></span>
+                        Ajouter
+                    </button>
+                )}
+            </PageTitle>
             
             <div className="adding-container">
                 <div className="dashboard-tabs">
@@ -260,126 +254,88 @@ function SettingsPage() {
                 )}
 
                 {activeTab === "subject" && (
-                    <div className="settings-subject-layout">
-                        <div className="settings-left-column">
-                            <div className="Card cols-2" style={{ marginBottom: '2rem'}}>
-                                <h2>
-                                    {editingSubject ? "Modifier une matière" : "Ajouter une matière"}
-                                </h2>
-                                
+                    <div className="layout-container" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        
+                        <SubjectModal 
+                            isOpen={isSubjectModalOpen} 
+                            onClose={() => {
+                                setIsSubjectModalOpen(false);
+                                setEditingSubject(null);
+                            }}
+                            onSubmit={handleSaveSubject}
+                            initialData={editingSubject}
+                            defaultValues={{ promo: filterPromo, semester: filterSemester }}
+                            promotions={promotions}
+                        />
+
+                        <div className="filter-container">
+                            <div className="Card cols-2 settings-filter-card">
                                 <div className="input-group">
-                                    <label>Libellé de la matière</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="Analyse syntaxique, Système..."
-                                        value={subjectLabel}
-                                        onChange={(e) => setSubjectLabel(e.target.value)}
-                                    />
-                                </div>
-
-                                 <div className="input-group">
-                                    <label>Promotion</label>
                                     <select 
-                                        value={promotion}
-                                        onChange={(e) => setPromotion(e.target.value)}
-                                    >
-                                        <option value="">-- Sélectionner une promotion --</option>
-                                        {promotions.map(p => <option key={p} value={p}>{p}</option>)}
+                                    value={filterPromo}
+                                    onChange={(e) => setFilterPromo(e.target.value)}
+                                >
+                                    <option value="">Toutes les promotions</option>
+                                    {promotions.map(p => <option key={p} value={p}>{p}</option>)}
                                     </select>
                                 </div>
 
-                                 <div className="input-group">
-                                    <label>Semestre</label>
+                                <div className="input-group">
                                     <select 
-                                        value={semester}
-                                        onChange={(e) => setSemester(e.target.value)}
-                                    >
-                                        <option value="">-- Sélectionner le semestre --</option>
-                                        <option value="Impair">Impair</option>
-                                        <option value="Pair">Pair</option>
-                                    </select>
-                                </div>
-
-                                <div className="settings-btn-group">
-                                    <button 
-                                        onClick={handleAddSubject}
-                                        className="validate-btn settings-btn-action"
-                                    >
-                                        {editingSubject ? "Modifier" : "Ajouter"}
-                                    </button>
-                                    {editingSubject && (
-                                         <button 
-                                            onClick={handleCancelEdit}
-                                            className="validate-btn settings-btn-cancel"
-                                        >
-                                            Annuler
-                                        </button>
-                                    )}
-                                </div>
+                                    value={filterSemester}
+                                    onChange={(e) => setFilterSemester(e.target.value)}
+                                >
+                                    <option value="">Tous les semestres</option>
+                                    <option value="Impair">Impair</option>
+                                    <option value="Pair">Pair</option>
+                                </select>
                             </div>
                         </div>
+                        </div>
 
-                        <div className="settings-right-column">
-                             
-                             <div className="Card cols-2 settings-filter-card">
-                                 <div className="input-group">
-                                     <select 
-                                        value={filterPromo}
-                                        onChange={(e) => setFilterPromo(e.target.value)}
-                                    >
-                                        <option value="">Toutes les promotions</option>
-                                        {promotions.map(p => <option key={p} value={p}>{p}</option>)}
-                                     </select>
-                                 </div>
-
-                                 <div className="input-group">
-                                     <select 
-                                        value={filterSemester}
-                                        onChange={(e) => setFilterSemester(e.target.value)}
-                                    >
-                                        <option value="">Tous les semestres</option>
-                                        <option value="Impair">Impair</option>
-                                        <option value="Pair">Pair</option>
-                                    </select>
-                                 </div>
-                             </div>
-
-                             <h3 className="settings-card-subtitle">Matières enregistrées</h3>
-
-                             <div className="settings-list-container">
-                                {filteredSubjects.length === 0 ? (
-                                    <p style={{textAlign: 'center', color: 'var(--text-secondary)'}}>Aucune matière trouvée.</p>
-                                ) : (
-                                    filteredSubjects.map(sub => (
-                                        <div key={sub.code} className="settings-list-item">
-                                            <div style={{ flex: 1 }}>
-                                                <div className="settings-item-info">{sub.libelle}</div>
-                                                <div className="settings-item-details">{sub.promo} • Semestre {sub.spair === 1 ? "Pair" : "Impair"}</div>
-                                            </div>
-                                            <div className="settings-item-actions">
-                                                <button 
-                                                    onClick={() => handleEditSubject(sub)}
-                                                    className="settings-icon-button"
-                                                    title="Modifier"
-                                                >
-                                                    <span className="icon settings-icon icon-edit" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDeleteSubject(sub.code)}
-                                                    className="settings-icon-button"
-                                                    title="Supprimer"
-                                                >
-                                                    <span className="icon settings-icon icon-trash" />
-                                                </button>
-                                            </div>
+                        <div>
+                            <div className="settings-card-subtitle-container"> 
+                                <h3 className="settings-card-subtitle">Matières enregistrées</h3>
+                                <button
+                                    onClick={() => setIsSubjectModalOpen(true)}
+                                    className="validate-btn settings-input-margin-fix"
+                                >
+                                    Ajouter une matière
+                                </button>
+                            </div>
+                            <div className="settings-list-container">
+                            {filteredSubjects.length === 0 ? (
+                                <p style={{textAlign: 'center', color: 'var(--text-secondary)'}}>Aucune matière trouvée.</p>
+                            ) : (
+                                filteredSubjects.map(sub => (
+                                    <div key={sub.code} className="settings-list-item">
+                                        <div style={{ flex: 1 }}>
+                                            <div className="settings-item-info">{sub.libelle}</div>
+                                            <div className="settings-item-details">{sub.promo} • Semestre {sub.spair === 1 ? "Pair" : "Impair"}</div>
                                         </div>
-                                    ))
-                                )}
-                             </div>
+                                        <div className="settings-item-actions">
+                                            <button 
+                                                onClick={() => handleEditSubject(sub)}
+                                                className="settings-icon-button"
+                                                title="Modifier"
+                                            >
+                                                <span className="icon settings-icon icon-edit" />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDeleteSubject(sub.code)}
+                                                className="settings-icon-button"
+                                                title="Supprimer"
+                                            >
+                                                <span className="icon settings-icon icon-trash" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                            </div>
                         </div>
                     </div>
                 )}
-
             </div>
         </div>
     );

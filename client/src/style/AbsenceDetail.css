@@ -11,7 +11,9 @@ main {
 }
 
 .absence-detail {
-    flex: 1;
+    height: 75vh;
+    max-height: 80vh;
+    overflow: auto;
     margin-bottom: 15px;
     width: calc(100% - 50px);
     background-color: var(--card-bg);
@@ -83,6 +85,7 @@ main {
 }
 .suggestion-item span {
     color: var(--text-secondary);
+    font-size: 0.7rem;
 }
 
 .suggestion-item:last-child {
@@ -153,4 +156,27 @@ main {
     cursor: pointer;
     background-color: var(--text-primary);
     transition: 0.5s ease-in-out;
+}
+.footer-container {
+    margin-bottom: 15px;
+    margin-top: 0px;
+    background-color: var(--background-color);
+    box-shadow: none;
+}
+.absence-detail-container > .button-container {
+    background-color: var(--background-color);
+    box-shadow: none;
+    width: 100%;
+}
+
+.justification-absence-container > .section > .motif-box {
+    box-shadow: none;
+    border-radius: 15px;
+}
+.justification-absence-container > .section:first-child {
+    box-shadow: 0;
+    border-radius: 15px;
+}
+.title-container {
+    margin-top: 15px !important;
 }

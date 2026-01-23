@@ -398,11 +398,10 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
     return (
         <div
             style={{
-                marginTop: "1rem",
-                width: "100%",
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
+                margin: "1rem",
             }}
         >
             <div

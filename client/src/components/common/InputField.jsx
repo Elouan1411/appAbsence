@@ -1,8 +1,8 @@
 import React from "react";
 
-function InputField({ placeholder, text, type = "text", value, onChange, disabled = false, error = null }) {
+function InputField({ placeholder, text, type = "text", value, onChange, disabled = false, error = null, style = {} }) {
     return (
-        <div className={`input ${error ? "input-error-form" : ""}`}>
+        <div className={`input ${error ? "input-error-form" : ""}`} style={style}>
             <div className="label-container">
                 <p>{text}</p>
             </div>

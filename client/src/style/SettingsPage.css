@@ -148,3 +148,9 @@
 .settings-input-margin-fix {
     margin-top: 0;
 }
+
+.settings-card-subtitle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
