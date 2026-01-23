@@ -122,7 +122,35 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
 // Récupération des absences n'ayant pas de justificatif
 router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
-    // we search for absences that have no justification or justification with status 3
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 1000;
+    const offset = (page - 1) * limit;
+
+    const countSql = `
+    SELECT COUNT(*) as total
+    FROM Absence A
+    JOIN Appel Ap ON A.idAppel = Ap.idAppel
+    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
+    WHERE A.login = ?
+    AND (
+        NOT EXISTS (
+            SELECT 1
+            FROM JustificationAbsence J
+            WHERE J.numeroEtudiant = A.numeroEtudiant
+            AND J.debut <= Ap.debut
+            AND J.fin >= Ap.fin
+        )
+        OR EXISTS (
+            SELECT 1
+            FROM JustificationAbsence J
+            WHERE J.numeroEtudiant = A.numeroEtudiant
+            AND J.debut <= Ap.debut
+            AND J.fin >= Ap.fin
+            AND J.validite = 3
+        )
+    )`;
+
     const sql = `
     SELECT 
       A.idAbsence,
@@ -186,149 +214,249 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
             AND J.validite = 3
         )
     )
+    ORDER BY Ap.debut DESC
+    LIMIT ? OFFSET ?
   `;
 
-    db.all(sql, [login], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(rows);
+    db.get(countSql, [login], (err, countRow) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.all(sql, [login, limit, offset], (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(200).json({
+                data: rows,
+                total: countRow.total,
+                page: page,
+                limit: limit,
+            });
+        });
     });
 });
 
 // Récupération des absences n'ayant pas de justificatif (en cours)
 router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 1000;
+    const offset = (page - 1) * limit;
 
-    const sql = `
-    SELECT 
-      A.idAbsence,
-      A.numeroEtudiant,
-      A.login,
-      Ap.debut,
-      Ap.fin,
-      Ap.codeMatiere,
-      M.libelle as nomMatiere,
-      P.nom as nomProf,
-      P.prenom as prenomProf,
-      J.motif,
-      'ABSENCE' as type,
-      J.idAbsJustifiee,
-      J.dateDemande
-    FROM Absence A
-    JOIN Appel Ap ON A.idAppel = Ap.idAppel
-    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
-    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
-    JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
-       AND J.debut <= Ap.debut 
-       AND J.fin >= Ap.fin
-    WHERE A.login = ?
-    AND J.validite = 2
-
-    UNION ALL
-
-    SELECT
-      J.idAbsJustifiee as idAbsence,
-      J.numeroEtudiant,
-      E.loginENT as login,
-      J.debut,
-      J.fin,
-      NULL as codeMatiere,
-      'Justification anticipée' as nomMatiere,
-      NULL as nomProf,
-      NULL as prenomProf,
-      J.motif,
-      'JUSTIFICATION' as type,
-      J.idAbsJustifiee,
-      J.dateDemande
-    FROM JustificationAbsence J
-    JOIN Eleve E ON J.numeroEtudiant = E.numero
-    WHERE E.loginENT = ?
-    AND J.validite = 2
-    AND NOT EXISTS (
-        SELECT 1
+    const countSql = `
+    SELECT COUNT(*) as total FROM (
+        SELECT A.idAbsence
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
-        WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut = Ap.debut
-        AND J.fin = Ap.fin
-    )
+        JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+           AND J.debut <= Ap.debut 
+           AND J.fin >= Ap.fin
+        WHERE A.login = ?
+        AND J.validite = 2
+
+        UNION ALL
+
+        SELECT J.idAbsJustifiee
+        FROM JustificationAbsence J
+        JOIN Eleve E ON J.numeroEtudiant = E.numero
+        WHERE E.loginENT = ?
+        AND J.validite = 2
+        AND NOT EXISTS (
+            SELECT 1
+            FROM Absence A
+            JOIN Appel Ap ON A.idAppel = Ap.idAppel
+            WHERE A.numeroEtudiant = J.numeroEtudiant
+            AND J.debut = Ap.debut
+            AND J.fin = Ap.fin
+        )
+    ) as CombinedCount`;
+
+    // Wrapped query for pagination
+    const sql = `
+    SELECT * FROM (
+        SELECT 
+          A.idAbsence,
+          A.numeroEtudiant,
+          A.login,
+          Ap.debut,
+          Ap.fin,
+          Ap.codeMatiere,
+          M.libelle as nomMatiere,
+          P.nom as nomProf,
+          P.prenom as prenomProf,
+          J.motif,
+          'ABSENCE' as type,
+          J.idAbsJustifiee,
+          J.dateDemande
+        FROM Absence A
+        JOIN Appel Ap ON A.idAppel = Ap.idAppel
+        LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+        LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
+        JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+           AND J.debut <= Ap.debut 
+           AND J.fin >= Ap.fin
+        WHERE A.login = ?
+        AND J.validite = 2
+    
+        UNION ALL
+    
+        SELECT
+          J.idAbsJustifiee as idAbsence,
+          J.numeroEtudiant,
+          E.loginENT as login,
+          J.debut,
+          J.fin,
+          NULL as codeMatiere,
+          'Justification anticipée' as nomMatiere,
+          NULL as nomProf,
+          NULL as prenomProf,
+          J.motif,
+          'JUSTIFICATION' as type,
+          J.idAbsJustifiee,
+          J.dateDemande
+        FROM JustificationAbsence J
+        JOIN Eleve E ON J.numeroEtudiant = E.numero
+        WHERE E.loginENT = ?
+        AND J.validite = 2
+        AND NOT EXISTS (
+            SELECT 1
+            FROM Absence A
+            JOIN Appel Ap ON A.idAppel = Ap.idAppel
+            WHERE A.numeroEtudiant = J.numeroEtudiant
+            AND J.debut = Ap.debut
+            AND J.fin = Ap.fin
+        )
+    ) AS CombinedResults
+    ORDER BY debut DESC
+    LIMIT ? OFFSET ?
   `;
 
-    db.all(sql, [login, login], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(rows);
+    db.get(countSql, [login, login], (err, countRow) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.all(sql, [login, login, limit, offset], (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(200).json({
+                data: rows,
+                total: countRow.total,
+                page: page,
+                limit: limit,
+            });
+        });
     });
 });
 
 // Récupération des absences archivées (validées ou refusées)
 router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 1000;
+    const offset = (page - 1) * limit;
 
-    const sql = `
-    SELECT 
-      A.idAbsence,
-      A.numeroEtudiant,
-      A.login,
-      Ap.debut,
-      Ap.fin,
-      Ap.codeMatiere,
-      M.libelle as nomMatiere,
-      P.nom as nomProf,
-      P.prenom as prenomProf,
-      J.validite,
-      J.motif,
-      J.motifValidite,
-      J.idAbsJustifiee,
-      'ABSENCE' as type
-    FROM Absence A
-    JOIN Appel Ap ON A.idAppel = Ap.idAppel
-    LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
-    LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
-    JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
-       AND J.debut <= Ap.debut 
-       AND J.fin >= Ap.fin
-    WHERE A.login = ?
-    AND J.validite IN (0, 1)
-
-    UNION ALL
-
-    SELECT
-      J.idAbsJustifiee as idAbsence,
-      J.numeroEtudiant,
-      E.loginENT as login,
-      J.debut,
-      J.fin,
-      NULL as codeMatiere,
-      'Justification sans absence' as nomMatiere,
-      NULL as nomProf,
-      NULL as prenomProf,
-      J.validite,
-      J.motif,
-      J.motifValidite,
-      J.idAbsJustifiee,
-      'JUSTIFICATION' as type
-    FROM JustificationAbsence J
-    JOIN Eleve E ON J.numeroEtudiant = E.numero
-    WHERE E.loginENT = ?
-    AND J.validite IN (0, 1)
-    AND NOT EXISTS (
-        SELECT 1
+    const countSql = `
+    SELECT COUNT(*) as total FROM (
+        SELECT A.idAbsence
         FROM Absence A
         JOIN Appel Ap ON A.idAppel = Ap.idAppel
-        WHERE A.numeroEtudiant = J.numeroEtudiant
-        AND J.debut = Ap.debut
-        AND J.fin = Ap.fin
-    )
+        JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+           AND J.debut <= Ap.debut 
+           AND J.fin >= Ap.fin
+        WHERE A.login = ?
+        AND J.validite IN (0, 1)
+
+        UNION ALL
+
+        SELECT J.idAbsJustifiee
+        FROM JustificationAbsence J
+        JOIN Eleve E ON J.numeroEtudiant = E.numero
+        WHERE E.loginENT = ?
+        AND J.validite IN (0, 1)
+        AND NOT EXISTS (
+            SELECT 1
+            FROM Absence A
+            JOIN Appel Ap ON A.idAppel = Ap.idAppel
+            WHERE A.numeroEtudiant = J.numeroEtudiant
+            AND J.debut = Ap.debut
+            AND J.fin = Ap.fin
+        )
+    ) as CombinedCount`;
+
+    const sql = `
+    SELECT * FROM (
+        SELECT 
+          A.idAbsence,
+          A.numeroEtudiant,
+          A.login,
+          Ap.debut,
+          Ap.fin,
+          Ap.codeMatiere,
+          M.libelle as nomMatiere,
+          P.nom as nomProf,
+          P.prenom as prenomProf,
+          J.validite,
+          J.motif,
+          J.motifValidite,
+          J.idAbsJustifiee,
+          'ABSENCE' as type
+        FROM Absence A
+        JOIN Appel Ap ON A.idAppel = Ap.idAppel
+        LEFT JOIN Matiere M ON Ap.codeMatiere = M.code
+        LEFT JOIN Professeur P ON Ap.loginProfesseur = P.loginENT
+        JOIN JustificationAbsence J ON J.numeroEtudiant = A.numeroEtudiant 
+           AND J.debut <= Ap.debut 
+           AND J.fin >= Ap.fin
+        WHERE A.login = ?
+        AND J.validite IN (0, 1)
+    
+        UNION ALL
+    
+        SELECT
+          J.idAbsJustifiee as idAbsence,
+          J.numeroEtudiant,
+          E.loginENT as login,
+          J.debut,
+          J.fin,
+          NULL as codeMatiere,
+          'Justification sans absence' as nomMatiere,
+          NULL as nomProf,
+          NULL as prenomProf,
+          J.validite,
+          J.motif,
+          J.motifValidite,
+          J.idAbsJustifiee,
+          'JUSTIFICATION' as type
+        FROM JustificationAbsence J
+        JOIN Eleve E ON J.numeroEtudiant = E.numero
+        WHERE E.loginENT = ?
+        AND J.validite IN (0, 1)
+        AND NOT EXISTS (
+            SELECT 1
+            FROM Absence A
+            JOIN Appel Ap ON A.idAppel = Ap.idAppel
+            WHERE A.numeroEtudiant = J.numeroEtudiant
+            AND J.debut = Ap.debut
+            AND J.fin = Ap.fin
+        )
+    ) AS CombinedResults
+    ORDER BY debut DESC
+    LIMIT ? OFFSET ?
   `;
 
-    db.all(sql, [login, login], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(rows);
+    db.get(countSql, [login, login], (err, countRow) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.all(sql, [login, login, limit, offset], (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(200).json({
+                data: rows,
+                total: countRow.total,
+                page: page,
+                limit: limit,
+            });
+        });
     });
 });
 

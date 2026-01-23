@@ -6,6 +6,7 @@ import "../../style/StudentMobile.css";
 import AbsenceCard from "../../components/StudentDashboard/AbsenceCard";
 import DashboardTabs from "../../components/StudentDashboard/DashboardTabs";
 import FloatingActionBar from "../../components/StudentDashboard/FloatingActionBar";
+import Pagination from "../../components/common/Pagination";
 import parseTimestamp from "../../functions/parseTimestamp";
 import { format, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -23,65 +24,74 @@ function StudentHomePage() {
     const [pendingAbsences, setPendingAbsences] = useState([]);
     const [archivedAbsences, setArchivedAbsences] = useState([]);
 
+    // Pagination state
+    const [paginationState, setPaginationState] = useState({
+        todo: 1,
+        pending: 1,
+        archived: 1,
+    });
+    const [totals, setTotals] = useState({
+        todo: 0,
+        pending: 0,
+        archived: 0,
+    });
+
+    const ITEMS_PER_PAGE = 15;
+
     useEffect(() => {
         if (user) {
-            // Fetch unjustified absences
-            fetch(`http://localhost:3000/absence/unjustified/:${user}`, {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => (res.ok ? res.json() : []))
-                .then((data) => {
-                    const mappedAbsences = data.map((abs) => ({
-                        id: abs.idAbsence,
-                        subject: abs.nomMatiere || abs.codeMatiere,
-                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
-                        start: String(abs.debut),
-                        end: String(abs.fin),
-                        status: "todo",
-                        adminComment: abs.motifValidite,
-                        reason: abs.motif,
-                        justificationId: abs.idAbsJustifiee,
-                        dateDemande: abs.dateDemande,
-                    }));
-                    setAbsences(mappedAbsences);
-                })
-                .catch((err) => console.error("Erreur fetch absences:", err));
-
-            fetchPendingAbsences();
-
-            // Fetch archived absences
-            fetch(`http://localhost:3000/absence/archived/:${user}`, {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => (res.ok ? res.json() : []))
-                .then((data) => {
-                    const mappedArchived = data.map((abs) => ({
-                        id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
-                        subject: abs.nomMatiere || abs.codeMatiere,
-                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
-                        start: String(abs.debut),
-                        end: String(abs.fin),
-                        status: abs.validite === 0 ? "validated" : "refused",
-                        reason: abs.motif,
-                        adminComment: abs.motifValidite,
-                        justificationId: abs.idAbsJustifiee,
-                    }));
-                    setArchivedAbsences(mappedArchived);
-                })
-                .catch((err) => console.error("Erreur fetch archived absences:", err));
+            fetchTodo(paginationState.todo);
+            fetchPending(paginationState.pending);
+            fetchArchived(paginationState.archived);
         }
     }, [user]);
 
-    const fetchPendingAbsences = () => {
+    // Effect to refetch when page changes
+    useEffect(() => {
         if (!user) return;
-        fetch(`http://localhost:3000/absence/in-progress/:${user}`, {
+        if (activeTab === "todo") fetchTodo(paginationState.todo);
+        if (activeTab === "pending") fetchPending(paginationState.pending);
+        if (activeTab === "archived") fetchArchived(paginationState.archived);
+    }, [paginationState, activeTab]);
+
+    const fetchTodo = (page) => {
+        fetch(`http://localhost:3000/absence/unjustified/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
-            .then((res) => (res.ok ? res.json() : []))
-            .then((data) => {
+            .then((res) => (res.ok ? res.json() : { data: [], total: 0 }))
+            .then((response) => {
+                const data = Array.isArray(response) ? response : response.data || [];
+                const total = Array.isArray(response) ? response.length : response.total || 0;
+
+                const mappedAbsences = data.map((abs) => ({
+                    id: abs.idAbsence,
+                    subject: abs.nomMatiere || abs.codeMatiere,
+                    teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
+                    start: String(abs.debut),
+                    end: String(abs.fin),
+                    status: "todo",
+                    adminComment: abs.motifValidite,
+                    reason: abs.motif,
+                    justificationId: abs.idAbsJustifiee,
+                    dateDemande: abs.dateDemande,
+                }));
+                setAbsences(mappedAbsences);
+                setTotals((prev) => ({ ...prev, todo: total }));
+            })
+            .catch((err) => console.error("Erreur fetch absences:", err));
+    };
+
+    const fetchPending = (page) => {
+        fetch(`http://localhost:3000/absence/in-progress/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+            method: "GET",
+            credentials: "include",
+        })
+            .then((res) => (res.ok ? res.json() : { data: [], total: 0 }))
+            .then((response) => {
+                const data = Array.isArray(response) ? response : response.data || [];
+                const total = Array.isArray(response) ? response.length : response.total || 0;
+
                 // calculate groups to determine shared data (minId (for file), full list of periods)
                 const groups = data.reduce((acc, abs) => {
                     const key = abs.dateDemande || abs.idAbsence;
@@ -145,8 +155,41 @@ function StudentHomePage() {
                 });
 
                 setPendingAbsences(mappedPending);
+                setTotals((prev) => ({ ...prev, pending: total }));
             })
             .catch((err) => console.error("Erreur fetch pending absences:", err));
+    };
+
+    const fetchArchived = (page) => {
+        fetch(`http://localhost:3000/absence/archived/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+            method: "GET",
+            credentials: "include",
+        })
+            .then((res) => (res.ok ? res.json() : { data: [], total: 0 }))
+            .then((response) => {
+                const data = Array.isArray(response) ? response : response.data || [];
+                const total = Array.isArray(response) ? response.length : response.total || 0;
+
+                const mappedArchived = data.map((abs) => ({
+                    id: abs.type === "JUSTIFICATION" ? `J-${abs.idAbsence}` : `A-${abs.idAbsence}`,
+                    subject: abs.nomMatiere || abs.codeMatiere,
+                    teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
+                    start: String(abs.debut),
+                    end: String(abs.fin),
+                    status: abs.validite === 0 ? "validated" : "refused",
+                    reason: abs.motif,
+                    adminComment: abs.motifValidite,
+                    justificationId: abs.idAbsJustifiee,
+                }));
+                setArchivedAbsences(mappedArchived);
+                setTotals((prev) => ({ ...prev, archived: total }));
+            })
+            .catch((err) => console.error("Erreur fetch archived absences:", err));
+    };
+
+    const handlePageChange = (newPage) => {
+        setPaginationState((prev) => ({ ...prev, [activeTab]: newPage }));
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const currentAbsences = activeTab === "todo" ? absences : activeTab === "pending" ? pendingAbsences : archivedAbsences;
@@ -205,11 +248,7 @@ function StudentHomePage() {
         });
     };
 
-    const counts = {
-        todo: absences.length,
-        pending: pendingAbsences.length,
-        archived: archivedAbsences.length,
-    };
+    const counts = totals; // Use backend totals
 
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -228,33 +267,9 @@ function StudentHomePage() {
     };
 
     const handleAbsenceDeleted = (justificationId) => {
-        // Refresh pending list
-        fetchPendingAbsences();
-
-        // Re-fetch todo list to show the absences again as unjustified
-        if (user) {
-            fetch(`http://localhost:3000/absence/unjustified/:${user}`, {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => (res.ok ? res.json() : []))
-                .then((data) => {
-                    const mappedAbsences = data.map((abs) => ({
-                        id: abs.idAbsence,
-                        subject: abs.nomMatiere || abs.codeMatiere,
-                        teacher: abs.nomProf && abs.prenomProf ? `${abs.nomProf.toUpperCase()} ${abs.prenomProf.charAt(0)}.` : null,
-                        start: String(abs.debut),
-                        end: String(abs.fin),
-                        status: "todo",
-                        adminComment: abs.motifValidite,
-                        reason: abs.motif,
-                        justificationId: abs.idAbsJustifiee,
-                        dateDemande: abs.dateDemande,
-                    }));
-                    setAbsences(mappedAbsences);
-                })
-                .catch((err) => console.error("Erreur fetch absences:", err));
-        }
+        // Refresh lists
+        fetchPending(paginationState.pending);
+        fetchTodo(paginationState.todo);
     };
 
     return (
@@ -307,6 +322,14 @@ function StudentHomePage() {
                 {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
                 {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
                 {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
+
+                {counts[activeTab] > ITEMS_PER_PAGE && (
+                    <Pagination
+                        currentPage={paginationState[activeTab]}
+                        totalPages={Math.ceil(counts[activeTab] / ITEMS_PER_PAGE)}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
             {isSelectionMode && selectedIds.length > 0 && (
                 <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
