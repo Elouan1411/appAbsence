@@ -1,5 +1,6 @@
 import React from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import "../../style/Admin.css";
 
 const AddingTabs = ({ activeTab, setActiveTab }) => {

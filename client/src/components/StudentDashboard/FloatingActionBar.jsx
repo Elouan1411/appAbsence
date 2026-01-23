@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 
 const FloatingActionBar = ({ count, onJustify }) => {
     return (

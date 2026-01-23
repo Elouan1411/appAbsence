@@ -2,6 +2,7 @@ import React, { use } from "react";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import toast from "react-hot-toast";

@@ -1,5 +1,6 @@
 import React from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import { CheckCircle, AlertCircle, Clock, Archive } from "lucide-react";
 
 const AbsenceStatus = ({ status, adminComment }) => {

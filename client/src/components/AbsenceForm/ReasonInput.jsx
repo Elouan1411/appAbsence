@@ -1,5 +1,6 @@
 import React from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import { FileText, MessageSquare } from "lucide-react";
 
 const REASON_LABELS = {

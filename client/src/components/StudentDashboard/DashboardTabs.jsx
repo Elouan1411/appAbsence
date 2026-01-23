@@ -1,5 +1,6 @@
 import React from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 
 const DashboardTabs = ({ activeTab, setActiveTab, counts = { todo: 0, pending: 0, archived: 0 } }) => {
     const tabs = [

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { List, X, ArrowRight } from "lucide-react";
 import PageTitle from "../../components/common/PageTitle";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import AbsenceCard from "../../components/StudentDashboard/AbsenceCard";
 import DashboardTabs from "../../components/StudentDashboard/DashboardTabs";
 import FloatingActionBar from "../../components/StudentDashboard/FloatingActionBar";

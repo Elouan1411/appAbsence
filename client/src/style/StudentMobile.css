@@ -1,0 +1,250 @@
+@media (max-width: 350px) {
+    .period-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
+        align-items: center;
+        padding: 16px;
+        position: relative;
+    }
+
+    .period-card-column {
+        width: 100%;
+        grid-column: 1 / 2;
+    }
+
+    .period-card-column:first-of-type {
+        grid-row: 1;
+    }
+
+    .period-card-arrow-icon {
+        grid-column: 1 / 2;
+        grid-row: 2;
+        transform: rotate(90deg);
+        margin: 4px 0;
+        justify-self: center;
+    }
+
+    .period-card-column:last-of-type {
+        grid-row: 3;
+    }
+
+    .remove-period-button {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        margin-left: 8px;
+        align-self: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .studentJustificationPage {
+        margin-left: 16px;
+    }
+
+    .upload-success.deletable .icon-state-success {
+        display: none;
+        opacity: 0;
+    }
+
+    .upload-success.deletable .icon-state-delete {
+        display: block;
+        opacity: 0.5;
+        transform: scale(1) rotate(0deg);
+    }
+
+    .file-item {
+        background-color: var(--file-item-bg);
+        border-color: var(--file-item-border);
+    }
+
+    .file-name:hover {
+        text-decoration: none;
+    }
+
+    .studentJustificationPage {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        margin-top: 20px;
+        padding: 0 16px;
+        margin-left: 0;
+        margin-right: 0;
+        box-sizing: border-box;
+    }
+
+    .student-dashboard-container {
+        padding: 0 16px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 20px;
+    }
+
+    .dashboard-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .card-absence {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 16px;
+        height: auto;
+    }
+
+    .card-absence:hover {
+        transform: none;
+    }
+
+    .card-absence-left {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .selection-checkbox-wrapper {
+        margin-bottom: 8px;
+    }
+
+    .card-absence-info {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .card-absence-header {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        max-width: 70%;
+    }
+
+    .card-absence-subject {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .card-absence-time {
+        flex-direction: row;
+        width: 100%;
+        gap: 20px;
+        background-color: var(--input-bg);
+        padding: 12px;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .time-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .time-label {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+    }
+
+    .time-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .card-absence-right {
+        width: 100%;
+        border-top: 1px solid var(--border-color);
+        padding-top: 16px;
+        margin-top: 4px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .action-button-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-justifier {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .dashboard-tabs {
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .dashboard-tabs::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .dashboard-tab {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .floating-action-bar {
+        width: calc(100% - 32px);
+        left: 16px;
+        bottom: 16px;
+        transform: none;
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .floating-action-bar > div {
+        justify-content: center;
+    }
+
+    .btn-fab-justify {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .period-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        position: relative;
+    }
+
+    @media (max-width: 350px) {
+        .period-card {
+            display: flex;
+        }
+    }
+
+    .period-card-column {
+        width: 100%;
+    }
+
+    .period-card-arrow-icon {
+        display: none;
+    }
+
+    .remove-period-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        margin: 0;
+    }
+}

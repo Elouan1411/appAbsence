@@ -1,9 +1,11 @@
 .studentJustificationPage {
     max-width: 800px;
-    height: 710px;
+    min-height: 710px;
+    height: auto;
     margin-top: calc(50vh - (5vh + 20px + 15px + 355px));
     margin-left: auto;
     margin-right: auto;
+    padding-bottom: 50px;
 }
 
 .select-container-student {
@@ -312,27 +314,7 @@ button.btn-select .lucide {
     opacity: 0;
     transform: scale(0.5) rotate(90deg);
 }
-@media (max-width: 768px) {
-    .upload-success.deletable .icon-state-success {
-        display: none;
-        opacity: 0;
-    }
 
-    .upload-success.deletable .icon-state-delete {
-        display: block;
-        opacity: 0.5;
-        transform: scale(1) rotate(0deg);
-    }
-
-    .file-item {
-        background-color: var(--file-item-bg);
-        border-color: var(--file-item-border);
-    }
-
-    .file-name:hover {
-        text-decoration: none;
-    }
-}
 .upload-success.deletable:hover .icon-state-delete,
 .file-item:hover .upload-success.deletable .icon-state-delete {
     opacity: 1;
@@ -544,52 +526,6 @@ div.react-datepicker__time-container .react-datepicker__time .react-datepicker__
     background-color: var(--text-secondary);
 }
 
-@media (max-width: 768px) {
-    .studentJustificationPage {
-        margin-left: 16px;
-    }
-}
-
-@media (max-width: 350px) {
-    .period-card {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto auto;
-        gap: 8px;
-        align-items: center;
-        padding: 16px;
-        position: relative;
-    }
-
-    .period-card-column {
-        width: 100%;
-        grid-column: 1 / 2;
-    }
-
-    .period-card-column:first-of-type {
-        grid-row: 1;
-    }
-
-    .period-card-arrow-icon {
-        grid-column: 1 / 2;
-        grid-row: 2;
-        transform: rotate(90deg);
-        margin: 4px 0;
-        justify-self: center;
-    }
-
-    .period-card-column:last-of-type {
-        grid-row: 3;
-    }
-
-    .remove-period-button {
-        grid-column: 2;
-        grid-row: 1 / 4;
-        margin-left: 8px;
-        align-self: center;
-    }
-}
-
 .studentJustificationPage > div {
     margin-bottom: 30px;
 }
@@ -640,8 +576,10 @@ span.loading-text {
 }
 
 .student-justification-container {
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     width: 100%;
+    overflow-y: auto;
 }
 
 .student-dashboard-container {
@@ -735,16 +673,16 @@ span.loading-text {
     flex-direction: row;
     align-items: center;
     gap: 0;
-    flex: 1; /* Allow taking available space */
-    min-width: 0; /* Critical for text truncation in nested flex */
+    flex: 1;
+    min-width: 0;
 }
 
 .card-absence-info {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-width: 0; /* Critical for text truncation in nested flex */
-    width: 100%; /* Ensure it fills parent */
+    min-width: 0;
+    width: 100%;
 }
 
 .card-absence-header {
@@ -829,7 +767,7 @@ span.loading-text {
     font-size: 0.9rem;
     max-width: 100%;
     align-items: center;
-    overflow: hidden; /* Added to constrain children */
+    overflow: hidden;
 }
 
 .reason-label {
@@ -837,7 +775,7 @@ span.loading-text {
     color: var(--text-secondary);
     white-space: nowrap;
     font-size: 0.85rem;
-    flex-shrink: 0; /* Prevent label from shrinking */
+    flex-shrink: 0;
 }
 
 .reason-text {
@@ -846,8 +784,8 @@ span.loading-text {
     text-overflow: ellipsis;
     white-space: nowrap;
     opacity: 0.9;
-    flex: 1; /* Take remaining space */
-    min-width: 0; /* Allow truncation in flexbox */
+    flex: 1;
+    min-width: 0;
 }
 
 .card-absence-right {
@@ -1042,7 +980,6 @@ span.loading-text {
     color: white;
 }
 
-/* Selected Card State */
 .card-absence.selection-mode {
     cursor: pointer;
 }
@@ -1180,7 +1117,6 @@ span.loading-text {
     margin-bottom: 0;
 }
 
-/* AbsenceStatus Component */
 .absence-status-card {
     background-color: var(--input-bg);
     box-shadow:
@@ -1192,7 +1128,7 @@ span.loading-text {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    border-left: 5px solid transparent; /* Base border */
+    border-left: 5px solid transparent;
     transition: all 0.2s ease;
 }
 
@@ -1222,7 +1158,7 @@ span.loading-text {
     align-items: center;
     gap: 8px;
     padding: 6px 16px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     font-size: 0.9rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -1267,25 +1203,21 @@ span.loading-text {
 }
 
 .admin-comment-box {
-    background-color: rgba(16, 185, 129, 0.08); /* Light green tint for success/valid feel, or adapt based on context. User image showed light green. */
-    /* If we want it dynamic based on status, we might need more specific classes. Assuming neutral or positive vibe from image. */
-    /* Let's stick to a generic nice background or use status color. The image showed green for "Justificatifs valides". */
-    /* Let's use a subtle background that works generally or specific if it's "Raison du refus" */
+    background-color: rgba(16, 185, 129, 0.08);
+
     background-color: var(--bg-secondary);
     padding: 16px;
     border-radius: 8px;
     color: var(--text-primary);
     font-size: 0.95rem;
     line-height: 1.5;
-    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border */
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Specific styling for refusal comment box if needed, overriding above */
 .status-container-refused .admin-comment-box {
     background-color: rgba(239, 68, 68, 0.05);
 }
 
-/* ReasonInput ReadOnly */
 .reason-readonly-container {
     margin-bottom: 24px;
 }
@@ -1304,7 +1236,7 @@ span.loading-text {
 
 .info-card {
     background-color: var(--input-bg);
-    border: 1px solid var(--border-color); /* Light border like typical cards */
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -1333,7 +1265,6 @@ span.loading-text {
     color: var(--text-primary);
 }
 
-/* File ReadOnly Items */
 .file-item-readonly {
     background-color: var(--file-item-bg);
     border: 1px solid var(--file-item-border);
@@ -1346,7 +1277,6 @@ span.loading-text {
     border-color: var(--file-item-hover-border);
 }
 
-/* Specific hover for deletable items (in FileUpload) */
 .file-item-readonly[title="Supprimer le fichier"]:hover {
     border-color: var(--file-item-deletable-hover-border);
     background-color: var(--file-item-deletable-hover-bg);
@@ -1362,19 +1292,18 @@ span.loading-text {
     width: 40px;
     height: 40px;
     background-color: var(--file-icon-bg);
-    border-radius: 10px; /* Slight rounded corners for icon container */
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 16px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow for icon container */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Ensure the image inside the icon container fits well */
 .file-item-readonly .file-icon img {
     width: 20px;
     height: 20px;
-    filter: invert(36%) sepia(87%) saturate(378%) hue-rotate(120deg) brightness(93%) contrast(87%); /* Green filter approximation for the icon itself if it's black by default */
+    filter: invert(36%) sepia(87%) saturate(378%) hue-rotate(120deg) brightness(93%) contrast(87%);
 }
 
 .file-details {
@@ -1394,22 +1323,21 @@ span.loading-text {
     margin-top: 2px;
 }
 
-/* Info Value Box Borders */
 .info-value-box {
     padding: 12px 16px;
     border-radius: 8px;
     font-size: 0.95rem;
     color: var(--text-primary);
     line-height: 1.5;
-    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border for value boxes */
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .reason-value-box {
-    background-color: rgba(139, 92, 246, 0.08); /* Violet tint */
-    border-color: rgba(139, 92, 246, 0.15); /* Slightly darker border */
+    background-color: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.15);
 }
 
 .comment-value-box {
-    background-color: rgba(249, 115, 22, 0.08); /* Orange/Yellow tint */
-    border-color: rgba(249, 115, 22, 0.15); /* Slightly darker border */
+    background-color: rgba(249, 115, 22, 0.08);
+    border-color: rgba(249, 115, 22, 0.15);
 }

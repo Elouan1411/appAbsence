@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 
 const PDFTabs = ({ activeTab, setActiveTab, tabs }) => {
     const containerRef = useRef(null);

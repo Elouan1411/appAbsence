@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import cloudIcon from "../../assets/upload_cloud.svg";
 import fileIcon from "../../assets/file_document.svg";
 import checkIcon from "../../assets/check_success.svg";

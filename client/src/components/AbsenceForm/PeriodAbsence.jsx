@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import toast from "react-hot-toast";
 import trashIcon from "../../assets/trash.svg";
 import DatePicker, { registerLocale } from "react-datepicker";

@@ -138,3 +138,10 @@ main {
 .toaster {
     background-color: var(--cell-ignored-background);
 }
+
+@media (max-width: 768px) {
+    .icon-big {
+        width: 32px;
+        height: 32px;
+    }
+}

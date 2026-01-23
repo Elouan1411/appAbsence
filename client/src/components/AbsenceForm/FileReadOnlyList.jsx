@@ -1,5 +1,6 @@
 import React from "react";
 import "../../style/Student.css";
+import "../../style/StudentMobile.css";
 import fileIcon from "../../assets/file_document.svg";
 import downloadIcon from "../../assets/download.svg";
 
