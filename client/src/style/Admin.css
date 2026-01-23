@@ -46,7 +46,7 @@
 }
 
 .row-duplicate-db {
-    background-color: var(--primary-color) !important; 
+    background-color: var(--primary-color) !important;
     color: white;
 }
 
@@ -60,8 +60,8 @@
     height: 20px;
     color: var(--icon-color);
     transition:
-    transform 0.2s ease,
-    color 0.2s;
+        transform 0.2s ease,
+        color 0.2s;
 }
 
 .circle-x:hover {
@@ -86,8 +86,8 @@
     flex: 1;
     outline: none;
     transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .editable-header-input:focus {
@@ -104,7 +104,7 @@
     align-items: center;
 }
 
-.title-container {
+div > div.title-container {
     height: 8vh;
     display: flex;
     align-items: center;
@@ -116,7 +116,7 @@
     margin-right: 15px;
 }
 
-.title-container > .title {
+div > div.title-container > .title {
     margin-left: 10px;
     margin-bottom: 0;
 }
@@ -267,7 +267,7 @@ main {
 .section-header:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
-.title-container {
+div > div.title-container {
     height: 5vh;
     display: flex;
     flex-direction: row;
@@ -277,6 +277,7 @@ main {
     border-radius: 10px;
     padding: 10px;
     margin: 15px 5px 0px 5px;
+    width: calc(100% - 30px);
 }
 
 .section-title {
@@ -1047,4 +1048,8 @@ p {
 .role-badge.teacher {
     background-color: var(--primary-color);
     color: white;
+}
+
+.homepage-subtitle-container {
+    margin-top: 10px;
 }
