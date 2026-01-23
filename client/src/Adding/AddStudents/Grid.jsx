@@ -1,6 +1,7 @@
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
+import React from "react";
 import { lightTheme, darkTheme } from "../../../constants/grid";
 import { useTheme } from "../../../hooks/useTheme";
 
