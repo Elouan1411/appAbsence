@@ -180,3 +180,7 @@ main {
 div.title-container {
     margin-top: 15px !important;
 }
+
+.info-item {
+    gap: 10px;
+}

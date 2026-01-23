@@ -16,7 +16,7 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { parseDateValue } from "../../functions/dateFormatter";
 import SearchInput from "../../components/common/SearchInput";
 import "../../style/searchAgGrid.css";
-
+import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
@@ -159,9 +159,13 @@ function TeacherHistoryPage() {
                     comparator: (filterLocalDateAtMidnight, cellValue) => {
                         const cellDate = parseDateValue(cellValue);
                         if (!cellDate) return -1;
-                        
+
                         const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
-                        const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+                        const filterDateOnly = new Date(
+                            filterLocalDateAtMidnight.getFullYear(),
+                            filterLocalDateAtMidnight.getMonth(),
+                            filterLocalDateAtMidnight.getDate(),
+                        );
 
                         if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
                             return 0;
@@ -175,7 +179,7 @@ function TeacherHistoryPage() {
                     },
                 },
                 sortable: true,
-                sort: 'desc',
+                sort: "desc",
             },
             {
                 field: "nomMatiere",
@@ -212,7 +216,7 @@ function TeacherHistoryPage() {
                 cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
             },
         ],
-        [user]
+        [user],
     );
 
     const defaultColDef = useMemo(
@@ -221,7 +225,7 @@ function TeacherHistoryPage() {
             sortable: true,
             floatingFilter: isSearchActive,
         }),
-        [isSearchActive]
+        [isSearchActive],
     );
 
     const onSortChanged = (params) => {
@@ -244,22 +248,19 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                 <PageTitle title="Historique des Absences" icon="icon-absences" />
             </div>
             <div className="search-wrapper-right">
                 {isSearchActive ? (
-                    <SearchInput 
-                        value={quickFilterText} 
-                        onChange={(e) => setQuickFilterText(e.target.value)} 
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
                         placeholder="Rechercher..."
                         onIconClick={toggleSearch}
                     />
                 ) : (
-                    <button 
-                        onClick={toggleSearch}
-                        className="search-toggle-button"
-                    >
+                    <button onClick={toggleSearch} className="search-toggle-button">
                         <span className="icon icon-search search-icon-sized" />
                     </button>
                 )}
@@ -275,6 +276,7 @@ function TeacherHistoryPage() {
                     domLayout="autoHeight"
                     onSortChanged={onSortChanged}
                     quickFilterText={quickFilterText}
+                    localeText={AG_GRID_LOCALE_FR}
                 />
             </div>
         </div>

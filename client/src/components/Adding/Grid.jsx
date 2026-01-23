@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { useTheme } from "../../hooks/useTheme";
 import { CircleX } from "lucide-react";
-
+import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCellValueChanged }) => {
@@ -15,7 +15,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
             flex: 1,
             suppressMovable: true,
         }),
-        []
+        [],
     );
 
     const extendedColDefs = useMemo(() => {
@@ -70,6 +70,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                 tooltipShowDelay={600}
                 // Ajout de la règle CSS pour les lignes
                 rowClassRules={rowClassRules}
+                localeText={AG_GRID_LOCALE_FR}
             />
         </div>
     );

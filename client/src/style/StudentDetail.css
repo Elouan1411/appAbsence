@@ -108,10 +108,20 @@
     font-size: 15px;
 }
 
+.absence-list-subcontainer > .card-absence {
+    width: calc(100% - 70px);
+}
+
 .right-buttons-container {
-    width: 15%;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.right-buttons-container > .justified-container {
+    width: 100px;
+    display: flex;
     justify-content: flex-end;
     align-items: center;
 }
@@ -231,6 +241,7 @@ h3 {
     align-items: center;
     padding-top: 20px;
     gap: 20px;
+    margin-bottom: 10px;
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
 }
@@ -288,4 +299,13 @@ h3 {
     height: auto;
     overflow: visible;
     max-height: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.student-detail-container > .button-container {
+    background-color: transparent;
+    box-shadow: none;
 }

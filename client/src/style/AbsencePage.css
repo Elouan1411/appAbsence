@@ -1,3 +1,13 @@
 .absence-list-container {
     height: 88vh;
+    width: calc(100% - 10px);
+    margin-right: 10px;
+}
+.search-wrapper-right {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
 }

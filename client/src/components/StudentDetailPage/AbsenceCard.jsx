@@ -7,6 +7,7 @@ import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import { Eye } from "lucide-react";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
     // const navigate = useNavigate();
@@ -68,14 +69,16 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 </div>
             </div>
             <div className="right-buttons-container">
-                <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
-                    {justified ? "Justifiée" : "Non justifiée"}
-                </span>
+                <div className="justified-container">
+                    <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
+                        {justified ? "Justifiée" : "Non justifiée"}
+                    </span>
+                </div>
                 <button className="delete-button" onClick={() => handleDeleteAbsence()}>
                     <span className="icon icon-trash" />
                 </button>
                 <button className="absence-detail-button">
-                    <span className="icon icon-triple-dot" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
+                    <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
                 </button>
             </div>
 

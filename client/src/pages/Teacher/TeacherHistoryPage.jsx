@@ -17,6 +17,7 @@ import SearchInput from "../../components/common/SearchInput";
 import "../../style/icon.css";
 import "../../style/searchAgGrid.css";
 import "../../style/StudentDetail.css";
+import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -79,7 +80,7 @@ function TeacherHistoryPage() {
         } catch (error) {
             console.error("Erreur lors de la récupération de l'historique:", error);
         }
-    }
+    };
 
     useEffect(() => {
         if (role == "admin") {
@@ -157,102 +158,103 @@ function TeacherHistoryPage() {
         );
     };
 
-    const columnDefs = useMemo(
-        () => {
-            const cols = [
-                {
-                    headerName: "Date",
-                    field: "debut",
-                    cellDataType: "dateTime",
-                    valueFormatter: (params) => {
-                        if (!params.value) return "";
-                        const date = parseDateValue(params.value);
-                        return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
-                    },
-                    getQuickFilterText: (params) => {
-                        if (!params.value) return "";
-                        const date = parseDateValue(params.value);
-                        return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
-                    },
-                    minWidth: 160,
-                    filter: 'agDateColumnFilter',
-                    filterParams: {
-                        comparator: (filterLocalDateAtMidnight, cellValue) => {
-                            const cellDate = parseDateValue(cellValue);
-                            if (!cellDate) return -1;
-                            
-                            const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
-                            const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+    const columnDefs = useMemo(() => {
+        const cols = [
+            {
+                headerName: "Date",
+                field: "debut",
+                cellDataType: "dateTime",
+                valueFormatter: (params) => {
+                    if (!params.value) return "";
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
+                },
+                getQuickFilterText: (params) => {
+                    if (!params.value) return "";
+                    const date = parseDateValue(params.value);
+                    return date ? format(date, "dd/MM/yyyy HH:mm", { locale: fr }) : String(params.value);
+                },
+                minWidth: 160,
+                filter: "agDateColumnFilter",
+                filterParams: {
+                    comparator: (filterLocalDateAtMidnight, cellValue) => {
+                        const cellDate = parseDateValue(cellValue);
+                        if (!cellDate) return -1;
 
-                            if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
-                                return 0;
-                            }
-                            if (cellDateOnly < filterDateOnly) {
-                                return -1;
-                            }
-                            if (cellDateOnly > filterDateOnly) {
-                                return 1;
-                            }
-                        },
-                    },
-                    sortable: true,
-                    sort: 'desc',
-                }
-            ];
+                        const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                        const filterDateOnly = new Date(
+                            filterLocalDateAtMidnight.getFullYear(),
+                            filterLocalDateAtMidnight.getMonth(),
+                            filterLocalDateAtMidnight.getDate(),
+                        );
 
-            if (role === "admin") {
-                cols.push({
-                    headerName: "Professeur",
-                    valueGetter: (params) => {
-                        if (params.data && params.data.nom && params.data.prenom) {
-                            return `${params.data.nom.toUpperCase()} ${params.data.prenom}`;
+                        if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
+                            return 0;
                         }
-                        return params.data ? params.data.loginProfesseur : "";
+                        if (cellDateOnly < filterDateOnly) {
+                            return -1;
+                        }
+                        if (cellDateOnly > filterDateOnly) {
+                            return 1;
+                        }
                     },
-                    filter: true,
-                    flex: 1,
-                });
-            }
+                },
+                sortable: true,
+                sort: "desc",
+            },
+        ];
 
-            cols.push(
-                {
-                    field: "libelle",
-                    headerName: "Matière",
-                    filter: true,
-                    flex: 1,
+        if (role === "admin") {
+            cols.push({
+                headerName: "Professeur",
+                valueGetter: (params) => {
+                    if (params.data && params.data.nom && params.data.prenom) {
+                        return `${params.data.nom.toUpperCase()} ${params.data.prenom}`;
+                    }
+                    return params.data ? params.data.loginProfesseur : "";
                 },
-                {
-                    field: "promo",
-                    headerName: "Promo",
-                    filter: true,
-                    width: 100,
-                },
-                {
-                    field: "groupeTD",
-                    headerName: "TD",
-                    filter: true,
-                    width: 100,
-                },
-                {
-                    field: "groupeTP",
-                    headerName: "TP",
-                    filter: true,
-                    width: 100,
-                },
-                {
-                    headerName: "Actions",
-                    cellRenderer: ActionRenderer,
-                    width: 100,
-                    sortable: false,
-                    filter: false,
-                    cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
-                }
-            );
+                filter: true,
+                flex: 1,
+            });
+        }
 
-            return cols;
-        },
-        [role]
-    );
+        cols.push(
+            {
+                field: "libelle",
+                headerName: "Matière",
+                filter: true,
+                flex: 1,
+            },
+            {
+                field: "promo",
+                headerName: "Promo",
+                filter: true,
+                width: 100,
+            },
+            {
+                field: "groupeTD",
+                headerName: "TD",
+                filter: true,
+                width: 100,
+            },
+            {
+                field: "groupeTP",
+                headerName: "TP",
+                filter: true,
+                width: 100,
+            },
+            {
+                headerName: "Actions",
+                cellRenderer: ActionRenderer,
+                width: 100,
+                sortable: false,
+                filter: false,
+                cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
+            },
+        );
+
+        return cols;
+    }, [role]);
 
     const defaultColDef = useMemo(
         () => ({
@@ -261,7 +263,7 @@ function TeacherHistoryPage() {
             filter: true,
             floatingFilter: isSearchActive,
         }),
-        [isSearchActive]
+        [isSearchActive],
     );
 
     const getParsedDateTime = (callData) => {
@@ -323,22 +325,19 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                 <PageTitle title="Historique des Appels" icon="icon-history" />
             </div>
             <div className="search-wrapper-right">
                 {isSearchActive ? (
-                    <SearchInput 
-                        value={quickFilterText} 
-                        onChange={(e) => setQuickFilterText(e.target.value)} 
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
                         placeholder="Rechercher dans l'historique..."
                         onIconClick={toggleSearch}
                     />
                 ) : (
-                    <button 
-                        onClick={toggleSearch}
-                        className="search-toggle-button"
-                    >
+                    <button onClick={toggleSearch} className="search-toggle-button">
                         <span className="icon icon-search search-icon-sized" />
                     </button>
                 )}
@@ -350,12 +349,13 @@ function TeacherHistoryPage() {
                     defaultColDef={defaultColDef}
                     theme={theme === "dark" ? darkTheme : lightTheme}
                     pagination={true}
-                    paginationPageSize={100}
+                    paginationPageSize={16}
                     onRowClicked={handleRowClick}
                     rowStyle={{ cursor: "pointer" }}
                     domLayout="autoHeight"
                     onSortChanged={onSortChanged}
                     quickFilterText={quickFilterText}
+                    localeText={AG_GRID_LOCALE_FR}
                 />
             </div>
         </div>

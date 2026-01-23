@@ -95,7 +95,7 @@ function AbsenceList() {
     useEffect(() => {
         if (rowData && rowData.length > 0) {
             const generatedColumns = columns.map((key) => {
-                if (key == "justifie") {
+                if (key === "justifie") {
                     return {
                         headerName: ABSENCE_HEADER_DISPLAY_NAMES[key] || key,
                         field: key,
@@ -107,15 +107,29 @@ function AbsenceList() {
                             alignItems: "center",
                             justifyContent: "center",
                         }),
+                        sort: "asc",
+                        sortIndex: 0,
                     };
                 }
-                if (key == "debut" || key == "fin") {
+
+                if (key === "debut") {
+                    return {
+                        field: key,
+                        headerName: ABSENCE_HEADER_DISPLAY_NAMES[key] || key,
+                        valueFormatter: (params) => dateFormatter(params.value),
+                        sort: "asc",
+                        sortIndex: 1,
+                    };
+                }
+
+                if (key === "fin") {
                     return {
                         field: key,
                         headerName: ABSENCE_HEADER_DISPLAY_NAMES[key] || key,
                         valueFormatter: (params) => dateFormatter(params.value),
                     };
                 }
+
                 return {
                     field: key,
                     headerName: ABSENCE_HEADER_DISPLAY_NAMES[key] || key,
@@ -127,21 +141,19 @@ function AbsenceList() {
     }, [rowData]);
     return (
         <div className="absence-list-container">
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
-                <div className="search-wrapper-right" style={{ position: "relative" }}>
-                    {isSearchActive ? (
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher..."
-                            onIconClick={toggleSearch}
-                        />
-                    ) : (
-                        <button onClick={toggleSearch} className="search-toggle-button">
-                            <span className="icon icon-search search-icon-sized" />
-                        </button>
-                    )}
-                </div>
+            <div className="search-wrapper-right" style={{ position: "relative" }}>
+                {isSearchActive ? (
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
+                        placeholder="Rechercher..."
+                        onIconClick={toggleSearch}
+                    />
+                ) : (
+                    <button onClick={toggleSearch} className="search-toggle-button">
+                        <span className="icon icon-search search-icon-sized" />
+                    </button>
+                )}
             </div>
             {loading ? (
                 <CustomLoader />
@@ -155,7 +167,7 @@ function AbsenceList() {
                         rowSelection={rowSelection}
                         onRowClicked={handleRowClick}
                         pagination={true}
-                        paginationPageSize={15}
+                        paginationPageSize={16}
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
                         autoSizeStrategy={autoSizeStrategy}

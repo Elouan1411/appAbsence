@@ -122,18 +122,18 @@ div > div.title-container > .title {
 }
 
 .studentListContainer {
-    height: 90vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
 }
 
 .teacherListContainer {
-    height: 90vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
 }
 
@@ -540,7 +540,7 @@ p {
 }
 
 .student-list {
-    height: 100%;
+    height: 90%;
     margin: 0px 5px 15px 5px;
 }
 
