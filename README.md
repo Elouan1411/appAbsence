@@ -1,7 +1,8 @@
 ```bash
-cd client && npm install
+cd client && npm install && npm run build
 cd ../server && npm install
 cd ..
+npm install
 npm run dev
 ```
 

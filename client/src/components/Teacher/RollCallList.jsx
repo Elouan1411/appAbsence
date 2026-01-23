@@ -9,6 +9,7 @@ import "../../style/icon.css";
 import { useTheme } from "../../hooks/useTheme";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
+import { API_URL } from "../../config";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -137,7 +138,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             try {
                 const pairParam = criteria.semestre === "1" ? "1" : "0";
 
-                const response = await fetch(`http://localhost:3000/groups/${pairParam}`, {
+                const response = await fetch(`${API_URL}/groups/${pairParam}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -156,7 +157,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     let absencesForCall = [];
                     if (callId) {
                         try {
-                            const absResponse = await fetch(`http://localhost:3000/absence/appel/${callId}`, { credentials: "include" });
+                            const absResponse = await fetch(`${API_URL}/absence/appel/${callId}`, { credentials: "include" });
                             if (absResponse.ok) {
                                 absencesForCall = await absResponse.json();
                                 setInitialAbsences(absencesForCall.map((a) => a.numeroEtudiant));
@@ -174,7 +175,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     const studentIds = data.map((s) => s.numero);
                     if (studentIds.length > 0) {
                         try {
-                            const rseResponse = await fetch("http://localhost:3000/rse/list", {
+                            const rseResponse = await fetch(`${API_URL}/rse/list`, {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
@@ -269,7 +270,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 const loginList = addedAbsences.map((s) => s.loginENT);
 
                 try {
-                    const response = await fetch("http://localhost:3000/absence/", {
+                    const response = await fetch(`${API_URL}/absence/`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -289,7 +290,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             if (removedAbsenceIds.length > 0) {
                 for (const studentId of removedAbsenceIds) {
                     try {
-                        const response = await fetch("http://localhost:3000/absence/", {
+                        const response = await fetch(`${API_URL}/absence/`, {
                             method: "DELETE",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
@@ -333,7 +334,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             console.log("Sending Absence Payload:", payload);
 
             try {
-                const responseAppel = await fetch("http://localhost:3000/appel/", {
+                const responseAppel = await fetch(`${API_URL}/appel/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -354,7 +355,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     idAppel = data.id;
                 }
 
-                const responseAbsence = await fetch("http://localhost:3000/absence/", {
+                const responseAbsence = await fetch(`${API_URL}/absence/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

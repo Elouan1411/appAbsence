@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
+import { API_URL } from "../../config";
 
 function SelectGroup({ onValidate, date, style, initialSelection }) {
     const [promos, setPromos] = useState([]);
@@ -26,11 +27,11 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
         if (initialSelection) {
             console.log("Setting initial selection:", initialSelection);
             setSelectedPromo(initialSelection.promo || "");
-            
+
             if (initialSelection.semestre) {
                 setSelectedSemestre(initialSelection.semestre);
             }
-            
+
             setSelectedTD(initialSelection.groupeTD || "");
             setSelectedTP(initialSelection.groupeTP || "");
 
@@ -55,12 +56,12 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     useEffect(() => {
         async function fetchPromos() {
             try {
-                const response = await fetch("http://localhost:3000/groups/promo", {
+                const response = await fetch(`${API_URL}/groups/promo`, {
                     credentials: "include",
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setPromos(data); 
+                    setPromos(data);
                 }
             } catch (err) {
                 console.error(err);
@@ -72,13 +73,13 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     async function fetchGroups(promo, semestre) {
         if (!promo || !semestre) return;
         try {
-            const link = "http://localhost:3000/groups/groups/" + promo + "/" + semestre;
+            const link = `${API_URL}/groups/groups/` + promo + "/" + semestre;
             const response = await fetch(link, {
                 credentials: "include",
             });
             if (response.ok) {
                 const data = await response.json();
-                
+
                 const isPair = semestre === "true" || semestre === "1";
                 const tdKey = isPair ? "groupeTDPair" : "groupeTD";
                 const tpKey = isPair ? "groupeTPPair" : "groupeTP";
@@ -86,14 +87,14 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
                 const uniqueTDs = [];
                 const uniqueTPs = [];
 
-                data.forEach(item => {
+                data.forEach((item) => {
                     const valTD = item[tdKey];
                     const valTP = item[tpKey];
 
-                    if (valTD && !uniqueTDs.find(obj => obj.groupeTD === valTD)) {
+                    if (valTD && !uniqueTDs.find((obj) => obj.groupeTD === valTD)) {
                         uniqueTDs.push({ groupeTD: valTD });
                     }
-                    if (valTP && !uniqueTPs.find(obj => obj.groupeTP === valTP)) {
+                    if (valTP && !uniqueTPs.find((obj) => obj.groupeTP === valTP)) {
                         uniqueTPs.push({ groupeTP: valTP });
                     }
                 });
@@ -140,11 +141,11 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
 
     useEffect(() => {
         if (onValidate) {
-             onValidate({ 
-                promo: selectedPromo, 
-                semestre: selectedSemestre, 
-                groupeTD: selectedTD, 
-                groupeTP: selectedTP 
+            onValidate({
+                promo: selectedPromo,
+                semestre: selectedSemestre,
+                groupeTD: selectedTD,
+                groupeTP: selectedTP,
             });
         }
     }, [selectedPromo, selectedSemestre, selectedTD, selectedTP]);
@@ -152,7 +153,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     return (
         <div className="Card cols-4">
             <h2>Selectionner un groupe</h2>
-            
+
             <div className="input-group">
                 <label htmlFor="Promo">Promotion</label>
                 <select onChange={handleChangePromo} value={selectedPromo}>
@@ -164,7 +165,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
                     ))}
                 </select>
             </div>
-            
+
             <div className="input-group">
                 <label htmlFor="Semestre">Semestre</label>
                 <select onChange={handleChangeSemestre} value={selectedSemestre}>

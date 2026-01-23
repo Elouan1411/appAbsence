@@ -2,8 +2,9 @@ import React from "react";
 import CustomLoader from "../common/CustomLoader";
 import PDFDocument from "../common/PDFDocument";
 import PDFTabs from "./PDFTabs";
+import { API_URL } from "../../config";
 
-const URL_FILE = "http://localhost:3000/upload/justification/";
+const URL_FILE = `${API_URL}/upload/justification/`;
 
 function PDFSection({ setDocIndex, file, isLoading, docIndex, documents }) {
     const tabs = documents.map((doc, index) => ({

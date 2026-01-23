@@ -8,6 +8,7 @@ import SelectSubject from "../Teacher/SelectSubject";
 import SelectTime from "../Teacher/SelectTime";
 import { DateObjectToInt, IntToDateObject, semesterParity } from "../../functions/dateFormatter";
 import SelectGroup from "../Teacher/SelectGroup";
+import { API_URL } from "../../config";
 
 function ModificationAbsence({
     debut,
@@ -74,7 +75,7 @@ function ModificationAbsence({
 
     const fetchStudentNames = async () => {
         try {
-            const result = await fetch("http://localhost:3000/eleve/" + numeroEtudiant, {
+            const result = await fetch(`${API_URL}/eleve/` + numeroEtudiant, {
                 method: "GET",
                 credentials: "include",
             });
@@ -99,7 +100,7 @@ function ModificationAbsence({
 
     const fetchTeacherNames = async () => {
         try {
-            const result = await fetch("http://localhost:3000/teacher/" + loginProfesseur, {
+            const result = await fetch(`${API_URL}/teacher/` + loginProfesseur, {
                 method: "GET",
                 credentials: "include",
             });
@@ -126,7 +127,7 @@ function ModificationAbsence({
 
         if (value.length > 1) {
             try {
-                const response = await fetch(`http://localhost:3000/eleve/search?q=${value}`, {
+                const response = await fetch(`${API_URL}/eleve/search?q=${value}`, {
                     credentials: "include",
                 });
                 const data = await response.json();
@@ -149,7 +150,7 @@ function ModificationAbsence({
 
         if (value.length > 1) {
             try {
-                const response = await fetch(`http://localhost:3000/teacher/search?q=${value}`, {
+                const response = await fetch(`${API_URL}/teacher/search?q=${value}`, {
                     credentials: "include",
                 });
                 const data = await response.json();

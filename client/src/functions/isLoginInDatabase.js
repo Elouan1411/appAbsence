@@ -1,6 +1,8 @@
+import { API_URL } from "../config";
+
 export default async function isLoginInDatabase(login) {
     try {
-        const data = await fetch("http://localhost:3000/teacher/allLoginENT", {
+        const data = await fetch(`${API_URL}/teacher/allLoginENT`, {
             method: "GET",
             credentials: "include",
         });

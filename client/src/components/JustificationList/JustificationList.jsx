@@ -11,6 +11,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { motif_translation } from "../../constants/motif_translation";
 import firstCharUppercase from "../../functions/firstCharUppercase";
 import SearchInput from "../common/SearchInput";
+import { API_URL } from "../../config";
 import "../../style/searchAgGrid.css";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -55,7 +56,7 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 setLoading(true);
             }
 
-            const response = await fetch("http://localhost:3000/justification/new", {
+            const response = await fetch(`${API_URL}/justification/new`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -123,14 +124,18 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                         field: key,
                         valueFormatter: (params) => dateFormatter(params.value),
                         getQuickFilterText: (params) => dateFormatter(params.value),
-                        filter: 'agDateColumnFilter',
+                        filter: "agDateColumnFilter",
                         filterParams: {
                             comparator: (filterLocalDateAtMidnight, cellValue) => {
                                 const cellDate = parseDateValue(cellValue);
                                 if (!cellDate) return -1;
-                                
+
                                 const cellDateOnly = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
-                                const filterDateOnly = new Date(filterLocalDateAtMidnight.getFullYear(), filterLocalDateAtMidnight.getMonth(), filterLocalDateAtMidnight.getDate());
+                                const filterDateOnly = new Date(
+                                    filterLocalDateAtMidnight.getFullYear(),
+                                    filterLocalDateAtMidnight.getMonth(),
+                                    filterLocalDateAtMidnight.getDate(),
+                                );
 
                                 if (cellDateOnly.getTime() === filterDateOnly.getTime()) {
                                     return 0;
@@ -182,20 +187,17 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 paddingLeft: 10,
             }}
         >
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-                <div className="search-wrapper-right" style={{ position: 'relative' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+                <div className="search-wrapper-right" style={{ position: "relative" }}>
                     {isSearchActive ? (
-                        <SearchInput 
-                            value={quickFilterText} 
-                            onChange={(e) => setQuickFilterText(e.target.value)} 
+                        <SearchInput
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
                             placeholder="Rechercher..."
                             onIconClick={toggleSearch}
                         />
                     ) : (
-                        <button 
-                            onClick={toggleSearch}
-                            className="search-toggle-button"
-                        >
+                        <button onClick={toggleSearch} className="search-toggle-button">
                             <span className="icon icon-search search-icon-sized" />
                         </button>
                     )}

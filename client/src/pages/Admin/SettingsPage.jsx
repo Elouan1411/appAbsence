@@ -9,6 +9,7 @@ import "../../style/SettingsPage.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SubjectModal from "../../components/Admin/SubjectModal";
+import { API_URL } from "../../config";
 
 function SettingsPage() {
     const [activeTab, setActiveTab] = useState("admin");
@@ -26,7 +27,7 @@ function SettingsPage() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await fetch("http://localhost:3000/subject", { credentials: "include" });
+            const response = await fetch(`${API_URL}/subject`, { credentials: "include" });
             if (response.ok) {
                 const data = await response.json();
                 setSubjects(data);
@@ -39,7 +40,7 @@ function SettingsPage() {
     useEffect(() => {
         const fetchPromotions = async () => {
             try {
-                const response = await fetch("http://localhost:3000/groups/promo", { credentials: "include" });
+                const response = await fetch(`${API_URL}/groups/promo`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
                     setPromotions(data.map((item) => item.promo).sort());
@@ -52,7 +53,7 @@ function SettingsPage() {
 
         const fetchTeachers = async () => {
             try {
-                const response = await fetch("http://localhost:3000/teacher/all", { credentials: "include" });
+                const response = await fetch(`${API_URL}/teacher/all`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
                     data.sort((a, b) => a.nom.localeCompare(b.nom));
@@ -78,7 +79,7 @@ function SettingsPage() {
 
         if (isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/teacher/${adminLogin}/admin`, {
+                const response = await fetch(`${API_URL}/teacher/${adminLogin}/admin`, {
                     method: "PUT",
                     credentials: "include",
                 });
@@ -103,7 +104,7 @@ function SettingsPage() {
         try {
             let response;
             if (editingSubject) {
-                response = await fetch(`http://localhost:3000/subject/${editingSubject.code}`, {
+                response = await fetch(`${API_URL}/subject/${editingSubject.code}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -114,7 +115,7 @@ function SettingsPage() {
                     credentials: "include",
                 });
             } else {
-                response = await fetch("http://localhost:3000/subject/add", {
+                response = await fetch(`${API_URL}/subject/add`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -149,7 +150,7 @@ function SettingsPage() {
         const { isConfirmed } = await alertConfirm("Supprimer la matière ?", "Cette action est irréversible.");
         if (isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/subject/${id}`, {
+                const response = await fetch(`${API_URL}/subject/${id}`, {
                     method: "DELETE",
                     credentials: "include",
                 });

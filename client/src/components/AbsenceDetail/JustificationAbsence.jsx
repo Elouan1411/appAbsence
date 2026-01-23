@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PDFSection from "../ValidationJustification/PDFSection";
+import { API_URL } from "../../config";
 
 function JustificationAbsence({ justification }) {
     const [isPdfOpen, setPdfOpen] = useState(true);
@@ -23,7 +24,7 @@ function JustificationAbsence({ justification }) {
 
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/justification/documents/" + id, {
+            const response = await fetch(`${API_URL}/justification/documents/` + id, {
                 method: "GET",
                 credentials: "include",
             });

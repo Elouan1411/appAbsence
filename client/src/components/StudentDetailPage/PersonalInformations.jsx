@@ -3,12 +3,13 @@ import CustomLoader from "../common/CustomLoader";
 import InputField from "../common/InputField";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
+import { API_URL } from "../../config";
 
 function PersonalInformations({ student, loading, editing, onChange, setStudent }) {
     const [allRSE, setAllRSE] = useState([]);
     const fetchAllRSE = async () => {
         try {
-            const result = await fetch("http://localhost:3000/rse", {
+            const result = await fetch(`${API_URL}/rse`, {
                 method: "GET",
                 credentials: "include",
             });

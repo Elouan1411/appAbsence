@@ -13,6 +13,7 @@ import CustomLoader from "../common/CustomLoader";
 import JustifieCell from "./JustifieCell";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import { API_URL } from "../../config";
 
 function AbsenceList() {
     const [rowData, setRowData] = useState([]);
@@ -32,7 +33,7 @@ function AbsenceList() {
     async function handleFetchAbsences() {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/absence/all", {
+            const response = await fetch(`${API_URL}/absence/all`, {
                 method: "GET",
                 credentials: "include",
             });

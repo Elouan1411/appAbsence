@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import "../../style/Teacher.css";
+import { API_URL } from "../../config";
 
 function TeacherHomePage() {
     const { logout, user } = useAuth();
@@ -23,7 +24,7 @@ function TeacherHomePage() {
         async function fetchRecent() {
             if (!user) return;
             try {
-                const response = await fetch(`http://localhost:3000/appel/recent/:${user}`, { credentials: "include" });
+                const response = await fetch(`${API_URL}/appel/recent/:${user}`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
                     setRecentCourses(data);
@@ -42,7 +43,7 @@ function TeacherHomePage() {
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         if (String(dateStr).length >= 12) {
-             const year = parseInt(String(dateStr).substring(0, 4), 10);
+            const year = parseInt(String(dateStr).substring(0, 4), 10);
             const month = parseInt(String(dateStr).substring(4, 6), 10) - 1;
             const day = parseInt(String(dateStr).substring(6, 8), 10);
             return format(new Date(year, month, day), "d MMMM yyyy", { locale: fr });

@@ -5,6 +5,7 @@ import ExcelJS from "exceljs";
 import "../../style/Admin.css";
 import toast from "react-hot-toast";
 import EditableHeader from "./EditableHeader";
+import { API_URL } from "../../config";
 
 // Import Student Utils
 import {
@@ -31,7 +32,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
     const expectedHeaders = isStudent ? EXPECTED_STUDENT_HEADERS : EXPECTED_TEACHER_HEADERS;
     const headerDisplayNames = isStudent ? STUDENT_DISPLAY_NAMES : TEACHER_DISPLAY_NAMES;
     const idField = isStudent ? "numero" : "loginENT"; // Champ clé pour check doublon
-    const checkIdEndpoint = isStudent ? "http://localhost:3000/eleve/allID" : "http://localhost:3000/teacher/allLoginENT";
+    const checkIdEndpoint = isStudent ? `${API_URL}/eleve/allID` : `${API_URL}/teacher/allLoginENT`;
 
     const processExcel = async (file) => {
         try {
@@ -187,7 +188,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
             }
             processExcel(file);
         },
-        [setRowData, setColDefs, type]
+        [setRowData, setColDefs, type],
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });

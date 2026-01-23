@@ -18,6 +18,7 @@ import Separator from "./Separator";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import ExcelJS from "exceljs";
+import { API_URL } from "../../config";
 import "../../style/icon.css";
 
 function DataImport({ type, openModal, setHasUnsavedImport }) {
@@ -244,7 +245,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         // Correction ici: Utilisation de 'confirmed' au lieu de 'result'
         if (confirmed.isConfirmed) {
             try {
-                const response = await fetch(type === "student" ? `http://localhost:3000/eleve/studentList` : `http://localhost:3000/teacher/teacherList`, {
+                const response = await fetch(type === "student" ? `${API_URL}/eleve/studentList` : `${API_URL}/teacher/teacherList`, {
                     method: "POST",
                     headers: {},
                     credentials: "include",
