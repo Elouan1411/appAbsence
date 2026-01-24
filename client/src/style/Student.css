@@ -636,6 +636,10 @@ span.loading-text {
     transition: background-color 0.2s;
 }
 
+.download-btn {
+    display: none;
+}
+
 .btn-select:hover {
     background-color: var(--dark-primary-color);
 }

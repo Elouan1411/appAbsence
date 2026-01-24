@@ -5,6 +5,7 @@ import cloudIcon from "../../assets/upload_cloud.svg";
 import fileIcon from "../../assets/file_document.svg";
 import checkIcon from "../../assets/check_success.svg";
 import trashIcon from "../../assets/trash.svg";
+import downloadIcon from "../../assets/download.svg";
 import toast from "react-hot-toast";
 
 const FileUpload = ({ files, setFiles }) => {
@@ -141,7 +142,7 @@ const FileUpload = ({ files, setFiles }) => {
             {files.length > 0 && (
                 <div className="file-list">
                     {files.map((file, index) => (
-                        <div key={index} className="file-item file-item-readonly" onClick={() => removeFile(file)} title="Supprimer le fichier">
+                        <div key={index} className="file-item file-item-readonly">
                             <div className="file-info">
                                 <span className="file-icon pdf-icon">
                                     <img src={fileIcon} alt="File" width="20" height="20" />
@@ -153,10 +154,22 @@ const FileUpload = ({ files, setFiles }) => {
                                     <span className="file-size">{formatFileSize(file.size)}</span>
                                 </div>
                             </div>
-                            <span className="upload-success deletable">
-                                <img src={checkIcon} alt="Success" className="icon-state-success" width="20" height="20" />
-                                <img src={trashIcon} alt="Delete" className="icon-state-delete" width="20" height="20" />
-                            </span>
+                            <div className="file-actions">
+                                <button className="action-icon-btn download-btn" onClick={(e) => downloadFile(e, file)} title="Télécharger">
+                                    <span className="icon icon-download" />
+                                </button>
+                                <span
+                                    className="upload-success deletable"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeFile(file);
+                                    }}
+                                    title="Supprimer"
+                                >
+                                    <img src={checkIcon} alt="Success" className="icon-state-success" width="20" height="20" />
+                                    <img src={trashIcon} alt="Delete" className="icon-state-delete" width="20" height="20" />
+                                </span>
+                            </div>
                         </div>
                     ))}
                 </div>
