@@ -11,6 +11,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SearchInput from "../../components/common/SearchInput";
 import "../../style/Student.css"; 
+import { API_URL } from "../../config";
 
 
 const AdminJustificationPage = () => {
@@ -31,7 +32,7 @@ const AdminJustificationPage = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const response = await fetch("http://localhost:3000/eleve/all", { credentials: "include" });
+                const response = await fetch(`${API_URL}/eleve/all`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
                     setAllStudents(data);
@@ -125,7 +126,7 @@ const AdminJustificationPage = () => {
                             reason: action === "refuse" ? "Refusé par l'administration lors de la création." : ""
                         };
                         
-                        const valRes = await fetch(`http://localhost:3000/justification/validate/${id}`, {
+                        const valRes = await fetch(`${API_URL}/justification/validate/${id}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(validationBody),
