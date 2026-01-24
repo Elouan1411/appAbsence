@@ -1,6 +1,9 @@
 export const motif_translation = {
-    maladie: "Maladie",
     "pb-transport": "Problème de transport",
-    "rdv-administratif": "Rendez-vous administratif",
+    medical: "Médical / Santé (rendez-vous ou malade)",
+    administratif: "Administratif (type, mairie, commissariat ...)",
+    convocation: "Convocation (permis, ...)",
+    sportif: "Sportif",
+    universitaire: "Universitaire (scolarité, SUMPS, ...)",
     autre: "Autre",
 };

@@ -1,4 +1,12 @@
-const VALID_REASONS = ["maladie", "rdv-administratif", "pb-transport", "autre"];
+const VALID_REASONS = [
+    "medical",
+    "pb-transport",
+    "administratif",
+    "convocation",
+    "sportif",
+    "universitaire",
+    "autre",
+];
 
 const validateJustificationInput = (body) => {
     const { start, end, justification } = body;

@@ -4,10 +4,13 @@ import "../../style/StudentMobile.css";
 import { FileText, MessageSquare } from "lucide-react";
 
 const REASON_LABELS = {
-    maladie: "Maladie / Raison médicale",
-    "rdv-administratif": "Rendez-vous administratif",
+    medical: "Médical / Santé (rendez-vous ou malade)",
     "pb-transport": "Problème de transport",
-    autre: "Autre",
+    administratif: "Administratif (type, mairie, commissariat ...)",
+    convocation: "Convocation (permis, ...)",
+    sportif: "Sportif",
+    universitaire: "Universitaire (scolarité, SUMPS, ...)",
+    autre: "Autre (préciser ci-dessous)",
 };
 
 const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, readOnly }) => {
@@ -55,9 +58,12 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                         Sélectionnez un motif...
                     </option>
 
-                    <option value="maladie">Maladie / Raison médicale</option>
-                    <option value="rdv-administratif">Rendez-vous administratif</option>
+                    <option value="medical">Médical / Santé (rendez-vous ou malade)</option>
                     <option value="pb-transport">Problème de transport</option>
+                    <option value="administratif">Administratif (type, mairie, commissariat ...)</option>
+                    <option value="convocation">Convocation (permis, ...)</option>
+                    <option value="sportif">Sportif</option>
+                    <option value="universitaire">Universitaire (scolarité, SUMPS, ...)</option>
                     <option value="autre">Autre (préciser ci-dessous)</option>
                 </select>
             </div>
