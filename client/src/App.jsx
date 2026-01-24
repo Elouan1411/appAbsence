@@ -7,10 +7,28 @@ import ProtectedRoutes from "./components/common/protectedRoutes";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 import { useTheme } from "./hooks/useTheme.js";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function App() {
     const { user, role, loading } = useAuth();
     const theme = useTheme();
+    const location = useLocation();
+
+    useEffect(() => {
+        const viewportMeta = document.querySelector("meta[name='viewport']");
+        if (viewportMeta) {
+            if (location.pathname.startsWith("/admin") && !location.pathname.includes("/rollcall")) {
+                if (window.screen.width < 1200) {
+                    viewportMeta.setAttribute("content", "width=1200, user-scalable=yes");
+                } else {
+                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+                }
+            } else {
+                viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+            }
+        }
+    }, [location]);
 
     console.log("user : ", user, "/ role: ", role);
     if (loading) {
