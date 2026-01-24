@@ -1,17 +1,7 @@
 import React from "react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
-// import { FileText, MessageSquare } from "lucide-react";
-
-const REASON_LABELS = {
-    medical: "Médical / Santé (rendez-vous ou malade)",
-    "pb-transport": "Problème de transport",
-    administratif: "Administratif (type, mairie, commissariat ...)",
-    convocation: "Convocation (permis, ...)",
-    sportif: "Sportif",
-    universitaire: "Universitaire (scolarité, SUMPS, ...)",
-    autre: "Autre (préciser ci-dessous)",
-};
+import { motif_translation } from "../../constants/motif_translation";
 
 const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, readOnly }) => {
     if (readOnly) {
@@ -25,14 +15,17 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                             <span className="icon icon-file-text info-icon reason-icon" style={{ width: 18, height: 18, backgroundColor: "currentColor" }} />
                             <span className="info-card-title">Motif de l'absence</span>
                         </div>
-                        <div className="info-value-box reason-value-box">{REASON_LABELS[reason] || reason || "Motif non spécifié"}</div>
+                        <div className="info-value-box reason-value-box">{motif_translation[reason] || reason || "Motif non spécifié"}</div>
                     </div>
 
                     {/* Commentaire Card */}
                     <div className="info-card comment-card">
                         <div className="info-card-header">
                             {/* <MessageSquare size={18} className="info-icon comment-icon" /> */}
-                            <span className="icon icon-message-square info-icon comment-icon" style={{ width: 18, height: 18, backgroundColor: "currentColor" }} />
+                            <span
+                                className="icon icon-message-square info-icon comment-icon"
+                                style={{ width: 18, height: 18, backgroundColor: "currentColor" }}
+                            />
                             <span className="info-card-title">Commentaire</span>
                         </div>
                         <div className="info-value-box comment-value-box">{comment || "Aucun commentaire"}</div>
@@ -56,17 +49,15 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                     onChange={(e) => onReasonChange(e.target.value)}
                     title={error && !reason ? "Veuillez sélectionner un motif" : ""}
                 >
-                    <option value="" disabled>
+                    <option value="" key="" disabled>
                         Sélectionnez un motif...
                     </option>
 
-                    <option value="medical">Médical / Santé (rendez-vous ou malade)</option>
-                    <option value="pb-transport">Problème de transport</option>
-                    <option value="administratif">Administratif (type, mairie, commissariat ...)</option>
-                    <option value="convocation">Convocation (permis, ...)</option>
-                    <option value="sportif">Sportif</option>
-                    <option value="universitaire">Universitaire (scolarité, SUMPS, ...)</option>
-                    <option value="autre">Autre (préciser ci-dessous)</option>
+                    {Object.entries(motif_translation).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
+                        </option>
+                    ))}
                 </select>
             </div>
             <div>
