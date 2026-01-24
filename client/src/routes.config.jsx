@@ -51,7 +51,7 @@ export const routesConfig = [
         children: [
             { index: true, label: "Mon Espace", element: <StudentHomePage />, icon: "icon-home" },
             { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
-            { path: "absence/:id", label: "Détail Absence", element: <StudentAbsenceDetailsPage />, icon: "icon-justification-student" },
+            { path: "absence/:id", element: <StudentAbsenceDetailsPage />, icon: "icon-absences" },
             { path: "settingsmobile", label: "Menu", element: <SettingMobilePage />, icon: "icon-settings" },
         ],
     },
