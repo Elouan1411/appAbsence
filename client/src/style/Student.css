@@ -6,6 +6,8 @@
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .select-container-student {
@@ -644,6 +646,10 @@ span.loading-text {
     background-color: currentColor;
     -webkit-mask-image: url("../assets/list.svg");
     mask-image: url("../assets/list.svg");
+}
+
+span.icon.icon-list {
+    background-color: white;
 }
 
 .card-absence {

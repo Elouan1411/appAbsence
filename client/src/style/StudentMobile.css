@@ -181,12 +181,18 @@
         padding: 12px;
     }
 
+    .btn-select {
+        width: 100%;
+        justify-content: center;
+    }
+
     .dashboard-tabs {
         overflow-x: auto;
         padding-bottom: 8px;
         margin-bottom: 20px;
         justify-content: flex-start;
         -webkit-overflow-scrolling: touch;
+        gap: 0;
     }
 
     .dashboard-tabs::-webkit-scrollbar {

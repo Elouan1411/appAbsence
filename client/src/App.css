@@ -26,14 +26,12 @@ body.dark {
     --dropzone-border: #4b5563;
     --dropzone-bd: #4b5563;
     --cloud-icon-bg: rgba(59, 130, 246, 0.2);
-    /* File Items Dark Mode */
-    --file-item-bg: rgba(16, 185, 129, 0.1); /* Emerald 500 with low opacity */
-    --file-item-border: rgba(16, 185, 129, 0.2); /* Emerald 500 with mid opacity */
-    --file-item-hover-border: #10b981; /* Emerald 500 */
-    --file-icon-bg: #2d3748; /* Dark slate */
+    --file-item-bg: rgba(16, 185, 129, 0.1);
+    --file-item-border: rgba(16, 185, 129, 0.2);
+    --file-item-hover-border: #10b981;
+    --file-icon-bg: #2d3748;
     --file-item-deletable-hover-bg: rgba(239, 68, 68, 0.1);
     --file-item-deletable-hover-border: var(--error-color);
-
     --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
     --dashboard-content-bg: var(--card-bg);
     --badge-bg: rgba(239, 68, 68, 0.2);
@@ -69,14 +67,12 @@ body.light {
     --dropzone-border: #cbd5e1;
     --dropzone-bd: #cbd5e1;
     --cloud-icon-bg: #eff6ff;
-    /* File Items Light Mode (Mint) */
     --file-item-bg: #ecfdf5;
     --file-item-border: #d1fae5;
     --file-item-hover-border: #34d399;
     --file-icon-bg: #ffffff;
     --file-item-deletable-hover-bg: rgba(239, 68, 68, 0.05);
     --file-item-deletable-hover-border: var(--error-color, #ef4444);
-
     --header-background-color: color-mix(in srgb, #fff, #181d1f 15.000000000000001%);
     --dashboard-content-bg: #ffffff;
     --badge-bg: #fee2e2;

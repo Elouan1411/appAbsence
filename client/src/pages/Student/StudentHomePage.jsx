@@ -281,13 +281,13 @@ function StudentHomePage() {
                     <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
                     {activeTab === "todo" && absences.length > 0 && (
                         <button className="btn-select" onClick={toggleSelectionMode}>
-                            {isSelectionMode ? 
+                            {isSelectionMode ? (
                                 // <X size={18} strokeWidth={2.5} />
                                 <span className="icon icon-x" style={{ width: 20, height: 20, backgroundColor: "currentColor" }} />
-                                : 
+                            ) : (
                                 // <List size={18} strokeWidth={2.5} />
-                                <span className="icon icon-list" style={{ width: 20, height: 20, backgroundColor: "currentColor" }} />
-                            }
+                                <span className="icon icon-list" style={{ width: 20, height: 20 }} />
+                            )}
                             {isSelectionMode ? "Annuler" : "Sélectionner"}
                         </button>
                     )}

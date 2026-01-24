@@ -7,6 +7,10 @@
     margin-bottom: 24px;
 }
 
+.studentJustificationPage .pagination-container {
+    margin-bottom: 0;
+}
+
 .pagination-button {
     display: flex;
     align-items: center;
