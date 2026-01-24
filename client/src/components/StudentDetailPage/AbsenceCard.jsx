@@ -1,13 +1,11 @@
-import React, { use } from "react";
-import { Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
-import { Eye } from "lucide-react";
+
 import { API_URL } from "../../config";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
@@ -46,6 +44,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
             <div className="card-absence-left">
                 <div className={`selection-checkbox-wrapper`}>
                     {/* <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div> */}
+                    {/* <div className="selection-checkbox">{isSelected && <span className="icon icon-check" style={{ backgroundColor: "white", width: "14px", height: "14px" }} />}</div> */}
                 </div>
 
                 <div className="card-absence-info">
@@ -79,7 +78,12 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                     <span className="icon icon-trash" />
                 </button>
                 <button className="absence-detail-button">
-                    <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
+                    {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
+                    <span
+                        className="icon icon-eye details-icon"
+                        style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                        onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)}
+                    />
                 </button>
             </div>
 

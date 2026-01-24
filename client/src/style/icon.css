@@ -82,3 +82,69 @@
     mask-image: url(../assets/eye_close.svg);
     -webkit-mask-image: url(../assets/eye_close.svg);
 }
+
+.icon-check {
+    mask-image: url(../assets/check.svg);
+    -webkit-mask-image: url(../assets/check.svg);
+}
+
+.icon-check-circle {
+    mask-image: url(../assets/circle-check.svg);
+    -webkit-mask-image: url(../assets/circle-check.svg);
+}
+
+.icon-alert-circle {
+    mask-image: url(../assets/circle-alert.svg);
+    -webkit-mask-image: url(../assets/circle-alert.svg);
+}
+
+.icon-clock {
+    mask-image: url(../assets/clock.svg);
+    -webkit-mask-image: url(../assets/clock.svg);
+}
+
+.icon-archive {
+    mask-image: url(../assets/file_document.svg);
+    -webkit-mask-image: url(../assets/file_document.svg);
+}
+
+.icon-circle-x {
+    mask-image: url(../assets/x.svg);
+    -webkit-mask-image: url(../assets/x.svg);
+}
+
+.icon-arrow-right {
+    mask-image: url(../assets/arrow_right.svg);
+    -webkit-mask-image: url(../assets/arrow_right.svg);
+}
+
+.icon-file-text {
+    mask-image: url(../assets/file_document.svg);
+    -webkit-mask-image: url(../assets/file_document.svg);
+}
+
+.icon-message-square {
+    mask-image: url(../assets/message_square.svg);
+    -webkit-mask-image: url(../assets/message_square.svg);
+}
+
+.icon-import {
+    mask-image: url(../assets/import.svg);
+    -webkit-mask-image: url(../assets/import.svg);
+}
+
+.icon-chevron-left {
+    mask-image: url(../assets/chevron_left.svg);
+    -webkit-mask-image: url(../assets/chevron_left.svg);
+}
+
+.icon-chevron-right {
+    mask-image: url(../assets/chevron_right.svg);
+    -webkit-mask-image: url(../assets/chevron_right.svg);
+}
+
+.icon-list {
+    mask-image: url(../assets/list.svg);
+    -webkit-mask-image: url(../assets/list.svg);
+}
+

@@ -1,7 +1,7 @@
 import React from "react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
-import { FileText, MessageSquare } from "lucide-react";
+// import { FileText, MessageSquare } from "lucide-react";
 
 const REASON_LABELS = {
     medical: "Médical / Santé (rendez-vous ou malade)",
@@ -21,7 +21,8 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                     {/* Motif Card */}
                     <div className="info-card reason-card">
                         <div className="info-card-header">
-                            <FileText size={18} className="info-icon reason-icon" />
+                            {/* <FileText size={18} className="info-icon reason-icon" /> */}
+                            <span className="icon icon-file-text info-icon reason-icon" style={{ width: 18, height: 18, backgroundColor: "currentColor" }} />
                             <span className="info-card-title">Motif de l'absence</span>
                         </div>
                         <div className="info-value-box reason-value-box">{REASON_LABELS[reason] || reason || "Motif non spécifié"}</div>
@@ -30,7 +31,8 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                     {/* Commentaire Card */}
                     <div className="info-card comment-card">
                         <div className="info-card-header">
-                            <MessageSquare size={18} className="info-icon comment-icon" />
+                            {/* <MessageSquare size={18} className="info-icon comment-icon" /> */}
+                            <span className="icon icon-message-square info-icon comment-icon" style={{ width: 18, height: 18, backgroundColor: "currentColor" }} />
                             <span className="info-card-title">Commentaire</span>
                         </div>
                         <div className="info-value-box comment-value-box">{comment || "Aucun commentaire"}</div>

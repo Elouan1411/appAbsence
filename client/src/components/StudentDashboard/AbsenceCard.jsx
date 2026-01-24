@@ -1,11 +1,11 @@
 import React from "react";
-import { Check } from "lucide-react";
+// import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
-import { Eye } from "lucide-react";
+
 import trashIcon from "../../assets/trash.svg";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
@@ -109,7 +109,10 @@ const AbsenceCard = ({
         >
             <div className="card-absence-left">
                 <div className={`selection-checkbox-wrapper ${isSelectionMode ? "visible" : ""}`}>
-                    <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div>
+                    <div className="selection-checkbox">{isSelected && 
+                        // <Check size={14} color="white" strokeWidth={4} />
+                        <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />
+                    }</div>
                 </div>
 
                 <div className="card-absence-info">
@@ -157,7 +160,14 @@ const AbsenceCard = ({
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />}
+                    {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
+                    {status !== "todo" && (
+                        <span
+                            className="icon icon-eye details-icon"
+                            style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                            onClick={handleDetails}
+                        />
+                    )}
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}

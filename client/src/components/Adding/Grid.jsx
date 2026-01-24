@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
 import { lightTheme, darkTheme } from "../../constants/grid";
 import { useTheme } from "../../hooks/useTheme";
-import { CircleX } from "lucide-react";
+// import { CircleX } from "lucide-react";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -38,7 +38,8 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                         }}
                         onClick={() => params.context.onDeleteRow(params.node.rowIndex)}
                     >
-                        <CircleX className="circle-x" />
+                        {/* <CircleX className="circle-x" /> */}
+                        <span className="icon icon-circle-x circle-x" style={{ width: 24, height: 24, backgroundColor: "currentColor" }} />
                     </div>
                 ),
             },
