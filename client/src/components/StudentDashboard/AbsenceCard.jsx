@@ -1,5 +1,5 @@
 import React from "react";
-import { Check } from "lucide-react";
+// import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
@@ -109,7 +109,10 @@ const AbsenceCard = ({
         >
             <div className="card-absence-left">
                 <div className={`selection-checkbox-wrapper ${isSelectionMode ? "visible" : ""}`}>
-                    <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div>
+                    <div className="selection-checkbox">{isSelected && 
+                        // <Check size={14} color="white" strokeWidth={4} />
+                        <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />
+                    }</div>
                 </div>
 
                 <div className="card-absence-info">

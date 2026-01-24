@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Import } from "lucide-react";
+// import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
 import toast from "react-hot-toast";
@@ -196,7 +196,8 @@ function ImportZone({ setRowData, setColDefs, type }) {
     return (
         <div {...getRootProps()} className="dropzone-container">
             <input {...getInputProps()} />
-            <Import size={40} className="import-icon" />
+            {/* <Import size={40} className="import-icon" /> */}
+            <span className="icon icon-import import-icon" style={{ width: 40, height: 40, backgroundColor: "currentColor" }} />
             {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
         </div>
     );

@@ -6,7 +6,7 @@ import trashIcon from "../../assets/trash.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from "date-fns/locale/fr";
 import "react-datepicker/dist/react-datepicker.css";
-import { ArrowRight } from "lucide-react";
+// import { ArrowRight } from "lucide-react";
 import { addDays, subDays, setHours, setMinutes } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -104,7 +104,8 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 shouldCloseOnSelect={true}
                             />
                         </div>
-                        <ArrowRight className="period-card-arrow-icon" size={20} />
+                        {/* <ArrowRight className="period-card-arrow-icon" size={20} /> */}
+                        <span className="icon icon-arrow-right period-card-arrow-icon" style={{ width: 20, height: 20, backgroundColor: "currentColor" }} />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
                             <DatePicker

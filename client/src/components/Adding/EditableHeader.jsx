@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Trash2 } from "lucide-react";
+// import { Trash2 } from "lucide-react";
 
 const EditableHeader = (props) => {
   const [value, setValue] = useState(props.displayName);
@@ -38,15 +38,23 @@ const EditableHeader = (props) => {
         className="editable-header-input"
       />
       {context && context.onDelete && (
-          <Trash2 
-            size={16} 
-            color="red" 
-            style={{ cursor: "pointer" }} 
-            onClick={(e) => {
-                e.stopPropagation();
-                context.onDelete(props.column.colId);
-            }}
-          />
+          // <Trash2 
+            //   size={16} 
+            //   color="red" 
+            //   style={{ cursor: "pointer" }} 
+            //   onClick={(e) => {
+            //       e.stopPropagation();
+            //       context.onDelete(props.column.colId);
+            //   }}
+            // />
+            <span 
+                className="icon icon-trash" 
+                style={{ width: 16, height: 16, backgroundColor: "red", cursor: "pointer" }}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    context.onDelete(props.column.colId);
+                }}
+            />
       )}
     </div>
   );
