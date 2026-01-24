@@ -16,6 +16,8 @@ function LoginPage() {
     const { login, loading } = useAuth();
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
+        setUser(user.trim());
+        setPassword(password.trim());
         e.preventDefault();
         try {
             const role = await login(user, password);
@@ -56,15 +58,9 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         rightIcon={
                             showPassword ? (
-                                <span
-                                    className="icon icon-eye-close"
-                                    style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
-                                />
+                                <span className="icon icon-eye-close" style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }} />
                             ) : (
-                                <span
-                                    className="icon icon-eye"
-                                    style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
-                                />
+                                <span className="icon icon-eye" style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }} />
                             )
                         }
                         onRightIconClick={() => setShowPassword(!showPassword)}

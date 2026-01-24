@@ -37,7 +37,7 @@ function StudentHomePage() {
         archived: 0,
     });
 
-    const ITEMS_PER_PAGE = 15;
+    const ITEMS_PER_PAGE = 8;
 
     useEffect(() => {
         if (user) {
