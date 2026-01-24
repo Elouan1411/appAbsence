@@ -26,6 +26,10 @@
     .settings-mobile-subcontainer {
         margin: 10px;
     }
+    .settings-mobile-subcontainer h3 {
+        margin-bottom: 0;
+    }
+
     h3 {
         font-size: 14px;
     }
@@ -82,8 +86,8 @@
         justify-content: center;
         gap: 5px;
         padding: 10px 5px;
-        border-radius: 15px;
-        width: 50%;
+        border-radius: 12px;
+        width: 100%;
         border: none;
         cursor: pointer;
         background-color: var(--primary-color);
