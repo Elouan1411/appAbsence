@@ -12,6 +12,7 @@ import { useUnsaved } from "../../../context/UnsavedContext";
 import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 import SearchInput from "../../common/SearchInput";
 import "../../../style/searchAgGrid.css";
+import { API_URL } from "../../../config";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -50,7 +51,7 @@ function StudentList() {
     async function handleFetchStudents() {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/eleve/all", {
+            const response = await fetch(`${API_URL}/eleve/all`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -120,20 +121,17 @@ function StudentList() {
 
     return (
         <div className="student-list">
-             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-                <div className="search-wrapper-right" style={{ position: 'relative' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+                <div className="search-wrapper-right" style={{ position: "relative" }}>
                     {isSearchActive ? (
-                        <SearchInput 
-                            value={quickFilterText} 
-                            onChange={(e) => setQuickFilterText(e.target.value)} 
+                        <SearchInput
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
                             placeholder="Rechercher..."
                             onIconClick={toggleSearch}
                         />
                     ) : (
-                        <button 
-                            onClick={toggleSearch}
-                            className="search-toggle-button"
-                        >
+                        <button onClick={toggleSearch} className="search-toggle-button">
                             <span className="icon icon-search search-icon-sized" />
                         </button>
                     )}

@@ -17,6 +17,7 @@ import { parseDateValue } from "../../functions/dateFormatter";
 import SearchInput from "../../components/common/SearchInput";
 import "../../style/searchAgGrid.css";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
+import { API_URL } from "../../config";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
@@ -29,7 +30,7 @@ function TeacherHistoryPage() {
     const fetchHistory = async () => {
         if (!user) return;
         try {
-            const response = await fetch(`http://localhost:3000/absence/history/:${user}`, {
+            const response = await fetch(`${API_URL}/absence/history/:${user}`, {
                 credentials: "include",
             });
             if (response.ok) {
@@ -97,7 +98,7 @@ function TeacherHistoryPage() {
         const handleDelete = async () => {
             if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'absence de ${params.data.prenom} ${params.data.nom} ?`)) {
                 try {
-                    const response = await fetch("http://localhost:3000/absence", {
+                    const response = await fetch(`${API_URL}/absence`, {
                         method: "DELETE",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

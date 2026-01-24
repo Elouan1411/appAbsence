@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
+import { API_URL } from "../../config";
 
 function SelectTeacher({ onChange, style, value }) {
     const [teachers, setTeachers] = useState([]);
@@ -8,7 +9,7 @@ function SelectTeacher({ onChange, style, value }) {
     useEffect(() => {
         async function fetchTeachers() {
             try {
-                const response = await fetch("http://localhost:3000/teacher/all", {
+                const response = await fetch(`${API_URL}/teacher/all`, {
                     credentials: "include",
                 });
                 if (response.ok) {
@@ -38,7 +39,7 @@ function SelectTeacher({ onChange, style, value }) {
     return (
         <div className="Card cols-1" style={{ height: "fit-content", ...style }}>
             <h2>Selectionner un enseignant</h2>
-            
+
             <div className="input-group">
                 <label htmlFor="Teacher">Enseignant</label>
                 <select onChange={handleTeacherChange} value={selectedTeacher}>

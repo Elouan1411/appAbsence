@@ -6,6 +6,7 @@ import PDFSection from "./PDFSection";
 import ValidationFooter from "./ValidationFooter";
 import toast from "react-hot-toast";
 import dateFormatter from "../../functions/dateFormatter";
+import { API_URL } from "../../config";
 
 export default function ValidationView({ selectedItem, reload }) {
     const [isLoading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ export default function ValidationView({ selectedItem, reload }) {
         try {
             selectedItem.liste_creneaux.forEach(async (element) => {
                 setValidationLoading(true);
-                const response = await fetch("http://localhost:3000/justification/validate/" + element.id, {
+                const response = await fetch(`${API_URL}/justification/validate/` + element.id, {
                     method: "PUT",
                     credentials: "include",
                     headers: {
@@ -76,7 +77,7 @@ export default function ValidationView({ selectedItem, reload }) {
 
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/justification/documents/" + id, {
+            const response = await fetch(`${API_URL}/justification/documents/` + id, {
                 method: "GET",
                 credentials: "include",
             });
@@ -107,7 +108,7 @@ export default function ValidationView({ selectedItem, reload }) {
 
             const promises = creneaux.map(async (creneau, index) => {
                 const params = new URLSearchParams({ debut: creneau.debut, fin: creneau.fin, numero: selectedItem.numeroEtudiant });
-                const response = await fetch(`http://localhost:3000/absence/dates?${params.toString()}`, {
+                const response = await fetch(`${API_URL}/absence/dates?${params.toString()}`, {
                     credentials: "include",
                     method: "GET",
                     headers: { "Content-Type": "application/json" },

@@ -60,7 +60,7 @@ const AbsenceCard = ({
         console.log("Delete triggered for justificationId:", justificationId);
         if (confirmation.isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/justification/${justificationId}`, {
+                const response = await fetch(`${API_URL}/justification/${justificationId}`, {
                     method: "DELETE",
                     credentials: "include",
                 });

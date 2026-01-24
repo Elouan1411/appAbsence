@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "../config";
 
 export const useJustificationSubmit = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,7 +35,7 @@ export const useJustificationSubmit = () => {
                         studentLogin: studentLogin,
                     };
 
-                    const response = await fetch("http://localhost:3000/justification", {
+                    const response = await fetch(`${API_URL}/justification`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload),
@@ -64,7 +65,7 @@ export const useJustificationSubmit = () => {
                     if (isExistingPeriod) {
                         // PUT existing
                         const idToUpdate = String(p.id).replace(/^J-|^A-/, "") || existingId;
-                        const response = await fetch(`http://localhost:3000/justification/${idToUpdate}`, {
+                        const response = await fetch(`${API_URL}/justification/${idToUpdate}`, {
                             method: "PUT",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(payload),
@@ -73,7 +74,7 @@ export const useJustificationSubmit = () => {
                         if (!response.ok) throw new Error(await response.text());
                     } else {
                         // POST new
-                        const response = await fetch("http://localhost:3000/justification", {
+                        const response = await fetch(`${API_URL}/justification`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(payload),
@@ -103,7 +104,7 @@ export const useJustificationSubmit = () => {
                     fileData.append("file", file);
                     fileData.append("fileName", customName);
 
-                    const fileResponse = await fetch("http://localhost:3000/file/upload", {
+                    const fileResponse = await fetch(`${API_URL}/file/upload`, {
                         method: "POST",
                         body: fileData,
                         credentials: "include",
@@ -119,7 +120,7 @@ export const useJustificationSubmit = () => {
                     // Use originalName if available (for renamed files), otherwise name
                     const filename = file.originalName || file.name;
 
-                    const response = await fetch(`http://localhost:3000/file/${filename}`, {
+                    const response = await fetch(`${API_URL}/file/${filename}`, {
                         method: "DELETE",
                         credentials: "include",
                     });

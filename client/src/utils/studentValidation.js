@@ -1,3 +1,5 @@
+import { API_URL } from "../config";
+
 // Nom des colonnes finales dans la grid
 const EXPECTED_HEADERS = ["numero", "loginENT", "nom", "prenom", "promo", "groupeTD", "groupeTP", "promoPair", "groupeTDPair", "groupeTPPair"];
 
@@ -83,7 +85,7 @@ function matchHeader(cellHeader) {
 async function calculateDuplicateRow(row) {
     const warnings = {};
 
-    const data = await fetch("http://localhost:3000/eleve/allID", {
+    const data = await fetch(`${API_URL}/eleve/allID`, {
         method: "GET",
         credentials: "include",
     });

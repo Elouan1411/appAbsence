@@ -3,6 +3,7 @@ import InputField from "../common/InputField";
 import "../../style/FormModal.css";
 import Button from "../common/Button";
 import "../../style/icon.css";
+import { API_URL } from "../../config";
 
 import { DATA_REGEX } from "../../utils/studentValidation";
 
@@ -29,7 +30,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
     const handleFetchRSE = async () => {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/rse/", {
+            const response = await fetch(`${API_URL}/rse/`, {
                 method: "GET",
                 credentials: "include",
             });

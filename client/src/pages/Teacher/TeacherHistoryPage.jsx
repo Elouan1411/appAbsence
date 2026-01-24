@@ -18,6 +18,7 @@ import "../../style/icon.css";
 import "../../style/searchAgGrid.css";
 import "../../style/StudentDetail.css";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
+import { API_URL } from "../../config";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -55,7 +56,7 @@ function TeacherHistoryPage() {
     const fetchHistory = async () => {
         if (!user) return;
         try {
-            const response = await fetch(`http://localhost:3000/appel/:${user}`, {
+            const response = await fetch(`${API_URL}/appel/:${user}`, {
                 credentials: "include",
             });
             if (response.ok) {
@@ -70,7 +71,7 @@ function TeacherHistoryPage() {
     const fetchHistoryAdmin = async () => {
         if (!user) return;
         try {
-            const response = await fetch(`http://localhost:3000/appel/all`, {
+            const response = await fetch(`${API_URL}/appel/all`, {
                 credentials: "include",
             });
             if (response.ok) {
@@ -121,7 +122,7 @@ function TeacherHistoryPage() {
     const handleDelete = async (callId, libelle) => {
         if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'appel de ${libelle} ?`)) {
             try {
-                const response = await fetch(`http://localhost:3000/appel/${callId}`, {
+                const response = await fetch(`${API_URL}/appel/${callId}`, {
                     method: "DELETE",
                     credentials: "include",
                 });

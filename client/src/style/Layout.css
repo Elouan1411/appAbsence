@@ -1,0 +1,16 @@
+.main-content {
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        display: block;
+    }
+
+    main,
+    .main-content {
+        padding-bottom: 110px !important;
+        margin-left: 0 !important;
+        width: 100%;
+    }
+}

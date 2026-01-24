@@ -13,6 +13,7 @@ import { fr } from "date-fns/locale";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useAuth } from "../../hooks/useAuth";
 import { useUnsaved } from "../../context/UnsavedContext";
+import { API_URL } from "../../config";
 
 function StudentHomePage() {
     const [activeTab, setActiveTab] = useState("todo");
@@ -55,7 +56,7 @@ function StudentHomePage() {
     }, [paginationState, activeTab]);
 
     const fetchTodo = (page) => {
-        fetch(`http://localhost:3000/absence/unjustified/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        fetch(`${API_URL}/absence/unjustified/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
@@ -83,7 +84,7 @@ function StudentHomePage() {
     };
 
     const fetchPending = (page) => {
-        fetch(`http://localhost:3000/absence/in-progress/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        fetch(`${API_URL}/absence/in-progress/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
@@ -161,7 +162,7 @@ function StudentHomePage() {
     };
 
     const fetchArchived = (page) => {
-        fetch(`http://localhost:3000/absence/archived/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        fetch(`${API_URL}/absence/archived/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })

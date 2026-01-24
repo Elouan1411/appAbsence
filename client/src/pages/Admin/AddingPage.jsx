@@ -9,6 +9,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import { useEffect } from "react";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
+import { API_URL } from "../../config";
 
 function AddingPage() {
     const [activeTab, setActiveTab] = useState("student");
@@ -48,7 +49,7 @@ function AddingPage() {
     const handleSubmit = async (data) => {
         console.log("Données reçues du formulaire :", data);
 
-        const baseUrl = "http://localhost:3000";
+        const baseUrl = `${API_URL}`;
         const endpoint = activeTab === "student" ? "/eleve" : "/teacher";
         const url = `${baseUrl}${endpoint}/add`;
 

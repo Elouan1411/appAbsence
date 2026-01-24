@@ -11,6 +11,7 @@ import AbsenceStatus from "../../components/AbsenceForm/AbsenceStatus";
 import { useJustificationValidation } from "../../hooks/useJustificationValidation";
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import { API_URL } from "../../config";
 
 const StudentAbsenceDetailsPage = () => {
     const { id } = useParams();
@@ -37,7 +38,7 @@ const StudentAbsenceDetailsPage = () => {
         const loadFiles = async (justifId) => {
             console.log("chargement des fichiers");
             try {
-                const response = await fetch(`http://localhost:3000/justification/${justifId}`, {
+                const response = await fetch(`${API_URL}/justification/${justifId}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
@@ -57,7 +58,7 @@ const StudentAbsenceDetailsPage = () => {
                     const filePromises = data.list.map(async (filename) => {
                         // Récupere les fichiers avec les "beaux" noms mais en gardant les noms originaux pour la supression
                         try {
-                            const fileRes = await fetch(`http://localhost:3000/justification/download/${filename}`, {
+                            const fileRes = await fetch(`${API_URL}/justification/download/${filename}`, {
                                 credentials: "include",
                             });
                             if (!fileRes.ok) return null;

@@ -14,6 +14,7 @@ import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
 import SettingsPage from "./pages/Admin/SettingsPage";
 import AbsencePage from "./pages/Admin/AbsencePage";
 import AdminJustificationPage from "./pages/Admin/AdminJustificationPage";
+import SettingMobilePage from "./pages/SettingsMobilePage";
 
 export const routesConfig = [
     {
@@ -41,6 +42,7 @@ export const routesConfig = [
             { path: "rollcall", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "history", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
             { path: "absence", label: "Absences", element: <TeacherAbsencePage /> },
+            { path: "settingsmobile", label: "Menu", element: <SettingMobilePage />, icon: "icon-settings" },
         ],
     },
     {
@@ -50,6 +52,7 @@ export const routesConfig = [
             { index: true, label: "Mon Espace", element: <StudentHomePage />, icon: "icon-home" },
             { path: "justification", label: "Justifier une absence", element: <StudentJustificationPage />, icon: "icon-justification-student" },
             { path: "absence/:id", label: "Détail Absence", element: <StudentAbsenceDetailsPage />, icon: "icon-justification-student" },
+            { path: "settingsmobile", label: "Menu", element: <SettingMobilePage />, icon: "icon-settings" },
         ],
     },
 ];

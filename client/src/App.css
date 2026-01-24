@@ -7,6 +7,8 @@
     --cell-ignored-color: #9ca3af;
     --input-bg: #f9fafb;
     --upload-success-color: #10b981;
+
+    --dropzone-border: #cbd5e1;
 }
 
 body.dark {
@@ -22,6 +24,7 @@ body.dark {
     --input-bg: #2a2a30;
     --modal-bg: #24242a;
     --dropzone-border: #4b5563;
+    --dropzone-bd: #4b5563;
     --cloud-icon-bg: rgba(59, 130, 246, 0.2);
     /* File Items Dark Mode */
     --file-item-bg: rgba(16, 185, 129, 0.1); /* Emerald 500 with low opacity */
@@ -64,6 +67,7 @@ body.light {
     --input-bg: #f8f9fa;
     --modal-bg: #f9fafb;
     --dropzone-border: #cbd5e1;
+    --dropzone-bd: #cbd5e1;
     --cloud-icon-bg: #eff6ff;
     /* File Items Light Mode (Mint) */
     --file-item-bg: #ecfdf5;

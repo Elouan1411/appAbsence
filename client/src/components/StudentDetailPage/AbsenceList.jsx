@@ -5,6 +5,7 @@ import dateFormatter from "../../functions/dateFormatter";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AbsencePdfDocument from "./AbsencePdfDocument";
 import Pagination from "../common/Pagination";
+import { API_URL } from "../../config";
 
 const STEP = 4;
 
@@ -27,7 +28,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
     const handleFetchAbsences = async () => {
         try {
             setLoading(true);
-            const result = await fetch("http://localhost:3000/absence/" + userId, {
+            const result = await fetch(`${API_URL}/absence/` + userId, {
                 method: "GET",
                 credentials: "include",
             });

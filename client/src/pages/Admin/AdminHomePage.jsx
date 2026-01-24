@@ -8,6 +8,7 @@ import ValidationView from "../../components/ValidationJustification/ValidationV
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
 import toast from "react-hot-toast";
+import { API_URL } from "../../config";
 
 function AdminHomePage() {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -48,7 +49,7 @@ function AdminHomePage() {
 
     const handleFetchNumberOfStudents = useCallback(async () => {
         try {
-            const result = await fetch("http://localhost:3000/eleve/count", {
+            const result = await fetch(`${API_URL}/eleve/count`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -68,7 +69,7 @@ function AdminHomePage() {
 
     const handleFetchNumberOfJustification = useCallback(async () => {
         try {
-            const result = await fetch("http://localhost:3000/justification/count", {
+            const result = await fetch(`${API_URL}/justification/count`, {
                 method: "GET",
                 credentials: "include",
             });

@@ -8,6 +8,7 @@ import { useUnsaved } from "../../context/UnsavedContext";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { Eye } from "lucide-react";
+import { API_URL } from "../../config";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
     // const navigate = useNavigate();
@@ -27,7 +28,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
         const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
         if (confirmation.isConfirmed) {
             try {
-                const result = await fetch("http://localhost:3000/absence/" + idAbsence, {
+                const result = await fetch(`${API_URL}/absence/` + idAbsence, {
                     method: "DELETE",
                     credentials: "include",
                 });

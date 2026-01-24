@@ -9,6 +9,7 @@ import "../../style/StudentDetail.css";
 import AbsenceList from "../../components/StudentDetailPage/AbsenceList";
 import Footer from "../../components/StudentDetailPage/Footer";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import { API_URL } from "../../config";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
 
 const emptyStudent = {
@@ -39,7 +40,7 @@ function StudentDetailPage() {
     const fetchStudent = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await fetch(`http://localhost:3000/eleve/${userId}`, {
+            const res = await fetch(`${API_URL}/eleve/${userId}`, {
                 credentials: "include",
             });
             const data = await res.json();
@@ -112,7 +113,7 @@ function StudentDetailPage() {
         const result = await alertConfirm("Voulez-vous supprimer cet étudiant ?", "Cette action est irréversible.");
         if (result.isConfirmed) {
             try {
-                const data = await fetch("http://localhost:3000/eleve/" + student.numeroEtudiant, {
+                const data = await fetch(`${API_URL}/eleve/` + student.numeroEtudiant, {
                     method: "DELETE",
                     credentials: "include",
                 });
@@ -132,7 +133,7 @@ function StudentDetailPage() {
         if (result.isConfirmed) {
             try {
                 if (newStudent.numeroEtudiant == student.numeroEtudiant && newStudent.loginENT == student.loginENT) {
-                    const data = await fetch("http://localhost:3000/eleve/", {
+                    const data = await fetch(`${API_URL}/eleve/`, {
                         method: "PUT",
                         credentials: "include",
                         headers: { "Content-Type": "application/json" },
@@ -140,7 +141,7 @@ function StudentDetailPage() {
                     });
 
                     if (JSON.stringify(newStudent.rse) != JSON.stringify(student.rse)) {
-                        const rseData = await fetch("http://localhost:3000/rse/" + student.numeroEtudiant, {
+                        const rseData = await fetch(`${API_URL}/rse/` + student.numeroEtudiant, {
                             method: "PUT",
                             credentials: "include",
                             headers: { "Content-Type": "application/json" },
@@ -148,12 +149,12 @@ function StudentDetailPage() {
                         });
                     }
                 } else {
-                    const data = await fetch("http://localhost:3000/eleve/" + student.numeroEtudiant, {
+                    const data = await fetch(`${API_URL}/eleve/` + student.numeroEtudiant, {
                         method: "DELETE",
                         credentials: "include",
                     });
 
-                    const response = await fetch("http://localhost:3000/eleve/add", {
+                    const response = await fetch(`${API_URL}/eleve/add`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -162,7 +163,7 @@ function StudentDetailPage() {
                         body: JSON.stringify(newStudent),
                     });
 
-                    const allAbsence = await fetch("http://localhost:3000/absence/allID/" + student.numeroEtudiant, {
+                    const allAbsence = await fetch(`${API_URL}/absence/allID/` + student.numeroEtudiant, {
                         method: "GET",
                         credentials: "include",
                     });
@@ -170,7 +171,7 @@ function StudentDetailPage() {
                     const allAbsenceID = await allAbsence.json();
 
                     allAbsenceID.forEach(async (element) => {
-                        const responseAbsence = await fetch("http://localhost:3000/absence/" + element.idAbsence, {
+                        const responseAbsence = await fetch(`${API_URL}/absence/` + element.idAbsence, {
                             method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
@@ -181,7 +182,7 @@ function StudentDetailPage() {
                     });
 
                     if (JSON.stringify(newStudent.rse) != JSON.stringify(student.rse)) {
-                        const rseData = await fetch("http://localhost:3000/rse/" + student.numeroEtudiant, {
+                        const rseData = await fetch(`${API_URL}/rse/` + student.numeroEtudiant, {
                             method: "PUT",
                             credentials: "include",
                             headers: { "Content-Type": "application/json" },

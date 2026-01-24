@@ -1,3 +1,4 @@
+import { API_URL } from "../../config";
 import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/common/PageTitle";
 import { useParams } from "react-router-dom";
@@ -55,7 +56,7 @@ function AbsenceDetailPage() {
     }, [debut, fin, numeroEtudiant, loginProfesseur, matiere]);
     const handleFetchAbsence = async () => {
         try {
-            const result = await fetch("http://localhost:3000/absence/detail/" + absenceId, {
+            const result = await fetch(`${API_URL}/absence/detail/` + absenceId, {
                 method: "GET",
                 credentials: "include",
             });
@@ -83,7 +84,7 @@ function AbsenceDetailPage() {
 
     const handleFetchJustification = async () => {
         try {
-            const result = await fetch("http://localhost:3000/justification/absence/" + absenceId, {
+            const result = await fetch(`${API_URL}/justification/absence/` + absenceId, {
                 method: "GET",
                 credentials: "include",
             });
@@ -133,7 +134,7 @@ function AbsenceDetailPage() {
         const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
         if (confirmation.isConfirmed) {
             try {
-                const result = await fetch("http://localhost:3000/absence/" + absenceId, {
+                const result = await fetch(`${API_URL}/absence/` + absenceId, {
                     method: "DELETE",
                     credentials: "include",
                 });
@@ -151,7 +152,7 @@ function AbsenceDetailPage() {
         if (confirm.isConfirmed) {
             if (loginProfesseur != oldLoginProfesseur || matiere != oldMatiere || debut != oldDebut || fin != oldFin) {
                 try {
-                    const result = await fetch("http://localhost:3000/appel/", {
+                    const result = await fetch(`${API_URL}/appel/`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -171,7 +172,7 @@ function AbsenceDetailPage() {
                     const data = await result.json();
                     const appelId = data.id;
 
-                    const absenceResult = await fetch("http://localhost:3000/absence/modifyAppel/" + absenceId, {
+                    const absenceResult = await fetch(`${API_URL}/absence/modifyAppel/` + absenceId, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -185,7 +186,7 @@ function AbsenceDetailPage() {
             }
             if (oldNumeroEtudiant != numeroEtudiant) {
                 try {
-                    const result = await fetch("http://localhost:3000/absence/" + absenceId, {
+                    const result = await fetch(`${API_URL}/absence/` + absenceId, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",

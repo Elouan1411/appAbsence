@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
+import { API_URL } from "../../config";
 
 function SelectSubject({ onSelect, promo, pair, style, value }) {
     const [subjects, setSubjects] = useState([]);
@@ -7,7 +8,7 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
 
     useEffect(() => {
         if (value !== undefined) {
-             setSelectedSubject(value);
+            setSelectedSubject(value);
         }
     }, [value]);
 
@@ -19,7 +20,7 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
             }
 
             try {
-                const response = await fetch("http://localhost:3000/subject/promo", {
+                const response = await fetch(`${API_URL}/subject/promo`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ promo, pair }),
