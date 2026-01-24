@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 function LoginPage() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
     const { login, loading } = useAuth();
     const navigate = useNavigate();
@@ -47,7 +48,27 @@ function LoginPage() {
                 </div>
                 <div className="input-container">
                     <InputField placeholder="votre.email@example.com" text="Email" value={user} onChange={(e) => setUser(e.target.value)} />
-                    <InputField placeholder="motdepasse" text="Mot de passe" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <InputField
+                        placeholder="motdepasse"
+                        text="Mot de passe"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        rightIcon={
+                            showPassword ? (
+                                <span
+                                    className="icon icon-eye-close"
+                                    style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                                />
+                            ) : (
+                                <span
+                                    className="icon icon-eye"
+                                    style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                                />
+                            )
+                        }
+                        onRightIconClick={() => setShowPassword(!showPassword)}
+                    />
                 </div>
 
                 <Button type="submit" disabled={loading}>

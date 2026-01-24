@@ -72,3 +72,13 @@
     mask-image: url(../assets/edit.svg);
     -webkit-mask-image: url(../assets/edit.svg);
 }
+
+.icon-eye {
+    mask-image: url(../assets/eye.svg);
+    -webkit-mask-image: url(../assets/eye.svg);
+}
+
+.icon-eye-close {
+    mask-image: url(../assets/eye_close.svg);
+    -webkit-mask-image: url(../assets/eye_close.svg);
+}
