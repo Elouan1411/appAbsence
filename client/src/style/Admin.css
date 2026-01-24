@@ -1085,3 +1085,70 @@ p {
     height: auto;
     width: 100%;
 }
+
+.admin-justification-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 5vh);
+}
+
+.search-section {
+    margin-bottom: 20px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background-color: var(--card-bg);
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.suggestion-item:hover {
+    background-color: var(--hover-color);
+}
+
+.choice-close-btn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.choice-close-icon {
+    background-color: var(--text-primary);
+}
+
+.admin-buttons-container {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+

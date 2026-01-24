@@ -11,6 +11,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SearchInput from "../../components/common/SearchInput";
 import "../../style/Student.css"; 
+import "../../style/Admin.css"; 
 import { API_URL } from "../../config";
 
 
@@ -158,10 +159,10 @@ const AdminJustificationPage = () => {
     return (
         <div className="student-justification-container">
             <PageTitle title="Justifier une absence (Admin)" icon={"icon-justification-student"} />
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "calc(100vh-5vh)"}}>  
+            <div className="admin-justification-wrapper">  
                 <div className="adminJustificationPage">
-                    <div className="search-section" style={{ marginBottom: "20px", position: "relative", marginTop: "20px" }} ref={searchRef}>
-                        <label style={{display: "block", marginBottom: "8px", fontWeight:"bold", color: "var(--text-primary)"}}>Étudiant concerné</label>
+                    <div className="search-section" ref={searchRef}>
+                        <label className="input-label">Étudiant concerné</label>
                         {!selectedStudent ? (
                             <>
                                 <SearchInput 
@@ -172,33 +173,12 @@ const AdminJustificationPage = () => {
                                 />
                                 
                                 {suggestions.length > 0 && (
-                                    <ul className="suggestions-list" style={{
-                                        position: "absolute",
-                                        top: "100%",
-                                        left: 0,
-                                        right: 0,
-                                        border: "1px solid var(--border-color)",
-                                        borderRadius: "0 0 8px 8px",
-                                        maxHeight: "200px",
-                                        overflowY: "auto",
-                                        zIndex: 1000,
-                                        listStyle: "none",
-                                        padding: 0,
-                                        margin: 0,
-                                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-                                    }}>
+                                    <ul className="suggestions-list">
                                         {suggestions.map((student) => (
                                             <li 
                                                 key={student.numero} 
                                                 onClick={() => handleSelectStudent(student)}
-                                                style={{
-                                                    padding: "10px 15px",
-                                                    cursor: "pointer",
-                                                    borderBottom: "1px solid var(--border-color)",
-                                                    color: "var(--text-primary)"
-                                                }}
-                                                onMouseEnter={(e) => e.target.style.backgroundColor = "var(--hover-color)"}
-                                                onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
+                                                className="suggestion-item"
                                             >
                                                 {student.nom} {student.prenom} - {student.promo} ({student.loginENT})
                                             </li>
@@ -211,9 +191,9 @@ const AdminJustificationPage = () => {
                                 <span>{selectedStudent.nom} {selectedStudent.prenom} ({selectedStudent.loginENT})</span>
                                 <span 
                                     onClick={handleDeselectStudent}
-                                    style={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+                                    className="choice-close-btn"
                                 >
-                                    <span className="icon icon-x" style={{ backgroundColor: "var(--text-primary)" }}></span>
+                                    <span className="icon icon-x choice-close-icon"></span>
                                 </span>
                             </div>
                         )}
@@ -249,28 +229,25 @@ const AdminJustificationPage = () => {
                     
                     <FileUpload files={files} setFiles={setFiles} />
 
-                    <div style={{ marginTop: "30px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+                    <div className="admin-buttons-container">
                         <Button 
                             onClick={() => handleSubmit("create")} 
-                            className="submit-button"
+                            className="submit-button btn-waiting"
                             disabled={isSubmitting}
-                            style={{backgroundColor: "#6c757d"}}
                         >
                             {isSubmitting ? <CustomLoader /> : "En attente"}
                         </Button>
                         <Button 
                             onClick={() => handleSubmit("refuse")} 
-                            className="submit-button" 
+                            className="submit-button btn-refuse" 
                             disabled={isSubmitting}
-                            style={{backgroundColor: "#dc3545"}}
                         >
                             {isSubmitting ? <CustomLoader /> : "Refuser"}
                         </Button>
                         <Button 
                             onClick={() => handleSubmit("validate")} 
-                            className="submit-button" 
+                            className="submit-button btn-validate" 
                             disabled={isSubmitting}
-                            style={{backgroundColor: "#28a745"}}
                         >
                             {isSubmitting ? <CustomLoader /> : "Valider"}
                         </Button>
