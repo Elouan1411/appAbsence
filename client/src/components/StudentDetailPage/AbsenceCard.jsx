@@ -7,7 +7,7 @@ import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
-import { Eye } from "lucide-react";
+
 import { API_URL } from "../../config";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
@@ -79,7 +79,12 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                     <span className="icon icon-trash" />
                 </button>
                 <button className="absence-detail-button">
-                    <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
+                    {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
+                    <span
+                        className="icon icon-eye details-icon"
+                        style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                        onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)}
+                    />
                 </button>
             </div>
 

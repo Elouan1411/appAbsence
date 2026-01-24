@@ -5,7 +5,7 @@ import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
-import { Eye } from "lucide-react";
+
 import trashIcon from "../../assets/trash.svg";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
@@ -157,7 +157,14 @@ const AbsenceCard = ({
 
             <div className="card-absence-right">
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />}
+                    {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
+                    {status !== "todo" && (
+                        <span
+                            className="icon icon-eye details-icon"
+                            style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
+                            onClick={handleDetails}
+                        />
+                    )}
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}
