@@ -39,7 +39,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                         onClick={() => params.context.onDeleteRow(params.node.rowIndex)}
                     >
                         {/* <CircleX className="circle-x" /> */}
-                        <span className="icon icon-circle-x circle-x" style={{ width: 24, height: 24, backgroundColor: "currentColor" }} />
+                        <span className="icon icon-circle-x icon-xxl circle-x" />
                     </div>
                 ),
             },

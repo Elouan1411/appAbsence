@@ -47,9 +47,9 @@ const EditableHeader = (props) => {
             //       context.onDelete(props.column.colId);
             //   }}
             // />
-            <span 
-                className="icon icon-trash" 
-                style={{ width: 16, height: 16, backgroundColor: "red", cursor: "pointer" }}
+            <span
+                className="icon icon-trash icon-medium icon-red"
+                style={{ cursor: "pointer" }}
                 onClick={(e) => {
                     e.stopPropagation();
                     context.onDelete(props.column.colId);

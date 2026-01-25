@@ -79,11 +79,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 </button>
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
-                    <span
-                        className="icon icon-eye details-icon"
-                        style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
-                        onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)}
-                    />
+                    <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
                 </button>
             </div>
 

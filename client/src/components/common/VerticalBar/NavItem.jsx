@@ -26,7 +26,7 @@ function NavItem({ link, index, to, isMenuOpen }) {
                     safeNavigate(to);
                 }}
             >
-                <span className={`icon ${iconName}`}></span>
+                <span className={`icon-nav ${iconName}`}></span>
                 <span className="label">{link.label}</span>
 
                 {!isMenuOpen && <span className="tooltip">{link.label}</span>}

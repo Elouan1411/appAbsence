@@ -12,7 +12,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-refused",
                     containerClass: "status-container-refused",
                     // icon: <AlertCircle size={16} />,
-                    icon: <span className="icon icon-alert-circle" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />,
+                    icon: <span className="icon icon-alert-circle icon-medium icon-red" />,
                     color: "var(--error-color)",
                 };
             case "pending":
@@ -21,7 +21,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-pending",
                     containerClass: "status-container-pending",
                     // icon: <Clock size={16} />,
-                    icon: <span className="icon icon-clock" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />,
+                    icon: <span className="icon icon-clock icon-medium icon-warning" />,
                     color: "var(--warning-color)",
                 };
             case "validated":
@@ -30,7 +30,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-validated",
                     containerClass: "status-container-validated",
                     // icon: <CheckCircle size={16} />,
-                    icon: <span className="icon icon-check-circle" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />,
+                    icon: <span className="icon icon-check-circle icon-medium icon-success" />,
                     color: "var(--upload-success-color)",
                 };
             case "refused":
@@ -39,7 +39,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-refused",
                     containerClass: "status-container-refused",
                     // icon: <AlertCircle size={16} />,
-                    icon: <span className="icon icon-alert-circle" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />,
+                    icon: <span className="icon icon-alert-circle icon-medium icon-red" />,
                     color: "var(--error-color)",
                 };
             default:
@@ -48,7 +48,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-archived",
                     containerClass: "status-container-archived",
                     // icon: <Archive size={16} />,
-                    icon: <span className="icon icon-archive" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />,
+                    icon: <span className="icon icon-archive icon-medium icon-text-secondary" />,
                     color: "var(--text-secondary)",
                 };
         }

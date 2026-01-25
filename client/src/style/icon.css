@@ -6,6 +6,61 @@
     -webkit-mask-repeat: no-repeat;
     mask-position: center;
     -webkit-mask-position: center;
+    background-color: currentColor;
+}
+
+.icon-small {
+    width: 14px;
+    height: 14px;
+}
+
+.icon-medium {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-large {
+    width: 18px;
+    height: 18px;
+}
+
+.icon-xl {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-xxl {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-xxxl {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-primary {
+    background-color: var(--primary-color);
+}
+
+.icon-red {
+    background-color: var(--error-color);
+}
+
+.icon-white {
+    background-color: white;
+}
+
+.icon-success {
+    background-color: var(--upload-success-color);
+}
+
+.icon-warning {
+    background-color: var(--warning-color);
+}
+
+.icon-text-secondary {
+    background-color: var(--text-secondary);
 }
 
 .icon-check-success {
