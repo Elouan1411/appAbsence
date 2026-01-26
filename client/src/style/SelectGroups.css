@@ -142,3 +142,7 @@ body.dark .Card input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(43%) sepia(21%) saturate(996%) hue-rotate(139deg) brightness(91%) contrast(86%);
     cursor: pointer;
 }
+
+html {
+    overflow: hidden;
+}
