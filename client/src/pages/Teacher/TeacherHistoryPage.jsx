@@ -153,7 +153,7 @@ function TeacherHistoryPage() {
                         handleDelete(params.data.idAppel, params.data.libelle);
                     }}
                 >
-                    <span className="icon icon-trash" />
+                    <span className="icon icon-trash icon-xl" />
                 </button>
             </div>
         );

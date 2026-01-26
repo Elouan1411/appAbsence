@@ -309,3 +309,12 @@ h3 {
     background-color: transparent;
     box-shadow: none;
 }
+
+@media (max-width: 768px) {
+    .delete-button:hover span {
+    }
+
+    .delete-button span {
+        background-color: var(--badge-text);
+    }
+}

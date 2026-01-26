@@ -132,7 +132,7 @@ function TeacherHistoryPage() {
                         handleDelete();
                     }}
                 >
-                    <span className="icon icon-trash" />
+                    <span className="icon icon-trash icon-xl" />
                 </button>
             </div>
         );
