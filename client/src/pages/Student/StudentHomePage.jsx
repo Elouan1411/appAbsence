@@ -283,7 +283,7 @@ function StudentHomePage() {
                         <button className="btn-select" onClick={toggleSelectionMode}>
                             {isSelectionMode ? (
                                 // <X size={18} strokeWidth={2.5} />
-                                <span className="icon icon-x icon-xl icon-bold" />
+                                <span className="icon icon-x icon-xl icon-white icon-bold" />
                             ) : (
                                 // <List size={18} strokeWidth={2.5} />
                                 <span className="icon icon-list icon-xl icon-bold" />
