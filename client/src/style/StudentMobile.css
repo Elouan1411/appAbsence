@@ -1,42 +1,3 @@
-@media (max-width: 350px) {
-    .period-card {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto auto;
-        gap: 2px;
-        align-items: center;
-        padding: 16px;
-        position: relative;
-    }
-
-    .period-card-column {
-        width: 100%;
-        grid-column: 1 / 2;
-    }
-
-    .period-card-column:first-of-type {
-        grid-row: 1;
-    }
-
-    .period-card-arrow-icon {
-        grid-column: 1 / 2;
-        grid-row: 2;
-        margin: 4px 0;
-        justify-self: center;
-    }
-
-    .period-card-column:last-of-type {
-        grid-row: 3;
-    }
-
-    .remove-period-button {
-        grid-column: 2;
-        grid-row: 1 / 4;
-        margin-left: 8px;
-        align-self: center;
-    }
-}
-
 @media (max-width: 768px) {
     .studentJustificationPage {
         margin-left: 16px;
@@ -89,11 +50,15 @@
         cursor: pointer;
     }
 
-    .icon-download {
+    .icon.icon-download {
         width: 20px;
         height: 20px;
         background-color: var(--primary-color);
         display: block;
+    }
+
+    .file-item-readonly:hover .icon-download {
+        background-color: var(--primary-color);
     }
 
     .upload-success.deletable {
@@ -161,6 +126,22 @@
 
     .selection-checkbox-wrapper {
         margin-bottom: 8px;
+        display: none;
+    }
+
+    .mobile-selection-checkbox {
+        display: none;
+    }
+
+    .selection-checkbox {
+        margin: 0;
+    }
+
+    .mobile-selection-checkbox.visible-mobile {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 12px;
     }
 
     .card-absence-info {
@@ -225,7 +206,11 @@
     .action-button-wrapper {
         width: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
+    }
+
+    .action-button-wrapper.hidden {
+        display: none;
     }
 
     .btn-justifier {
@@ -282,18 +267,16 @@
         padding: 12px;
     }
 
-    .period-card {
+    /* .period-card {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 2px;
         position: relative;
-    }
+    } */
 
-    @media (max-width: 350px) {
-        .period-card {
-            display: flex;
-        }
+    .period-card {
+        position: relative;
     }
 
     .period-card-column {
@@ -303,13 +286,9 @@
     .period-card-arrow-icon {
         display: none;
         margin-top: 0;
-        transform: rotate(90deg);
     }
 
     .remove-period-button {
-        position: absolute;
-        top: 43px;
-        right: 16px;
         margin: 0;
     }
 
@@ -324,5 +303,51 @@
         text-align: center;
         width: 100%;
         display: block;
+    }
+}
+
+@media (max-width: 350px) {
+    .period-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto auto;
+        gap: 2px;
+        align-items: center;
+        padding: 16px;
+        position: relative;
+    }
+
+    .period-card-column {
+        width: 100%;
+        grid-column: 1 / 2;
+    }
+
+    .period-card-column:first-of-type {
+        grid-row: 1;
+    }
+
+    .period-card-arrow-icon {
+        grid-column: 1 / 2;
+        grid-row: 2;
+        margin: 4px 0;
+        justify-self: center;
+    }
+
+    .period-card-column:last-of-type {
+        grid-row: 3;
+    }
+
+    .remove-period-button {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        margin: 0;
+        grid-column: unset;
+        grid-row: unset;
+    }
+
+    .icon.period-card-arrow-icon {
+        transform: rotate(90deg);
     }
 }

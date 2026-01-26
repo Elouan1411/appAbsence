@@ -68,6 +68,7 @@ body.light {
     --dropzone-bd: #cbd5e1;
     --cloud-icon-bg: #eff6ff;
     --file-item-bg: #ecfdf5;
+    --file-item-bg-hover: rgb(250, 209, 209);
     --file-item-border: #d1fae5;
     --file-item-hover-border: #34d399;
     --file-icon-bg: #ffffff;
