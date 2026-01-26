@@ -109,10 +109,12 @@ const AbsenceCard = ({
         >
             <div className="card-absence-left">
                 <div className={`selection-checkbox-wrapper ${isSelectionMode ? "visible" : ""}`}>
-                    <div className="selection-checkbox">{isSelected && 
-                        // <Check size={14} color="white" strokeWidth={4} />
-                        <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />
-                    }</div>
+                    <div className="selection-checkbox">
+                        {isSelected && (
+                            // <Check size={14} color="white" strokeWidth={4} />
+                            <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />
+                        )}
+                    </div>
                 </div>
 
                 <div className="card-absence-info">
@@ -159,6 +161,11 @@ const AbsenceCard = ({
             </div>
 
             <div className="card-absence-right">
+                <div className={`mobile-selection-checkbox ${isSelectionMode ? "visible-mobile" : ""}`} onClick={isSelectionMode ? onToggle : undefined}>
+                    <div className="selection-checkbox">
+                        {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />}
+                    </div>
+                </div>
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
                     {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
                     {status !== "todo" && (

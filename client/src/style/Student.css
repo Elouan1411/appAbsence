@@ -17,6 +17,10 @@
     position: relative;
 }
 
+.mobile-selection-checkbox {
+    display: none;
+}
+
 div.title-container {
     margin-left: 0;
     margin-right: 0;
@@ -682,7 +686,7 @@ span.icon.icon-list {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0;
+    gap: 10px;
     flex: 1;
     min-width: 0;
 }
@@ -1284,7 +1288,8 @@ span.icon.icon-list {
 }
 
 .file-item-readonly:hover {
-    border-color: var(--file-item-hover-border);
+    border-color: var(--error-color);
+    background-color: var(--file-item-deletable-hover-bg);
 }
 
 .file-item-readonly[title="Supprimer le fichier"]:hover {
