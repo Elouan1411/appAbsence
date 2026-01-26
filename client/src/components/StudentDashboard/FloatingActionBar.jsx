@@ -13,7 +13,7 @@ const FloatingActionBar = ({ count, onJustify }) => {
             <button className="btn-fab-justify" onClick={onJustify}>
                 Tout justifier
                 {/* <ArrowRight size={16} strokeWidth={2.5} /> */}
-                <span className="icon icon-arrow-right" style={{ width: 16, height: 16, backgroundColor: "currentColor" }} />
+                <span className="icon icon-arrow-right icon-medium icon-bold" />
             </button>
         </div>
     );

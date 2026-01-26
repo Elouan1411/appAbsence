@@ -105,7 +105,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                             />
                         </div>
                         {/* <ArrowRight className="period-card-arrow-icon" size={20} /> */}
-                        <span className="icon icon-arrow-right period-card-arrow-icon" style={{ width: 20, height: 20, backgroundColor: "currentColor" }} />
+                        <span className="icon icon-arrow-right icon-xl period-card-arrow-icon" />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
                             <DatePicker

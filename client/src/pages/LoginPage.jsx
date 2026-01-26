@@ -58,9 +58,9 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         rightIcon={
                             showPassword ? (
-                                <span className="icon icon-eye-close" style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }} />
+                                <span className="icon icon-eye-close icon-xl icon-primary" />
                             ) : (
-                                <span className="icon icon-eye" style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }} />
+                                <span className="icon icon-eye icon-xl icon-primary" />
                             )
                         }
                         onRightIconClick={() => setShowPassword(!showPassword)}

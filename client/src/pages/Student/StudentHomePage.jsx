@@ -283,10 +283,10 @@ function StudentHomePage() {
                         <button className="btn-select" onClick={toggleSelectionMode}>
                             {isSelectionMode ? (
                                 // <X size={18} strokeWidth={2.5} />
-                                <span className="icon icon-x" style={{ width: 20, height: 20, backgroundColor: "currentColor" }} />
+                                <span className="icon icon-x icon-xl icon-bold" />
                             ) : (
                                 // <List size={18} strokeWidth={2.5} />
-                                <span className="icon icon-list" style={{ width: 20, height: 20 }} />
+                                <span className="icon icon-list icon-xl icon-bold" />
                             )}
                             {isSelectionMode ? "Annuler" : "Sélectionner"}
                         </button>

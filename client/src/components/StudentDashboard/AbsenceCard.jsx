@@ -168,13 +168,7 @@ const AbsenceCard = ({
                 </div>
                 <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
                     {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
-                    {status !== "todo" && (
-                        <span
-                            className="icon icon-eye details-icon"
-                            style={{ backgroundColor: "var(--primary-color)", width: "20px", height: "20px" }}
-                            onClick={handleDetails}
-                        />
-                    )}
+                    {status !== "todo" && <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={handleDetails} />}
                     {status === "todo" && (
                         <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                             {adminComment ? "Modifier" : "Justifier"}

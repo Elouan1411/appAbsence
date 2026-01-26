@@ -69,7 +69,7 @@ function VerticalBar({ notificationCount = 0 }) {
                                     safeNavigate("/admin/settings");
                                 }}
                             >
-                                <span className="icon icon-settings"></span>
+                                <span className="icon-nav icon-settings"></span>
                                 <span className="label">Paramètres</span>
                             </NavLink>
                         </li>
@@ -78,11 +78,11 @@ function VerticalBar({ notificationCount = 0 }) {
                     <div className="theme-toggle-container">
                         <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={toggleTheme}>
                             <div className={`toggle-option ${!isDarkMode ? "active" : ""}`}>
-                                <span className="icon icon-sun"></span>
+                                <span className="icon-nav icon-sun"></span>
                                 {isMenuOpen && <span>Clair</span>}
                             </div>
                             <div className={`toggle-option ${isDarkMode ? "active" : ""}`}>
-                                <span className="icon icon-moon"></span>
+                                <span className="icon-nav icon-moon"></span>
                                 {isMenuOpen && <span>Sombre</span>}
                             </div>
                         </button>
@@ -90,7 +90,7 @@ function VerticalBar({ notificationCount = 0 }) {
 
                     <div className="logout-container">
                         <button className="nav-link logout-btn" onClick={handleSignOut}>
-                            <span className="icon icon-logout"></span>
+                            <span className="icon-nav icon-logout"></span>
                             <span className="label">Se déconnecter</span>
                         </button>
                     </div>
