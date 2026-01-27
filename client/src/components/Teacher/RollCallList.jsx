@@ -10,6 +10,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
+import "../../style/RollCallList.css"
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -384,13 +385,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
 
     if (!criteria || !criteria.promo) {
         return (
-            <div
-                style={{
-                    textAlign: "center",
-                    marginTop: "2rem",
-                    color: "var(--text-secondary)",
-                }}
-            >
+            <div className="rollCallList-empty">
                 Veuillez valider une sélection pour voir la liste.
             </div>
         );
@@ -421,7 +416,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             {loading ? (
                 <p>Chargement...</p>
             ) : (
-                <div style={{ flex: 1, width: "100%" }}>
+                <div className="rollCallList-container">
                     <AgGridReact
                         rowData={rowData}
                         columnDefs={colDefs}

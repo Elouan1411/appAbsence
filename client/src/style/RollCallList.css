@@ -1,0 +1,19 @@
+.rollCallList-container {
+    flex: 1;
+    width: 100%;
+}
+
+.rollCallList-empty {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--text-secondary);
+}
+
+@media screen and (max-width: 768px) {
+    .rollCallList-container {
+        margin-bottom: 100px;
+    }
+    .rollCallList-empty {
+        margin-bottom: 100px;
+    }
+}
