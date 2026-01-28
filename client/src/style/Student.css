@@ -671,8 +671,15 @@ span.icon.icon-list {
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.15),
         0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 16px;
+    margin-bottom: 0;
     transition: all 0.2s;
+}
+
+.absence-card-container {
+    margin-bottom: 16px;
+    container-type: inline-size;
+    container-name: absence-card;
+    width: 100%;
 }
 
 .card-absence:hover {

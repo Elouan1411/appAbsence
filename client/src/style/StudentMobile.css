@@ -306,6 +306,121 @@
     }
 }
 
+@container absence-card (max-width: 560px) {
+    .card-absence {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 16px;
+        height: auto;
+    }
+
+    .card-absence:hover {
+        transform: none;
+    }
+
+    .card-absence-left {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .selection-checkbox-wrapper {
+        margin-bottom: 8px;
+        display: none;
+    }
+
+    .mobile-selection-checkbox {
+        display: none;
+    }
+
+    .selection-checkbox {
+        margin: 0;
+    }
+
+    .mobile-selection-checkbox.visible-mobile {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 12px;
+    }
+
+    .card-absence-info {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .card-absence-header {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        max-width: 70%;
+    }
+
+    .card-absence-subject {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .card-absence-time {
+        flex-direction: row;
+        width: 100%;
+        gap: 20px;
+        background-color: var(--input-bg);
+        padding: 12px;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .time-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .time-label {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+    }
+
+    .time-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .card-absence-right {
+        width: 100%;
+        border-top: 1px solid var(--border-color);
+        padding-top: 16px;
+        margin-top: 4px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .action-button-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .action-button-wrapper.hidden {
+        display: none;
+    }
+
+    .btn-justifier {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+}
+
 @media (max-width: 350px) {
     .period-card {
         display: grid;
@@ -343,6 +458,7 @@
         right: 0;
         transform: translateY(-50%);
         margin: 0;
+        margin-right: 10px;
         grid-column: unset;
         grid-row: unset;
     }
