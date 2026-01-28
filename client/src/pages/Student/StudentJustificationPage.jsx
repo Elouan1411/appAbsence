@@ -14,6 +14,7 @@ import { useJustificationValidation } from "../../hooks/useJustificationValidati
 
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import NavigateBackButton from "../../components/common/NavigateBackButton";
 
 const StudentJustificationPage = () => {
     const [reason, setReason] = useState("");
@@ -56,7 +57,7 @@ const StudentJustificationPage = () => {
         const confirmation = await alertConfirm("Envoie de l'absence", message);
         if (confirmation.isConfirmed) {
             const success = await submit(period, reason, comment, files, "create");
-            if (success) {
+            if (success.success) {
                 setReason("");
                 setComment("");
                 setPeriod([]);
@@ -70,7 +71,15 @@ const StudentJustificationPage = () => {
         <div className="student-justification-container">
             <div className="studentJustificationPage">
                 <PageTitle title="Justifier une absence" icon={"icon-justification-student"} />
-                <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} automaticPeriod={automaticPeriod} />
+                <NavigateBackButton />
+                <PeriodAbsence
+                    period={period}
+                    setPeriod={handlePeriodChange}
+                    errors={errors}
+                    error={periodError}
+                    automaticPeriod={automaticPeriod}
+                    readOnly={false}
+                />
                 <hr className="section-divider" />
                 <ReasonInput
                     reason={reason}
@@ -84,6 +93,7 @@ const StudentJustificationPage = () => {
                         validateReason(reason, val);
                     }}
                     error={reasonError}
+                    readOnly={false}
                 />
                 <hr className="section-divider" />
                 <FileUpload files={files} setFiles={setFiles} />

@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { ConfirmAlert } from "../components/common/Alert/ConfirmAlert";
+import React from "react";
 
 const TOAST_ID = "unique-confirm-alert";
 export function alertConfirm(title, message, toInput = false) {
@@ -23,7 +24,7 @@ export function alertConfirm(title, message, toInput = false) {
             {
                 id: TOAST_ID,
                 duration: Infinity,
-            }
+            },
         );
     });
 }
