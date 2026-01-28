@@ -35,8 +35,9 @@ app.listen(PORT, function () {
 });
 // listening to proxy for react routing requests
 
-// Configuration d'express pour utiliser le répertoire "public"
-app.use(express.static("public"));
+// Configuration d'express pour utiliser le répertoire "dist" du client
+const clientDistPath = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDistPath));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
@@ -110,3 +111,7 @@ const teacherRoutes = require("./routes/teacher");
 app.use("/teacher", teacherRoutes);
 
 app.use("/upload", express.static(path.join(__dirname, "upload")));
+
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+});

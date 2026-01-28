@@ -142,7 +142,7 @@ const FileUpload = ({ files, setFiles }) => {
             {files.length > 0 && (
                 <div className="file-list">
                     {files.map((file, index) => (
-                        <div key={index} className="file-item file-item-readonly" onClick={(e) => downloadFile(e, file)}>
+                        <div key={index} className="file-item file-item-readonly" onClick={() => removeFile(file)}>
                             <div className="file-info">
                                 <span className="file-icon pdf-icon">
                                     <img src={fileIcon} alt="File" width="20" height="20" />
