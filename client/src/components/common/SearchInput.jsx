@@ -3,7 +3,7 @@ import "../../style/icon.css";
 import "../../style/searchAgGrid.css";
 import { API_URL } from "../../config";
 
-const SearchInput = ({ value, onChange, placeholder = "Rechercher...", onIconClick, className="search-container" }) => {
+const SearchInput = ({ value, onChange, placeholder = "Rechercher...", onIconClick, className = "search-container" }) => {
     return (
         <div className={className}>
             <input type="text" value={value} onChange={onChange} placeholder={placeholder} autoFocus className="search-input" />
