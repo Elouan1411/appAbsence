@@ -207,9 +207,9 @@ button.btn-select .lucide {
     border-color: var(--file-item-hover-border);
 }
 
-.file-item-readonly:hover .file-name {
+/* .file-item-readonly:hover .file-name {
     text-decoration: underline;
-}
+} */
 
 .file-action-icon {
     display: flex;
@@ -282,6 +282,21 @@ button.btn-select .lucide {
 
 .file-name:hover {
     text-decoration: underline;
+}
+
+.file-item:has(.file-name:hover) {
+    background-color: var(--file-item-bg);
+    border-color: var(--file-item-border);
+}
+
+.file-item:has(.file-name:hover) .upload-success.deletable .icon-state-success {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.file-item:has(.file-name:hover) .upload-success.deletable .icon-state-delete {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
 }
 
 .upload-success {

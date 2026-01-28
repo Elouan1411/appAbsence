@@ -7,6 +7,8 @@ import checkIcon from "../../assets/check_success.svg";
 import trashIcon from "../../assets/trash.svg";
 import downloadIcon from "../../assets/download.svg";
 import toast from "react-hot-toast";
+import { ConfirmAlert } from "../common/Alert/ConfirmAlert";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 const FileUpload = ({ files, setFiles }) => {
     // Helper to check extensions
@@ -89,7 +91,10 @@ const FileUpload = ({ files, setFiles }) => {
         }
     };
 
-    const removeFile = (fileToRemove) => {
+    const removeFile = async (fileToRemove) => {
+        const confirm = await alertConfirm("Suppression du fichier", "Voulez-vous vraiment supprimer ce fichier ?");
+        if (!confirm.isConfirmed) return;
+
         setFiles((prev) => prev.filter((file) => file !== fileToRemove));
     };
 
