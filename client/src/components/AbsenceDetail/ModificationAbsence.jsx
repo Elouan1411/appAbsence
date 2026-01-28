@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import CustomLoader from "../common/CustomLoader";
 import InputField from "../common/InputField";
 import { alertConfirm } from "../../hooks/alertConfirm";
@@ -46,6 +46,8 @@ function ModificationAbsence({
     const [dateValue, setDateValue] = useState(IntToDateObject(debut, fin));
     const [hasUpdatedDate, setHasUpdatedDate] = useState(false);
 
+    const [isLoading, setLoading] = useState(false);
+
     useEffect(() => {
         if (!hasUpdatedDate) {
             if (debut === 0 || fin === 0) return;
@@ -75,6 +77,7 @@ function ModificationAbsence({
 
     const fetchStudentNames = async () => {
         try {
+            setLoading(true);
             const result = await fetch(`${API_URL}/eleve/` + numeroEtudiant, {
                 method: "GET",
                 credentials: "include",
@@ -95,11 +98,14 @@ function ModificationAbsence({
         } catch (err) {
             console.error(err);
             toast.error(err.message || "Erreur récupération étudiant");
+        } finally {
+            setLoading(false);
         }
     };
 
     const fetchTeacherNames = async () => {
         try {
+            setLoading(true);
             const result = await fetch(`${API_URL}/teacher/` + loginProfesseur, {
                 method: "GET",
                 credentials: "include",
@@ -118,6 +124,8 @@ function ModificationAbsence({
         } catch (err) {
             console.error(err);
             toast.error(err.message || "Erreur récupération enseignant");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -127,6 +135,7 @@ function ModificationAbsence({
 
         if (value.length > 1) {
             try {
+                setLoading(true);
                 const response = await fetch(`${API_URL}/eleve/search?q=${value}`, {
                     credentials: "include",
                 });
@@ -137,6 +146,8 @@ function ModificationAbsence({
             } catch (error) {
                 console.error("Erreur recherche", error);
                 setStudentSuggestions([]);
+            } finally {
+                setLoading(false);
             }
         } else {
             setStudentSuggestions([]);
@@ -150,6 +161,7 @@ function ModificationAbsence({
 
         if (value.length > 1) {
             try {
+                setLoading(true);
                 const response = await fetch(`${API_URL}/teacher/search?q=${value}`, {
                     credentials: "include",
                 });
@@ -160,6 +172,8 @@ function ModificationAbsence({
             } catch (error) {
                 console.error("Erreur recherche", error);
                 setTeacherSuggestions([]);
+            } finally {
+                setLoading(false);
             }
         } else {
             setTeacherSuggestions([]);
@@ -198,104 +212,108 @@ function ModificationAbsence({
         }
     }, [loginProfesseur]);
 
-    if (loading) return <CustomLoader />;
-
     return (
         <div>
-            <div className="subtitle-container">
-                <h2>Informations générales</h2>
-            </div>
+            {loading ? (
+                <CustomLoader />
+            ) : (
+                <>
+                    <div className="subtitle-container">
+                        <h2>Informations générales</h2>
+                    </div>
 
-            <div className="personal-info-subcontainer">
-                <div className="info-grid-container">
-                    <h3>Etudiant concerné</h3>
-                    <div className="info-grid">
-                        <div className={"info-item autocomplete-container " + `${showStudentSuggestions ? "active" : ""}`}>
-                            <span className="label">Numéro Etudiant</span>
-                            <InputField
-                                value={numeroEtudiant}
-                                disabled={!editing}
-                                onChange={handleInputChange}
-                                onBlur={() => setTimeout(() => setShowStudentSuggestions(false), 200)}
-                                autoComplete="off"
-                            />
+                    <div className="personal-info-subcontainer">
+                        <div className="info-grid-container">
+                            <h3>Etudiant concerné</h3>
+                            <div className="info-grid">
+                                <div className={"info-item autocomplete-container " + `${showStudentSuggestions ? "active" : ""}`}>
+                                    <span className="label">Numéro Etudiant</span>
+                                    <InputField
+                                        value={numeroEtudiant}
+                                        disabled={!editing}
+                                        onChange={handleInputChange}
+                                        onBlur={() => setTimeout(() => setShowStudentSuggestions(false), 200)}
+                                        autoComplete="off"
+                                    />
 
-                            {editing && showStudentSuggestions && studentSuggestions.length > 0 && (
-                                <ul className="suggestions-list">
-                                    {studentSuggestions.map((student, index) => (
-                                        <li key={index} onMouseDown={() => handleSelectSuggestion(student)} className="suggestion-item">
-                                            <span className="suggestion-number">{student.numero}</span>
+                                    {editing && showStudentSuggestions && studentSuggestions.length > 0 && (
+                                        <ul className="suggestions-list">
+                                            {studentSuggestions.map((student, index) => (
+                                                <li key={index} onMouseDown={() => handleSelectSuggestion(student)} className="suggestion-item">
+                                                    <span className="suggestion-number">{student.numero}</span>
 
-                                            <div className="suggestion-preview">
-                                                <span>
-                                                    <strong>
-                                                        {student.prenom} {student.nom}
-                                                    </strong>
-                                                    {` (${student.promo})` || " (N/A)"}
-                                                </span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                                                    <div className="suggestion-preview">
+                                                        <span>
+                                                            <strong>
+                                                                {student.prenom} {student.nom}
+                                                            </strong>
+                                                            {` (${student.promo})` || " (N/A)"}
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                                <div className="info-item">
+                                    <span className="label">Prénom</span>
+                                    <InputField value={prenomEtudiant} disabled={true} onChange={setPrenomEtudiant} />
+                                </div>
+                                <div className="info-item">
+                                    <span className="label">Nom</span>
+                                    <InputField value={nomEtudiant} disabled={true} onChange={setNomEtudiant} />
+                                </div>
+                            </div>
                         </div>
-                        <div className="info-item">
-                            <span className="label">Prénom</span>
-                            <InputField value={prenomEtudiant} disabled={true} onChange={setPrenomEtudiant} />
+
+                        <div className="info-grid-container">
+                            <h3>Enseignant déclarant</h3>
+                            <div className="info-grid">
+                                <div className={"info-item autocomplete-container " + `${showTeacherSuggestions ? "active" : ""}`}>
+                                    <span className="label">Login Enseignant</span>
+                                    <InputField
+                                        value={loginProfesseur}
+                                        disabled={!editing}
+                                        onChange={handleTeacherInputChange}
+                                        onBlur={() => setTimeout(() => setShowTeacherSuggestions(false), 200)}
+                                        autoComplete="off"
+                                    />
+
+                                    {editing && showTeacherSuggestions && teacherSuggestions.length > 0 && (
+                                        <ul className="suggestions-list">
+                                            {teacherSuggestions.map((teacher, index) => (
+                                                <li key={index} onMouseDown={() => handleSelectTeacherSuggestion(teacher)} className="suggestion-item">
+                                                    <span className="suggestion-number">{teacher.loginENT}</span>
+
+                                                    <div className="suggestion-preview">
+                                                        <span>
+                                                            <strong>
+                                                                {teacher.prenom} {teacher.nom}
+                                                            </strong>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                                <div className="info-item">
+                                    <span className="label">Prénom</span>
+                                    <InputField value={prenomProfesseur} disabled={true} onChange={setPrenomProfesseur} />
+                                </div>
+                                <div className="info-item">
+                                    <span className="label">Nom</span>
+                                    <InputField value={nomProfesseur} disabled={true} onChange={setNomProfesseur} />
+                                </div>
+                            </div>
                         </div>
-                        <div className="info-item">
-                            <span className="label">Nom</span>
-                            <InputField value={nomEtudiant} disabled={true} onChange={setNomEtudiant} />
+                        <div className="selector-container">
+                            <SelectTime value={dateValue} onChange={handleDateChange} />
+                            <SelectSubject value={matiere} onSelect={setMatiere} promo={promo} pair={pair} />
                         </div>
                     </div>
-                </div>
-
-                <div className="info-grid-container">
-                    <h3>Enseignant déclarant</h3>
-                    <div className="info-grid">
-                        <div className={"info-item autocomplete-container " + `${showTeacherSuggestions ? "active" : ""}`}>
-                            <span className="label">Login Enseignant</span>
-                            <InputField
-                                value={loginProfesseur}
-                                disabled={!editing}
-                                onChange={handleTeacherInputChange}
-                                onBlur={() => setTimeout(() => setShowTeacherSuggestions(false), 200)}
-                                autoComplete="off"
-                            />
-
-                            {editing && showTeacherSuggestions && teacherSuggestions.length > 0 && (
-                                <ul className="suggestions-list">
-                                    {teacherSuggestions.map((teacher, index) => (
-                                        <li key={index} onMouseDown={() => handleSelectTeacherSuggestion(teacher)} className="suggestion-item">
-                                            <span className="suggestion-number">{teacher.loginENT}</span>
-
-                                            <div className="suggestion-preview">
-                                                <span>
-                                                    <strong>
-                                                        {teacher.prenom} {teacher.nom}
-                                                    </strong>
-                                                </span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                        <div className="info-item">
-                            <span className="label">Prénom</span>
-                            <InputField value={prenomProfesseur} disabled={true} onChange={setPrenomProfesseur} />
-                        </div>
-                        <div className="info-item">
-                            <span className="label">Nom</span>
-                            <InputField value={nomProfesseur} disabled={true} onChange={setNomProfesseur} />
-                        </div>
-                    </div>
-                </div>
-                <div className="selector-container">
-                    <SelectTime value={dateValue} onChange={handleDateChange} />
-                    <SelectSubject value={matiere} onSelect={setMatiere} promo={promo} pair={pair} />
-                </div>
-            </div>
+                </>
+            )}
         </div>
     );
 }

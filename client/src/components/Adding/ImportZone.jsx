@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 // import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
@@ -22,6 +22,7 @@ import {
     EXPECTED_HEADERS as EXPECTED_TEACHER_HEADERS,
     HEADER_DISPLAY_NAMES as TEACHER_DISPLAY_NAMES,
 } from "../../utils/teacherValidation";
+import CustomLoader from "../common/CustomLoader";
 
 function ImportZone({ setRowData, setColDefs, type }) {
     // Configuration selon le type
@@ -34,11 +35,13 @@ function ImportZone({ setRowData, setColDefs, type }) {
     const idField = isStudent ? "numero" : "loginENT"; // Champ clé pour check doublon
     const checkIdEndpoint = isStudent ? `${API_URL}/eleve/allID` : `${API_URL}/teacher/allLoginENT`;
 
+    const [loading, setLoading] = useState(false);
+
     const processExcel = async (file) => {
         try {
-            // --- ÉTAPE 1 : Check doublons ---
             const existingIds = new Set();
             try {
+                setLoading(true);
                 const response = await fetch(checkIdEndpoint, {
                     method: "GET",
                     credentials: "include",
@@ -55,6 +58,8 @@ function ImportZone({ setRowData, setColDefs, type }) {
             } catch (err) {
                 console.error("Erreur check doublons", err);
                 toast.error("Impossible de vérifier les doublons en base.");
+            } finally {
+                setLoading(false);
             }
 
             // --- ÉTAPE 2 : Lecture Excel ---
@@ -193,10 +198,10 @@ function ImportZone({ setRowData, setColDefs, type }) {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+    if (loading) return <CustomLoader />;
     return (
         <div {...getRootProps()} className="dropzone-container">
             <input {...getInputProps()} />
-            {/* <Import size={40} className="import-icon" /> */}
             <span className="icon icon-import icon-xxxl import-icon" />
             {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
         </div>

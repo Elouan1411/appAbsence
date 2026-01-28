@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import CustomLoader from "./CustomLoader";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export default function PDFDocument({ file }) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
+    const [loading, setLoading] = useState(false);
     const filename = file.split("/").pop();
     let height = 450;
     async function onDocumentLoadSuccess(pdf) {
@@ -18,6 +20,7 @@ export default function PDFDocument({ file }) {
         e.preventDefault();
 
         try {
+            setLoading(true);
             const response = await fetch(file);
             const blob = await response.blob();
 
@@ -34,11 +37,13 @@ export default function PDFDocument({ file }) {
         } catch (error) {
             console.error("Erreur de téléchargement :", error);
             window.open(file, "_blank");
+        } finally {
+            setLoading(false);
         }
     };
 
+    if (loading) return <CustomLoader />;
     if (!file) return <p>Aucun document</p>;
-    console.log(file);
 
     return (
         <div className="pdf-content">

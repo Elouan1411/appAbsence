@@ -13,6 +13,7 @@ import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 import SearchInput from "../../common/SearchInput";
 import "../../../style/searchAgGrid.css";
 import { API_URL } from "../../../config";
+import CustomLoader from "../../common/CustomLoader";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -110,8 +111,6 @@ function StudentList() {
         };
     }, []);
 
-    console.log(rowData);
-
     const toggleSearch = () => {
         if (isSearchActive) {
             setQuickFilterText("");
@@ -119,46 +118,47 @@ function StudentList() {
         setIsSearchActive(!isSearchActive);
     };
 
-    return (
-        <div className="student-list">
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
-                <div className="search-wrapper-right" style={{ position: "relative" }}>
-                    {isSearchActive ? (
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher..."
-                            onIconClick={toggleSearch}
+    if (loading)
+        return (
+            <div className="student-list">
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+                    <div className="search-wrapper-right" style={{ position: "relative" }}>
+                        {isSearchActive ? (
+                            <SearchInput
+                                value={quickFilterText}
+                                onChange={(e) => setQuickFilterText(e.target.value)}
+                                placeholder="Rechercher..."
+                                onIconClick={toggleSearch}
+                            />
+                        ) : (
+                            <button onClick={toggleSearch} className="search-toggle-button">
+                                <span className="icon icon-search search-icon-sized" />
+                            </button>
+                        )}
+                    </div>
+                </div>
+                {loading ? (
+                    <CustomLoader />
+                ) : (
+                    <div style={{ height: "100%", width: "100%" }}>
+                        <AgGridReact
+                            rowData={rowData}
+                            columnDefs={colDefs}
+                            defaultColDef={defaultColDef}
+                            theme={theme == "dark" ? darkTheme : lightTheme}
+                            rowSelection={rowSelection}
+                            onRowClicked={handleRowClick}
+                            pagination={true}
+                            paginationPageSize={10}
+                            paginationPageSizeSelector={[10, 20, 50, 100]}
+                            localeText={AG_GRID_LOCALE_FR}
+                            autoSizeStrategy={autoSizeStrategy}
+                            quickFilterText={quickFilterText}
                         />
-                    ) : (
-                        <button onClick={toggleSearch} className="search-toggle-button">
-                            <span className="icon icon-search search-icon-sized" />
-                        </button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-            {loading ? (
-                <p>En chargement...</p>
-            ) : (
-                <div style={{ height: "100%", width: "100%" }}>
-                    <AgGridReact
-                        rowData={rowData}
-                        columnDefs={colDefs}
-                        defaultColDef={defaultColDef}
-                        theme={theme == "dark" ? darkTheme : lightTheme}
-                        rowSelection={rowSelection}
-                        onRowClicked={handleRowClick}
-                        pagination={true}
-                        paginationPageSize={10}
-                        paginationPageSizeSelector={[10, 20, 50, 100]}
-                        localeText={AG_GRID_LOCALE_FR}
-                        autoSizeStrategy={autoSizeStrategy}
-                        quickFilterText={quickFilterText}
-                    />
-                </div>
-            )}
-        </div>
-    );
+        );
 }
 
 export default StudentList;

@@ -20,12 +20,14 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import ExcelJS from "exceljs";
 import { API_URL } from "../../config";
 import "../../style/icon.css";
+import CustomLoader from "../common/CustomLoader";
 
 function DataImport({ type, openModal, setHasUnsavedImport }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const [hasErrors, setHasErrors] = useState(false);
     const [hasDuplicate, setHasDuplicate] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     const gridRef = useRef(null);
 
@@ -245,6 +247,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         // Correction ici: Utilisation de 'confirmed' au lieu de 'result'
         if (confirmed.isConfirmed) {
             try {
+                setLoading(true);
                 const response = await fetch(type === "student" ? `${API_URL}/eleve/studentList` : `${API_URL}/teacher/teacherList`, {
                     method: "POST",
                     headers: {},
@@ -252,7 +255,6 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                     body: formData,
                 });
 
-                console.log(response);
                 if (response.ok) {
                     toast.success("Données envoyées avec succès.");
                     setHasUnsavedImport(false);
@@ -262,6 +264,8 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                 }
             } catch (error) {
                 toast.error("Erreur réseau", error);
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -307,13 +311,12 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                                 onCellValueChanged={handleCellValueChanged}
                             />
                             <div className="grid-button-container">
-                                <Button onClick={handleSaveAndSend}>Sauvegarder</Button>
+                                {isLoading ? <CustomLoader /> : <Button onClick={handleSaveAndSend}>Sauvegarder</Button>}
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="content-import">
-                        {/* On passe le type à ImportZone */}
                         <ImportZone type={type} setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
                         <Separator>ou alors ajoutez un {entityLabel}</Separator>
                         <Button className="add-button" onClick={openModal}>

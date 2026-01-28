@@ -6,6 +6,7 @@ import "../../style/icon.css";
 import { API_URL } from "../../config";
 
 import { DATA_REGEX } from "../../utils/studentValidation";
+import CustomLoader from "../common/CustomLoader";
 
 const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
     const [RSE, setRSE] = useState([]);
@@ -145,6 +146,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
         onSubmit(cleanData);
         onClose();
     };
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -218,20 +220,24 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
 
                                 <div className="rse-section">
                                     <p>RSE (Sélection multiple)</p>
-                                    <div className="chips-container">
-                                        {RSE.map((option) => {
-                                            const isSelected = formData.rse.some((item) => item.code === option.code);
-                                            return (
-                                                <div
-                                                    key={option.code}
-                                                    className={`rse-chip ${isSelected ? "selected" : ""}`}
-                                                    onClick={() => handleRseChange(option)}
-                                                >
-                                                    <span>{option.libelle}</span>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                                    {loading ? (
+                                        <CustomLoader />
+                                    ) : (
+                                        <div className="chips-container">
+                                            {RSE.map((option) => {
+                                                const isSelected = formData.rse.some((item) => item.code === option.code);
+                                                return (
+                                                    <div
+                                                        key={option.code}
+                                                        className={`rse-chip ${isSelected ? "selected" : ""}`}
+                                                        onClick={() => handleRseChange(option)}
+                                                    >
+                                                        <span>{option.libelle}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             </>
                         )}

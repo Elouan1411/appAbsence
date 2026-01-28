@@ -51,7 +51,6 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
 
     async function handleFetchJustification() {
         try {
-            // Only show loading spinner on the very first load
             if (isFirstLoad.current) {
                 setLoading(true);
             }
@@ -90,12 +89,9 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 return item;
             });
 
-            console.log("Données traitées :", processedData);
-
             if (JSON.stringify(processedData) !== JSON.stringify(rowData)) {
                 setRowData(processedData);
 
-                // Smart Selection Clearing - Only check if data changed
                 if (selectedItem) {
                     const stillExists = processedData.find((item) => item.idAbsJustifiee === selectedItem.idAbsJustifiee);
                     if (!stillExists) {
@@ -204,7 +200,7 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 </div>
             </div>
             {loading ? (
-                <p>En chargement...</p>
+                <CustomLoader />
             ) : (
                 <div className="justification-list-container" style={{ flex: 1 }}>
                     <AgGridReact
