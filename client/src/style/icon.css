@@ -63,6 +63,10 @@
     background-color: var(--text-secondary);
 }
 
+.icon-pending {
+    background-color: var(--badge-pending-text);
+}
+
 .icon-check-success {
     mask-image: url(../assets/check_success.svg);
     -webkit-mask-image: url(../assets/check_success.svg);

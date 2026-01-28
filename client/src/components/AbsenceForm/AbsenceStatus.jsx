@@ -21,7 +21,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     className: "status-badge-pending",
                     containerClass: "status-container-pending",
                     // icon: <Clock size={16} />,
-                    icon: <span className="icon icon-clock icon-medium icon-warning" />,
+                    icon: <span className="icon icon-clock icon-medium icon-pending" />,
                     color: "var(--warning-color)",
                 };
             case "validated":
