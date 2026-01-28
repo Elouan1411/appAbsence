@@ -1,6 +1,7 @@
 import React from "react";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
+import "../../style/NavigateBackButton.css";
 
 function NavigateBackButton() {
     const { hasUnsavedChanges } = useUnsaved();

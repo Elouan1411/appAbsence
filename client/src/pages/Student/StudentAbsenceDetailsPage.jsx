@@ -12,6 +12,7 @@ import { useJustificationValidation } from "../../hooks/useJustificationValidati
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
+import NavigateBackButton from "../../components/common/NavigateBackButton";
 
 const StudentAbsenceDetailsPage = () => {
     const { id } = useParams();
@@ -187,7 +188,7 @@ const StudentAbsenceDetailsPage = () => {
         <div className="student-justification-container">
             <div className="studentJustificationPage">
                 <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
-
+                <NavigateBackButton />
                 <AbsenceStatus status={status} adminComment={refusalReason} />
 
                 <PeriodAbsence
