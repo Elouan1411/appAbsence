@@ -10,6 +10,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SubjectModal from "../../components/Admin/SubjectModal";
 import { API_URL } from "../../config";
+import CustomLoader from "../../components/common/CustomLoader";
 
 function SettingsPage() {
     const [activeTab, setActiveTab] = useState("admin");
@@ -24,6 +25,10 @@ function SettingsPage() {
 
     const [filterPromo, setFilterPromo] = useState("");
     const [filterSemester, setFilterSemester] = useState("");
+
+    const [isSubjectLoading, setIsSubjectLoading] = useState(false);
+    const [isAdminLoading, setIsAdminLoading] = useState(false);
+    const [deletingSubjectId, setDeletingSubjectId] = useState(null);
 
     const fetchSubjects = async () => {
         try {
@@ -79,6 +84,7 @@ function SettingsPage() {
 
         if (isConfirmed) {
             try {
+                setIsAdminLoading(true);
                 const response = await fetch(`${API_URL}/teacher/${adminLogin}/admin`, {
                     method: "PUT",
                     credentials: "include",
@@ -93,6 +99,8 @@ function SettingsPage() {
             } catch (error) {
                 console.error("Erreur:", error);
                 toast.error("Erreur connexion serveur.");
+            } finally {
+                setIsAdminLoading(false);
             }
         }
     };
@@ -102,6 +110,7 @@ function SettingsPage() {
         const spairValue = semester === "Pair" ? 1 : 0;
 
         try {
+            setIsSubjectLoading(true);
             let response;
             if (editingSubject) {
                 response = await fetch(`${API_URL}/subject/${editingSubject.code}`, {
@@ -138,6 +147,8 @@ function SettingsPage() {
         } catch (err) {
             console.error(err);
             toast.error("Erreur de communication avec le serveur.");
+        } finally {
+            setIsSubjectLoading(false);
         }
     };
 
@@ -150,6 +161,7 @@ function SettingsPage() {
         const { isConfirmed } = await alertConfirm("Supprimer la matière ?", "Cette action est irréversible.");
         if (isConfirmed) {
             try {
+                setDeletingSubjectId(id);
                 const response = await fetch(`${API_URL}/subject/${id}`, {
                     method: "DELETE",
                     credentials: "include",
@@ -164,6 +176,8 @@ function SettingsPage() {
             } catch (err) {
                 console.error(err);
                 toast.error("Erreur de communication avec le serveur.");
+            } finally {
+                setDeletingSubjectId(null);
             }
         }
     };
@@ -229,9 +243,13 @@ function SettingsPage() {
                             </select>
                         </div>
 
-                        <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix">
-                            Ajouter l'administrateur
-                        </button>
+                        {isAdminLoading ? (
+                            <CustomLoader />
+                        ) : (
+                            <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix">
+                                Ajouter l'administrateur
+                            </button>
+                        )}
                     </div>
                 )}
 
@@ -247,6 +265,7 @@ function SettingsPage() {
                             initialData={editingSubject}
                             defaultValues={{ promo: filterPromo, semester: filterSemester }}
                             promotions={promotions}
+                            isLoading={isSubjectLoading}
                         />
 
                         <div className="filter-container">
@@ -295,9 +314,13 @@ function SettingsPage() {
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
                                                     <span className="icon settings-icon icon-edit" />
                                                 </button>
-                                                <button onClick={() => handleDeleteSubject(sub.code)} className="settings-icon-button" title="Supprimer">
-                                                    <span className="icon settings-icon icon-trash" />
-                                                </button>
+                                                {deletingSubjectId === sub.code ? (
+                                                    <CustomLoader />
+                                                ) : (
+                                                    <button onClick={() => handleDeleteSubject(sub.code)} className="settings-icon-button" title="Supprimer">
+                                                        <span className="icon settings-icon icon-trash" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     ))

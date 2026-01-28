@@ -6,6 +6,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import AbsencePdfDocument from "./AbsencePdfDocument";
 import Pagination from "../common/Pagination";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 const STEP = 4;
 
@@ -13,6 +14,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [toUpdate, setToUpdate] = useState(false);
     const [absencesToShow, setAbsenceToShow] = useState([]);
+    const [localLoading, setLocalLoading] = useState(false);
 
     useEffect(() => {
         const start = (currentPage - 1) * STEP;
@@ -28,6 +30,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
     const handleFetchAbsences = async () => {
         try {
             setLoading(true);
+            setLocalLoading(true);
             const result = await fetch(`${API_URL}/absence/` + userId, {
                 method: "GET",
                 credentials: "include",
@@ -38,6 +41,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
             toast.error("Erreur : " + err.message);
         } finally {
             setLoading(false);
+            setLocalLoading(false);
         }
     };
 
@@ -80,7 +84,20 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                 )}
             </div>
             <div className="absence-list-subcontainer">
-                {absencesToShow.length > 0 ? (
+                {/* Use a local loading state if you want, but here we can check if parent passed loading but this component sets it.
+                    Actually, this component Calls setLoading(true/false) on parent.
+                    So we should check if we want to show loader HERE. 
+                    The prop setLoading suggests the parent is controlling the loading VISIBILITY?
+                    But StudentDetailPage passes setLoading={setLoading} and renders PersonalInformations.
+                    If we want loader HERE, we need a local state OR use the parent's state if passed back.
+                    But parent state is 'loading'. It is NOT passed back to AbsenceList as a prop named 'loading'. 
+                    AbsenceList signature is: { setLoading, userId, setAbsences, absences, student }
+                    It does NOT receive 'loading'.
+                    So I should add local loading state.
+                */}
+                {localLoading ? (
+                    <CustomLoader />
+                ) : absencesToShow.length > 0 ? (
                     <>
                         {absencesToShow.map((absence, index) => (
                             <AbsenceCard

@@ -29,10 +29,13 @@ const AdminJustificationPage = () => {
     const [automaticPeriod, setAutomaticPeriod] = useState(false);
     const { errors, periodError, reasonError, setPeriodError, validatePeriods, validateReason, validateAll } = useJustificationValidation();
     const { submit, isSubmitting } = useJustificationSubmit();
+    const [isLoading, setIsLoading] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
 
     useEffect(() => {
         const fetchStudents = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch(`${API_URL}/eleve/all`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
@@ -41,6 +44,8 @@ const AdminJustificationPage = () => {
             } catch (error) {
                 console.error("Error fetching students", error);
                 toast.error("Impossible de charger la liste des étudiants");
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchStudents();
@@ -117,7 +122,7 @@ const AdminJustificationPage = () => {
         if (!confirmation.isConfirmed) return;
 
         const result = await submit(period, reason, comment, files, "create", null, [], null, selectedStudent.loginENT);
-
+        setEditLoading(false);
         if (result && result.success) {
             if (action !== "create" && result.ids && result.ids.length > 0) {
                 try {
@@ -153,7 +158,9 @@ const AdminJustificationPage = () => {
             setSelectedStudent(null);
             setSearchTerm("");
             setPeriodError(false);
+            setEditLoading(false);
         }
+        setIsLoading(false);
     };
 
     return (

@@ -29,6 +29,7 @@ function AbsenceDetailPage() {
     const [matiere, setMatiere] = useState(0);
     const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [isJustified, setJustified] = useState(false);
     const [justification, setJustification] = useState([]);
 
@@ -40,6 +41,8 @@ function AbsenceDetailPage() {
 
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+
+    const [editLoading, setEditLoading] = useState(false);
 
     const handleGoBack = () => {
         safeNavigate(-1);
@@ -56,6 +59,7 @@ function AbsenceDetailPage() {
     }, [debut, fin, numeroEtudiant, loginProfesseur, matiere]);
     const handleFetchAbsence = async () => {
         try {
+            setLoading(true);
             const result = await fetch(`${API_URL}/absence/detail/` + absenceId, {
                 method: "GET",
                 credentials: "include",
@@ -79,11 +83,14 @@ function AbsenceDetailPage() {
         } catch (err) {
             console.error(err);
             toast.error(err.message || "Erreur récupération absence");
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleFetchJustification = async () => {
         try {
+            setLoading(true);
             const result = await fetch(`${API_URL}/justification/absence/` + absenceId, {
                 method: "GET",
                 credentials: "include",
@@ -115,6 +122,8 @@ function AbsenceDetailPage() {
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
     const handleCancelChanges = async () => {
@@ -130,10 +139,11 @@ function AbsenceDetailPage() {
     };
 
     const handleDeleteAbsence = async () => {
-        console.log(idAbsence);
         const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
         if (confirmation.isConfirmed) {
             try {
+                setIsSaving(true);
+                setEditLoading(true);
                 const result = await fetch(`${API_URL}/absence/` + absenceId, {
                     method: "DELETE",
                     credentials: "include",
@@ -143,6 +153,8 @@ function AbsenceDetailPage() {
                 handleGoBack();
             } catch (err) {
                 toast.error(err);
+            } finally {
+                setIsSaving(false);
             }
         }
     };
@@ -150,8 +162,10 @@ function AbsenceDetailPage() {
     const handleSaveChanges = async () => {
         const confirm = await alertConfirm("Voulez-vous sauvegarder vos changements ?", "Ces changements seront irréversibles.");
         if (confirm.isConfirmed) {
-            if (loginProfesseur != oldLoginProfesseur || matiere != oldMatiere || debut != oldDebut || fin != oldFin) {
-                try {
+            try {
+                setIsSaving(true);
+                setEditLoading(true);
+                if (loginProfesseur != oldLoginProfesseur || matiere != oldMatiere || debut != oldDebut || fin != oldFin) {
                     const result = await fetch(`${API_URL}/appel/`, {
                         method: "POST",
                         headers: {
@@ -180,12 +194,8 @@ function AbsenceDetailPage() {
                         credentials: "include",
                         body: JSON.stringify({ newAppelId: appelId }),
                     });
-                } catch (err) {
-                    toast.error(err);
                 }
-            }
-            if (oldNumeroEtudiant != numeroEtudiant) {
-                try {
+                if (oldNumeroEtudiant != numeroEtudiant) {
                     const result = await fetch(`${API_URL}/absence/` + absenceId, {
                         method: "PUT",
                         headers: {
@@ -194,12 +204,14 @@ function AbsenceDetailPage() {
                         credentials: "include",
                         body: JSON.stringify({ newNumeroEtudiant: numeroEtudiant, newLoginENT: loginEtudiant }),
                     });
-                } catch (err) {
-                    toast.error(err);
                 }
+                toast.success("Les changements ont été effectués avec succès.");
+                handleGoBack();
+            } catch (err) {
+                toast.error(err);
+            } finally {
+                setIsSaving(false);
             }
-            toast.success("Les changements ont été effectués avec succès.");
-            handleGoBack();
         }
     };
 
@@ -211,6 +223,9 @@ function AbsenceDetailPage() {
         <div className="absence-detail-container">
             <PageTitle title={"Détail de l'absence"} icon={"icon-absences"} />
             <NavigateBackButton />
+            
+            {loading ? <CustomLoader /> : (
+                <>
             <div className="absence-detail">
                 <ModificationAbsence
                     debut={debut}
@@ -239,7 +254,11 @@ function AbsenceDetailPage() {
                 handleCancelChanges={handleCancelChanges}
                 handleDeleteUser={handleDeleteAbsence}
                 handleConfirmModification={handleSaveChanges}
+                isLoading={isSaving}
             />
+            </>
+            )}
+            
         </div>
     );
 }

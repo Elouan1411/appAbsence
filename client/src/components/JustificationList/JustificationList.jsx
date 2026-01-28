@@ -13,6 +13,7 @@ import firstCharUppercase from "../../functions/firstCharUppercase";
 import SearchInput from "../common/SearchInput";
 import { API_URL } from "../../config";
 import "../../style/searchAgGrid.css";
+import CustomLoader from "../common/CustomLoader";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = ["numeroEtudiant", "nom", "prenom", "debut", "fin", "motif", "commentaire"];

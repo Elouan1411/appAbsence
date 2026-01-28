@@ -4,8 +4,9 @@ import InputField from "../common/InputField";
 import "../../style/FormModal.css";
 import Button from "../common/Button";
 import "../../style/icon.css";
+import CustomLoader from "../common/CustomLoader";
 
-const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultValues = null, promotions = ["L2", "L3", "M1", "M2"] }) => {
+const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultValues = null, promotions = ["L2", "L3", "M1", "M2"], isLoading }) => {
     const [formData, setFormData] = useState({
         libelle: "",
         promo: "",
@@ -123,8 +124,8 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
                             <Button type="button" className="btn-cancel" onClick={onClose}>
                                 Annuler
                             </Button>
-                            <Button type="submit" className="btn-submit">
-                                {initialData ? "Modifier" : "Ajouter"}
+                            <Button type="submit" className="btn-submit" disabled={isLoading}>
+                                {isLoading ? <CustomLoader /> : (initialData ? "Modifier" : "Ajouter")}
                             </Button>
                         </div>
                     </div>

@@ -118,47 +118,46 @@ function StudentList() {
         setIsSearchActive(!isSearchActive);
     };
 
-    if (loading)
-        return (
-            <div className="student-list">
-                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
-                    <div className="search-wrapper-right" style={{ position: "relative" }}>
-                        {isSearchActive ? (
-                            <SearchInput
-                                value={quickFilterText}
-                                onChange={(e) => setQuickFilterText(e.target.value)}
-                                placeholder="Rechercher..."
-                                onIconClick={toggleSearch}
-                            />
-                        ) : (
-                            <button onClick={toggleSearch} className="search-toggle-button">
-                                <span className="icon icon-search search-icon-sized" />
-                            </button>
-                        )}
-                    </div>
-                </div>
-                {loading ? (
-                    <CustomLoader />
-                ) : (
-                    <div style={{ height: "100%", width: "100%" }}>
-                        <AgGridReact
-                            rowData={rowData}
-                            columnDefs={colDefs}
-                            defaultColDef={defaultColDef}
-                            theme={theme == "dark" ? darkTheme : lightTheme}
-                            rowSelection={rowSelection}
-                            onRowClicked={handleRowClick}
-                            pagination={true}
-                            paginationPageSize={10}
-                            paginationPageSizeSelector={[10, 20, 50, 100]}
-                            localeText={AG_GRID_LOCALE_FR}
-                            autoSizeStrategy={autoSizeStrategy}
-                            quickFilterText={quickFilterText}
+    return (
+        <div className="student-list">
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+                <div className="search-wrapper-right" style={{ position: "relative" }}>
+                    {isSearchActive ? (
+                        <SearchInput
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
+                            placeholder="Rechercher..."
+                            onIconClick={toggleSearch}
                         />
-                    </div>
-                )}
+                    ) : (
+                        <button onClick={toggleSearch} className="search-toggle-button">
+                            <span className="icon icon-search search-icon-sized" />
+                        </button>
+                    )}
+                </div>
             </div>
-        );
+            {loading ? (
+                <CustomLoader />
+            ) : (
+                <div style={{ height: "100%", width: "100%" }}>
+                    <AgGridReact
+                        rowData={rowData}
+                        columnDefs={colDefs}
+                        defaultColDef={defaultColDef}
+                        theme={theme == "dark" ? darkTheme : lightTheme}
+                        rowSelection={rowSelection}
+                        onRowClicked={handleRowClick}
+                        pagination={true}
+                        paginationPageSize={10}
+                        paginationPageSizeSelector={[10, 20, 50, 100]}
+                        localeText={AG_GRID_LOCALE_FR}
+                        autoSizeStrategy={autoSizeStrategy}
+                        quickFilterText={quickFilterText}
+                    />
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default StudentList;

@@ -8,10 +8,12 @@ import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import "../../style/Teacher.css";
 import { API_URL } from "../../config";
+import CustomLoader from "../../components/common/CustomLoader";
 
 function TeacherHomePage() {
     const { logout, user } = useAuth();
     const [recentCourses, setRecentCourses] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSignOut = async () => {
@@ -24,6 +26,7 @@ function TeacherHomePage() {
         async function fetchRecent() {
             if (!user) return;
             try {
+                setIsLoading(true);
                 const response = await fetch(`${API_URL}/appel/recent/:${user}`, { credentials: "include" });
                 if (response.ok) {
                     const data = await response.json();
@@ -31,6 +34,8 @@ function TeacherHomePage() {
                 }
             } catch (err) {
                 console.error("Erreur fetch recent:", err);
+            } finally {
+                setIsLoading(false);
             }
         }
         fetchRecent();
@@ -57,24 +62,28 @@ function TeacherHomePage() {
 
             <div className="recent-section">
                 <h3 className="recent-title">Reprendre un cours récent</h3>
-                <div className="recent-grid">
-                    {recentCourses.map((course, index) => (
-                        <RecentCard
-                            key={index}
-                            promo={course.promo}
-                            group={
-                                (course.groupeTD ? course.groupeTD : "") +
-                                (course.groupeTD && course.groupeTP ? " - " : "") +
-                                (course.groupeTP ? course.groupeTP : "") +
-                                (course.groupeTD || course.groupeTP ? "" : "-")
-                            }
-                            subject={course.libelle}
-                            date={"Dernier cours : " + formatDate(course.last_date)}
-                            onClick={() => handleCardClick(course)}
-                        />
-                    ))}
-                    {recentCourses.length === 0 && <p className="empty-message">Aucun cours récent trouvé.</p>}
-                </div>
+                {isLoading ? (
+                    <CustomLoader />
+                ) : (
+                    <div className="recent-grid">
+                        {recentCourses.map((course, index) => (
+                            <RecentCard
+                                key={index}
+                                promo={course.promo}
+                                group={
+                                    (course.groupeTD ? course.groupeTD : "") +
+                                    (course.groupeTD && course.groupeTP ? " - " : "") +
+                                    (course.groupeTP ? course.groupeTP : "") +
+                                    (course.groupeTD || course.groupeTP ? "" : "-")
+                                }
+                                subject={course.libelle}
+                                date={"Dernier cours : " + formatDate(course.last_date)}
+                                onClick={() => handleCardClick(course)}
+                            />
+                        ))}
+                        {recentCourses.length === 0 && <p className="empty-message">Aucun cours récent trouvé.</p>}
+                    </div>
+                )}
             </div>
         </div>
     );

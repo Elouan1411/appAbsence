@@ -8,7 +8,7 @@ import { API_URL } from "../../config";
 import { DATA_REGEX } from "../../utils/studentValidation";
 import CustomLoader from "../common/CustomLoader";
 
-const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
+const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
     const [RSE, setRSE] = useState([]);
     const [loading, setLoading] = useState(false);
     const initialState = {
@@ -248,8 +248,8 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit }) => {
                             <Button type="button" className="btn-cancel" onClick={onClose}>
                                 Annuler
                             </Button>
-                            <Button type="submit" className="btn-submit">
-                                Valider
+                            <Button type="submit" className="btn-submit" disabled={isLoading}>
+                                {isLoading ? <CustomLoader /> : "Valider"}
                             </Button>
                         </div>
                     </div>

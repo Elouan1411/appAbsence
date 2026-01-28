@@ -14,6 +14,7 @@ import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useAuth } from "../../hooks/useAuth";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { API_URL } from "../../config";
+import CustomLoader from "../../components/common/CustomLoader";
 
 function StudentHomePage() {
     const [activeTab, setActiveTab] = useState("todo");
@@ -39,24 +40,37 @@ function StudentHomePage() {
 
     const ITEMS_PER_PAGE = 8;
 
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         if (user) {
-            fetchTodo(paginationState.todo);
-            fetchPending(paginationState.pending);
-            fetchArchived(paginationState.archived);
+            setIsLoading(true);
+            Promise.all([
+                fetchTodo(paginationState.todo),
+                fetchPending(paginationState.pending),
+                fetchArchived(paginationState.archived)
+            ]).finally(() => setIsLoading(false));
         }
     }, [user]);
 
     // Effect to refetch when page changes
     useEffect(() => {
         if (!user) return;
-        if (activeTab === "todo") fetchTodo(paginationState.todo);
-        if (activeTab === "pending") fetchPending(paginationState.pending);
-        if (activeTab === "archived") fetchArchived(paginationState.archived);
+        setIsLoading(true);
+        let promise;
+        if (activeTab === "todo") promise = fetchTodo(paginationState.todo);
+        if (activeTab === "pending") promise = fetchPending(paginationState.pending);
+        if (activeTab === "archived") promise = fetchArchived(paginationState.archived);
+        
+        if (promise) {
+            promise.finally(() => setIsLoading(false));
+        } else {
+            setIsLoading(false);
+        }
     }, [paginationState, activeTab]);
 
     const fetchTodo = (page) => {
-        fetch(`${API_URL}/absence/unjustified/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        return fetch(`${API_URL}/absence/unjustified/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
@@ -84,7 +98,7 @@ function StudentHomePage() {
     };
 
     const fetchPending = (page) => {
-        fetch(`${API_URL}/absence/in-progress/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        return fetch(`${API_URL}/absence/in-progress/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
@@ -162,7 +176,7 @@ function StudentHomePage() {
     };
 
     const fetchArchived = (page) => {
-        fetch(`${API_URL}/absence/archived/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
+        return fetch(`${API_URL}/absence/archived/:${user}?page=${page}&limit=${ITEMS_PER_PAGE}`, {
             method: "GET",
             credentials: "include",
         })
@@ -297,7 +311,11 @@ function StudentHomePage() {
             <DashboardTabs activeTab={activeTab} setActiveTab={setActiveTab} counts={counts} />
 
             <div className="dashboard-content">
-                {groupedAbsences.map((group) => (
+                {isLoading ? (
+                    <CustomLoader />
+                ) : (
+                    <>
+                        {groupedAbsences.map((group) => (
                     <div key={group.dateLabel} className="absences-list">
                         <div className="absences-date-header">
                             <h4 className="absences-list-header">{group.dateLabel}</h4>
@@ -337,7 +355,9 @@ function StudentHomePage() {
                         onPageChange={handlePageChange}
                     />
                 )}
-            </div>
+                </>
+            )}
+        </div>
             {isSelectionMode && selectedIds.length > 0 && (
                 <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
             )}

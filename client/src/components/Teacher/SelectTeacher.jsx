@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 function SelectTeacher({ onChange, style, value }) {
     const [teachers, setTeachers] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(value || "");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function fetchTeachers() {
             try {
+                setLoading(true);
                 const response = await fetch(`${API_URL}/teacher/all`, {
                     credentials: "include",
                 });
@@ -19,6 +22,8 @@ function SelectTeacher({ onChange, style, value }) {
                 }
             } catch (err) {
                 console.error("Erreur lors de la récupération des enseignants:", err);
+            } finally {
+                setLoading(false);
             }
         }
         fetchTeachers();
@@ -40,6 +45,9 @@ function SelectTeacher({ onChange, style, value }) {
         <div className="Card cols-1" style={{ height: "fit-content", ...style }}>
             <h2>Selectionner un enseignant</h2>
 
+            {loading ? (
+                <CustomLoader />
+            ) : (
             <div className="input-group">
                 <label htmlFor="Teacher">Enseignant</label>
                 <select onChange={handleTeacherChange} value={selectedTeacher}>
@@ -51,6 +59,7 @@ function SelectTeacher({ onChange, style, value }) {
                     ))}
                 </select>
             </div>
+            )}
         </div>
     );
 }

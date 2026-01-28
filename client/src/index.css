@@ -134,7 +134,8 @@ p {
     align-items: center;
 }
 .loader {
-    color: var(--text-primary);
+
+    color: var(--primary-color);
 }
 
 .icon-download {

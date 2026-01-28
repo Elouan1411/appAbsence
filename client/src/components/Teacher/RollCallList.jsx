@@ -413,7 +413,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 }}
             >
                 <h2 style={{ verticalAlign: "bottom" }}>Liste d'appel</h2>
-                {loading ? (
+                {loading || updateLoading ? (
                     <CustomLoader />
                 ) : (
                     <button className="validate-btn" style={{ fontSize: "1rem", marginTop: "0rem" }} onClick={handleValidateRollCall}>

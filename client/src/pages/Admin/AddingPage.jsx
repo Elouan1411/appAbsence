@@ -46,6 +46,8 @@ function AddingPage() {
         setActiveTab(nextTab);
     };
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleSubmit = async (data) => {
         console.log("Données reçues du formulaire :", data);
 
@@ -54,6 +56,7 @@ function AddingPage() {
         const url = `${baseUrl}${endpoint}/add`;
 
         try {
+            setIsLoading(true);
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -73,6 +76,8 @@ function AddingPage() {
         } catch (error) {
             console.error("Erreur lors de la création :", error);
             toast.error("Une erreur est survenue");
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -83,7 +88,7 @@ function AddingPage() {
                 <DataImport type={activeTab} openModal={openModal} setHasUnsavedImport={setHasUnsavedChanges} />
             </div>
 
-            <FormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode={activeTab} onSubmit={handleSubmit} />
+            <FormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode={activeTab} onSubmit={handleSubmit} isLoading={isLoading} />
         </div>
     );
 }

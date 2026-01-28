@@ -32,6 +32,7 @@ const StudentAbsenceDetailsPage = () => {
     const { submit, isSubmitting } = useJustificationSubmit();
 
     const [isEditable, setIsEditable] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     console.log("chargement de la page");
 
     useEffect(() => {
@@ -90,6 +91,7 @@ const StudentAbsenceDetailsPage = () => {
             }
         };
 
+        const init = async () => {
         console.log("lancement de useEffect");
 
         if (location.state) {
@@ -139,9 +141,15 @@ const StudentAbsenceDetailsPage = () => {
             }
 
             if (location.state.justificationId) {
-                loadFiles(location.state.justificationId);
+                setIsLoading(true);
+                await loadFiles(location.state.justificationId);
+                setIsLoading(false);
             }
         }
+    };
+
+    init();
+
     }, [location.state]);
 
     const handlePeriodChange = (newPeriods) => {
@@ -186,49 +194,55 @@ const StudentAbsenceDetailsPage = () => {
     return (
         <div className="student-justification-container">
             <div className="studentJustificationPage">
-                <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
-
-                <AbsenceStatus status={status} adminComment={refusalReason} />
-
-                <PeriodAbsence
-                    period={period}
-                    setPeriod={handlePeriodChange}
-                    errors={errors}
-                    error={periodError}
-                    automaticPeriod={false}
-                    readOnly={!isEditable}
-                />
-
-                <hr className="section-divider" />
-
-                <ReasonInput
-                    reason={reason}
-                    comment={comment}
-                    onReasonChange={(val) => {
-                        setReason(val);
-                        validateReason(val, comment);
-                    }}
-                    onCommentChange={(val) => {
-                        setComment(val);
-                        validateReason(reason, val);
-                    }}
-                    error={reasonError}
-                    readOnly={!isEditable}
-                />
-
-                <hr className="section-divider" />
-
-                {isEditable ? (
-                    <>
-                        <FileUpload files={files} setFiles={handleFilesChange} />
-                        <div style={{ marginTop: "30px" }}>
-                            <Button onClick={handleUpdate} className="submit-button" disabled={isSubmitting}>
-                                {isSubmitting ? <CustomLoader /> : "Modifier la justification"}
-                            </Button>
-                        </div>
-                    </>
+                {isLoading ? (
+                    <CustomLoader />
                 ) : (
-                    <FileReadOnlyList files={files} />
+                    <>
+                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
+
+                        <AbsenceStatus status={status} adminComment={refusalReason} />
+
+                        <PeriodAbsence
+                            period={period}
+                            setPeriod={handlePeriodChange}
+                            errors={errors}
+                            error={periodError}
+                            automaticPeriod={false}
+                            readOnly={!isEditable}
+                        />
+
+                        <hr className="section-divider" />
+
+                        <ReasonInput
+                            reason={reason}
+                            comment={comment}
+                            onReasonChange={(val) => {
+                                setReason(val);
+                                validateReason(val, comment);
+                            }}
+                            onCommentChange={(val) => {
+                                setComment(val);
+                                validateReason(reason, val);
+                            }}
+                            error={reasonError}
+                            readOnly={!isEditable}
+                        />
+
+                        <hr className="section-divider" />
+
+                        {isEditable ? (
+                            <>
+                                <FileUpload files={files} setFiles={handleFilesChange} />
+                                <div style={{ marginTop: "30px" }}>
+                                    <Button onClick={handleUpdate} className="submit-button" disabled={isSubmitting}>
+                                        {isSubmitting ? <CustomLoader /> : "Modifier la justification"}
+                                    </Button>
+                                </div>
+                            </>
+                        ) : (
+                            <FileReadOnlyList files={files} />
+                        )}
+                    </>
                 )}
             </div>
         </div>

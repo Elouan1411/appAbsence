@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
+import CustomLoader from "../../components/common/CustomLoader";
 
 function AdminHomePage() {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -17,6 +18,8 @@ function AdminHomePage() {
     const [isResizing, setIsResizing] = useState(false);
     const [numberOfStudents, setNumberOfStudents] = useState(0);
     const [numberOfJustification, setNumberOfJustification] = useState(0);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const [reloadJustifications, setReloadJustifications] = useState(0);
 
@@ -49,6 +52,7 @@ function AdminHomePage() {
 
     const handleFetchNumberOfStudents = useCallback(async () => {
         try {
+            setIsLoading(true);
             const result = await fetch(`${API_URL}/eleve/count`, {
                 method: "GET",
                 credentials: "include",
@@ -64,6 +68,8 @@ function AdminHomePage() {
         } catch (err) {
             console.error(err);
             toast.error("Erreur de chargement des étudiants");
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
@@ -127,17 +133,17 @@ function AdminHomePage() {
     return (
         <div className={isResizing ? "resizing-cursor admin-homepage-container" : "admin-homepage-container"}>
             <PageTitle title="Tableau de bord" icon={"icon-board-table"} />
-            {/* <CardContainer>
-                <DisplayCard title="Nombre d'étudiants" value={numberOfStudents} iconLink={"./src/assets/school.svg"} />
-                <DisplayCard title="Justifications en cours" value={numberOfJustification} iconLink={"./src/assets/todo.svg"} />
-            </CardContainer> */}
 
             <div className="homepage-subtitle-container">
                 <h2 className="homepage-subtitle">Justifier des absences</h2>
             </div>
             <div className="justification-container" ref={containerRef}>
                 <div className="left part" style={{ width: `${leftWidth}%` }}>
-                    <JustificationList setSelectedItem={setSelectedItem} selectedItem={selectedItem} reload={reloadJustifications} />
+                    {isLoading ? (
+                        <CustomLoader />
+                    ) : (
+                        <JustificationList setSelectedItem={setSelectedItem} selectedItem={selectedItem} reload={reloadJustifications} />
+                    )}
                 </div>
 
                 <div className="resizing-bar" onMouseDown={startResizing}>

@@ -5,6 +5,7 @@ import { API_URL } from "../../config";
 function SelectSubject({ onSelect, promo, pair, style, value }) {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState(value || "");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (value !== undefined) {
@@ -20,6 +21,7 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
             }
 
             try {
+                setLoading(true);
                 const response = await fetch(`${API_URL}/subject/promo`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -32,6 +34,8 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
                 }
             } catch (err) {
                 console.error("Error fetching subjects:", err);
+            } finally {
+                setLoading(false);
             }
         }
         fetchSubjects();
@@ -48,17 +52,22 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
     return (
         <div className="Card cols-1" style={{ height: "fit-content", ...style }}>
             <h2>Matière</h2>
-            <div className="input-group">
-                <label htmlFor="subject">Choix</label>
-                <select id="subject" value={selectedSubject} onChange={handleChange}>
-                    <option value="">-- Choisir --</option>
-                    {subjects.map((sub) => (
+
+            {loading ? (
+                <CustomLoader />
+            ) : (
+                <div className="input-group">
+                    <label htmlFor="subject">Choix</label>
+                    <select id="subject" value={selectedSubject} onChange={handleChange}>
+                        <option value="">-- Choisir --</option>
+                        {subjects.map((sub) => (
                         <option key={sub.code} value={sub.code}>
                             {sub.libelle}
                         </option>
                     ))}
                 </select>
             </div>
+            )}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 // import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
@@ -10,7 +10,6 @@ import trashIcon from "../../assets/trash.svg";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
-import CustomLoader from "../common/CustomLoader";
 
 const AbsenceCard = ({
     id,
@@ -33,7 +32,7 @@ const AbsenceCard = ({
     const navigate = useNavigate();
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [reason_split, comment_split] = typeof reason === "string" ? reason.split(" | ") : ["", ""];
 
@@ -63,11 +62,13 @@ const AbsenceCard = ({
         console.log("Delete triggered for justificationId:", justificationId);
         if (confirmation.isConfirmed) {
             try {
-                setLoading(true);
+                setIsLoading(true);
                 const response = await fetch(`${API_URL}/justification/${justificationId}`, {
                     method: "DELETE",
                     credentials: "include",
                 });
+
+                console.log("apres api");
 
                 if (response.ok) {
                     toast.success("Justification supprimée");
@@ -75,11 +76,13 @@ const AbsenceCard = ({
                 } else {
                     toast.error("Erreur lors de la suppression");
                 }
+                console.log("ca a marché");
             } catch (error) {
+                console.log("ca a pas marché");
                 console.error(error);
                 toast.error("Erreur serveur");
-            } finally {
-                setLoading(false);
+            }finally{
+                setIsLoading(false);
             }
         } else {
             toast.error("Suppression annulée");
@@ -162,29 +165,28 @@ const AbsenceCard = ({
                         )}
                     </div>
                 </div>
-            </div>
-            <div className="card-absence-right">
-                <div className={`mobile-selection-checkbox ${isSelectionMode ? "visible-mobile" : ""}`} onClick={isSelectionMode ? onToggle : undefined}>
-                    <div className="selection-checkbox">
-                        {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />}
+
+                <div className="card-absence-right">
+                    <div className={`mobile-selection-checkbox ${isSelectionMode ? "visible-mobile" : ""}`} onClick={isSelectionMode ? onToggle : undefined}>
+                        <div className="selection-checkbox">
+                            {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />}
+                        </div>
                     </div>
-                </div>
-                <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                    {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
-                    {status !== "todo" && <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={handleDetails} />}
-                    {status === "todo" && (
-                        <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
-                            {adminComment ? "Modifier" : "Justifier"}
-                        </button>
-                    )}
-                    {status === "pending" &&
-                        (isLoading ? (
-                            <CustomLoader />
-                        ) : (
+                    <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
+                        {/* {status !== "todo" && <Eye className="icon-eye details-icon" onClick={handleDetails} />} */}
+                        {status !== "todo" && <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={handleDetails} />}
+                        {status === "todo" && (
+                            <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
+                                {adminComment ? "Modifier" : "Justifier"}
+                            </button>
+                        )}
+                        {status === "pending" && (
+                            isLoading ? <CustomLoader /> : 
                             <button onClick={handleDelete} title="Supprimer" className="remove-justification-button">
                                 <img src={trashIcon} alt="Delete" width="20" height="20" />
                             </button>
-                        ))}
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

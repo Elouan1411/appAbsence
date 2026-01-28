@@ -18,6 +18,7 @@ import SearchInput from "../../components/common/SearchInput";
 import "../../style/searchAgGrid.css";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import { API_URL } from "../../config";
+import CustomLoader from "../../components/common/CustomLoader";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
@@ -25,11 +26,13 @@ function TeacherHistoryPage() {
     const [rowData, setRowData] = useState([]);
     const [quickFilterText, setQuickFilterText] = useState("");
     const [isSearchActive, setIsSearchActive] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();
 
     const fetchHistory = async () => {
         if (!user) return;
         try {
+            setIsLoading(true);
             const response = await fetch(`${API_URL}/absence/history/:${user}`, {
                 credentials: "include",
             });
@@ -39,6 +42,8 @@ function TeacherHistoryPage() {
             }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'historique:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -267,18 +272,22 @@ function TeacherHistoryPage() {
                 )}
             </div>
             <div className="grid-container">
-                <AgGridReact
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    theme={theme === "dark" ? darkTheme : lightTheme}
-                    pagination={true}
-                    paginationPageSize={100}
-                    domLayout="autoHeight"
-                    onSortChanged={onSortChanged}
-                    quickFilterText={quickFilterText}
-                    localeText={AG_GRID_LOCALE_FR}
-                />
+                {isLoading ? (
+                    <CustomLoader />
+                ) : (
+                    <AgGridReact
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        theme={theme === "dark" ? darkTheme : lightTheme}
+                        pagination={true}
+                        paginationPageSize={100}
+                        domLayout="autoHeight"
+                        onSortChanged={onSortChanged}
+                        quickFilterText={quickFilterText}
+                        localeText={AG_GRID_LOCALE_FR}
+                    />
+                )}
             </div>
         </div>
     );

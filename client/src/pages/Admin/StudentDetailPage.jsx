@@ -29,6 +29,7 @@ const emptyStudent = {
 function StudentDetailPage() {
     const { userId } = useParams();
     const [loading, setLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [editing, setEditing] = useState(false);
     const [student, setStudent] = useState(emptyStudent);
     const [newStudent, setNewStudent] = useState(emptyStudent);
@@ -113,6 +114,7 @@ function StudentDetailPage() {
         const result = await alertConfirm("Voulez-vous supprimer cet étudiant ?", "Cette action est irréversible.");
         if (result.isConfirmed) {
             try {
+                setIsSaving(true);
                 const data = await fetch(`${API_URL}/eleve/` + student.numeroEtudiant, {
                     method: "DELETE",
                     credentials: "include",
@@ -120,6 +122,8 @@ function StudentDetailPage() {
                 handleGoBack();
             } catch (err) {
                 toast.error(err);
+            } finally {
+                setIsSaving(false);
             }
         }
     };
@@ -132,6 +136,7 @@ function StudentDetailPage() {
         const result = await alertConfirm("Voulez-vous sauvegarder vos modifications ?", "Vous pourrez les modifier ultérieurement.");
         if (result.isConfirmed) {
             try {
+                setIsSaving(true);
                 if (newStudent.numeroEtudiant == student.numeroEtudiant && newStudent.loginENT == student.loginENT) {
                     const data = await fetch(`${API_URL}/eleve/`, {
                         method: "PUT",
@@ -197,6 +202,8 @@ function StudentDetailPage() {
                 toast.success("Vos modifications ont été enregistrées avec succès!");
             } catch (err) {
                 toast.error(err);
+            } finally {
+                setIsSaving(false);
             }
         }
     };
@@ -224,6 +231,7 @@ function StudentDetailPage() {
                 setEditing={toggleEditing}
                 handleCancelChanges={handleCancelChanges}
                 editing={editing}
+                isLoading={isSaving}
             />
         </div>
     );

@@ -170,7 +170,7 @@ export default function ValidationView({ selectedItem, reload }) {
                 </div>
             </div>
 
-            <ValidationFooter handleConfirmRefuse={handleConfirmRefuse} handleConfirmValidation={handleConfirmValidation} />
+            <ValidationFooter handleConfirmRefuse={handleConfirmRefuse} handleConfirmValidation={handleConfirmValidation} isLoading={validationLoading} />
         </div>
     );
 }
