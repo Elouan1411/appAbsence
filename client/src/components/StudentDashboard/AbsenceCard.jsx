@@ -162,7 +162,7 @@ const AbsenceCard = ({
                         )}
                     </div>
                 </div>
-
+            </div>
             <div className="card-absence-right">
                 <div className={`mobile-selection-checkbox ${isSelectionMode ? "visible-mobile" : ""}`} onClick={isSelectionMode ? onToggle : undefined}>
                     <div className="selection-checkbox">
