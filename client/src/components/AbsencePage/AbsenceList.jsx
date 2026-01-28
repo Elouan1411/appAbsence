@@ -84,8 +84,6 @@ function AbsenceList() {
         };
     }, []);
 
-    console.log(rowData);
-
     const toggleSearch = () => {
         if (isSearchActive) {
             setQuickFilterText("");
@@ -140,6 +138,7 @@ function AbsenceList() {
             setColDefs(generatedColumns);
         }
     }, [rowData]);
+
     return (
         <div className="absence-list-container">
             <div className="search-wrapper-right" style={{ position: "relative" }}>

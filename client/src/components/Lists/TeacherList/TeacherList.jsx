@@ -13,6 +13,7 @@ import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 import SearchInput from "../../common/SearchInput";
 import "../../../style/searchAgGrid.css";
 import { API_URL } from "../../../config";
+import CustomLoader from "../../common/CustomLoader";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -135,7 +136,7 @@ function TeacherList() {
                 </div>
             </div>
             {loading ? (
-                <p>En chargement...</p>
+                <CustomLoader />
             ) : (
                 <div style={{ height: "100%", width: "100%" }}>
                     <AgGridReact

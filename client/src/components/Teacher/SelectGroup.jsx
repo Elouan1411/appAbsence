@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 function SelectGroup({ onValidate, date, style, initialSelection }) {
     const [promos, setPromos] = useState([]);
@@ -22,6 +23,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     const [selectedSemestre, setSelectedSemestre] = useState(() => getSemesterFromDate(date));
     const [selectedTD, setSelectedTD] = useState("");
     const [selectedTP, setSelectedTP] = useState("");
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         if (initialSelection) {
@@ -56,6 +58,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     useEffect(() => {
         async function fetchPromos() {
             try {
+                setLoading(true);
                 const response = await fetch(`${API_URL}/groups/promo`, {
                     credentials: "include",
                 });
@@ -65,6 +68,8 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
                 }
             } catch (err) {
                 console.error(err);
+            } finally {
+                setLoading(false);
             }
         }
         fetchPromos();
@@ -73,6 +78,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     async function fetchGroups(promo, semestre) {
         if (!promo || !semestre) return;
         try {
+            setLoading(true);
             const link = `${API_URL}/groups/groups/` + promo + "/" + semestre;
             const response = await fetch(link, {
                 credentials: "include",
@@ -104,6 +110,8 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -154,49 +162,55 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
         <div className="Card cols-4">
             <h2>Selectionner un groupe</h2>
 
-            <div className="input-group">
-                <label htmlFor="Promo">Promotion</label>
-                <select onChange={handleChangePromo} value={selectedPromo}>
-                    {selectedPromo === "" && <option value="">-- Choisir --</option>}
-                    {promos.map((promo) => (
-                        <option key={promo.promo} value={promo.promo}>
-                            {promo.promo}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {isLoading ? (
+                <CustomLoader />
+            ) : (
+                <>
+                    <div className="input-group">
+                        <label htmlFor="Promo">Promotion</label>
+                        <select onChange={handleChangePromo} value={selectedPromo}>
+                            {selectedPromo === "" && <option value="">-- Choisir --</option>}
+                            {promos.map((promo) => (
+                                <option key={promo.promo} value={promo.promo}>
+                                    {promo.promo}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-            <div className="input-group">
-                <label htmlFor="Semestre">Semestre</label>
-                <select onChange={handleChangeSemestre} value={selectedSemestre}>
-                    <option value="0">Semestre Impair</option>
-                    <option value="1">Semestre Pair</option>
-                </select>
-            </div>
+                    <div className="input-group">
+                        <label htmlFor="Semestre">Semestre</label>
+                        <select onChange={handleChangeSemestre} value={selectedSemestre}>
+                            <option value="0">Semestre Impair</option>
+                            <option value="1">Semestre Pair</option>
+                        </select>
+                    </div>
 
-            <div className="input-group">
-                <label htmlFor="TD">TD</label>
-                <select onChange={handleChangeTD} value={selectedTD}>
-                    <option value="">-- Tous --</option>
-                    {TD.map((td) => (
-                        <option key={td.groupeTD} value={td.groupeTD}>
-                            {td.groupeTD}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <div className="input-group">
+                        <label htmlFor="TD">TD</label>
+                        <select onChange={handleChangeTD} value={selectedTD}>
+                            <option value="">-- Tous --</option>
+                            {TD.map((td) => (
+                                <option key={td.groupeTD} value={td.groupeTD}>
+                                    {td.groupeTD}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-            <div className="input-group">
-                <label htmlFor="TP">TP</label>
-                <select onChange={handleChangeTP} value={selectedTP}>
-                    <option value="">-- Tous --</option>
-                    {TP.map((tp) => (
-                        <option key={tp.groupeTP} value={tp.groupeTP}>
-                            {tp.groupeTP}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <div className="input-group">
+                        <label htmlFor="TP">TP</label>
+                        <select onChange={handleChangeTP} value={selectedTP}>
+                            <option value="">-- Tous --</option>
+                            {TP.map((tp) => (
+                                <option key={tp.groupeTP} value={tp.groupeTP}>
+                                    {tp.groupeTP}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

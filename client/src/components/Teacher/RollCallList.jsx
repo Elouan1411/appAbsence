@@ -10,16 +10,18 @@ import { useTheme } from "../../hooks/useTheme";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
-import "../../style/RollCallList.css"
+import "../../style/RollCallList.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { useAuth } from "../../hooks/useAuth";
 import isLoginInDatabase from "../../functions/isLoginInDatabase";
+import CustomLoader from "../common/CustomLoader";
 
 function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT }) {
     const [rowData, setRowData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [updateLoading, setUpdateLoading] = useState(false);
     const [initialAbsences, setInitialAbsences] = useState([]);
     const [gridApi, setGridApi] = useState(null);
     const theme = useTheme();
@@ -135,8 +137,8 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
         async function fetchStudents() {
             if (!criteria || !criteria.promo) return;
 
-            setLoading(true);
             try {
+                setLoading(true);
                 const pairParam = criteria.semestre === "1" ? "1" : "0";
 
                 const response = await fetch(`${API_URL}/groups/${pairParam}`, {
@@ -195,8 +197,6 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                             console.error("Error fetching RSE:", e);
                         }
                     }
-
-                    console.log("Students with RSE:", data);
                     setRowData(data);
                 } else {
                     console.error("Error fetching students:", response.status);
@@ -271,6 +271,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 const loginList = addedAbsences.map((s) => s.loginENT);
 
                 try {
+                    setUpdateLoading(true);
                     const response = await fetch(`${API_URL}/absence/`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -285,12 +286,15 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 } catch (e) {
                     success = false;
                     console.error(e);
+                } finally {
+                    setUpdateLoading(false);
                 }
             }
 
             if (removedAbsenceIds.length > 0) {
                 for (const studentId of removedAbsenceIds) {
                     try {
+                        setUpdateLoading(true);
                         const response = await fetch(`${API_URL}/absence/`, {
                             method: "DELETE",
                             headers: { "Content-Type": "application/json" },
@@ -304,6 +308,8 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     } catch (e) {
                         success = false;
                         console.error(e);
+                    } finally {
+                        setUpdateLoading(false);
                     }
                 }
             }
@@ -335,6 +341,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             console.log("Sending Absence Payload:", payload);
 
             try {
+                setUpdateLoading(true);
                 const responseAppel = await fetch(`${API_URL}/appel/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -379,16 +386,14 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             } catch (err) {
                 console.error(err);
                 toast.error("Erreur réseau");
+            } finally {
+                setUpdateLoading(false);
             }
         }
     };
 
     if (!criteria || !criteria.promo) {
-        return (
-            <div className="rollCallList-empty">
-                Veuillez valider une sélection pour voir la liste.
-            </div>
-        );
+        return <div className="rollCallList-empty">Veuillez valider une sélection pour voir la liste.</div>;
     }
 
     return (
@@ -408,13 +413,17 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 }}
             >
                 <h2 style={{ verticalAlign: "bottom" }}>Liste d'appel</h2>
-                <button className="validate-btn" style={{ fontSize: "1rem", marginTop: "0rem" }} onClick={handleValidateRollCall}>
-                    Valider l'appel
-                </button>
+                {loading ? (
+                    <CustomLoader />
+                ) : (
+                    <button className="validate-btn" style={{ fontSize: "1rem", marginTop: "0rem" }} onClick={handleValidateRollCall}>
+                        Valider l'appel
+                    </button>
+                )}
             </div>
 
             {loading ? (
-                <p>Chargement...</p>
+                <CustomLoader />
             ) : (
                 <div className="rollCallList-container">
                     <AgGridReact

@@ -7,8 +7,10 @@ import { API_URL } from "../../config";
 
 function PersonalInformations({ student, loading, editing, onChange, setStudent }) {
     const [allRSE, setAllRSE] = useState([]);
+    const [isLoading, setLoading] = useState(false);
     const fetchAllRSE = async () => {
         try {
+            setLoading(true);
             const result = await fetch(`${API_URL}/rse`, {
                 method: "GET",
                 credentials: "include",
@@ -17,6 +19,8 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
             setAllRSE(data);
         } catch (err) {
             toast.error(err);
+        } finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -50,7 +54,6 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
                     };
                 }
             });
-            console.log(student);
         }
     };
 
@@ -91,16 +94,20 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
 
                 <div className="rse-section">
                     <p>RSE (Sélection multiple)</p>
-                    <div className="chips-container">
-                        {allRSE.map((option) => {
-                            const isSelected = student.rse.some((item) => item.code === option.code);
-                            return (
-                                <div key={option.code} className={`rse-chip ${isSelected ? "selected" : ""}`} onClick={() => handleRseChange(option)}>
-                                    <span>{option.libelle}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
+                    {isLoading ? (
+                        <CustomLoader />
+                    ) : (
+                        <div className="chips-container">
+                            {allRSE.map((option) => {
+                                const isSelected = student.rse.some((item) => item.code === option.code);
+                                return (
+                                    <div key={option.code} className={`rse-chip ${isSelected ? "selected" : ""}`} onClick={() => handleRseChange(option)}>
+                                        <span>{option.libelle}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

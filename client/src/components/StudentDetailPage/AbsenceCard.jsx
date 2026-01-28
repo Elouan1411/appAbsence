@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
 
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
     // const navigate = useNavigate();
@@ -20,12 +21,13 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
     // };
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+    const [isLoading, setLoading] = useState(false);
 
     const handleDeleteAbsence = async () => {
-        console.log(idAbsence);
         const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
         if (confirmation.isConfirmed) {
             try {
+                setLoading(true);
                 const result = await fetch(`${API_URL}/absence/` + idAbsence, {
                     method: "DELETE",
                     credentials: "include",
@@ -35,6 +37,8 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 setToUpdate(true);
             } catch (err) {
                 toast.error(err);
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -74,9 +78,13 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                         {justified ? "Justifiée" : "Non justifiée"}
                     </span>
                 </div>
-                <button className="delete-button" onClick={() => handleDeleteAbsence()}>
-                    <span className="icon icon-trash" />
-                </button>
+                {isLoading ? (
+                    <CustomLoader />
+                ) : (
+                    <button className="delete-button" onClick={() => handleDeleteAbsence()}>
+                        <span className="icon icon-trash" />
+                    </button>
+                )}
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
                     <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />

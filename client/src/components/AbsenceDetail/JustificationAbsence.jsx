@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PDFSection from "../ValidationJustification/PDFSection";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 function JustificationAbsence({ justification }) {
     const [isPdfOpen, setPdfOpen] = useState(true);
@@ -44,26 +45,33 @@ function JustificationAbsence({ justification }) {
     useEffect(() => {
         handleLoadDocuments();
     }, [justification]);
+
     return (
         <div className="justification-absence-container">
-            <h2>Justification associée</h2>
-            <section className="section">
-                <div className="motif-box">
-                    <span className="label">Motif déclaré</span>
-                    <p className="motif-text">
-                        <b>{justification.motif ?? "Aucun motif précisé."}</b>
-                        {justification.commentaire ? ` : ${justification.commentaire}` : ""}
-                    </p>
-                </div>
-            </section>
-            <section className="section">
-                <button className={`section-header ${isPdfOpen ? "active" : ""}`} onClick={() => setPdfOpen((o) => !o)}>
-                    <h3 className="section-title">Documents justificatifs ({documents.length})</h3>
-                    <span className={`chevron ${isPdfOpen ? "open" : ""}`} />
-                </button>
+            {isLoading ? (
+                <CustomLoader />
+            ) : (
+                <>
+                    <h2>Justification associée</h2>
+                    <section className="section">
+                        <div className="motif-box">
+                            <span className="label">Motif déclaré</span>
+                            <p className="motif-text">
+                                <b>{justification.motif ?? "Aucun motif précisé."}</b>
+                                {justification.commentaire ? ` : ${justification.commentaire}` : ""}
+                            </p>
+                        </div>
+                    </section>
+                    <section className="section">
+                        <button className={`section-header ${isPdfOpen ? "active" : ""}`} onClick={() => setPdfOpen((o) => !o)}>
+                            <h3 className="section-title">Documents justificatifs ({documents.length})</h3>
+                            <span className={`chevron ${isPdfOpen ? "open" : ""}`} />
+                        </button>
 
-                {isPdfOpen && <PDFSection file={file} setDocIndex={setDocIndex} docIndex={docIndex} documents={documents} isLoading={isLoading} />}
-            </section>
+                        {isPdfOpen && <PDFSection file={file} setDocIndex={setDocIndex} docIndex={docIndex} documents={documents} isLoading={isLoading} />}
+                    </section>
+                </>
+            )}
         </div>
     );
 }
