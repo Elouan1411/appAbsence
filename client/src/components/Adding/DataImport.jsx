@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import Grid from "./Grid";
 import {
     HEADER_DISPLAY_NAMES as TEACHER_HEADER_DISPLAY_NAMES,
+    EXPECTED_HEADERS as TEACHER_EXPECTED_HEADERS,
     calculateDuplicateRow as calculateTeacherDuplicateRow,
     validateTeacherData,
     matchHeader as teacherMatchHeader,
 } from "../../utils/teacherValidation";
 import {
     HEADER_DISPLAY_NAMES as STUDENT_HEADER_DISPLAY_NAMES,
+    EXPECTED_HEADERS as STUDENT_EXPECTED_HEADERS,
     calculateDuplicateRow as calculateStudentDuplicateRow,
     validateStudentData,
     matchHeader as studentMatchHeader,
@@ -270,6 +272,32 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         }
     };
 
+    const handleDownloadTemplate = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Modèle d'import");
+        const rawHeaders = type === "student" ? STUDENT_EXPECTED_HEADERS : TEACHER_EXPECTED_HEADERS;
+        
+        const displayNames = type === "student" ? STUDENT_HEADER_DISPLAY_NAMES : TEACHER_HEADER_DISPLAY_NAMES;
+        
+        const columns = rawHeaders.map(key => ({
+            header: displayNames[key] || key,
+            key: key,
+            width: 20
+        }));
+
+        worksheet.columns = columns;
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `modele_import_${type}.xlsx`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+
     return (
         <div className={containerClass}>
             <div className={contentClass}>
@@ -311,13 +339,22 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                                 onCellValueChanged={handleCellValueChanged}
                             />
                             <div className="grid-button-container">
-                                {isLoading ? <CustomLoader /> : <Button onClick={handleSaveAndSend}>Sauvegarder</Button>}
+                                <Button onClick={handleSaveAndSend} disabled={isLoading}>
+                                    {" "}
+                                    {isLoading ? <CustomLoader /> : "Sauvegarder"}
+                                </Button>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="content-import">
                         <ImportZone type={type} setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
+                        <div style={{ marginTop: "1rem" }}>
+                             <Button onClick={handleDownloadTemplate} className="download-template">
+                                <span className="icon-download" style={{ marginRight: "8px" }}></span>
+                                Télécharger un modèle
+                            </Button>
+                        </div>
                         <Separator>ou alors ajoutez un {entityLabel}</Separator>
                         <Button className="add-button" onClick={openModal}>
                             Ajouter

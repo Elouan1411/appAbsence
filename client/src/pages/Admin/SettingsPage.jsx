@@ -15,6 +15,8 @@ import CustomLoader from "../../components/common/CustomLoader";
 function SettingsPage() {
     const [activeTab, setActiveTab] = useState("admin");
     const [adminLogin, setAdminLogin] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
+    const [isEmailLoading, setIsEmailLoading] = useState(false);
     const [teachers, setTeachers] = useState([]);
 
     const [promotions, setPromotions] = useState([]);
@@ -39,6 +41,18 @@ function SettingsPage() {
             }
         } catch (error) {
             console.error("Erreur lors de la récupération des matières:", error);
+        }
+    };
+
+    const fetchContactEmail = async () => {
+        try {
+            const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setContactEmail(data.contact_email || "");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'email de contact:", error);
         }
     };
 
@@ -72,7 +86,37 @@ function SettingsPage() {
         fetchPromotions();
         fetchTeachers();
         fetchSubjects();
+        fetchContactEmail();
     }, []);
+
+    const handleSaveEmail = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(contactEmail)) {
+            toast.error("Format d'email invalide");
+            return;
+        }
+
+        try {
+            setIsEmailLoading(true);
+            const response = await fetch(`${API_URL}/contact_email`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contact_email: contactEmail }),
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                toast.success("Email de contact mis à jour !");
+            } else {
+                toast.error("Erreur lors de la mise à jour.");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Erreur serveur.");
+        } finally {
+            setIsEmailLoading(false);
+        }
+    };
 
     const handleAddAdmin = async () => {
         if (!adminLogin.trim()) {
@@ -227,29 +271,52 @@ function SettingsPage() {
             </div>
 
             <div className="content-container">
+
                 {activeTab === "admin" && (
-                    <div className="Card cols-2">
-                        <h2>Ajouter un administrateur</h2>
+                    <div className="admin-settings">
+                        <div className="Card cols-2">
+                            <h2>Ajouter un administrateur</h2>
 
-                        <div className="input-group">
-                            <label>Login ENT</label>
-                            <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
-                                <option value=""> -- Sélectionner un enseignant -- </option>
-                                {teachers.map((teacher) => (
-                                    <option key={teacher.loginENT} value={teacher.loginENT}>
-                                        {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                            <div className="input-group">
+                                <label>Login ENT</label>
+                                <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
+                                    <option value=""> -- Sélectionner un enseignant -- </option>
+                                    {teachers.map((teacher) => (
+                                        <option key={teacher.loginENT} value={teacher.loginENT}>
+                                            {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        {isAdminLoading ? (
-                            <CustomLoader />
-                        ) : (
-                            <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix">
-                                Ajouter l'administrateur
+                            <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix" disabled={isAdminLoading}>
+                                {isAdminLoading ? <CustomLoader /> : "Ajouter l'administrateur"}
                             </button>
-                        )}
+                        </div>
+                        <div className="Card cols-2">
+                            <h2>Email de contact</h2>
+                            <div className="input-group">
+                                <label>Email de contact (support)</label>
+                                <input
+                                    type="email"
+                                    value={contactEmail}
+                                    onChange={(e) => setContactEmail(e.target.value)}
+                                    placeholder="support@univ.fr"
+                                    className="input-field"
+                                    style={{
+                                        width: "100%",
+                                        padding: "10px",
+                                        borderRadius: "8px",
+                                        border: "1px solid var(--border-color)",
+                                        backgroundColor: "var(--background-color)",
+                                        color: "var(--text-primary)"
+                                    }}
+                                />
+                            </div>
+                            <button onClick={handleSaveEmail} className="validate-btn settings-input-margin-fix" disabled={isEmailLoading}>
+                                {isEmailLoading ? <CustomLoader /> : "Sauvegarder"}
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -314,13 +381,15 @@ function SettingsPage() {
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
                                                     <span className="icon settings-icon icon-edit" />
                                                 </button>
-                                                {deletingSubjectId === sub.code ? (
-                                                    <CustomLoader />
-                                                ) : (
-                                                    <button onClick={() => handleDeleteSubject(sub.code)} className="settings-icon-button" title="Supprimer">
-                                                        <span className="icon settings-icon icon-trash" />
-                                                    </button>
-                                                )}
+
+                                                <button
+                                                    onClick={() => handleDeleteSubject(sub.code)}
+                                                    className="settings-icon-button"
+                                                    title="Supprimer"
+                                                    disabled={deletingSubjectId === sub.code}
+                                                >
+                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash" />}
+                                                </button>
                                             </div>
                                         </div>
                                     ))

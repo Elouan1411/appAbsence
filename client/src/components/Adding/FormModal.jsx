@@ -91,7 +91,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             if (!DATA_REGEX.groupeTD.test(formData.groupeTD)) {
                 newErrors.groupeTD = "Ex: TD1";
             }
-            if (formData.groupeTP && !DATA_REGEX.groupeTP.test(formData.groupeTP)) {
+            if (!DATA_REGEX.groupeTP.test(formData.groupeTP)) {
                 newErrors.groupeTP = "Ex: TP1a";
             }
         }
@@ -192,31 +192,32 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                                     onChange={(e) => handleFieldChange("numeroEtudiant", e)}
                                     error={errors.numeroEtudiant}
                                 />
+                                <InputField
+                                    text="Promo"
+                                    placeholder="Ex: L1"
+                                    value={formData.promo}
+                                    onChange={(e) => handleFieldChange("promo", e)}
+                                    error={errors.promo}
+                                />
 
                                 <div className="row">
                                     <InputField
                                         text="Groupe TD"
-                                        placeholder="Ex: A"
+                                        placeholder="Ex: TD1"
                                         value={formData.groupeTD}
                                         onChange={(e) => handleFieldChange("groupeTD", e)}
                                         error={errors.groupeTD}
                                     />
                                     <InputField
                                         text="Groupe TP"
-                                        placeholder="Ex: 1"
+                                        placeholder="Ex: TP1A"
                                         value={formData.groupeTP}
                                         onChange={(e) => handleFieldChange("groupeTP", e)}
                                         error={errors.groupeTP}
                                     />
                                 </div>
 
-                                <InputField
-                                    text="Promo"
-                                    placeholder="Ex: 2023-2024"
-                                    value={formData.promo}
-                                    onChange={(e) => handleFieldChange("promo", e)}
-                                    error={errors.promo}
-                                />
+                                
 
                                 <div className="rse-section">
                                     <p>RSE (Sélection multiple)</p>

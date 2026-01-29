@@ -7,13 +7,45 @@ import ProtectedRoutes from "./components/common/protectedRoutes";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 import { useTheme } from "./hooks/useTheme.js";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 function App() {
     const { user, role, loading } = useAuth();
     const theme = useTheme();
     const location = useLocation();
+
+    const [progress, setProgress] = useState(0);
+    const [isAppReady, setIsAppReady] = useState(false);
+
+    useEffect(() => {
+        let interval;
+        let timeout;
+
+        if (loading) {
+            interval = setInterval(() => {
+                setProgress((oldProgress) => {
+                    if (oldProgress >= 90) return 90;
+                    const diff = Math.random() * 10;
+                    return Math.min(oldProgress + diff, 90);
+                });
+            }, 200);
+        } else {
+            if (interval) clearInterval(interval);
+            setProgress(100);
+
+            timeout = setTimeout(() => {
+                setIsAppReady(true);
+            }, 500);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+            if (timeout) clearTimeout(timeout);
+        };
+    }, [loading]);
 
     useEffect(() => {
         const viewportMeta = document.querySelector("meta[name='viewport']");
@@ -30,9 +62,16 @@ function App() {
         }
     }, [location]);
 
-    console.log("user : ", user, "/ role: ", role);
-    if (loading) {
-        return <div className="loading">En chargement</div>;
+    if (!isAppReady) {
+        const isDark = theme === "dark";
+        return (
+            <div className="loading-screen">
+                <h1>Application de gestion des Absences</h1>
+                <div className="progress-container">
+                    <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
+                </div>
+            </div>
+        );
     }
 
     return (

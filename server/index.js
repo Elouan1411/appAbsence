@@ -62,6 +62,18 @@ if (!fs.existsSync(uploadDir)) {
 } else {
     console.log("Upload directory exists at:", uploadDir);
 }
+// Ensure student-list directory exists
+const studentListDir = path.join(uploadDir, "student-list");
+if (!fs.existsSync(studentListDir)) {
+    fs.mkdirSync(studentListDir, { recursive: true });
+    console.log("Dossier student-list créé :", studentListDir);
+}
+// Ensure justification directory exists
+const justificationDir = path.join(uploadDir, "justification");
+if (!fs.existsSync(justificationDir)) {
+    fs.mkdirSync(justificationDir, { recursive: true });
+    console.log("Dossier justification créé :", justificationDir);
+}
 
 // Utilisation de la route d'absence
 const absenceRoutes = require("./routes/absence");
@@ -109,6 +121,9 @@ app.use("/subject", subjectRoutes);
 
 const teacherRoutes = require("./routes/teacher");
 app.use("/teacher", teacherRoutes);
+
+const contactEmailRoutes = require("./routes/contact_email");
+app.use("/contact_email", contactEmailRoutes);
 
 app.use("/upload", express.static(path.join(__dirname, "upload")));
 

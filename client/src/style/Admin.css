@@ -1152,3 +1152,32 @@ p {
     gap: 10px;
 }
 
+
+.download-template {
+    height: auto;
+    background-color: transparent;
+    color: var(--primary-color);
+    transition: 0.3s ease-in-out;
+    border: 2px solid transparent;
+    padding: 5px 0px;
+    border-bottom: 2px solid transparent;
+    border-radius: 0; 
+}
+
+.download-template span {
+    padding: 0;
+}
+.download-template .icon-download {
+    background-color: var(--primary-color) !important;
+}
+
+.download-template:hover {
+    background-color: transparent;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.admin-settings {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}

@@ -8,6 +8,7 @@ import Title from "../components/common/Title";
 import Subtitle from "../components/common/Subtitle";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import CustomLoader from "../components/common/CustomLoader";
 function LoginPage() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
@@ -68,7 +69,7 @@ function LoginPage() {
                 </div>
 
                 <Button type="submit" disabled={loading}>
-                    Se connecter
+                    {loading ? <CustomLoader/>: "Se connecter"}
                 </Button>
 
                 <hr />

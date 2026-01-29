@@ -61,7 +61,7 @@ function TeacherHomePage() {
             <PageTitle title="Page d'accueil enseignant" icon="icon-home" />
 
             <div className="recent-section">
-                <h3 className="recent-title">Reprendre un cours récent</h3>
+                <h3 className="recent-title">Reprendre l'appel d'un cours récent</h3>
                 {isLoading ? (
                     <CustomLoader />
                 ) : (
