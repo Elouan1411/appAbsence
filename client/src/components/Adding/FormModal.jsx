@@ -68,9 +68,6 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
     const validateForm = () => {
         const newErrors = {};
 
-        // Vérification générique basée sur vos DATA_REGEX
-        // Note : On map les champs du form vers les clés des REGEX
-
         if (!DATA_REGEX.nom.test(formData.nom)) {
             newErrors.nom = "Format invalide (2-50 caractères)";
         }
@@ -104,17 +101,17 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
         setFormData((prev) => {
             const currentRseList = prev.rse;
 
-            // On vérifie si l'élément est déjà présent en comparant les CODES
+            // check if the element is already present comparing with CODES
             const isAlreadySelected = currentRseList.some((item) => item.code === rseOption.code);
 
             if (isAlreadySelected) {
-                // Si présent, on le retire (on garde ceux qui n'ont pas ce code)
+                // if present, remove it
                 return {
                     ...prev,
                     rse: currentRseList.filter((item) => item.code !== rseOption.code),
                 };
             } else {
-                // Sinon, on ajoute l'objet entier
+                // else, add it
                 return {
                     ...prev,
                     rse: [...currentRseList, rseOption],
@@ -216,8 +213,6 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                                         error={errors.groupeTP}
                                     />
                                 </div>
-
-                                
 
                                 <div className="rse-section">
                                     <p>RSE (Sélection multiple)</p>

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-// import { Import } from "lucide-react";
 import ExcelJS from "exceljs";
 import "../../style/Admin.css";
 import toast from "react-hot-toast";
@@ -62,7 +61,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 setLoading(false);
             }
 
-            // --- ÉTAPE 2 : Lecture Excel ---
+            // read excel file
             const buffer = await file.arrayBuffer();
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(buffer);
@@ -70,7 +69,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
             const worksheet = workbook.worksheets[0];
             const data = [];
 
-            // Parsing Header
+            // parsing Header
             const fileHeaders = [];
             const headerRow = worksheet.getRow(1);
 
@@ -97,10 +96,10 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 });
             });
 
-            // Construction colonnes Grid
+            // construction grid columns
             const gridColumns = [];
 
-            // Colonnes attendues
+            // expected headers
             expectedHeaders.forEach((expectedKey) => {
                 gridColumns.push({
                     field: expectedKey,
@@ -118,7 +117,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 });
             });
 
-            // Colonnes ignorées
+            // ignored headers
             fileHeaders.forEach((fh) => {
                 if (!fh.mappedKey) {
                     gridColumns.push({
@@ -134,7 +133,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
 
             if (setColDefs) setColDefs(gridColumns);
 
-            // Parsing des lignes
+            // parsing rows
             worksheet.eachRow((row, rowNumber) => {
                 if (rowNumber === 1) return;
 
@@ -151,10 +150,10 @@ function ImportZone({ setRowData, setColDefs, type }) {
                     }
                 });
 
-                // Autofill (Spécifique étudiant ou générique si besoin)
+                // autofill (specific to student or generic if needed)
                 rowItem._autoFilled = {};
 
-                // On applique l'autofill pour les paires (fonctionne pour les 2 si les champs existent)
+                // apply autofill for pairs
                 ["promo", "groupeTD", "groupeTP"].forEach((field) => {
                     if (rowItem[field] && !rowItem[`${field}Pair`]) {
                         rowItem[`${field}Pair`] = rowItem[field];

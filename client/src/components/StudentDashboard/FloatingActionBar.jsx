@@ -1,5 +1,4 @@
 import React from "react";
-// import { ArrowRight } from "lucide-react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 
@@ -12,7 +11,6 @@ const FloatingActionBar = ({ count, onJustify }) => {
             </div>
             <button className="btn-fab-justify" onClick={onJustify}>
                 Tout justifier
-                {/* <ArrowRight size={16} strokeWidth={2.5} /> */}
                 <span className="icon icon-arrow-right icon-medium icon-bold" />
             </button>
         </div>

@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../style/Student.css";
 import "../../style/StudentMobile.css";
-import toast from "react-hot-toast";
 import trashIcon from "../../assets/trash.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from "date-fns/locale/fr";
 import "react-datepicker/dist/react-datepicker.css";
-// import { ArrowRight } from "lucide-react";
 import { addDays, subDays, setHours, setMinutes } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -102,9 +100,9 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 dateFormat="dd MMM HH:mm"
                                 className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
+                                readOnly={readOnly}
                             />
                         </div>
-                        {/* <ArrowRight className="period-card-arrow-icon" size={20} /> */}
                         <span className="icon icon-arrow-right icon-xl period-card-arrow-icon" />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
@@ -118,6 +116,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 dateFormat="dd MMM HH:mm"
                                 className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
+                                readOnly={readOnly}
                             />
                         </div>
                         {!readOnly && (

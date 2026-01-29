@@ -11,8 +11,6 @@ function JustificationAbsence({ justification }) {
 
     const file = documents.length > 0 ? documents[docIndex] : null;
 
-    console.log(justification);
-
     const handleLoadDocuments = async () => {
         setDocuments([]);
         setDocIndex(0);

@@ -239,14 +239,12 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         const formData = new FormData();
         formData.append("file", fileToSend);
 
-        // Ajout spécifique pour les étudiants (si nécessaire selon ta logique précédente)
         if (type === "student") {
             formData.append("promo", "L3");
         }
 
         const confirmed = await alertConfirm("Êtes-vous surs de vouloir sauvegarder ?", "Vos changements seront irréversibles");
 
-        // Correction ici: Utilisation de 'confirmed' au lieu de 'result'
         if (confirmed.isConfirmed) {
             try {
                 setLoading(true);
@@ -276,13 +274,13 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Modèle d'import");
         const rawHeaders = type === "student" ? STUDENT_EXPECTED_HEADERS : TEACHER_EXPECTED_HEADERS;
-        
+
         const displayNames = type === "student" ? STUDENT_HEADER_DISPLAY_NAMES : TEACHER_HEADER_DISPLAY_NAMES;
-        
-        const columns = rawHeaders.map(key => ({
+
+        const columns = rawHeaders.map((key) => ({
             header: displayNames[key] || key,
             key: key,
-            width: 20
+            width: 20,
         }));
 
         worksheet.columns = columns;
@@ -350,7 +348,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                     <div className="content-import">
                         <ImportZone type={type} setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
                         <div style={{ marginTop: "1rem" }}>
-                             <Button onClick={handleDownloadTemplate} className="download-template">
+                            <Button onClick={handleDownloadTemplate} className="download-template">
                                 <span className="icon-download" style={{ marginRight: "8px" }}></span>
                                 Télécharger un modèle
                             </Button>
