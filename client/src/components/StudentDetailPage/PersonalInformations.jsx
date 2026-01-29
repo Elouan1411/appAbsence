@@ -25,7 +25,7 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
     };
     useEffect(() => {
         fetchAllRSE();
-    }, [fetchAllRSE]);
+    }, [student]);
 
     if (loading) return <CustomLoader />;
 

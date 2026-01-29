@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 // import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../style/Student.css";
@@ -81,7 +81,7 @@ const AbsenceCard = ({
                 console.log("ca a pas marché");
                 console.error(error);
                 toast.error("Erreur serveur");
-            }finally{
+            } finally {
                 setIsLoading(false);
             }
         } else {
@@ -181,9 +181,8 @@ const AbsenceCard = ({
                             </button>
                         )}
                         {status === "pending" && (
-                            isLoading ? <CustomLoader /> : 
-                            <button onClick={handleDelete} title="Supprimer" className="remove-justification-button">
-                                <img src={trashIcon} alt="Delete" width="20" height="20" />
+                            <button onClick={handleDelete} title="Supprimer" className="remove-justification-button" disabled={isLoading}>
+                                {isLoading ? <CustomLoader /> : <img src={trashIcon} alt="Delete" width="20" height="20" />}
                             </button>
                         )}
                     </div>
