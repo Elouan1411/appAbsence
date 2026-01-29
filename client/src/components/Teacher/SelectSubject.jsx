@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 function SelectSubject({ onSelect, promo, pair, style, value }) {
     const [subjects, setSubjects] = useState([]);
