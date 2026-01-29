@@ -10,6 +10,7 @@ import trashIcon from "../../assets/trash.svg";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
+import CustomLoader from "../common/CustomLoader";
 
 const AbsenceCard = ({
     id,
