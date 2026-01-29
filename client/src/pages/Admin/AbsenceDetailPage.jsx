@@ -15,6 +15,7 @@ import { motif_translation } from "../../constants/motif_translation";
 import firstCharUppercase from "../../functions/firstCharUppercase";
 import BackButton from "../../components/common/BackButton";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
+import CustomLoader from "../../components/common/CustomLoader";
 
 function AbsenceDetailPage() {
     const { absenceId } = useParams();
