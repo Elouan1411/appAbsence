@@ -112,7 +112,7 @@ function validateStudentData(row) {
 }
 
 const HEADER_DISPLAY_NAMES = {
-    numero: "Numéro",
+    numero: "Numéro étudiant",
     loginENT: "Login ENT",
     nom: "Nom",
     prenom: "Prénom",

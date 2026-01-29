@@ -3,10 +3,11 @@ import "../../style/Student.css";
 import "../../style/StudentMobile.css";
 import "../../style/Admin.css";
 
-const AddingTabs = ({ activeTab, setActiveTab }) => {
+const ListTabs = ({ activeTab, setActiveTab }) => {
     const tabs = [
         { id: "student", label: "Étudiants" },
-        { id: "teacher", label: "Professeurs" }
+        { id: "teacher", label: "Professeurs" },
+        { id: "absence", label: "Absences" },
     ];
 
     return (
@@ -21,4 +22,4 @@ const AddingTabs = ({ activeTab, setActiveTab }) => {
     );
 };
 
-export default AddingTabs;
+export default ListTabs;

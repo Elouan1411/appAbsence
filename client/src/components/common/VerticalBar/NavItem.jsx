@@ -5,7 +5,7 @@ import { useSafeNavigate } from "../../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../../context/UnsavedContext";
 import { useLocation } from "react-router-dom";
 
-function NavItem({ link, index, to, isMenuOpen }) {
+function NavItem({ link, index, to, isMenuOpen, isActiveOverride }) {
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const location = useLocation();
@@ -15,10 +15,9 @@ function NavItem({ link, index, to, isMenuOpen }) {
             <NavLink
                 to={to}
                 end={link.index}
-                className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+                className={({ isActive }) => (isActive || isActiveOverride ? "nav-link active" : "nav-link")}
                 onClick={(e) => {
                     e.preventDefault();
-                    // reload if it's the same page
                     if (location.pathname === to) {
                         window.location.reload();
                         return;

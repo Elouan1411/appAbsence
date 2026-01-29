@@ -46,6 +46,7 @@ router.post("/login", async (req, res) => {
             });
             res.status(200).json(users[user]["role"]);
             console.log("Token de l'utilisateur : ", token);
+            return;
         } else {
             res.status(401).json("Mot de passe incorrect");
         }
