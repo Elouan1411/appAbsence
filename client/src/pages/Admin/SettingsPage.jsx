@@ -321,7 +321,7 @@ function SettingsPage() {
                 )}
 
                 {activeTab === "subject" && (
-                    <div className="layout-container" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                    <div className="layout-container" style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "-webkit-fill-available", margin: "10px" }}>
                         <SubjectModal
                             isOpen={isSubjectModalOpen}
                             onClose={() => {
@@ -365,9 +365,9 @@ function SettingsPage() {
                                     Ajouter une matière
                                 </button>
                             </div>
-                            <div className="settings-list-container">
+                            <div className="settings-grid">
                                 {filteredSubjects.length === 0 ? (
-                                    <p style={{ textAlign: "center", color: "var(--text-secondary)" }}>Aucune matière trouvée.</p>
+                                    <p style={{ textAlign: "center", color: "var(--text-secondary)", gridColumn: "1 / -1" }}>Aucune matière trouvée.</p>
                                 ) : (
                                     filteredSubjects.map((sub) => (
                                         <div key={sub.code} className="settings-list-item">

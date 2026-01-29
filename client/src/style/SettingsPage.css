@@ -16,6 +16,7 @@
     margin-top: 0;
     grid-auto-flow: row;
     grid-template-columns: 1fr 1fr;
+    width: fit-content;
 }
 
 .settings-subject-layout {
@@ -158,4 +159,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+@media (max-width: 764px) {
+    .settings-grid {
+        display: flex;
+        flex-direction: column;
+        padding: 0 15px 100px 15px;
+    }
 }
