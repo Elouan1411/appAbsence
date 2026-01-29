@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
         }
     } else {
         if (!authentification.status) {
-            res.status(401).json("Identifiants ou mot de passe incorrects");
+            res.status(401).json(authentification.error);
         } else if (!authentification.isInfo) {
             res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
         } else if (!(await haveAccount(user))) {
