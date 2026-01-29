@@ -261,10 +261,10 @@
     mask-image: url("../assets/save.svg");
 }
 
-.icon-warning {
+/* .icon-warning {
     mask-image: url("../assets/warning.svg");
     -webkit-mask-image: url("../assets/warning.svg");
-}
+} */
 
 .label {
     margin-left: 14px;
