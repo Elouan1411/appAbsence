@@ -225,3 +225,7 @@ form {
     font-weight: 600;
     color: var(--text-secondary);
 }
+
+.input-error-form > div > input{
+    background-color: var(--badge-bg);
+}

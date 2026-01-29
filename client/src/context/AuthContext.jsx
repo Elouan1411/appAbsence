@@ -24,6 +24,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = async (user, pwd) => {
+        setLoading(true);
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -32,12 +33,15 @@ export function AuthProvider({ children }) {
         });
 
         if (!res.ok) {
+            setLoading(false);
             throw new Error(await res.text());
+            
         }
 
         const data = await res.json();
         setUser(user);
         setRole(data);
+        setLoading(false);
         return data;
     };
 
