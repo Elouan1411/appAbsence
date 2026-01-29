@@ -379,7 +379,7 @@ function SettingsPage() {
                                             </div>
                                             <div className="settings-item-actions">
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
-                                                    <span className="icon settings-icon icon-edit" />
+                                                    <span className="icon settings-icon icon-edit icon-xl" />
                                                 </button>
 
                                                 <button
@@ -388,7 +388,7 @@ function SettingsPage() {
                                                     title="Supprimer"
                                                     disabled={deletingSubjectId === sub.code}
                                                 >
-                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash" />}
+                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl" />}
                                                 </button>
                                             </div>
                                         </div>
