@@ -294,13 +294,32 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// // Récuperer les justifications d'un etudiant pour une periode données ainsi que ca validité
-// router.get("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) => {
-//     let body = req.body;
-//     let userLogin = req.user.pwd.split("-")[0];
-//     const userRole = req.user.pwd.split("-")[1];
+// Récuperer les justifications d'un etudiant pour une periode données ainsi que ca validité
+router.post("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) => {
+    let body = req.body;
+    let userLogins = body.studentIds; 
+    let start = body.start;
+    let end = body.end;
 
-// });
+    if (!userLogins || !Array.isArray(userLogins) || userLogins.length === 0) {
+        return res.status(200).json([]);
+    }
+
+    const placeholders = userLogins.map(() => "?").join(",");
+    const userLoginsString = userLogins.map(id => String(id));
+    
+    const sql = `SELECT numeroEtudiant, validite FROM JustificationAbsence 
+                 WHERE numeroEtudiant IN (${placeholders}) 
+                 AND debut <= ? AND fin >= ?`;
+
+    const params = [...userLoginsString, end, start];
+
+    db.all(sql, params, (err, rows) => {
+        if (err) return console.error(err.message);
+
+        res.status(200).json(rows);
+    });
+});
 
 /*****************************************
  *             Méthodes POST
