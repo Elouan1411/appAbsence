@@ -122,6 +122,9 @@ app.use("/subject", subjectRoutes);
 const teacherRoutes = require("./routes/teacher");
 app.use("/teacher", teacherRoutes);
 
+const contactEmailRoutes = require("./routes/contact_email");
+app.use("/contact_email", contactEmailRoutes);
+
 app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 app.get(/.*/, (req, res) => {
