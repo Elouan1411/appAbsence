@@ -145,6 +145,9 @@ function TeacherHistoryPage() {
 
     const columnDefs = useMemo(
         () => [
+            { field: "nom", headerName: "Nom", filter: true },
+            { field: "prenom", headerName: "Prénom", filter: true },
+            { field: "motif", headerName: "Motif", filter: true, flex: 1 },
             {
                 headerName: "Date",
                 field: "debut",
@@ -193,9 +196,7 @@ function TeacherHistoryPage() {
                 filter: true,
                 width: 250,
             },
-            { field: "nom", headerName: "Nom", filter: true },
-            { field: "prenom", headerName: "Prénom", filter: true },
-            { field: "motif", headerName: "Motif", filter: true, flex: 1 },
+            
             {
                 headerName: "Justification",
                 cellRenderer: JustificationRenderer,
