@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import PageTitle from "../../components/common/PageTitle";
 import "../../style/Admin.css";
 import "../../style/icon.css";
@@ -13,8 +14,10 @@ import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 
 function SettingsPage() {
+    const { user } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("admin");
     const [adminLogin, setAdminLogin] = useState("");
+    const [adminToRemove, setAdminToRemove] = useState("");
     const [contactEmail, setContactEmail] = useState("");
     const [isEmailLoading, setIsEmailLoading] = useState(false);
     const [teachers, setTeachers] = useState([]);
@@ -145,6 +148,38 @@ function SettingsPage() {
                 toast.error("Erreur connexion serveur.");
             } finally {
                 setIsAdminLoading(false);
+            }
+        }
+    };
+
+    const handleRemoveAdmin = async () => {
+        if (!adminToRemove.trim()) {
+            toast.error("Veuillez sélectionner un administrateur.");
+            return;
+        }
+
+        const { isConfirmed } = await alertConfirm("Retirer les droits ?", `Voulez-vous vraiment retirer les droits d'administrateur à ${adminToRemove} ?`);
+
+
+        if (isConfirmed) {
+            try {
+                const response = await fetch(`${API_URL}/teacher/${adminToRemove}/admin`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+    
+                if (response.ok) {
+                    toast.success(`Droits retirés pour ${adminToRemove}.`);
+                    setTeachers(prev => prev.map(t => 
+                        t.loginENT === adminToRemove ? { ...t, administrateur: 0 } : t
+                    ));
+                    setAdminToRemove("");
+                } else {
+                    toast.error("Erreur lors de la suppression.");
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                toast.error("Erreur serveur.");
             }
         }
     };
@@ -281,7 +316,9 @@ function SettingsPage() {
                                 <label>Login ENT</label>
                                 <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
                                     <option value=""> -- Sélectionner un enseignant -- </option>
-                                    {teachers.map((teacher) => (
+                                    {teachers
+                                        .filter(teacher => teacher.administrateur !== 1)
+                                        .map((teacher) => (
                                         <option key={teacher.loginENT} value={teacher.loginENT}>
                                             {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
                                         </option>
@@ -316,6 +353,25 @@ function SettingsPage() {
                             <button onClick={handleSaveEmail} className="validate-btn settings-input-margin-fix" disabled={isEmailLoading}>
                                 {isEmailLoading ? <CustomLoader /> : "Sauvegarder"}
                             </button>
+                        </div>
+                        <div className="Card cols-2">
+                             <h2>Liste des administrateurs</h2>
+                             <div className="input-group">
+                                <label>Retirer un administrateur</label>
+                                <select value={adminToRemove} onChange={(e) => setAdminToRemove(e.target.value)}>
+                                    <option value=""> -- Sélectionner un administrateur -- </option>
+                                    {teachers
+                                        .filter(t => t.administrateur === 1 && t.loginENT !== user)
+                                        .map(admin => (
+                                        <option key={admin.loginENT} value={admin.loginENT}>
+                                            {admin.nom.toUpperCase()} {admin.prenom} ({admin.loginENT})
+                                        </option>
+                                    ))}
+                                </select>
+                             </div>
+                             <button onClick={handleRemoveAdmin} className="validate-btn settings-input-margin-fix" style={{backgroundColor: 'var(--error-color)', color: 'white', border: 'none'}}>
+                                Supprimer
+                             </button>
                         </div>
                     </div>
                 )}
