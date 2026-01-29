@@ -13,6 +13,7 @@ import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
+import { useUnsaved } from "../../context/UnsavedContext";
 
 const StudentAbsenceDetailsPage = () => {
     const { id } = useParams();
@@ -31,10 +32,16 @@ const StudentAbsenceDetailsPage = () => {
     const { errors, periodError, reasonError, validatePeriods, validateReason, validateAll } = useJustificationValidation();
 
     const { submit, isSubmitting } = useJustificationSubmit();
+    const { setHasUnsavedChanges } = useUnsaved();
 
     const [isEditable, setIsEditable] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     console.log("chargement de la page");
+
+    // Mark as unsaved helper
+    const markAsUnsaved = () => {
+        setHasUnsavedChanges(true, "Modifications non enregistrées", "Si vous quittez, vos modifications seront perdues.");
+    };
 
     useEffect(() => {
         const loadFiles = async (justifId) => {
@@ -93,70 +100,70 @@ const StudentAbsenceDetailsPage = () => {
         };
 
         const init = async () => {
-        console.log("lancement de useEffect");
+            console.log("lancement de useEffect");
 
-        if (location.state) {
-            console.log("Status received:", location.state.status);
-            if (location.state.status === "validated" || location.state.status === "refused") {
-                setIsEditable(false);
-            }
+            if (location.state) {
+                console.log("Status received:", location.state.status);
+                if (location.state.status === "validated" || location.state.status === "refused") {
+                    setIsEditable(false);
+                }
 
-            if (location.state.status) {
-                setStatus(location.state.status);
-            }
+                if (location.state.status) {
+                    setStatus(location.state.status);
+                }
 
-            if (location.state.adminComment) {
-                setRefusalReason(location.state.adminComment);
-            }
+                if (location.state.adminComment) {
+                    setRefusalReason(location.state.adminComment);
+                }
 
-            if (location.state.dateDemande) {
-                setDateDemande(location.state.dateDemande);
-            }
-            if (location.state.prefilledPeriod) {
-                let periods = location.state.prefilledPeriod.map((p, idx) => ({
-                    ...p,
-                    start: new Date(p.start),
-                    end: new Date(p.end),
-                    id: p.id || Date.now() + idx,
-                }));
+                if (location.state.dateDemande) {
+                    setDateDemande(location.state.dateDemande);
+                }
+                if (location.state.prefilledPeriod) {
+                    let periods = location.state.prefilledPeriod.map((p, idx) => ({
+                        ...p,
+                        start: new Date(p.start),
+                        end: new Date(p.end),
+                        id: p.id || Date.now() + idx,
+                    }));
 
-                // Filter out periods that are fully contained within another period
-                periods = periods.filter((p1) => {
-                    return !periods.some((p2) => {
-                        return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                    // Filter out periods that are fully contained within another period
+                    periods = periods.filter((p1) => {
+                        return !periods.some((p2) => {
+                            return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                        });
                     });
-                });
 
-                setPeriod(periods);
-                validatePeriods(periods);
+                    setPeriod(periods);
+                    validatePeriods(periods);
+                }
+
+                if (location.state.reason) {
+                    const fullReason = location.state.reason;
+                    const [parsedReason, parsedComment] = (fullReason || "").split(" | ");
+                    const r = parsedReason;
+                    const c = parsedComment || "";
+                    setReason(r);
+                    setComment(c);
+                    validateReason(r, c);
+                }
+
+                if (location.state.justificationId) {
+                    setIsLoading(true);
+                    await loadFiles(location.state.justificationId);
+                    setIsLoading(false);
+                }
             }
+        };
 
-            if (location.state.reason) {
-                const fullReason = location.state.reason;
-                const [parsedReason, parsedComment] = (fullReason || "").split(" | ");
-                const r = parsedReason;
-                const c = parsedComment || "";
-                setReason(r);
-                setComment(c);
-                validateReason(r, c);
-            }
-
-            if (location.state.justificationId) {
-                setIsLoading(true);
-                await loadFiles(location.state.justificationId);
-                setIsLoading(false);
-            }
-        }
-    };
-
-    init();
-
+        init();
     }, [location.state]);
 
     const handlePeriodChange = (newPeriods) => {
         const sortedPeriods = [...newPeriods].sort((a, b) => a.start - b.start);
         setPeriod(sortedPeriods);
         validatePeriods(sortedPeriods);
+        markAsUnsaved();
     };
 
     const handleFilesChange = (newFiles) => {
@@ -174,6 +181,7 @@ const StudentAbsenceDetailsPage = () => {
                 return newFiles;
             });
         }
+        markAsUnsaved();
     };
 
     const handleUpdate = async () => {
@@ -188,6 +196,7 @@ const StudentAbsenceDetailsPage = () => {
         const targetId = location.state?.justificationId || id;
         const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
+            setHasUnsavedChanges(false);
             navigate("/dashboard");
         }
     };
@@ -200,7 +209,7 @@ const StudentAbsenceDetailsPage = () => {
                 ) : (
                     <>
                         <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
-                <NavigateBackButton />
+                        <NavigateBackButton />
                         <AbsenceStatus status={status} adminComment={refusalReason} />
 
                         <PeriodAbsence
@@ -220,10 +229,12 @@ const StudentAbsenceDetailsPage = () => {
                             onReasonChange={(val) => {
                                 setReason(val);
                                 validateReason(val, comment);
+                                markAsUnsaved();
                             }}
                             onCommentChange={(val) => {
                                 setComment(val);
                                 validateReason(reason, val);
+                                markAsUnsaved();
                             }}
                             error={reasonError}
                             readOnly={!isEditable}
