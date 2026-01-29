@@ -1,5 +1,5 @@
 import "../../../style/Alert.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Checkbox from "../Checkbox";
 

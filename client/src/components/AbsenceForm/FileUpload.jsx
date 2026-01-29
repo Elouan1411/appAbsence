@@ -5,9 +5,7 @@ import cloudIcon from "../../assets/upload_cloud.svg";
 import fileIcon from "../../assets/file_document.svg";
 import checkIcon from "../../assets/check_success.svg";
 import trashIcon from "../../assets/trash.svg";
-import downloadIcon from "../../assets/download.svg";
 import toast from "react-hot-toast";
-import { ConfirmAlert } from "../common/Alert/ConfirmAlert";
 import { alertConfirm } from "../../hooks/alertConfirm";
 
 const FileUpload = ({ files, setFiles }) => {
@@ -49,7 +47,7 @@ const FileUpload = ({ files, setFiles }) => {
     const handleFileSelect = (e) => {
         const selectedFiles = Array.from(e.target.files);
         addFiles(selectedFiles);
-        e.target.value = null; // Reset input to allow re-selection of same file
+        e.target.value = null;
     };
 
     const truncateFileName = (name, maxLength = 20) => {
