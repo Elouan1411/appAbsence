@@ -2,7 +2,8 @@ const express = require("express");
 const createToken = require("../utils/auth");
 const { verifyToken } = require("../middlewares/auth");
 const router = express.Router();
-const maxAge = 10 * 60 * 60 * 1000;
+const auth = require("../routes/ldap");
+const maxAge = 10 * 60 * 60 * 1000; // 10 heures
 let users = {};
 users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
@@ -27,9 +28,13 @@ router.get("/", verifyToken, (req, res) => {
  *****************************************/
 
 //Route pour se connecter
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
     const { user, pwd } = req.body;
     console.log({ user, pwd });
+
+    const authentification = await auth(user, pwd);
+
+    // CODE DEV
     if (users[user] != undefined) {
         console.log(`${users[user].password}==${pwd}`);
         if (users[user].password == pwd) {
@@ -45,7 +50,36 @@ router.post("/login", (req, res) => {
             res.status(401).json("Mot de passe incorrect");
         }
     } else {
-        res.status(401).json("Identifiants incorrects");
+        if (!authentification.isInfo) {
+            res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
+        } else if (authentification.status) {
+            const token = createToken(user + "-" + authentification.role);
+            res.cookie("jwt", token, {
+                httpOnly: true,
+                maxAge: maxAge,
+                sameSite: "strict",
+            });
+            res.status(200).json(authentification.role);
+            console.log("Token de l'utilisateur : ", token);
+        } else {
+            res.status(401).json("Identifiants ou mot de passe incorrects");
+        }
+    }
+
+    // CODE FINAL
+    if (!authentification.isInfo) {
+        res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
+    } else if (authentification.status) {
+        const token = createToken(user + "-" + authentification.role);
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            maxAge: maxAge,
+            sameSite: "strict",
+        });
+        res.status(200).json(authentification.role);
+        console.log("Token de l'utilisateur : ", token);
+    } else {
+        res.status(401).json("Identifiants ou mot de passe incorrects");
     }
 });
 
@@ -59,9 +93,9 @@ router.post("/logout", (req, res) => {
 });
 
 //Route pour s'inscrire
-router.post("/register", (req, res) => {
-    // TODO: - Faire la route pour l'inscription
-});
+// router.post("/register", (req, res) => {
+//     // TODO: - Faire la route pour l'inscription
+// });
 
 // router.get("/role", verifyToken, (req, res) => {
 //   res.status(200).json(de)
