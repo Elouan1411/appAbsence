@@ -13,7 +13,7 @@ import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 
 function SettingsPage() {
-    const [activeTab, setActiveTab] = useState("general");
+    const [activeTab, setActiveTab] = useState("admin");
     const [adminLogin, setAdminLogin] = useState("");
     const [contactEmail, setContactEmail] = useState("");
     const [isEmailLoading, setIsEmailLoading] = useState(false);
