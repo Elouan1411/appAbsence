@@ -12,7 +12,8 @@ const readEmail = () => {
             return { contact_email: "" };
         }
         const data = fs.readFileSync(pathEmail, "utf8");
-        return JSON.parse(data);
+        console.log(data);
+        return JSON.parse(data)["contact_email"];
     } catch (err) {
         console.error("Erreur de lecture du fichier:", err);
         return { contact_email: "" };
@@ -38,3 +39,4 @@ router.put("/", verifyToken, isAdmin, (req, res) => {
 });
 
 module.exports = router;
+module.exports = readEmail;

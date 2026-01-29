@@ -4,6 +4,7 @@ const { verifyToken } = require("../middlewares/auth");
 const router = express.Router();
 const auth = require("../routes/ldap");
 const db = require("../database/db");
+const readEmail = require("../routes/contact_email");
 const maxAge = 10 * 60 * 60 * 1000; // 10 heures
 let users = {};
 users["etudiant"] = { password: 1234, role: "student" };
@@ -74,7 +75,7 @@ router.post("/login", async (req, res) => {
         } else if (!authentification.isInfo) {
             res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
         } else if (!(await haveAccount(user))) {
-            res.status(401).json("Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à alicia.pierrot@univ-fcomte.fr");
+            res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else {
             const token = createToken(user + "-" + authentification.role);
             res.cookie("jwt", token, {
