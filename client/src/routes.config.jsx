@@ -12,7 +12,6 @@ import StudentDetailPage from "./pages/Admin/StudentDetailPage";
 import React from "react";
 import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
 import SettingsPage from "./pages/Admin/SettingsPage";
-import AbsencePage from "./pages/Admin/AbsencePage";
 import AdminJustificationPage from "./pages/Admin/AdminJustificationPage";
 import SettingMobilePage from "./pages/SettingsMobilePage";
 
@@ -31,7 +30,6 @@ export const routesConfig = [
             { path: "studentdetail/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
             { path: "absencedetail/:absenceId", label: "Détail absence", element: <AbsenceDetailPage /> },
             { path: "history", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
-            { path: "absences", label: "Absences non justifiées", element: <AbsencePage />, icon: "icon-justification-student" },
         ],
     },
     {
