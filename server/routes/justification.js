@@ -1,5 +1,5 @@
 const express = require("express");
-const { verifyToken, isAdmin, isOwner, isAdminOrOwner } = require("../middlewares/auth");
+const { verifyToken, isAdmin, isOwner, isAdminOrOwner, isAdminOrTeacher } = require("../middlewares/auth");
 const router = express.Router();
 const db = require("../database/db");
 const fs = require("fs");
@@ -294,6 +294,14 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
     });
 });
 
+// // Récuperer les justifications d'un etudiant pour une periode données ainsi que ca validité
+// router.get("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) => {
+//     let body = req.body;
+//     let userLogin = req.user.pwd.split("-")[0];
+//     const userRole = req.user.pwd.split("-")[1];
+
+// });
+
 /*****************************************
  *             Méthodes POST
  *****************************************/
@@ -422,6 +430,8 @@ router.post("/", verifyToken, (req, res) => {
         }
     });
 });
+
+
 /*****************************************
  *           Méthodes UPDATE
  *****************************************/
