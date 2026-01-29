@@ -50,9 +50,12 @@ router.post("/login", async (req, res) => {
             res.status(401).json("Mot de passe incorrect");
         }
     } else {
+        if (!authentification.status) {
+            res.status(401).json("Identifiants ou mot de passe incorrects");
+        }
         if (!authentification.isInfo) {
             res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
-        } else if (authentification.status) {
+        } else {
             const token = createToken(user + "-" + authentification.role);
             res.cookie("jwt", token, {
                 httpOnly: true,
@@ -61,26 +64,10 @@ router.post("/login", async (req, res) => {
             });
             res.status(200).json(authentification.role);
             console.log("Token de l'utilisateur : ", token);
-        } else {
-            res.status(401).json("Identifiants ou mot de passe incorrects");
         }
     }
 
-    // CODE FINAL
-    if (!authentification.isInfo) {
-        res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
-    } else if (authentification.status) {
-        const token = createToken(user + "-" + authentification.role);
-        res.cookie("jwt", token, {
-            httpOnly: true,
-            maxAge: maxAge,
-            sameSite: "strict",
-        });
-        res.status(200).json(authentification.role);
-        console.log("Token de l'utilisateur : ", token);
-    } else {
-        res.status(401).json("Identifiants ou mot de passe incorrects");
-    }
+    // CODE FINAL ...
 });
 
 //Route pour se déconnecter
