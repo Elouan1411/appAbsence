@@ -243,13 +243,9 @@ function SettingsPage() {
                             </select>
                         </div>
 
-                        {isAdminLoading ? (
-                            <CustomLoader />
-                        ) : (
-                            <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix">
-                                Ajouter l'administrateur
-                            </button>
-                        )}
+                        <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix" disabled={isAdminLoading}>
+                            {isAdminLoading ? <CustomLoader /> : "Ajouter l'administrateur"}
+                        </button>
                     </div>
                 )}
 
@@ -314,13 +310,15 @@ function SettingsPage() {
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
                                                     <span className="icon settings-icon icon-edit" />
                                                 </button>
-                                                {deletingSubjectId === sub.code ? (
-                                                    <CustomLoader />
-                                                ) : (
-                                                    <button onClick={() => handleDeleteSubject(sub.code)} className="settings-icon-button" title="Supprimer">
-                                                        <span className="icon settings-icon icon-trash" />
-                                                    </button>
-                                                )}
+
+                                                <button
+                                                    onClick={() => handleDeleteSubject(sub.code)}
+                                                    className="settings-icon-button"
+                                                    title="Supprimer"
+                                                    disabled={deletingSubjectId === sub.code}
+                                                >
+                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash" />}
+                                                </button>
                                             </div>
                                         </div>
                                     ))

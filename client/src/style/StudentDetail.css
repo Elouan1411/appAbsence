@@ -100,8 +100,8 @@
 }
 
 .justified-badge {
-    background-color: var(--justified-badge-bg);
-    color: var(--justified-badge-text);
+    background-color: var(--badge-validated-bg);
+    color: var(--badge-validated-text);
 }
 
 .card-absence-subject span {
@@ -317,4 +317,8 @@ h3 {
     .delete-button span {
         background-color: var(--badge-text);
     }
+}
+
+.card-absence {
+    margin: 10px;
 }

@@ -311,7 +311,10 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                                 onCellValueChanged={handleCellValueChanged}
                             />
                             <div className="grid-button-container">
-                                {isLoading ? <CustomLoader /> : <Button onClick={handleSaveAndSend}>Sauvegarder</Button>}
+                                <Button onClick={handleSaveAndSend} disabled={isLoading}>
+                                    {" "}
+                                    {isLoading ? <CustomLoader /> : "Sauvegarder"}
+                                </Button>
                             </div>
                         </div>
                     </div>
