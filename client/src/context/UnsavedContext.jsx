@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 
 const UnsavedContext = createContext(null);
 
@@ -7,7 +7,7 @@ export const UnsavedProvider = ({ children }) => {
     const [unsavedTitle, setUnsavedTitle] = useState("");
     const [unsavedMessage, setUnsavedMessage] = useState("");
 
-    const setHasUnsavedChanges = (value, title = "", message = "") => {
+    const setHasUnsavedChanges = useCallback((value, title = "", message = "") => {
         setHasUnsavedChangesState(value);
         if (value) {
             setUnsavedTitle(title);
@@ -16,9 +16,19 @@ export const UnsavedProvider = ({ children }) => {
             setUnsavedTitle("");
             setUnsavedMessage("");
         }
-    };
+    }, []);
 
-    return <UnsavedContext.Provider value={{ hasUnsavedChanges, setHasUnsavedChanges, unsavedTitle, unsavedMessage }}>{children}</UnsavedContext.Provider>;
+    const value = useMemo(
+        () => ({
+            hasUnsavedChanges,
+            setHasUnsavedChanges,
+            unsavedTitle,
+            unsavedMessage,
+        }),
+        [hasUnsavedChanges, setHasUnsavedChanges, unsavedTitle, unsavedMessage],
+    );
+
+    return <UnsavedContext.Provider value={value}>{children}</UnsavedContext.Provider>;
 };
 
 export const useUnsaved = () => useContext(UnsavedContext);

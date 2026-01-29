@@ -15,6 +15,7 @@ import { useJustificationValidation } from "../../hooks/useJustificationValidati
 import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
+import { useUnsaved } from "../../context/UnsavedContext";
 
 const StudentJustificationPage = () => {
     const [reason, setReason] = useState("");
@@ -28,6 +29,12 @@ const StudentJustificationPage = () => {
     const { errors, periodError, reasonError, setPeriodError, setReasonError, validatePeriods, validateReason, validateAll } = useJustificationValidation();
 
     const { submit, isSubmitting } = useJustificationSubmit();
+    const { setHasUnsavedChanges } = useUnsaved();
+
+    // Mark as unsaved helper
+    const markAsUnsaved = () => {
+        setHasUnsavedChanges(true, "Modifications non enregistrées", "Si vous quittez, vos modifications seront perdues.");
+    };
 
     useEffect(() => {
         if (location.state && location.state.prefilledPeriod) {
@@ -45,6 +52,7 @@ const StudentJustificationPage = () => {
         const sortedPeriods = [...newPeriods].sort((a, b) => a.start - b.start);
         setPeriod(sortedPeriods);
         validatePeriods(sortedPeriods);
+        markAsUnsaved();
     };
 
     const handleSubmit = async () => {
@@ -58,6 +66,7 @@ const StudentJustificationPage = () => {
         if (confirmation.isConfirmed) {
             const success = await submit(period, reason, comment, files, "create");
             if (success.success) {
+                setHasUnsavedChanges(false);
                 setReason("");
                 setComment("");
                 setPeriod([]);
@@ -87,16 +96,24 @@ const StudentJustificationPage = () => {
                     onReasonChange={(val) => {
                         setReason(val);
                         validateReason(val, comment);
+                        markAsUnsaved();
                     }}
                     onCommentChange={(val) => {
                         setComment(val);
                         validateReason(reason, val);
+                        markAsUnsaved();
                     }}
                     error={reasonError}
                     readOnly={false}
                 />
                 <hr className="section-divider" />
-                <FileUpload files={files} setFiles={setFiles} />
+                <FileUpload
+                    files={files}
+                    setFiles={(files) => {
+                        setFiles(files);
+                        markAsUnsaved();
+                    }}
+                />
 
                 <div style={{ marginTop: "30px" }}>
                     <Button onClick={handleSubmit} className="submit-button" disabled={isSubmitting}>
