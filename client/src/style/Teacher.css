@@ -134,3 +134,10 @@
         width: unset;
     }
 }
+
+@media screen and (max-width: 1584px) {
+    .select-container {
+        gap: 0.5rem;
+    }
+}
+

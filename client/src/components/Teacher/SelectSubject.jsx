@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 import { API_URL } from "../../config";
-import CustomLoader from "../common/CustomLoader";
+
 
 function SelectSubject({ onSelect, promo, pair, style, value }) {
     const [subjects, setSubjects] = useState([]);
@@ -21,8 +21,9 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
                 return;
             }
 
+            let timer;
             try {
-                setLoading(true);
+                timer = setTimeout(() => setLoading(true), 200);
                 const response = await fetch(`${API_URL}/subject/promo`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -36,6 +37,7 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
             } catch (err) {
                 console.error("Error fetching subjects:", err);
             } finally {
+                clearTimeout(timer);
                 setLoading(false);
             }
         }
@@ -54,21 +56,23 @@ function SelectSubject({ onSelect, promo, pair, style, value }) {
         <div className="Card cols-1" style={{ height: "fit-content", ...style }}>
             <h2>Matière</h2>
 
-            {loading ? (
-                <CustomLoader />
-            ) : (
-                <div className="input-group">
-                    <label htmlFor="subject">Choix</label>
-                    <select id="subject" value={selectedSubject} onChange={handleChange}>
-                        <option value="">-- Choisir --</option>
-                        {subjects.map((sub) => (
-                        <option key={sub.code} value={sub.code}>
-                            {sub.libelle}
-                        </option>
-                    ))}
+            <div className="input-group">
+                <label htmlFor="subject">Choix</label>
+                <select id="subject" value={selectedSubject} onChange={handleChange} disabled={loading}>
+                    {loading ? (
+                        <option>Chargement...</option>
+                    ) : (
+                        <>
+                            <option value="">-- Choisir --</option>
+                            {subjects.map((sub) => (
+                                <option key={sub.code} value={sub.code}>
+                                    {sub.libelle}
+                                </option>
+                            ))}
+                        </>
+                    )}
                 </select>
             </div>
-            )}
         </div>
     );
 }
