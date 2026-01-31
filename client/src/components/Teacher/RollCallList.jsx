@@ -427,6 +427,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 width: "calc(100% - 2rem)",
                 height: "80vh",
                 margin: "1rem",
+                marginBottom: "2rem",
             }}
         >
             <div

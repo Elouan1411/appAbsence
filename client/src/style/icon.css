@@ -207,3 +207,8 @@
     -webkit-mask-image: url(../assets/list.svg);
 }
 
+.icon-download {
+    mask-image: url(../assets/download.svg);
+    -webkit-mask-image: url(../assets/download.svg);
+}
+

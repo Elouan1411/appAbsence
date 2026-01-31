@@ -48,6 +48,19 @@ function App() {
     }, [loading]);
 
     useEffect(() => {
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+        };
+
+        window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        };
+    }, []);
+
+    useEffect(() => {
         const viewportMeta = document.querySelector("meta[name='viewport']");
         if (viewportMeta) {
             if (location.pathname.startsWith("/admin") && !location.pathname.includes("/rollcall")) {
