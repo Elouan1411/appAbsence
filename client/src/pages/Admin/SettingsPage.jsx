@@ -49,10 +49,12 @@ function SettingsPage() {
 
     const fetchContactEmail = async () => {
         try {
-            const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
+            const response = await fetch(`${API_URL}/contact_email/`,{
+                method: "GET",
+            });
             if (response.ok) {
                 const data = await response.json();
-                setContactEmail(data.contact_email || "");
+                setContactEmail(data|| "");
             }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'email de contact:", error);
