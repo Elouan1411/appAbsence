@@ -51,11 +51,8 @@ router.post("/login", async (req, res) => {
     const { user, pwd } = req.body;
     console.log({ user, pwd });
 
-    const authentification = await auth(user, pwd);
-
     // CODE DEV
     if (users[user] != undefined) {
-        console.log(`${users[user].password}==${pwd}`);
         if (users[user].password == pwd) {
             const token = createToken(user + "-" + users[user]["role"]);
             res.cookie("jwt", token, {
@@ -64,12 +61,12 @@ router.post("/login", async (req, res) => {
                 sameSite: "strict",
             });
             res.status(200).json(users[user]["role"]);
-            console.log("Token de l'utilisateur : ", token);
             return;
         } else {
             res.status(401).json("Mot de passe incorrect");
         }
     } else {
+        const authentification = await auth(user, pwd);
         if (!authentification.status) {
             res.status(401).json(authentification.error);
         } else if (!authentification.isInfo) {
@@ -84,7 +81,6 @@ router.post("/login", async (req, res) => {
                 sameSite: "strict",
             });
             res.status(200).json(authentification.role);
-            console.log("Token de l'utilisateur : ", token);
         }
     }
 
