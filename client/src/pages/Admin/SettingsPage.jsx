@@ -633,16 +633,16 @@ function SettingsPage() {
                                     <button
                                         onClick={() =>
                                             handleDatabaseExport(
-                                                "/database/schema",
-                                                "schema_structure.sql",
-                                                "Structure téléchargée.",
-                                                setisSchemaStructureLoading,
+                                                "/database/xlsx-tables",
+                                                "tables_backup.xlsx",
+                                                "Fichier Excel multi-feuilles téléchargé.",
+                                                setIsExportXLSXLoading,
                                             )
                                         }
                                         className="validate-btn settings-input-margin-fix"
-                                        disabled={isSchemaStructureLoading}
+                                        disabled={isExportXLSXLoading}
                                     >
-                                        {isSchemaStructureLoading ? <CustomLoader /> : "Exporter structure (SQL)"}
+                                        {isExportXLSXLoading ? <CustomLoader /> : "Exporter structure + données (.xlsx)"}
                                     </button>
 
                                     <button
@@ -657,7 +657,7 @@ function SettingsPage() {
                                         className="validate-btn settings-input-margin-fix"
                                         disabled={isBackUpSQLLoading}
                                     >
-                                        {isBackUpSQLLoading ? <CustomLoader /> : "Exporter tout (.sql)"}
+                                        {isBackUpSQLLoading ? <CustomLoader /> : "Exporter structure + données (.sql)"}
                                     </button>
 
                                     <button
@@ -665,22 +665,22 @@ function SettingsPage() {
                                         className="validate-btn settings-input-margin-fix"
                                         disabled={isBackUpDBLoading}
                                     >
-                                        {isBackUpDBLoading ? <CustomLoader /> : "Exporter raw (.db)"}
+                                        {isBackUpDBLoading ? <CustomLoader /> : "Exporter structure + données (.db)"}
                                     </button>
 
                                     <button
                                         onClick={() =>
                                             handleDatabaseExport(
-                                                "/database/xlsx-tables",
-                                                "tables_backup.xlsx",
-                                                "Fichier Excel multi-feuilles téléchargé.",
-                                                setIsExportXLSXLoading,
+                                                "/database/schema",
+                                                "schema_structure.sql",
+                                                "Structure téléchargée.",
+                                                setisSchemaStructureLoading,
                                             )
                                         }
                                         className="validate-btn settings-input-margin-fix"
-                                        disabled={isExportXLSXLoading}
+                                        disabled={isSchemaStructureLoading}
                                     >
-                                        {isExportXLSXLoading ? <CustomLoader /> : "Exporter Tables (.xlsx)"}
+                                        {isSchemaStructureLoading ? <CustomLoader /> : "Exporter structure (.sql)"}
                                     </button>
                                 </div>
                             </div>
