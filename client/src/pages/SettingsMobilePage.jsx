@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
 import toggleTheme from "../functions/toggleTheme";
@@ -12,6 +12,7 @@ const SettingMobilePage = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const isDarkMode = theme === "dark";
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
 
     useEffect(() => {
         const handleResize = () => {
@@ -29,6 +30,34 @@ const SettingMobilePage = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, [navigate]);
+
+    useEffect(() => {
+        if (window.deferredPrompt) {
+            setDeferredPrompt(window.deferredPrompt);
+        }
+
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+            window.deferredPrompt = e;
+        };
+
+        window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        };
+    }, []);
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+            setDeferredPrompt(null);
+            window.deferredPrompt = null;
+        }
+    };
 
     const handleLogout = async () => {
         await logout();
@@ -52,6 +81,15 @@ const SettingMobilePage = () => {
                         </div>
                     </button>
                 </div>
+
+                    <div className="logout-container" style={{ marginBottom: "10px" }}>
+                        <button className="logout-button" onClick={handleInstallClick} style={{ backgroundColor: "var(--text-primary)" }}>
+                            <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }}></span>
+                            <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
+                                Installer l'application
+                            </span>
+                        </button>
+                    </div>
 
                 <div className="logout-container">
                     <button className="logout-button" onClick={handleLogout}>
