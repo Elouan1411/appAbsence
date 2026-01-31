@@ -42,13 +42,8 @@ function SettingsPage() {
     const [years, setYears] = useState([]);
     const [totalSize, setTotalSize] = useState(0);
     const [selectedYear, setSelectedYear] = useState("");
-
-    // Split States
-    const [isExportXLSXLoading, setIsExportXLSXLoading] = useState(false);
-    const [isDownloadAllJustifLoading, setIsDownloadAllJustifLoading] = useState(false);
-    const [isDownloadYearJustifLoading, setIsDownloadYearJustifLoading] = useState(false);
-    const [isDeleteAllJustifLoading, setIsDeleteAllJustifLoading] = useState(false);
-    const [isDeleteYearJustifLoading, setIsDeleteYearJustifLoading] = useState(false);
+    const [isDownloadJustifLoading, setIsDownloadJustifLoading] = useState(false);
+    const [isDeleteJustifLoading, setIsDeleteJustifLoading] = useState(false);
 
     const fetchSubjects = async () => {
         try {
@@ -64,12 +59,10 @@ function SettingsPage() {
 
     const fetchContactEmail = async () => {
         try {
-            const response = await fetch(`${API_URL}/contact_email/`,{
-                method: "GET",
-            });
+            const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
             if (response.ok) {
                 const data = await response.json();
-                setContactEmail(data|| "");
+                setContactEmail(data.contact_email || "");
             }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'email de contact:", error);
@@ -137,15 +130,13 @@ function SettingsPage() {
         }
     }, [activeTab]);
 
-    const handleDownloadJustifications = async (isYear) => {
-        const url = isYear ? `/file/download-year/${selectedYear}` : "/file/download-all";
-        const filename = isYear ? `justifications_${selectedYear}.zip` : "all_justifications.zip";
-
-        if (isYear) setIsDownloadYearJustifLoading(true);
-        else setIsDownloadAllJustifLoading(true);
-
+    const handleDownloadJustifications = async (yearOnly) => {
         try {
-            const response = await fetch(`${API_URL}${url}`, {
+            setIsDownloadJustifLoading(true);
+            const endpoint = yearOnly ? `/file/download-year/${selectedYear}` : "/file/download-all";
+            const filename = yearOnly ? `justifications_${selectedYear}.zip` : `all_justifications.zip`;
+
+            const response = await fetch(`${API_URL}${endpoint}`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -168,15 +159,14 @@ function SettingsPage() {
             console.error(e);
             toast.error("Erreur serveur.");
         } finally {
-            if (isYear) setIsDownloadYearJustifLoading(false);
-            else setIsDownloadAllJustifLoading(false);
+            setIsDownloadJustifLoading(false);
         }
     };
 
     const handleDeleteJustifications = async () => {
         const { isConfirmed } = await alertConfirm("SUPPRIMER TOUS LES FICHIERS ?", "Cette action supprimera DÉFINITIVEMENT tous les justificatifs.");
         if (isConfirmed) {
-            performDelete("/file/delete-all", setIsDeleteAllJustifLoading);
+            performDelete("/file/delete-all");
         }
     };
 
@@ -186,13 +176,13 @@ function SettingsPage() {
             `Supprimer les justificatifs de l'année ${selectedYear} - ${parseInt(selectedYear) + 1} ?`,
         );
         if (isConfirmed) {
-            performDelete(`/file/delete-year/${selectedYear}`, setIsDeleteYearJustifLoading);
+            performDelete(`/file/delete-year/${selectedYear}`);
         }
     };
 
-    const performDelete = async (endpoint, setLoading) => {
+    const performDelete = async (endpoint) => {
         try {
-            setLoading(true);
+            setIsDeleteJustifLoading(true);
             const response = await fetch(`${API_URL}${endpoint}`, {
                 method: "DELETE",
                 credentials: "include",
@@ -208,7 +198,7 @@ function SettingsPage() {
             console.error(e);
             toast.error("Erreur serveur.");
         } finally {
-            setLoading(false);
+            setIsDeleteJustifLoading(false);
         }
     };
 
@@ -667,13 +657,13 @@ function SettingsPage() {
                                         "/database/xlsx-tables",
                                         "tables_backup.xlsx",
                                         "Fichier Excel multi-feuilles téléchargé.",
-                                        setIsExportXLSXLoading,
+                                        setisSchemaStructureLoading,
                                     )
                                 }
                                 className="validate-btn settings-input-margin-fix"
-                                disabled={isExportXLSXLoading}
+                                disabled={isSchemaStructureLoading}
                             >
-                                {isExportXLSXLoading ? <CustomLoader /> : "format .xlsx (toutes tables)"}
+                                {isSchemaStructureLoading ? <CustomLoader /> : "format .xlsx (toutes tables)"}
                             </button>
                         </div>
 
@@ -697,16 +687,16 @@ function SettingsPage() {
                                 <button
                                     onClick={() => handleDownloadJustifications(false)}
                                     className="validate-btn settings-input-margin-fix"
-                                    disabled={isDownloadAllJustifLoading}
+                                    disabled={isDownloadJustifLoading}
                                 >
-                                    {isDownloadAllJustifLoading ? <CustomLoader /> : "Télécharger Tout (ZIP)"}
+                                    {isDownloadJustifLoading ? <CustomLoader /> : "Télécharger Tout (ZIP)"}
                                 </button>
                                 <button
                                     onClick={() => handleDownloadJustifications(true)}
                                     className="validate-btn settings-input-margin-fix"
-                                    disabled={!selectedYear || isDownloadYearJustifLoading}
+                                    disabled={!selectedYear || isDownloadJustifLoading}
                                 >
-                                    {isDownloadYearJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
+                                    {isDownloadJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
                                 </button>
                             </div>
                             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
@@ -714,18 +704,18 @@ function SettingsPage() {
                                     onClick={handleDeleteJustifications}
                                     className="validate-btn settings-input-margin-fix"
                                     style={{ backgroundColor: "var(--error-color)", border: "none" }}
-                                    disabled={isDeleteAllJustifLoading}
+                                    disabled={isDeleteJustifLoading}
                                 >
-                                    {isDeleteAllJustifLoading ? <CustomLoader /> : "Supprimer Tout"}
+                                    {isDeleteJustifLoading ? <CustomLoader /> : "Supprimer Tout"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleDeleteYearJustifications}
                                     className="validate-btn settings-input-margin-fix"
                                     style={{ backgroundColor: "var(--error-color)", border: "none" }}
-                                    disabled={!selectedYear || isDeleteYearJustifLoading}
+                                    disabled={!selectedYear || isDeleteJustifLoading}
                                 >
-                                    {isDeleteYearJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
+                                    {isDeleteJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
                                 </button>
                             </div>
                         </div>
