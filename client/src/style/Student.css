@@ -8,6 +8,7 @@
     padding-bottom: 50px;
     padding-left: 20px;
     padding-right: 20px;
+    width: 100%;
 }
 
 .select-container-student {
@@ -19,13 +20,6 @@
 
 .mobile-selection-checkbox {
     display: none;
-}
-
-div.title-container {
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    margin-bottom: 1vh;
 }
 
 button.btn-select .lucide {
@@ -601,6 +595,10 @@ span.loading-text {
     height: auto;
     width: 100%;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .student-dashboard-container {

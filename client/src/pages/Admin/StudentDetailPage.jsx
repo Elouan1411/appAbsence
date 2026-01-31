@@ -210,9 +210,9 @@ function StudentDetailPage() {
 
     return (
         <div className="student-detail-container">
-            <PageTitle title="Détail étudiant" icon="icon-school" />
+            <PageTitle title="Détail étudiant" icon="icon-school" canGoBack={true} />
 
-            <NavigateBackButton />
+            {/* <NavigateBackButton /> */}
 
             <div className="scrollable-content">
                 <PersonalInformations

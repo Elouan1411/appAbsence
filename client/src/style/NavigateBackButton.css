@@ -1,5 +1,6 @@
 #navigate-button-container {
-    width: 100%;
+    width: 10%;
+    max-width: 50px;
     padding: 10px 0px;
     display: flex;
     flex-direction: row;

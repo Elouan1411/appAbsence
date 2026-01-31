@@ -93,64 +93,63 @@ const StudentAbsenceDetailsPage = () => {
         };
 
         const init = async () => {
-        console.log("lancement de useEffect");
+            console.log("lancement de useEffect");
 
-        if (location.state) {
-            console.log("Status received:", location.state.status);
-            if (location.state.status === "validated" || location.state.status === "refused") {
-                setIsEditable(false);
-            }
+            if (location.state) {
+                console.log("Status received:", location.state.status);
+                if (location.state.status === "validated" || location.state.status === "refused") {
+                    setIsEditable(false);
+                }
 
-            if (location.state.status) {
-                setStatus(location.state.status);
-            }
+                if (location.state.status) {
+                    setStatus(location.state.status);
+                }
 
-            if (location.state.adminComment) {
-                setRefusalReason(location.state.adminComment);
-            }
+                if (location.state.adminComment) {
+                    setRefusalReason(location.state.adminComment);
+                }
 
-            if (location.state.dateDemande) {
-                setDateDemande(location.state.dateDemande);
-            }
-            if (location.state.prefilledPeriod) {
-                let periods = location.state.prefilledPeriod.map((p, idx) => ({
-                    ...p,
-                    start: new Date(p.start),
-                    end: new Date(p.end),
-                    id: p.id || Date.now() + idx,
-                }));
+                if (location.state.dateDemande) {
+                    setDateDemande(location.state.dateDemande);
+                }
+                if (location.state.prefilledPeriod) {
+                    let periods = location.state.prefilledPeriod.map((p, idx) => ({
+                        ...p,
+                        start: new Date(p.start),
+                        end: new Date(p.end),
+                        id: p.id || Date.now() + idx,
+                    }));
 
-                // Filter out periods that are fully contained within another period
-                periods = periods.filter((p1) => {
-                    return !periods.some((p2) => {
-                        return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                    // Filter out periods that are fully contained within another period
+                    periods = periods.filter((p1) => {
+                        return !periods.some((p2) => {
+                            return p1 !== p2 && p2.start <= p1.start && p2.end >= p1.end;
+                        });
                     });
-                });
 
-                setPeriod(periods);
-                validatePeriods(periods);
+                    setPeriod(periods);
+                    validatePeriods(periods);
+                }
+
+                if (location.state.reason) {
+                    const fullReason = location.state.reason;
+                    const [parsedReason, parsedComment] = (fullReason || "").split(" | ");
+                    const r = parsedReason;
+                    const c = parsedComment || "";
+                    setReason(r);
+                    setComment(c);
+                    validateReason(r, c);
+                }
+
+                if (location.state.justificationId) {
+                    setIsLoading(true);
+                    await loadFiles(location.state.justificationId);
+                    setIsLoading(false);
+                }
             }
+        };
 
-            if (location.state.reason) {
-                const fullReason = location.state.reason;
-                const [parsedReason, parsedComment] = (fullReason || "").split(" | ");
-                const r = parsedReason;
-                const c = parsedComment || "";
-                setReason(r);
-                setComment(c);
-                validateReason(r, c);
-            }
-
-            if (location.state.justificationId) {
-                setIsLoading(true);
-                await loadFiles(location.state.justificationId);
-                setIsLoading(false);
-            }
-        }
-    };
-
-    init();
-
+        init();
     }, [location.state]);
 
     const handlePeriodChange = (newPeriods) => {
@@ -199,8 +198,7 @@ const StudentAbsenceDetailsPage = () => {
                     <CustomLoader />
                 ) : (
                     <>
-                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
-                <NavigateBackButton />
+                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" canGoBack={true} />
                         <AbsenceStatus status={status} adminComment={refusalReason} />
 
                         <PeriodAbsence

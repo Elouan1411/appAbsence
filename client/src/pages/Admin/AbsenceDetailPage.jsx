@@ -222,44 +222,44 @@ function AbsenceDetailPage() {
 
     return (
         <div className="absence-detail-container">
-            <PageTitle title={"Détail de l'absence"} icon={"icon-absences"} />
-            <NavigateBackButton />
-            
-            {loading ? <CustomLoader /> : (
+            <PageTitle title={"Détail de l'absence"} icon={"icon-absences"} canGoBack={true} />
+
+            {loading ? (
+                <CustomLoader />
+            ) : (
                 <>
-            <div className="absence-detail">
-                <ModificationAbsence
-                    debut={debut}
-                    setDebut={setDebut}
-                    fin={fin}
-                    setFin={setFin}
-                    numeroEtudiant={numeroEtudiant}
-                    setNumeroEtudiant={setNumeroEtudiant}
-                    setLoginProfesseur={setLoginProfesseur}
-                    loginProfesseur={loginProfesseur}
-                    loading={loading}
-                    setMatiere={setMatiere}
-                    matiere={matiere}
-                    editing={editing}
-                    setLoginEtudiant={setLoginEtudiant}
-                    setPromo={setPromo}
-                    setGroupeTD={setGroupeTD}
-                    setGroupeTP={setGroupeTP}
-                    promo={promo}
-                />
-                {isJustified && <JustificationAbsence justification={justification} />}
-            </div>
-            <Footer
-                editing={editing}
-                setEditing={setEditing}
-                handleCancelChanges={handleCancelChanges}
-                handleDeleteUser={handleDeleteAbsence}
-                handleConfirmModification={handleSaveChanges}
-                isLoading={isSaving}
-            />
-            </>
+                    <div className="absence-detail">
+                        <ModificationAbsence
+                            debut={debut}
+                            setDebut={setDebut}
+                            fin={fin}
+                            setFin={setFin}
+                            numeroEtudiant={numeroEtudiant}
+                            setNumeroEtudiant={setNumeroEtudiant}
+                            setLoginProfesseur={setLoginProfesseur}
+                            loginProfesseur={loginProfesseur}
+                            loading={loading}
+                            setMatiere={setMatiere}
+                            matiere={matiere}
+                            editing={editing}
+                            setLoginEtudiant={setLoginEtudiant}
+                            setPromo={setPromo}
+                            setGroupeTD={setGroupeTD}
+                            setGroupeTP={setGroupeTP}
+                            promo={promo}
+                        />
+                        {isJustified && <JustificationAbsence justification={justification} />}
+                    </div>
+                    <Footer
+                        editing={editing}
+                        setEditing={setEditing}
+                        handleCancelChanges={handleCancelChanges}
+                        handleDeleteUser={handleDeleteAbsence}
+                        handleConfirmModification={handleSaveChanges}
+                        isLoading={isSaving}
+                    />
+                </>
             )}
-            
         </div>
     );
 }

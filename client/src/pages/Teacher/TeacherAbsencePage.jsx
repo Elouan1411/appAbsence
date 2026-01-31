@@ -254,9 +254,7 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <PageTitle title="Historique des Absences" icon="icon-absences" />
-            </div>
+            <PageTitle title="Historique des Absences" icon="icon-absences" />
             <div className="search-wrapper-right">
                 {isSearchActive ? (
                     <SearchInput
