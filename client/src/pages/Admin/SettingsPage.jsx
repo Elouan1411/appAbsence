@@ -42,8 +42,12 @@ function SettingsPage() {
     const [years, setYears] = useState([]);
     const [totalSize, setTotalSize] = useState(0);
     const [selectedYear, setSelectedYear] = useState("");
-    const [isDownloadJustifLoading, setIsDownloadJustifLoading] = useState(false);
-    const [isDeleteJustifLoading, setIsDeleteJustifLoading] = useState(false);
+
+    const [isExportXLSXLoading, setIsExportXLSXLoading] = useState(false);
+    const [isDownloadAllJustifLoading, setIsDownloadAllJustifLoading] = useState(false);
+    const [isDownloadYearJustifLoading, setIsDownloadYearJustifLoading] = useState(false);
+    const [isDeleteAllJustifLoading, setIsDeleteAllJustifLoading] = useState(false);
+    const [isDeleteYearJustifLoading, setIsDeleteYearJustifLoading] = useState(false);
 
     const fetchSubjects = async () => {
         try {
@@ -130,13 +134,15 @@ function SettingsPage() {
         }
     }, [activeTab]);
 
-    const handleDownloadJustifications = async (yearOnly) => {
-        try {
-            setIsDownloadJustifLoading(true);
-            const endpoint = yearOnly ? `/file/download-year/${selectedYear}` : "/file/download-all";
-            const filename = yearOnly ? `justifications_${selectedYear}.zip` : `all_justifications.zip`;
+    const handleDownloadJustifications = async (isYear) => {
+        const url = isYear ? `/file/download-year/${selectedYear}` : "/file/download-all";
+        const filename = isYear ? `justifications_${selectedYear}.zip` : "all_justifications.zip";
 
-            const response = await fetch(`${API_URL}${endpoint}`, {
+        if (isYear) setIsDownloadYearJustifLoading(true);
+        else setIsDownloadAllJustifLoading(true);
+
+        try {
+            const response = await fetch(`${API_URL}${url}`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -159,14 +165,15 @@ function SettingsPage() {
             console.error(e);
             toast.error("Erreur serveur.");
         } finally {
-            setIsDownloadJustifLoading(false);
+            if (isYear) setIsDownloadYearJustifLoading(false);
+            else setIsDownloadAllJustifLoading(false);
         }
     };
 
     const handleDeleteJustifications = async () => {
         const { isConfirmed } = await alertConfirm("SUPPRIMER TOUS LES FICHIERS ?", "Cette action supprimera DÉFINITIVEMENT tous les justificatifs.");
         if (isConfirmed) {
-            performDelete("/file/delete-all");
+            performDelete("/file/delete-all", setIsDeleteAllJustifLoading);
         }
     };
 
@@ -176,13 +183,13 @@ function SettingsPage() {
             `Supprimer les justificatifs de l'année ${selectedYear} - ${parseInt(selectedYear) + 1} ?`,
         );
         if (isConfirmed) {
-            performDelete(`/file/delete-year/${selectedYear}`);
+            performDelete(`/file/delete-year/${selectedYear}`, setIsDeleteYearJustifLoading);
         }
     };
 
-    const performDelete = async (endpoint) => {
+    const performDelete = async (endpoint, setLoading) => {
         try {
-            setIsDeleteJustifLoading(true);
+            setLoading(true);
             const response = await fetch(`${API_URL}${endpoint}`, {
                 method: "DELETE",
                 credentials: "include",
@@ -198,7 +205,7 @@ function SettingsPage() {
             console.error(e);
             toast.error("Erreur serveur.");
         } finally {
-            setIsDeleteJustifLoading(false);
+            setLoading(false);
         }
     };
 
@@ -619,55 +626,67 @@ function SettingsPage() {
 
                 {activeTab === "database" && (
                     <div className="admin-settings">
-                        <div className="Card cols-2">
-                            <h2>Exporter le script de création de la base de données</h2>
+                        <div className="Card cols-2 settings-db-export-card">
+                            <h2>Sauvegardes & Exports</h2>
+                            <div className="settings-db-export-list-big">
+                                <div className="settings-db-export-list">
+                                    <button
+                                        onClick={() =>
+                                            handleDatabaseExport(
+                                                "/database/schema",
+                                                "schema_structure.sql",
+                                                "Structure téléchargée.",
+                                                setisSchemaStructureLoading,
+                                            )
+                                        }
+                                        className="validate-btn settings-input-margin-fix"
+                                        disabled={isSchemaStructureLoading}
+                                    >
+                                        {isSchemaStructureLoading ? <CustomLoader /> : "Exporter structure (SQL)"}
+                                    </button>
 
-                            <button
-                                onClick={() =>
-                                    handleDatabaseExport("/database/schema", "schema_structure.sql", "Structure téléchargée.", setisSchemaStructureLoading)
-                                }
-                                className="validate-btn settings-input-margin-fix"
-                                disabled={isSchemaStructureLoading}
-                            >
-                                {isSchemaStructureLoading ? <CustomLoader /> : "Exporter le script"}
-                            </button>
+                                    <button
+                                        onClick={() =>
+                                            handleDatabaseExport(
+                                                "/database/dump",
+                                                "backup_complete.sql",
+                                                "Base de données complète exportée.",
+                                                setIsBackUpSQLLoading,
+                                            )
+                                        }
+                                        className="validate-btn settings-input-margin-fix"
+                                        disabled={isBackUpSQLLoading}
+                                    >
+                                        {isBackUpSQLLoading ? <CustomLoader /> : "Exporter tout (.sql)"}
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleDatabaseExport("/database/raw", "appAbsences.db", "Fichier .db téléchargé.", setIsBackUpDBLoading)}
+                                        className="validate-btn settings-input-margin-fix"
+                                        disabled={isBackUpDBLoading}
+                                    >
+                                        {isBackUpDBLoading ? <CustomLoader /> : "Exporter raw (.db)"}
+                                    </button>
+
+                                    <button
+                                        onClick={() =>
+                                            handleDatabaseExport(
+                                                "/database/xlsx-tables",
+                                                "tables_backup.xlsx",
+                                                "Fichier Excel multi-feuilles téléchargé.",
+                                                setIsExportXLSXLoading,
+                                            )
+                                        }
+                                        className="validate-btn settings-input-margin-fix"
+                                        disabled={isExportXLSXLoading}
+                                    >
+                                        {isExportXLSXLoading ? <CustomLoader /> : "Exporter Tables (.xlsx)"}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="Card cols-2">
-                            <h2>Exporter la base de données</h2>
 
-                            <button
-                                onClick={() =>
-                                    handleDatabaseExport("/database/dump", "backup_complete.sql", "Base de données complète exportée.", setIsBackUpSQLLoading)
-                                }
-                                className="validate-btn settings-input-margin-fix"
-                                disabled={isBackUpSQLLoading}
-                            >
-                                {isBackUpSQLLoading ? <CustomLoader /> : "format .sql"}
-                            </button>
-                            <button
-                                onClick={() => handleDatabaseExport("/database/raw", "appAbsences.db", "Fichier .db téléchargé.", setIsBackUpDBLoading)}
-                                className="validate-btn settings-input-margin-fix"
-                                disabled={isBackUpDBLoading}
-                            >
-                                {isBackUpDBLoading ? <CustomLoader /> : "format .db"}
-                            </button>
-                            <button
-                                onClick={() =>
-                                    handleDatabaseExport(
-                                        "/database/xlsx-tables",
-                                        "tables_backup.xlsx",
-                                        "Fichier Excel multi-feuilles téléchargé.",
-                                        setisSchemaStructureLoading,
-                                    )
-                                }
-                                className="validate-btn settings-input-margin-fix"
-                                disabled={isSchemaStructureLoading}
-                            >
-                                {isSchemaStructureLoading ? <CustomLoader /> : "format .xlsx (toutes tables)"}
-                            </button>
-                        </div>
-
-                        <div className="Card cols-2">
+                        <div className="Card cols-2 settings-db-justif-card">
                             <h2>Gestion des Justificatifs</h2>
                             <div className="input-group">
                                 <label>Année Scolaire (Début Septembre)</label>
@@ -679,43 +698,48 @@ function SettingsPage() {
                                         </option>
                                     ))}
                                 </select>
-                                <div style={{ marginTop: "5px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
-                                    Stockage total utilisé : <strong>{formatBytes(totalSize)}</strong>
-                                </div>
                             </div>
-                            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
-                                <button
-                                    onClick={() => handleDownloadJustifications(false)}
-                                    className="validate-btn settings-input-margin-fix"
-                                    disabled={isDownloadJustifLoading}
-                                >
-                                    {isDownloadJustifLoading ? <CustomLoader /> : "Télécharger Tout (ZIP)"}
-                                </button>
+
+                            <div className="settings-db-actions-row">
                                 <button
                                     onClick={() => handleDownloadJustifications(true)}
-                                    className="validate-btn settings-input-margin-fix"
-                                    disabled={!selectedYear || isDownloadJustifLoading}
+                                    className="validate-btn settings-input-margin-fix settings-btn-full"
+                                    disabled={!selectedYear || isDownloadYearJustifLoading}
                                 >
-                                    {isDownloadJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
-                                </button>
-                            </div>
-                            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
-                                <button
-                                    onClick={handleDeleteJustifications}
-                                    className="validate-btn settings-input-margin-fix"
-                                    style={{ backgroundColor: "var(--error-color)", border: "none" }}
-                                    disabled={isDeleteJustifLoading}
-                                >
-                                    {isDeleteJustifLoading ? <CustomLoader /> : "Supprimer Tout"}
+                                    {isDownloadYearJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleDeleteYearJustifications}
-                                    className="validate-btn settings-input-margin-fix"
-                                    style={{ backgroundColor: "var(--error-color)", border: "none" }}
-                                    disabled={!selectedYear || isDeleteJustifLoading}
+                                    className="validate-btn settings-input-margin-fix settings-btn-full settings-btn-danger"
+                                    disabled={!selectedYear || isDeleteYearJustifLoading}
                                 >
-                                    {isDeleteJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
+                                    {isDeleteYearJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
+                                </button>
+                            </div>
+
+                            <hr className="settings-db-separator" />
+
+                            <h3 className="settings-db-subtitle">Actions Globales</h3>
+
+                            <div className="settings-db-info-text">
+                                Stockage total utilisé : <strong>{formatBytes(totalSize)}</strong>
+                            </div>
+
+                            <div className="settings-db-actions-row global">
+                                <button
+                                    onClick={() => handleDownloadJustifications(false)}
+                                    className="validate-btn settings-input-margin-fix settings-btn-full"
+                                    disabled={isDownloadAllJustifLoading}
+                                >
+                                    {isDownloadAllJustifLoading ? <CustomLoader /> : "Télécharger Tout (ZIP)"}
+                                </button>
+                                <button
+                                    onClick={handleDeleteJustifications}
+                                    className="validate-btn settings-input-margin-fix settings-btn-full settings-btn-danger"
+                                    disabled={isDeleteAllJustifLoading}
+                                >
+                                    {isDeleteAllJustifLoading ? <CustomLoader /> : "Supprimer Tout"}
                                 </button>
                             </div>
                         </div>
