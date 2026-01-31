@@ -261,10 +261,10 @@
     mask-image: url("../assets/save.svg");
 }
 
-.icon-warning {
+/* .icon-warning {
     mask-image: url("../assets/warning.svg");
     -webkit-mask-image: url("../assets/warning.svg");
-}
+} */
 
 .label {
     margin-left: 14px;
@@ -476,11 +476,6 @@
     .nav-link.active .icon-nav {
         background-color: var(--card-bg);
     }
-
-    /* .nav-link:hover .icon {
-        background-color: var(--primary-color);
-        transition: 0.3s ease-in-out;
-    } */
 
     .mobile-only-item {
         display: flex;

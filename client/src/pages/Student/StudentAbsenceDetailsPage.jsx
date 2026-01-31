@@ -13,6 +13,7 @@ import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
+import { useUnsaved } from "../../context/UnsavedContext";
 
 const StudentAbsenceDetailsPage = () => {
     const { id } = useParams();
@@ -31,10 +32,16 @@ const StudentAbsenceDetailsPage = () => {
     const { errors, periodError, reasonError, validatePeriods, validateReason, validateAll } = useJustificationValidation();
 
     const { submit, isSubmitting } = useJustificationSubmit();
+    const { setHasUnsavedChanges } = useUnsaved();
 
     const [isEditable, setIsEditable] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     console.log("chargement de la page");
+
+    // Mark as unsaved helper
+    const markAsUnsaved = () => {
+        setHasUnsavedChanges(true, "Modifications non enregistrées", "Si vous quittez, vos modifications seront perdues.");
+    };
 
     useEffect(() => {
         const loadFiles = async (justifId) => {
@@ -156,6 +163,7 @@ const StudentAbsenceDetailsPage = () => {
         const sortedPeriods = [...newPeriods].sort((a, b) => a.start - b.start);
         setPeriod(sortedPeriods);
         validatePeriods(sortedPeriods);
+        markAsUnsaved();
     };
 
     const handleFilesChange = (newFiles) => {
@@ -173,6 +181,7 @@ const StudentAbsenceDetailsPage = () => {
                 return newFiles;
             });
         }
+        markAsUnsaved();
     };
 
     const handleUpdate = async () => {
@@ -187,6 +196,7 @@ const StudentAbsenceDetailsPage = () => {
         const targetId = location.state?.justificationId || id;
         const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
+            setHasUnsavedChanges(false);
             navigate("/dashboard");
         }
     };
@@ -218,10 +228,12 @@ const StudentAbsenceDetailsPage = () => {
                             onReasonChange={(val) => {
                                 setReason(val);
                                 validateReason(val, comment);
+                                markAsUnsaved();
                             }}
                             onCommentChange={(val) => {
                                 setComment(val);
                                 validateReason(reason, val);
+                                markAsUnsaved();
                             }}
                             error={reasonError}
                             readOnly={!isEditable}

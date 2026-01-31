@@ -3,11 +3,30 @@ const createToken = require("../utils/auth");
 const { verifyToken } = require("../middlewares/auth");
 const router = express.Router();
 const auth = require("../routes/ldap");
+const db = require("../database/db");
+const readEmail = require("../routes/contact_email");
 const maxAge = 10 * 60 * 60 * 1000; // 10 heures
 let users = {};
 users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
+
+/**
+ * Check if the user has an account
+ * @param {*} user
+ */
+function haveAccount(user) {
+    const sql = `SELECT * FROM Eleve WHERE loginENT = ?`;
+    return new Promise((resolve, reject) => {
+        db.all(sql, [user], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.length > 0);
+        });
+    });
+}
 
 /*****************************************
  *            Méthodes GET
@@ -52,10 +71,11 @@ router.post("/login", async (req, res) => {
         }
     } else {
         if (!authentification.status) {
-            res.status(401).json("Identifiants ou mot de passe incorrects");
-        }
-        if (!authentification.isInfo) {
+            res.status(401).json(authentification.error);
+        } else if (!authentification.isInfo) {
             res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
+        } else if (!(await haveAccount(user))) {
+            res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else {
             const token = createToken(user + "-" + authentification.role);
             res.cookie("jwt", token, {

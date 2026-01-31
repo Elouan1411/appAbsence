@@ -25,8 +25,12 @@ function isAdmin(req, res, next) {
 
 //Middleware qui vérifie si l'utilisateur est un admin ou un professeur
 function isAdminOrTeacher(req, res, next) {
-    if (req.user.pwd.split("-")[1] === "admin" || req.user.pwd.split("-")[1] === "teacher") {
-        return next();
+    if (req.user && req.user.pwd) {
+        const parts = req.user.pwd.split("-");
+        const role = parts[1];
+        if (role === "admin" || role === "teacher") {
+            return next();
+        }
     }
     res.status(403).json({ error: "Accès refusé" });
 }

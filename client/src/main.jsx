@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { pdfjs } from "react-pdf";
 import { Toaster } from "react-hot-toast";
 import { UnsavedProvider } from "./context/UnsavedContext.jsx";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -18,9 +19,10 @@ root.render(
         <AuthProvider>
             <UnsavedProvider>
                 <BrowserRouter>
+                    <ScrollToTop />
                     <App />
                 </BrowserRouter>
             </UnsavedProvider>
         </AuthProvider>
-    </StrictMode>
+    </StrictMode>,
 );

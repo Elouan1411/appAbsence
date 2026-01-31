@@ -72,11 +72,6 @@ function TeacherList() {
         handleFetchStudents();
     }, []);
 
-    // const handleRowClick = (event) => {
-    //     console.log(event.data);
-    //     safeNavigate(`/admin/teacherDetail/${event.data.numero}`);
-    // };
-
     useEffect(() => {
         if (rowData && rowData.length > 0) {
             const firstObject = rowData[0];
@@ -145,7 +140,6 @@ function TeacherList() {
                         defaultColDef={defaultColDef}
                         theme={theme == "dark" ? darkTheme : lightTheme}
                         rowSelection={rowSelection}
-                        // onRowClicked={handleRowClick}
                         pagination={true}
                         paginationPageSize={10}
                         paginationPageSizeSelector={[10, 20, 50, 100]}

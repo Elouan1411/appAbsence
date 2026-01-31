@@ -1,5 +1,4 @@
 import React from "react";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
 import "../../style/Pagination.css";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -20,14 +19,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     return (
         <div className="pagination-container">
             <button className="pagination-button" onClick={handlePrevious} disabled={currentPage === 1} aria-label="Previous page">
-                {/* <ChevronLeft size={20} /> */}
                 <span className="icon icon-chevron-left icon-xl" />
             </button>
             <span className="pagination-info">
                 Page {currentPage} sur {totalPages}
             </span>
             <button className="pagination-button" onClick={handleNext} disabled={currentPage === totalPages} aria-label="Next page">
-                {/* <ChevronRight size={20} /> */}
                 <span className="icon icon-chevron-right icon-xl" />
             </button>
         </div>

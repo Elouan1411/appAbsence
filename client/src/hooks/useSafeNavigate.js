@@ -4,11 +4,13 @@ import { useUnsaved } from "../context/UnsavedContext";
 
 export function useSafeNavigate(hasUnsavedImport) {
     const navigate = useNavigate();
-    const { setHasUnsavedChanges } = useUnsaved();
+    const { setHasUnsavedChanges, unsavedTitle, unsavedMessage } = useUnsaved();
 
     const safeNavigate = async (to, options) => {
         if (hasUnsavedImport) {
-            const result = await alertConfirm("Souhaitez-vous vraiment quitter cette page ?", "Les données importées seront perdues.");
+            const title = unsavedTitle || "Souhaitez-vous vraiment quitter cette page ?";
+            const message = unsavedMessage || "Les données importées seront perdues.";
+            const result = await alertConfirm(title, message);
             if (!result.isConfirmed) return;
         }
         setHasUnsavedChanges(false);

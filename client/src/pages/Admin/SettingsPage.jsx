@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import PageTitle from "../../components/common/PageTitle";
 import "../../style/Admin.css";
 import "../../style/icon.css";
@@ -13,8 +14,12 @@ import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 
 function SettingsPage() {
+    const { user } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("admin");
     const [adminLogin, setAdminLogin] = useState("");
+    const [adminToRemove, setAdminToRemove] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
+    const [isEmailLoading, setIsEmailLoading] = useState(false);
     const [teachers, setTeachers] = useState([]);
 
     const [promotions, setPromotions] = useState([]);
@@ -39,6 +44,18 @@ function SettingsPage() {
             }
         } catch (error) {
             console.error("Erreur lors de la récupération des matières:", error);
+        }
+    };
+
+    const fetchContactEmail = async () => {
+        try {
+            const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setContactEmail(data.contact_email || "");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'email de contact:", error);
         }
     };
 
@@ -72,7 +89,37 @@ function SettingsPage() {
         fetchPromotions();
         fetchTeachers();
         fetchSubjects();
+        fetchContactEmail();
     }, []);
+
+    const handleSaveEmail = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(contactEmail)) {
+            toast.error("Format d'email invalide");
+            return;
+        }
+
+        try {
+            setIsEmailLoading(true);
+            const response = await fetch(`${API_URL}/contact_email`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contact_email: contactEmail }),
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                toast.success("Email de contact mis à jour !");
+            } else {
+                toast.error("Erreur lors de la mise à jour.");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Erreur serveur.");
+        } finally {
+            setIsEmailLoading(false);
+        }
+    };
 
     const handleAddAdmin = async () => {
         if (!adminLogin.trim()) {
@@ -101,6 +148,38 @@ function SettingsPage() {
                 toast.error("Erreur connexion serveur.");
             } finally {
                 setIsAdminLoading(false);
+            }
+        }
+    };
+
+    const handleRemoveAdmin = async () => {
+        if (!adminToRemove.trim()) {
+            toast.error("Veuillez sélectionner un administrateur.");
+            return;
+        }
+
+        const { isConfirmed } = await alertConfirm("Retirer les droits ?", `Voulez-vous vraiment retirer les droits d'administrateur à ${adminToRemove} ?`);
+
+
+        if (isConfirmed) {
+            try {
+                const response = await fetch(`${API_URL}/teacher/${adminToRemove}/admin`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+    
+                if (response.ok) {
+                    toast.success(`Droits retirés pour ${adminToRemove}.`);
+                    setTeachers(prev => prev.map(t => 
+                        t.loginENT === adminToRemove ? { ...t, administrateur: 0 } : t
+                    ));
+                    setAdminToRemove("");
+                } else {
+                    toast.error("Erreur lors de la suppression.");
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                toast.error("Erreur serveur.");
             }
         }
     };
@@ -227,30 +306,78 @@ function SettingsPage() {
             </div>
 
             <div className="content-container">
+
                 {activeTab === "admin" && (
-                    <div className="Card cols-2">
-                        <h2>Ajouter un administrateur</h2>
+                    <div className="admin-settings">
+                        <div className="Card cols-2">
+                            <h2>Ajouter un administrateur</h2>
 
-                        <div className="input-group">
-                            <label>Login ENT</label>
-                            <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
-                                <option value=""> -- Sélectionner un enseignant -- </option>
-                                {teachers.map((teacher) => (
-                                    <option key={teacher.loginENT} value={teacher.loginENT}>
-                                        {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
-                                    </option>
-                                ))}
-                            </select>
+                            <div className="input-group">
+                                <label>Login ENT</label>
+                                <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
+                                    <option value=""> -- Sélectionner un enseignant -- </option>
+                                    {teachers
+                                        .filter(teacher => teacher.administrateur !== 1)
+                                        .map((teacher) => (
+                                        <option key={teacher.loginENT} value={teacher.loginENT}>
+                                            {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix" disabled={isAdminLoading}>
+                                {isAdminLoading ? <CustomLoader /> : "Ajouter l'administrateur"}
+                            </button>
                         </div>
-
-                        <button onClick={handleAddAdmin} className="validate-btn settings-input-margin-fix" disabled={isAdminLoading}>
-                            {isAdminLoading ? <CustomLoader /> : "Ajouter l'administrateur"}
-                        </button>
+                        <div className="Card cols-2">
+                            <h2>Email de contact</h2>
+                            <div className="input-group">
+                                <label>Email de contact (support)</label>
+                                <input
+                                    type="email"
+                                    value={contactEmail}
+                                    onChange={(e) => setContactEmail(e.target.value)}
+                                    placeholder="support@univ.fr"
+                                    className="input-field"
+                                    style={{
+                                        width: "100%",
+                                        padding: "10px",
+                                        borderRadius: "8px",
+                                        border: "1px solid var(--border-color)",
+                                        backgroundColor: "var(--background-color)",
+                                        color: "var(--text-primary)"
+                                    }}
+                                />
+                            </div>
+                            <button onClick={handleSaveEmail} className="validate-btn settings-input-margin-fix" disabled={isEmailLoading}>
+                                {isEmailLoading ? <CustomLoader /> : "Sauvegarder"}
+                            </button>
+                        </div>
+                        <div className="Card cols-2">
+                             <h2>Liste des administrateurs</h2>
+                             <div className="input-group">
+                                <label>Retirer un administrateur</label>
+                                <select value={adminToRemove} onChange={(e) => setAdminToRemove(e.target.value)}>
+                                    <option value=""> -- Sélectionner un administrateur -- </option>
+                                    {teachers
+                                        .filter(t => t.administrateur === 1 && t.loginENT !== user)
+                                        .map(admin => (
+                                        <option key={admin.loginENT} value={admin.loginENT}>
+                                            {admin.nom.toUpperCase()} {admin.prenom} ({admin.loginENT})
+                                        </option>
+                                    ))}
+                                </select>
+                             </div>
+                             <button onClick={handleRemoveAdmin} className="validate-btn settings-input-margin-fix" style={{backgroundColor: 'var(--error-color)', color: 'white', border: 'none'}}>
+                                Supprimer
+                             </button>
+                        </div>
                     </div>
                 )}
 
                 {activeTab === "subject" && (
-                    <div className="layout-container" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                    <div className="layout-container" style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "-webkit-fill-available", margin: "10px" }}>
                         <SubjectModal
                             isOpen={isSubjectModalOpen}
                             onClose={() => {
@@ -294,9 +421,9 @@ function SettingsPage() {
                                     Ajouter une matière
                                 </button>
                             </div>
-                            <div className="settings-list-container">
+                            <div className="settings-grid">
                                 {filteredSubjects.length === 0 ? (
-                                    <p style={{ textAlign: "center", color: "var(--text-secondary)" }}>Aucune matière trouvée.</p>
+                                    <p style={{ textAlign: "center", color: "var(--text-secondary)", gridColumn: "1 / -1" }}>Aucune matière trouvée.</p>
                                 ) : (
                                     filteredSubjects.map((sub) => (
                                         <div key={sub.code} className="settings-list-item">
@@ -308,7 +435,7 @@ function SettingsPage() {
                                             </div>
                                             <div className="settings-item-actions">
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
-                                                    <span className="icon settings-icon icon-edit" />
+                                                    <span className="icon settings-icon icon-edit icon-xl" />
                                                 </button>
 
                                                 <button
@@ -317,7 +444,7 @@ function SettingsPage() {
                                                     title="Supprimer"
                                                     disabled={deletingSubjectId === sub.code}
                                                 >
-                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash" />}
+                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl" />}
                                                 </button>
                                             </div>
                                         </div>

@@ -1150,3 +1150,9 @@ p {
     background-color: transparent;
     border-bottom: 2px solid var(--primary-color);
 }
+
+.admin-settings {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}

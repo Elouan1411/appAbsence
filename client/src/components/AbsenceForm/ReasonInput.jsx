@@ -8,23 +8,17 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
         return (
             <div className="reason-readonly-container">
                 <div className="reason-readonly-grid">
-                    {/* Motif Card */}
                     <div className="info-card reason-card">
                         <div className="info-card-header">
-                            {/* <FileText size={18} className="info-icon reason-icon" /> */}
                             <span className="icon icon-file-text icon-large info-icon reason-icon" />
                             <span className="info-card-title">Motif de l'absence</span>
                         </div>
                         <div className="info-value-box reason-value-box">{motif_translation[reason] || reason || "Motif non spécifié"}</div>
                     </div>
 
-                    {/* Commentaire Card */}
                     <div className="info-card comment-card">
                         <div className="info-card-header">
-                            {/* <MessageSquare size={18} className="info-icon comment-icon" /> */}
-                            <span
-                                className="icon icon-message-square icon-large info-icon comment-icon"
-                            />
+                            <span className="icon icon-message-square icon-large info-icon comment-icon" />
                             <span className="info-card-title">Commentaire</span>
                         </div>
                         <div className="info-value-box comment-value-box">{comment || "Aucun commentaire"}</div>

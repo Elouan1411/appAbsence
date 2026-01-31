@@ -15,10 +15,11 @@ import { useAuth } from "../../hooks/useAuth";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
+import { alertConfirm } from "../../hooks/alertConfirm";
 
 function StudentHomePage() {
     const [activeTab, setActiveTab] = useState("todo");
-    const { hasUnsavedChanges } = useUnsaved();
+    const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
     const { user } = useAuth();
@@ -38,6 +39,18 @@ function StudentHomePage() {
         archived: 0,
     });
 
+    // Manage unsaved changes for navigation
+    const [isSelectionMode, setIsSelectionMode] = useState(false);
+    const [selectedIds, setSelectedIds] = useState([]);
+
+    useEffect(() => {
+        if (isSelectionMode && selectedIds.length > 0) {
+            setHasUnsavedChanges(true, "Mode sélection actif", "Si vous quittez cette page, votre sélection sera perdue.");
+        } else {
+            setHasUnsavedChanges(false);
+        }
+    }, [isSelectionMode, selectedIds, setHasUnsavedChanges]);
+
     const ITEMS_PER_PAGE = 8;
 
     const [isLoading, setIsLoading] = useState(true);
@@ -45,11 +58,9 @@ function StudentHomePage() {
     useEffect(() => {
         if (user) {
             setIsLoading(true);
-            Promise.all([
-                fetchTodo(paginationState.todo),
-                fetchPending(paginationState.pending),
-                fetchArchived(paginationState.archived)
-            ]).finally(() => setIsLoading(false));
+            Promise.all([fetchTodo(paginationState.todo), fetchPending(paginationState.pending), fetchArchived(paginationState.archived)]).finally(() =>
+                setIsLoading(false),
+            );
         }
     }, [user]);
 
@@ -61,7 +72,7 @@ function StudentHomePage() {
         if (activeTab === "todo") promise = fetchTodo(paginationState.todo);
         if (activeTab === "pending") promise = fetchPending(paginationState.pending);
         if (activeTab === "archived") promise = fetchArchived(paginationState.archived);
-        
+
         if (promise) {
             promise.finally(() => setIsLoading(false));
         } else {
@@ -265,12 +276,22 @@ function StudentHomePage() {
 
     const counts = totals; // Use backend totals
 
-    const [isSelectionMode, setIsSelectionMode] = useState(false);
-    const [selectedIds, setSelectedIds] = useState([]);
-
     const toggleSelectionMode = () => {
         setIsSelectionMode(!isSelectionMode);
         setSelectedIds([]);
+    };
+
+    const handleTabChange = async (tabId) => {
+        if (isSelectionMode && selectedIds.length > 0) {
+            const result = await alertConfirm("Mode sélection actif", "Si vous quittez cette page, votre sélection sera perdue.");
+
+            if (result.isConfirmed) {
+                toggleSelectionMode();
+                setActiveTab(tabId);
+            }
+        } else {
+            setActiveTab(tabId);
+        }
     };
 
     const handleToggleAbsence = (id) => {
@@ -308,7 +329,7 @@ function StudentHomePage() {
                 </div>
             </div>
 
-            <DashboardTabs activeTab={activeTab} setActiveTab={setActiveTab} counts={counts} />
+            <DashboardTabs activeTab={activeTab} setActiveTab={handleTabChange} counts={counts} />
 
             <div className="dashboard-content">
                 {isLoading ? (
@@ -316,48 +337,48 @@ function StudentHomePage() {
                 ) : (
                     <>
                         {groupedAbsences.map((group) => (
-                    <div key={group.dateLabel} className="absences-list">
-                        <div className="absences-date-header">
-                            <h4 className="absences-list-header">{group.dateLabel}</h4>
-                            <div className="date-divider-line"></div>
-                        </div>
-                        {group.items.map((absence) => (
-                            <AbsenceCard
-                                key={absence.id}
-                                id={absence.id}
-                                subject={absence.subject}
-                                teacher={absence.teacher}
-                                startTime={absence.formattedStartTime}
-                                endTime={absence.formattedEndTime}
-                                fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}
-                                isSelectionMode={isSelectionMode}
-                                isSelected={selectedIds.includes(absence.id)}
-                                onToggle={() => handleToggleAbsence(absence.id)}
-                                status={absence.status}
-                                reason={absence.reason}
-                                adminComment={absence.adminComment}
-                                justificationId={absence.justificationId}
-                                fullPeriodGroup={absence.fullPeriodGroup}
-                                dateDemande={absence.dateDemande}
-                                onDelete={handleAbsenceDeleted}
-                            />
+                            <div key={group.dateLabel} className="absences-list">
+                                <div className="absences-date-header">
+                                    <h4 className="absences-list-header">{group.dateLabel}</h4>
+                                    <div className="date-divider-line"></div>
+                                </div>
+                                {group.items.map((absence) => (
+                                    <AbsenceCard
+                                        key={absence.id}
+                                        id={absence.id}
+                                        subject={absence.subject}
+                                        teacher={absence.teacher}
+                                        startTime={absence.formattedStartTime}
+                                        endTime={absence.formattedEndTime}
+                                        fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}
+                                        isSelectionMode={isSelectionMode}
+                                        isSelected={selectedIds.includes(absence.id)}
+                                        onToggle={() => handleToggleAbsence(absence.id)}
+                                        status={absence.status}
+                                        reason={absence.reason}
+                                        adminComment={absence.adminComment}
+                                        justificationId={absence.justificationId}
+                                        fullPeriodGroup={absence.fullPeriodGroup}
+                                        dateDemande={absence.dateDemande}
+                                        onDelete={handleAbsenceDeleted}
+                                    />
+                                ))}
+                            </div>
                         ))}
-                    </div>
-                ))}
-                {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
-                {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
-                {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
+                        {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
+                        {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
+                        {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
 
-                {counts[activeTab] > ITEMS_PER_PAGE && (
-                    <Pagination
-                        currentPage={paginationState[activeTab]}
-                        totalPages={Math.ceil(counts[activeTab] / ITEMS_PER_PAGE)}
-                        onPageChange={handlePageChange}
-                    />
+                        {counts[activeTab] > ITEMS_PER_PAGE && (
+                            <Pagination
+                                currentPage={paginationState[activeTab]}
+                                totalPages={Math.ceil(counts[activeTab] / ITEMS_PER_PAGE)}
+                                onPageChange={handlePageChange}
+                            />
+                        )}
+                    </>
                 )}
-                </>
-            )}
-        </div>
+            </div>
             {isSelectionMode && selectedIds.length > 0 && (
                 <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
             )}

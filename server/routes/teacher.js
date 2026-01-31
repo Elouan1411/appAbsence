@@ -146,4 +146,20 @@ router.put("/:loginENT/admin", verifyToken, isAdmin, (req, res) => {
     });
 });
 
+router.delete("/:loginENT/admin", verifyToken, isAdmin, (req, res) => {
+    const loginENT = req.params.loginENT;
+    const sql = "UPDATE Professeur SET administrateur = 0 WHERE loginENT = ?";
+
+    db.run(sql, [loginENT], function (err) {
+        if (err) {
+            console.error("Error removing admin status:", err.message);
+            return res.status(500).json({ error: "Erreur lors de la mise à jour." });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Enseignant non trouvé." });
+        }
+        res.status(200).json({ message: "Administrateur retiré avec succès." });
+    });
+});
+
 module.exports = router;

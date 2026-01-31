@@ -106,12 +106,13 @@
         gap: 12px;
     }
 
-    .card-absence {
+    div.card-absence {
         flex-direction: column;
         align-items: stretch;
         padding: 16px;
         gap: 16px;
         height: auto;
+        margin: 0;
     }
 
     .card-absence:hover {
@@ -307,7 +308,8 @@
 }
 
 @container absence-card (max-width: 560px) {
-    .card-absence {
+    div.card-absence {
+        margin: 0;
         flex-direction: column;
         align-items: stretch;
         padding: 16px;
