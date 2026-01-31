@@ -418,7 +418,7 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
           J.debut,
           J.fin,
           NULL as codeMatiere,
-          'Justification sans absence' as nomMatiere,
+          'Justification anticipée' as nomMatiere,
           NULL as nomProf,
           NULL as prenomProf,
           J.validite,

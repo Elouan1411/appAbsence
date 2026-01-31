@@ -3,24 +3,11 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
+const { readEmail } = require("../utils/readEmail");
 
-const pathEmail = path.join(__dirname, "../database/contact_email.json");
 
-const readEmail = () => {
-    try {
-        if (!fs.existsSync(pathEmail)) {
-            return { contact_email: "" };
-        }
-        const data = fs.readFileSync(pathEmail, "utf8");
-        console.log(data);
-        return JSON.parse(data)["contact_email"];
-    } catch (err) {
-        console.error("Erreur de lecture du fichier:", err);
-        return { contact_email: "" };
-    }
-};
-
-router.get("/", verifyToken, (req, res) => {
+router.get("/", (req, res) => {
+    console.log("get contact_email");
     const config = readEmail();
     res.status(200).json(config);
 });
@@ -39,4 +26,3 @@ router.put("/", verifyToken, isAdmin, (req, res) => {
 });
 
 module.exports = router;
-module.exports = readEmail;

@@ -5,7 +5,7 @@ const formidable = require("formidable");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 const heicConvert = require("heic-convert");
-const { verifyToken } = require("../middlewares/auth");
+const { verifyToken, isAdmin } = require("../middlewares/auth");
 const db = require("../database/db");
 
 /*****************************************
@@ -159,6 +159,140 @@ router.post("/upload", (req, res) => {
  *           Méthodes DELETE
  *****************************************/
 
+const archiver = require("archiver");
+router.get("/years", verifyToken, isAdmin, (req, res) => {
+    const uploadDir = path.join(__dirname, "../upload/justification");
+
+    if (!fs.existsSync(uploadDir)) {
+        return res.json({ totalSize: 0, years: [] });
+    }
+
+    try {
+        const files = fs.readdirSync(uploadDir);
+        let totalSize = 0;
+        const yearsMap = {};
+
+        files.forEach((file) => {
+            const filePath = path.join(uploadDir, file);
+            let stats;
+            try {
+                stats = fs.statSync(filePath);
+            } catch (e) {
+                return;
+            }
+
+            totalSize += stats.size;
+            const dateMatch = file.match(/-(\d{12,})\./) || file.match(/-(\d{12,})$/);
+
+            if (dateMatch) {
+                const dateStr = dateMatch[1];
+                const year = parseInt(dateStr.substring(0, 4), 10);
+                const month = parseInt(dateStr.substring(4, 6), 10);
+
+                let academicYear = year;
+                if (month < 9) {
+                    academicYear = year - 1;
+                }
+
+                if (!yearsMap[academicYear]) {
+                    yearsMap[academicYear] = 0;
+                }
+                yearsMap[academicYear] += stats.size;
+            }
+        });
+
+        const yearsArray = Object.keys(yearsMap)
+            .map((y) => ({ year: parseInt(y), size: yearsMap[y] }))
+            .sort((a, b) => b.year - a.year);
+
+        res.json({
+            totalSize: totalSize,
+            years: yearsArray,
+        });
+    } catch (err) {
+        console.error("Error scanning justification directory:", err);
+        res.status(500).json({ error: "Server error scanning files" });
+    }
+});
+
+router.get("/download-all", verifyToken, isAdmin, (req, res) => {
+    const uploadDir = path.join(__dirname, "../upload/justification");
+
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="all_justifications_${Date.now()}.zip"`);
+
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    archive.pipe(res);
+    archive.directory(uploadDir, false);
+    archive.finalize();
+});
+
+router.get("/download-year/:year", verifyToken, isAdmin, (req, res) => {
+    const year = parseInt(req.params.year);
+    if (!year) return res.status(400).json({ error: "Invalid year" });
+
+    const uploadDir = path.join(__dirname, "../upload/justification");
+    if (!fs.existsSync(uploadDir)) return res.status(404).send("No files directory");
+
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", `attachment; filename="justifications_${year}_${year + 1}.zip"`);
+
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    archive.on("error", function (err) {
+        res.status(500).send({ error: err.message });
+    });
+
+    archive.pipe(res);
+
+    fs.readdirSync(uploadDir).forEach((file) => {
+        const dateMatch = file.match(/-(\d{12,})\./) || file.match(/-(\d{12,})$/);
+
+        if (dateMatch) {
+            const dateStr = dateMatch[1];
+            const fileYear = parseInt(dateStr.substring(0, 4), 10);
+            const fileMonth = parseInt(dateStr.substring(4, 6), 10);
+
+            let academicYear = fileYear;
+            if (fileMonth < 9) {
+                academicYear = fileYear - 1;
+            }
+
+            if (academicYear === year) {
+                archive.file(path.join(uploadDir, file), { name: file });
+            }
+        }
+    });
+
+    archive.finalize();
+});
+
+router.delete("/delete-all", verifyToken, isAdmin, (req, res) => {
+    const uploadDir = path.join(__dirname, "../upload/justification");
+    let deletedCount = 0;
+
+    try {
+        if (fs.existsSync(uploadDir)) {
+            const files = fs.readdirSync(uploadDir);
+            files.forEach((file) => {
+                try {
+                    const filePath = path.join(uploadDir, file);
+                    if (fs.lstatSync(filePath).isFile()) {
+                        fs.unlinkSync(filePath);
+                        deletedCount++;
+                    }
+                } catch (e) {
+                    console.error(`Error deleting file ${file}:`, e);
+                }
+            });
+        }
+        res.status(200).json({ message: `${deletedCount} fichiers supprimés avec succès.` });
+    } catch (error) {
+        console.error("Error regarding delete-all:", error);
+        res.status(500).json({ error: "Erreur lors de la suppression des fichiers." });
+    }
+});
+
 router.delete("/:name", verifyToken, (req, res) => {
     const filename = req.params.name;
     const uploadDir = path.join(__dirname, "../upload/justification");
@@ -184,13 +318,13 @@ router.delete("/:name", verifyToken, (req, res) => {
         if (fs.existsSync(filepath)) {
             try {
                 fs.unlinkSync(filepath);
-                res.status(200).json({ message: "File deleted" });
+                res.status(200).json({ message: "Fichier supprimé avec succès." });
             } catch (e) {
                 console.error("Error deleting file:", e);
-                res.status(500).json({ error: "Error deleting file" });
+                res.status(500).json({ error: "Erreur lors de la suppression du fichier." });
             }
         } else {
-            res.status(200).json({ message: "File not found but considered deleted" });
+            res.status(200).json({ message: "Fichier introuvable (probablement déjà supprimé)." });
         }
     };
 
@@ -209,6 +343,42 @@ router.delete("/:name", verifyToken, (req, res) => {
             }
         });
     }
+});
+
+router.delete("/delete-year/:year", verifyToken, isAdmin, (req, res) => {
+    const year = parseInt(req.params.year);
+    if (!year) return res.status(400).json({ error: "Invalid year" });
+
+    const uploadDir = path.join(__dirname, "../upload/justification");
+    let deletedCount = 0;
+
+    if (fs.existsSync(uploadDir)) {
+        fs.readdirSync(uploadDir).forEach((file) => {
+            const dateMatch = file.match(/-(\d{12,})\./) || file.match(/-(\d{12,})$/);
+
+            if (dateMatch) {
+                const dateStr = dateMatch[1];
+                const fileYear = parseInt(dateStr.substring(0, 4), 10);
+                const fileMonth = parseInt(dateStr.substring(4, 6), 10);
+
+                let academicYear = fileYear;
+                if (fileMonth < 9) {
+                    academicYear = fileYear - 1;
+                }
+
+                if (academicYear === year) {
+                    try {
+                        fs.unlinkSync(path.join(uploadDir, file));
+                        deletedCount++;
+                    } catch (e) {
+                        console.error("Error deleting file:", e);
+                    }
+                }
+            }
+        });
+    }
+
+    res.status(200).json({ message: `${deletedCount} fichiers supprimés pour l'année ${year}-${year + 1}.` });
 });
 
 module.exports = router;

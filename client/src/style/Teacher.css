@@ -3,6 +3,8 @@
     height: 97.5%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .page-header {
@@ -93,6 +95,7 @@
 
 .recent-section {
     margin-top: 2rem;
+    width: calc(100% - 30px);
 }
 
 .recent-title {
@@ -111,7 +114,6 @@
 }
 
 @media (max-width: 764px) {
-
     .recent-title {
         font-size: 1.2rem;
         padding-left: 15px;
@@ -133,10 +135,9 @@
     }
 }
 
-
-
 @media screen and (max-width: 1584px) {
     .select-container {
         gap: 0.5rem;
     }
 }
+

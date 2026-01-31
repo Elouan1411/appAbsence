@@ -1,7 +1,13 @@
 import { createContext, useState, useEffect } from "react";
 import { API_URL } from "../config";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+    user: null,
+    role: null,
+    loading: true,
+    login: async () => {},
+    logout: async () => {},
+});
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -35,7 +41,6 @@ export function AuthProvider({ children }) {
         if (!res.ok) {
             setLoading(false);
             throw new Error(await res.text());
-            
         }
 
         const data = await res.json();

@@ -424,6 +424,8 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
+                width: "calc(100% - 2rem)",
+                height: "80vh",
                 margin: "1rem",
             }}
         >

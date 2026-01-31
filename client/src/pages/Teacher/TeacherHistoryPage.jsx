@@ -298,10 +298,7 @@ function TeacherHistoryPage() {
         const dateTime = getParsedDateTime(selectedCall.callData);
         return (
             <div className="page-container">
-                <div className="page-header">
-                    <BackButton onClick={handleBack} label="" />
-                    <PageTitle title={`Modifier l'appel - ${selectedCall.callData.libelle}`} icon="icon-rollcall" />
-                </div>
+                <PageTitle title={`Modifier l'appel - ${selectedCall.callData.libelle}`} icon="icon-rollcall" canGoBack={true} />
                 <RollCallList
                     criteria={selectedCall.groupData}
                     dateTime={dateTime}
@@ -334,9 +331,7 @@ function TeacherHistoryPage() {
 
     return (
         <div className="page-container">
-            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <PageTitle title="Historique des Appels" icon="icon-history" />
-            </div>
+            <PageTitle title="Historique des Appels" icon="icon-history" />
             <div className="search-wrapper-right">
                 {isSearchActive ? (
                     <SearchInput

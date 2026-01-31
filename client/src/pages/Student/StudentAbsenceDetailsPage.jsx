@@ -208,8 +208,7 @@ const StudentAbsenceDetailsPage = () => {
                     <CustomLoader />
                 ) : (
                     <>
-                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" />
-                        <NavigateBackButton />
+                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" canGoBack={true} />
                         <AbsenceStatus status={status} adminComment={refusalReason} />
 
                         <PeriodAbsence

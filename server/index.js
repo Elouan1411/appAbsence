@@ -125,6 +125,9 @@ app.use("/teacher", teacherRoutes);
 const contactEmailRoutes = require("./routes/contact_email");
 app.use("/contact_email", contactEmailRoutes);
 
+const databaseRoutes = require("./routes/database");
+app.use("/database", databaseRoutes);
+
 app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 app.get(/.*/, (req, res) => {

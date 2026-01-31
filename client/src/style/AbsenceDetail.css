@@ -177,9 +177,6 @@ main {
     box-shadow: 0;
     border-radius: 15px;
 }
-div.title-container {
-    margin-top: 15px !important;
-}
 
 .info-item {
     gap: 10px;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import PageTitle from "../../components/common/PageTitle";
 import "../../style/Admin.css";
@@ -35,6 +35,21 @@ function SettingsPage() {
     const [isAdminLoading, setIsAdminLoading] = useState(false);
     const [deletingSubjectId, setDeletingSubjectId] = useState(null);
 
+    const [isSchemaStructureLoading, setisSchemaStructureLoading] = useState(false);
+    const [isBackUpSQLLoading, setIsBackUpSQLLoading] = useState(false);
+    const [isBackUpDBLoading, setIsBackUpDBLoading] = useState(false);
+
+    const [years, setYears] = useState([]);
+    const [totalSize, setTotalSize] = useState(0);
+    const [selectedYear, setSelectedYear] = useState("");
+
+    // Split States
+    const [isExportXLSXLoading, setIsExportXLSXLoading] = useState(false);
+    const [isDownloadAllJustifLoading, setIsDownloadAllJustifLoading] = useState(false);
+    const [isDownloadYearJustifLoading, setIsDownloadYearJustifLoading] = useState(false);
+    const [isDeleteAllJustifLoading, setIsDeleteAllJustifLoading] = useState(false);
+    const [isDeleteYearJustifLoading, setIsDeleteYearJustifLoading] = useState(false);
+
     const fetchSubjects = async () => {
         try {
             const response = await fetch(`${API_URL}/subject`, { credentials: "include" });
@@ -49,10 +64,12 @@ function SettingsPage() {
 
     const fetchContactEmail = async () => {
         try {
-            const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
+            const response = await fetch(`${API_URL}/contact_email/`,{
+                method: "GET",
+            });
             if (response.ok) {
                 const data = await response.json();
-                setContactEmail(data.contact_email || "");
+                setContactEmail(data|| "");
             }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'email de contact:", error);
@@ -91,6 +108,109 @@ function SettingsPage() {
         fetchSubjects();
         fetchContactEmail();
     }, []);
+
+    const fetchYears = async () => {
+        try {
+            const response = await fetch(`${API_URL}/file/years`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setYears(data.years || []);
+                setTotalSize(data.totalSize || 0);
+            }
+        } catch (error) {
+            console.error("Erreur récupération années:", error);
+        }
+    };
+
+    const formatBytes = (bytes, decimals = 2) => {
+        if (!bytes) return "0 B";
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ["B", "KB", "MB", "GB", "TB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    };
+
+    useEffect(() => {
+        if (activeTab === "database") {
+            fetchYears();
+        }
+    }, [activeTab]);
+
+    const handleDownloadJustifications = async (isYear) => {
+        const url = isYear ? `/file/download-year/${selectedYear}` : "/file/download-all";
+        const filename = isYear ? `justifications_${selectedYear}.zip` : "all_justifications.zip";
+
+        if (isYear) setIsDownloadYearJustifLoading(true);
+        else setIsDownloadAllJustifLoading(true);
+
+        try {
+            const response = await fetch(`${API_URL}${url}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                toast.success("Téléchargement lancé.");
+            } else {
+                toast.error("Erreur de téléchargement.");
+            }
+        } catch (e) {
+            console.error(e);
+            toast.error("Erreur serveur.");
+        } finally {
+            if (isYear) setIsDownloadYearJustifLoading(false);
+            else setIsDownloadAllJustifLoading(false);
+        }
+    };
+
+    const handleDeleteJustifications = async () => {
+        const { isConfirmed } = await alertConfirm("SUPPRIMER TOUS LES FICHIERS ?", "Cette action supprimera DÉFINITIVEMENT tous les justificatifs.");
+        if (isConfirmed) {
+            performDelete("/file/delete-all", setIsDeleteAllJustifLoading);
+        }
+    };
+
+    const handleDeleteYearJustifications = async () => {
+        const { isConfirmed } = await alertConfirm(
+            `SUPPRIMER FICHIERS ${selectedYear} ?`,
+            `Supprimer les justificatifs de l'année ${selectedYear} - ${parseInt(selectedYear) + 1} ?`,
+        );
+        if (isConfirmed) {
+            performDelete(`/file/delete-year/${selectedYear}`, setIsDeleteYearJustifLoading);
+        }
+    };
+
+    const performDelete = async (endpoint, setLoading) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (response.ok) {
+                const data = await response.json();
+                toast.success(data.message || "Suppression effectuée.");
+                fetchYears();
+            } else {
+                toast.error("Erreur lors de la suppression.");
+            }
+        } catch (e) {
+            console.error(e);
+            toast.error("Erreur serveur.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSaveEmail = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -160,19 +280,16 @@ function SettingsPage() {
 
         const { isConfirmed } = await alertConfirm("Retirer les droits ?", `Voulez-vous vraiment retirer les droits d'administrateur à ${adminToRemove} ?`);
 
-
         if (isConfirmed) {
             try {
                 const response = await fetch(`${API_URL}/teacher/${adminToRemove}/admin`, {
                     method: "DELETE",
                     credentials: "include",
                 });
-    
+
                 if (response.ok) {
                     toast.success(`Droits retirés pour ${adminToRemove}.`);
-                    setTeachers(prev => prev.map(t => 
-                        t.loginENT === adminToRemove ? { ...t, administrateur: 0 } : t
-                    ));
+                    setTeachers((prev) => prev.map((t) => (t.loginENT === adminToRemove ? { ...t, administrateur: 0 } : t)));
                     setAdminToRemove("");
                 } else {
                     toast.error("Erreur lors de la suppression.");
@@ -274,6 +391,47 @@ function SettingsPage() {
         return promoMatch && semesterMatch;
     });
 
+    const handleDatabaseExport = async (endpoint, defaultFilename, successMessage, setLoading) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                // get le nom du fichier depuis le header
+                const disposition = response.headers.get("Content-Disposition");
+                let filename = defaultFilename;
+                if (disposition && disposition.indexOf("filename=") !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, "");
+                    }
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                toast.success(successMessage);
+            } else {
+                toast.error("Erreur lors de l'export.");
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur connexion serveur.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="page-container">
             <PageTitle title="Paramètres" icon="icon-settings">
@@ -302,11 +460,14 @@ function SettingsPage() {
                         <span className="tab-dot"></span>
                         Matières
                     </button>
+                    <button className={`dashboard-tab ${activeTab === "database" ? "active" : ""}`} onClick={() => setActiveTab("database")}>
+                        <span className="tab-dot"></span>
+                        Base de données
+                    </button>
                 </div>
             </div>
 
             <div className="content-container">
-
                 {activeTab === "admin" && (
                     <div className="admin-settings">
                         <div className="Card cols-2">
@@ -317,12 +478,12 @@ function SettingsPage() {
                                 <select value={adminLogin} onChange={(e) => setAdminLogin(e.target.value)}>
                                     <option value=""> -- Sélectionner un enseignant -- </option>
                                     {teachers
-                                        .filter(teacher => teacher.administrateur !== 1)
+                                        .filter((teacher) => teacher.administrateur !== 1)
                                         .map((teacher) => (
-                                        <option key={teacher.loginENT} value={teacher.loginENT}>
-                                            {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
-                                        </option>
-                                    ))}
+                                            <option key={teacher.loginENT} value={teacher.loginENT}>
+                                                {teacher.nom.toUpperCase()} {teacher.prenom} ({teacher.loginENT})
+                                            </option>
+                                        ))}
                                 </select>
                             </div>
 
@@ -346,7 +507,7 @@ function SettingsPage() {
                                         borderRadius: "8px",
                                         border: "1px solid var(--border-color)",
                                         backgroundColor: "var(--background-color)",
-                                        color: "var(--text-primary)"
+                                        color: "var(--text-primary)",
                                     }}
                                 />
                             </div>
@@ -355,29 +516,36 @@ function SettingsPage() {
                             </button>
                         </div>
                         <div className="Card cols-2">
-                             <h2>Liste des administrateurs</h2>
-                             <div className="input-group">
+                            <h2>Liste des administrateurs</h2>
+                            <div className="input-group">
                                 <label>Retirer un administrateur</label>
                                 <select value={adminToRemove} onChange={(e) => setAdminToRemove(e.target.value)}>
                                     <option value=""> -- Sélectionner un administrateur -- </option>
                                     {teachers
-                                        .filter(t => t.administrateur === 1 && t.loginENT !== user)
-                                        .map(admin => (
-                                        <option key={admin.loginENT} value={admin.loginENT}>
-                                            {admin.nom.toUpperCase()} {admin.prenom} ({admin.loginENT})
-                                        </option>
-                                    ))}
+                                        .filter((t) => t.administrateur === 1 && t.loginENT !== user)
+                                        .map((admin) => (
+                                            <option key={admin.loginENT} value={admin.loginENT}>
+                                                {admin.nom.toUpperCase()} {admin.prenom} ({admin.loginENT})
+                                            </option>
+                                        ))}
                                 </select>
-                             </div>
-                             <button onClick={handleRemoveAdmin} className="validate-btn settings-input-margin-fix" style={{backgroundColor: 'var(--error-color)', color: 'white', border: 'none'}}>
+                            </div>
+                            <button
+                                onClick={handleRemoveAdmin}
+                                className="validate-btn settings-input-margin-fix"
+                                style={{ backgroundColor: "var(--error-color)", color: "white", border: "none" }}
+                            >
                                 Supprimer
-                             </button>
+                            </button>
                         </div>
                     </div>
                 )}
 
                 {activeTab === "subject" && (
-                    <div className="layout-container" style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "-webkit-fill-available", margin: "10px" }}>
+                    <div
+                        className="layout-container"
+                        style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "-webkit-fill-available", margin: "10px" }}
+                    >
                         <SubjectModal
                             isOpen={isSubjectModalOpen}
                             onClose={() => {
@@ -444,12 +612,121 @@ function SettingsPage() {
                                                     title="Supprimer"
                                                     disabled={deletingSubjectId === sub.code}
                                                 >
-                                                    {deletingSubjectId === sub.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl" />}
+                                                    {deletingSubjectId === sub.code ? (
+                                                        <CustomLoader />
+                                                    ) : (
+                                                        <span className="icon settings-icon icon-trash icon-xl" />
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
                                     ))
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === "database" && (
+                    <div className="admin-settings">
+                        <div className="Card cols-2">
+                            <h2>Exporter le script de création de la base de données</h2>
+
+                            <button
+                                onClick={() =>
+                                    handleDatabaseExport("/database/schema", "schema_structure.sql", "Structure téléchargée.", setisSchemaStructureLoading)
+                                }
+                                className="validate-btn settings-input-margin-fix"
+                                disabled={isSchemaStructureLoading}
+                            >
+                                {isSchemaStructureLoading ? <CustomLoader /> : "Exporter le script"}
+                            </button>
+                        </div>
+                        <div className="Card cols-2">
+                            <h2>Exporter la base de données</h2>
+
+                            <button
+                                onClick={() =>
+                                    handleDatabaseExport("/database/dump", "backup_complete.sql", "Base de données complète exportée.", setIsBackUpSQLLoading)
+                                }
+                                className="validate-btn settings-input-margin-fix"
+                                disabled={isBackUpSQLLoading}
+                            >
+                                {isBackUpSQLLoading ? <CustomLoader /> : "format .sql"}
+                            </button>
+                            <button
+                                onClick={() => handleDatabaseExport("/database/raw", "appAbsences.db", "Fichier .db téléchargé.", setIsBackUpDBLoading)}
+                                className="validate-btn settings-input-margin-fix"
+                                disabled={isBackUpDBLoading}
+                            >
+                                {isBackUpDBLoading ? <CustomLoader /> : "format .db"}
+                            </button>
+                            <button
+                                onClick={() =>
+                                    handleDatabaseExport(
+                                        "/database/xlsx-tables",
+                                        "tables_backup.xlsx",
+                                        "Fichier Excel multi-feuilles téléchargé.",
+                                        setIsExportXLSXLoading,
+                                    )
+                                }
+                                className="validate-btn settings-input-margin-fix"
+                                disabled={isExportXLSXLoading}
+                            >
+                                {isExportXLSXLoading ? <CustomLoader /> : "format .xlsx (toutes tables)"}
+                            </button>
+                        </div>
+
+                        <div className="Card cols-2">
+                            <h2>Gestion des Justificatifs</h2>
+                            <div className="input-group">
+                                <label>Année Scolaire (Début Septembre)</label>
+                                <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                                    <option value="">-- Sélectionner une année --</option>
+                                    {years.map((y) => (
+                                        <option key={y.year} value={y.year}>
+                                            Année {y.year} - {parseInt(y.year) + 1} ({formatBytes(y.size)})
+                                        </option>
+                                    ))}
+                                </select>
+                                <div style={{ marginTop: "5px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+                                    Stockage total utilisé : <strong>{formatBytes(totalSize)}</strong>
+                                </div>
+                            </div>
+                            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
+                                <button
+                                    onClick={() => handleDownloadJustifications(false)}
+                                    className="validate-btn settings-input-margin-fix"
+                                    disabled={isDownloadAllJustifLoading}
+                                >
+                                    {isDownloadAllJustifLoading ? <CustomLoader /> : "Télécharger Tout (ZIP)"}
+                                </button>
+                                <button
+                                    onClick={() => handleDownloadJustifications(true)}
+                                    className="validate-btn settings-input-margin-fix"
+                                    disabled={!selectedYear || isDownloadYearJustifLoading}
+                                >
+                                    {isDownloadYearJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
+                                </button>
+                            </div>
+                            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
+                                <button
+                                    onClick={handleDeleteJustifications}
+                                    className="validate-btn settings-input-margin-fix"
+                                    style={{ backgroundColor: "var(--error-color)", border: "none" }}
+                                    disabled={isDeleteAllJustifLoading}
+                                >
+                                    {isDeleteAllJustifLoading ? <CustomLoader /> : "Supprimer Tout"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleDeleteYearJustifications}
+                                    className="validate-btn settings-input-margin-fix"
+                                    style={{ backgroundColor: "var(--error-color)", border: "none" }}
+                                    disabled={!selectedYear || isDeleteYearJustifLoading}
+                                >
+                                    {isDeleteYearJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
+                                </button>
                             </div>
                         </div>
                     </div>
