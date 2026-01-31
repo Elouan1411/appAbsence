@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
 import toggleTheme from "../functions/toggleTheme";
@@ -12,6 +12,23 @@ const SettingMobilePage = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const isDarkMode = theme === "dark";
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 725) {
+                navigate("/", { replace: true });
+            }
+        };
+
+        // Check initially
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [navigate]);
 
     const handleLogout = async () => {
         await logout();
