@@ -196,11 +196,13 @@ button .loader {
 
 @media screen and (max-width: 725px) {
     .loading-screen h1 {
+        text-align: center;
         font-size: 2rem;
     }
 }
 
 .loading-screen h1 {
+    text-align: center;
     font-size: 3rem;
     color: var(--primary-color);
 }
