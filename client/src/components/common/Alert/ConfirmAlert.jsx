@@ -49,7 +49,7 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
                                 value={localMotif}
                                 onChange={(e) => setLocalMotif(e.target.value)}
                                 placeholder="Ex: Raison médicale..."
-                                rows="3"
+                                rows={3}
                             />
                         </div>
                         <div className="checkbox-container">
