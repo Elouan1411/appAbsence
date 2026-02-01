@@ -1128,6 +1128,15 @@ p {
     gap: 10px;
 }
 
+.admin-loader-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+}
+
 .download-template {
     height: auto;
     background-color: transparent;

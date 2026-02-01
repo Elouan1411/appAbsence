@@ -236,29 +236,35 @@ const AdminJustificationPage = () => {
                     
                     <FileUpload files={files} setFiles={setFiles} />
 
-                    <div className="admin-buttons-container">
-                        <Button 
-                            onClick={() => handleSubmit("create")} 
-                            className="submit-button btn-waiting"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "En attente"}
-                        </Button>
-                        <Button 
-                            onClick={() => handleSubmit("refuse")} 
-                            className="submit-button btn-refuse" 
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "Refuser"}
-                        </Button>
-                        <Button 
-                            onClick={() => handleSubmit("validate")} 
-                            className="submit-button btn-validate" 
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "Valider"}
-                        </Button>
-                    </div>
+                    {isSubmitting ? (
+                        <div className="admin-loader-container">
+                            <CustomLoader />
+                        </div>
+                    ) : (
+                        <div className="admin-buttons-container">
+                            <Button 
+                                onClick={() => handleSubmit("create")} 
+                                className="submit-button btn-waiting"
+                                disabled={isSubmitting}
+                            >
+                                En attente
+                            </Button>
+                            <Button 
+                                onClick={() => handleSubmit("refuse")} 
+                                className="submit-button btn-refuse" 
+                                disabled={isSubmitting}
+                            >
+                                Refuser
+                            </Button>
+                            <Button 
+                                onClick={() => handleSubmit("validate")} 
+                                className="submit-button btn-validate" 
+                                disabled={isSubmitting}
+                            >
+                                Valider
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
