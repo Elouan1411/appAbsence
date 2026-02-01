@@ -63,7 +63,7 @@ function App() {
     useEffect(() => {
         const viewportMeta = document.querySelector("meta[name='viewport']");
         if (viewportMeta) {
-            if (location.pathname.startsWith("/admin") && !location.pathname.includes("/rollcall")) {
+            if (location.pathname.startsWith("/admin") && !location.pathname.includes("/appel")) {
                 if (window.screen.width < 1200) {
                     viewportMeta.setAttribute("content", "width=1200, user-scalable=yes");
                 } else {
@@ -122,9 +122,9 @@ const getHomeRoute = (role) => {
         case "admin":
             return "/admin";
         case "teacher":
-            return "/teacher";
+            return "/enseignant";
         case "student":
-            return "/dashboard";
+            return "/etudiant";
         default:
             return "/";
     }

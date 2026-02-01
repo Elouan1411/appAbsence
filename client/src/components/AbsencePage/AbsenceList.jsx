@@ -56,7 +56,7 @@ function AbsenceList() {
 
     const handleRowClick = (event) => {
         console.log(event.data);
-        safeNavigate(`/admin/absencedetail/${event.data.idAbsence}`);
+        safeNavigate(`/admin/detail-absence/${event.data.idAbsence}`);
     };
     const autoSizeStrategy = useMemo(() => {
         return {

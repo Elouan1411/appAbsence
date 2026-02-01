@@ -197,7 +197,7 @@ const StudentAbsenceDetailsPage = () => {
         const success = await submit(period, reason, comment, files, "update", targetId, removedFiles, dateDemande);
         if (success) {
             setHasUnsavedChanges(false);
-            navigate("/dashboard");
+            navigate("/etudiant");
         }
     };
 

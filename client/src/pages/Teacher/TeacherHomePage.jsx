@@ -42,7 +42,7 @@ function TeacherHomePage() {
     }, [user]);
 
     const handleCardClick = (course) => {
-        navigate("/teacher/rollcall", { state: { shortcut: course } });
+        navigate("/enseignant/appel", { state: { shortcut: course } });
     };
 
     const formatDate = (dateStr) => {
