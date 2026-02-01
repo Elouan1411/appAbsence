@@ -39,6 +39,7 @@ function VerticalBar({ notificationCount = 0 }) {
         let activeFound = null;
 
         const isLinkVisible = (link) => {
+            if (link.path === "settings") return true; 
             if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return false;
             if (!link.label) return false;
             if (link.path?.includes("studentdetail") || link.path?.includes("absencedetail")) return false;
