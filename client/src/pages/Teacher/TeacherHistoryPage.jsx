@@ -356,7 +356,7 @@ function TeacherHistoryPage() {
                         defaultColDef={defaultColDef}
                         theme={theme === "dark" ? darkTheme : lightTheme}
                         pagination={true}
-                        paginationPageSize={16}
+                        paginationPageSize={50}
                         onRowClicked={handleRowClick}
                         rowStyle={{ cursor: "pointer" }}
                         domLayout="autoHeight"

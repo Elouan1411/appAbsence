@@ -65,7 +65,7 @@ function TeacherHistoryPage() {
             />
         );
 
-        let icon = <Icon name="x" color="red" />;
+        let icon = <Icon name="x" color="grey" />;
         let statusText = "Non justifiée";
         let tooltip = "Aucune justification soumise";
 
@@ -74,7 +74,7 @@ function TeacherHistoryPage() {
             statusText = "En attente";
             tooltip = `Motif étudiant : ${motif}`;
         } else if (validite === 1) {
-            icon = <Icon name="check_success" color="green" />;
+            icon = <Icon name="check-success" color="green" />;
             statusText = "Justifiée";
             tooltip = `Motif validé : ${motifValidite || motif}`;
         } else if (validite === 0 && motif) {
@@ -280,7 +280,7 @@ function TeacherHistoryPage() {
                         defaultColDef={defaultColDef}
                         theme={theme === "dark" ? darkTheme : lightTheme}
                         pagination={true}
-                        paginationPageSize={100}
+                        paginationPageSize={50}
                         domLayout="autoHeight"
                         onSortChanged={onSortChanged}
                         quickFilterText={quickFilterText}
