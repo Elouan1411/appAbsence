@@ -71,7 +71,7 @@ const StudentJustificationPage = () => {
                 setComment("");
                 setPeriod([]);
                 setFiles([]);
-                safeNavigate("/dashboard");
+                safeNavigate("/etudiant");
             }
         }
     };

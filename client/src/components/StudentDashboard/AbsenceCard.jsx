@@ -38,14 +38,14 @@ const AbsenceCard = ({
     const [reason_split, comment_split] = typeof reason === "string" ? reason.split(" | ") : ["", ""];
 
     const handleJustify = () => {
-        safeNavigate("/dashboard/justification", {
+        safeNavigate("/etudiant/justification", {
             state: { prefilledPeriod: [fullPeriod] },
         });
     };
 
     const handleDetails = (e) => {
         e.stopPropagation();
-        safeNavigate(`/dashboard/absence/${id}`, {
+        safeNavigate(`/etudiant/absence/${id}`, {
             state: {
                 prefilledPeriod: fullPeriodGroup || [fullPeriod],
                 reason: reason,

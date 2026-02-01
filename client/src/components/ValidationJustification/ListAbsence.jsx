@@ -93,7 +93,7 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                                                 <button className="absence-detail-button">
                                                     <span
                                                         className="icon icon-triple-dot"
-                                                        onClick={() => safeNavigate("/admin/absencedetail/" + abs.idAbsence)}
+                                                        onClick={() => safeNavigate("/admin/detail-absence/" + abs.idAbsence)}
                                                     />
                                                 </button>
                                             </div>

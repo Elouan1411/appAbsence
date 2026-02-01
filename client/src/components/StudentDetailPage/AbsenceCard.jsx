@@ -102,7 +102,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
                 )}
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
-                    <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} />
+                    <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/detail-absence/" + idAbsence)} />
                 </button>
             </div>
 

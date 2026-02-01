@@ -269,7 +269,7 @@ function StudentHomePage() {
                 end: parseTimestamp(abs.end),
             }));
 
-        safeNavigate("/dashboard/justification", {
+        safeNavigate("/etudiant/justification", {
             state: { prefilledPeriod: selectedPeriods },
         });
     };

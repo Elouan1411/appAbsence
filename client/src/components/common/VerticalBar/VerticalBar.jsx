@@ -39,10 +39,10 @@ function VerticalBar({ notificationCount = 0 }) {
         let activeFound = null;
 
         const isLinkVisible = (link) => {
-            if (link.path === "settings") return true; 
+            if (link.path === "parametres") return true; 
             if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return false;
             if (!link.label) return false;
-            if (link.path?.includes("studentdetail") || link.path?.includes("absencedetail")) return false;
+            if (link.path?.includes("detail-etudiant") || link.path?.includes("detail-absence")) return false;
             return true;
         };
 
@@ -92,7 +92,7 @@ function VerticalBar({ notificationCount = 0 }) {
     const visibleLinks = menuLinks.filter((link) => {
         if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return false;
         if (!link.label) return false;
-        if (link.path?.includes("studentdetail") || link.path?.includes("absencedetail")) return false;
+        if (link.path?.includes("detail-etudiant") || link.path?.includes("detail-absence")) return false;
         return true;
     });
 
@@ -113,7 +113,7 @@ function VerticalBar({ notificationCount = 0 }) {
                 <ul className="nav-list">
                      <div className="active-indicator" style={activeStyle}></div>
                      {visibleLinks.map((link, index) => {
-                        const isMobileItem = link.path === "settingsmobile";
+                        const isMobileItem = link.path === "parametres";
                         const wrapperClass = `nav-wrapper ${isMobileItem ? "mobile-only-item" : ""}`;
 
                         const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
@@ -136,11 +136,11 @@ function VerticalBar({ notificationCount = 0 }) {
                     {role === "admin" && (
                         <li className="nav-item">
                             <NavLink
-                                to="/admin/settings"
+                                to="/admin/parametres"
                                 className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    safeNavigate("/admin/settings");
+                                    safeNavigate("/admin/parametres");
                                 }}
                             >
                                 <span className="icon-nav icon-settings"></span>
