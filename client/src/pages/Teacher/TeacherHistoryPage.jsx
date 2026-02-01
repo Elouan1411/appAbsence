@@ -332,19 +332,15 @@ function TeacherHistoryPage() {
     return (
         <div className="page-container">
             <PageTitle title="Historique des Appels" icon="icon-history" />
-            <div className="search-wrapper-right">
-                {isSearchActive ? (
+            <div className="search-wrapper-container">
+                <div className="search-wrapper-right">
                     <SearchInput
                         value={quickFilterText}
                         onChange={(e) => setQuickFilterText(e.target.value)}
                         placeholder="Rechercher dans l'historique..."
                         onIconClick={toggleSearch}
                     />
-                ) : (
-                    <button onClick={toggleSearch} className="search-toggle-button">
-                        <span className="icon icon-search search-icon-sized" />
-                    </button>
-                )}
+                </div>
             </div>
             <div className="grid-container">
                 {isLoading ? (

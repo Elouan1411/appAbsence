@@ -1,4 +1,4 @@
-.absence-list-container {
+.teacherListContainer > .absence-list-container {
     height: 88vh;
     width: calc(100% - 10px);
     margin-right: 10px;
