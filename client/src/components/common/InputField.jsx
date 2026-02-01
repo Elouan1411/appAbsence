@@ -1,6 +1,18 @@
 import React from "react";
 
-function InputField({ placeholder, text, type = "text", value, onChange, disabled = false, error = null, style = {}, rightIcon, onRightIconClick }) {
+function InputField({
+    placeholder,
+    text,
+    type = "text",
+    value,
+    onChange,
+    disabled = false,
+    error = null,
+    style = {},
+    rightIcon,
+    onRightIconClick,
+    autocomplete,
+}) {
     return (
         <div className={`input ${error ? "input-error-form" : ""}`} style={style}>
             <div className="label-container">
@@ -15,6 +27,7 @@ function InputField({ placeholder, text, type = "text", value, onChange, disable
                     disabled={disabled}
                     className={error ? "border-red" : ""}
                     style={{ paddingRight: "15px" }}
+                    autoComplete={autocomplete}
                 />
                 {rightIcon && (
                     <div

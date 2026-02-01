@@ -17,7 +17,7 @@ function LoginPage() {
     const { login, loading } = useAuth();
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        setUser(user.trim());
+        setUser(user.trim().toLocaleLowerCase());
         setPassword(password.trim());
         e.preventDefault();
         try {
@@ -50,7 +50,13 @@ function LoginPage() {
                     <Subtitle>Connectez-vous pour accéder à votre compte</Subtitle>
                 </div>
                 <div className="input-container">
-                    <InputField placeholder="votre.email@example.com" text="Email" value={user} onChange={(e) => setUser(e.target.value)} />
+                    <InputField
+                        placeholder="votre.email@example.com"
+                        text="Email"
+                        value={user}
+                        onChange={(e) => setUser(e.target.value)}
+                        autocomplete="username"
+                    />
                     <InputField
                         placeholder="motdepasse"
                         text="Mot de passe"
@@ -65,11 +71,12 @@ function LoginPage() {
                             )
                         }
                         onRightIconClick={() => setShowPassword(!showPassword)}
+                        autocomplete="current-password"
                     />
                 </div>
 
                 <Button type="submit" disabled={loading}>
-                    {loading ? <CustomLoader/>: "Se connecter"}
+                    {loading ? <CustomLoader /> : "Se connecter"}
                 </Button>
 
                 <hr />
