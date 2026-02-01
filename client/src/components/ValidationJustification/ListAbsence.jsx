@@ -99,7 +99,7 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="empty-sub-absence">Aucune absence déclarée par un professeur sur cette période.</div>
+                                        <div className="empty-sub-absence">Aucune absence déclarée par un enseignant sur cette période.</div>
                                     )}
                                 </div>
                             </>

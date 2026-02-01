@@ -47,7 +47,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
             setRowData([]);
         }
     };
-    const entityLabel = type === "student" ? "étudiant" : "professeur";
+    const entityLabel = type === "student" ? "étudiant" : "enseignant";
     const containerClass = type === "student" ? "adding-student-container" : "add-teacher-container";
     const contentClass = type === "student" ? "content-container" : "add-teacher-content"; // Assure-toi que ces classes existent dans ton CSS
 

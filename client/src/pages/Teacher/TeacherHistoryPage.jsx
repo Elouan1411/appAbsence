@@ -215,7 +215,7 @@ function TeacherHistoryPage() {
 
         if (role === "admin") {
             cols.push({
-                headerName: "Professeur",
+                headerName: "Enseignant",
                 valueGetter: (params) => {
                     if (params.data && params.data.nom && params.data.prenom) {
                         return `${params.data.nom.toUpperCase()} ${params.data.prenom}`;

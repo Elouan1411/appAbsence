@@ -87,7 +87,7 @@ function TeacherList() {
                         if (params.value === 1 || params.value === true) {
                             return <span className="role-badge admin">Administrateur</span>;
                         }
-                        return <span className="role-badge teacher">Professeur</span>;
+                        return <span className="role-badge teacher">Enseignant</span>;
                     };
                 }
                 colDef.cellStyle = { display: "flex", alignItems: "center" };
