@@ -23,6 +23,10 @@ export function DateObjectToInt(input) {
 }
 
 export function IntToDateObject(debut, fin) {
+    if (!debut || !fin || debut === 0 || fin === 0) {
+        return { date: "", startTime: "", endTime: "" };
+    }
+
     let finalDate = { date: "", startTime: "", endTime: "" };
     let str = debut.toString();
     const year = str.slice(0, 4);

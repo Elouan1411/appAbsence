@@ -106,6 +106,8 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                                 startTime={dateFormatter(absence.debut)}
                                 endTime={dateFormatter(absence.fin)}
                                 justified={absence.justifie}
+                                validite={absence.validite}
+                                motifValidite={absence.motifValidite}
                                 nom={absence.nom}
                                 prenom={absence.prenom}
                                 courseType={absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"}

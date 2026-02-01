@@ -21,6 +21,7 @@ router.get("/absence/:idAbsence", verifyToken, isAdmin, (req, res) => {
     dateDemande,
     motif,
     validite,
+    motifValidite,
     json_group_array(
         json_object(
             'id', JustificationAbsence.idAbsJustifiee,

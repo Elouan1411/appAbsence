@@ -9,7 +9,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import CustomLoader from "../common/CustomLoader";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, courseType, nom, prenom, idAbsence, setToUpdate }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, validite, motifValidite, courseType, nom, prenom, idAbsence, setToUpdate }) => {
     // const navigate = useNavigate();
     // const { hasUnsavedChanges } = useUnsaved();
     // const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -43,6 +43,16 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
         }
     };
 
+    const getStatusBadge = () => {
+        if (validite === 0) return { text: "Justifiée", className: "justification-badge justified-badge" };
+        if (validite === 1) return { text: "Refusée", className: "justification-badge refused-badge" };
+        if (validite === 2) return { text: "En cours", className: "justification-badge pending-badge" };
+        if (validite === 3) return { text: "Attente modif", className: "justification-badge pending-badge" };
+        return { text: "Non justifiée", className: "justification-badge no-justified-badge" };
+    };
+
+    const status = getStatusBadge();
+
     return (
         <div className={`card-absence`}>
             <div className="card-absence-left">
@@ -73,10 +83,15 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, cours
                 </div>
             </div>
             <div className="right-buttons-container">
-                <div className="justified-container">
-                    <span className={justified ? "justification-badge justified-badge" : "justification-badge no-justified-badge"}>
-                        {justified ? "Justifiée" : "Non justifiée"}
+                <div className="justified-container" style={{ width: "auto", flexDirection: "column", alignItems: "flex-end", gap: "5px", marginRight: "10px" }}>
+                    <span className={status.className}>
+                        {status.text}
                     </span>
+                    {(validite === 1 || validite === 3) && motifValidite && (
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "right", maxWidth: "150px" }}>
+                            {motifValidite}
+                        </span>
+                    )}
                 </div>
                 {isLoading ? (
                     <CustomLoader />
