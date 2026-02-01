@@ -438,6 +438,32 @@
         padding: 0;
         margin: 0;
         gap: 0;
+        position: relative;
+    }
+
+    .active-indicator {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%) translateX(calc(var(--active-index) * 100%));
+        width: calc(100% / var(--item-count));
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .active-indicator::after {
+        content: "";
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        box-shadow: 0 4px 10px rgba(62, 126, 134, 0.5); 
     }
 
     .nav-item {
@@ -465,8 +491,8 @@
     }
 
     .nav-link.active {
-        background-color: var(--primary-color);
-        box-shadow: 0 4px 10px rgba(62, 126, 134, 0.5);
+        background-color: transparent;
+        box-shadow: none;
     }
 
     .nav-link.active::before {
@@ -477,15 +503,19 @@
         background-color: var(--card-bg);
     }
 
-    .mobile-only-item {
-        display: flex;
-        flex: 1;
-        justify-content: center;
+    .nav-item {
+        z-index: 2; /* Ensure links are above indicator */
     }
 
-    .mobile-only-item .nav-item {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
+    /* .mobile-only-item {
+         display: flex;
+         flex: 1;
+         justify-content: center;
+     }
+
+     .mobile-only-item .nav-item {
+         width: 100%;
+         display: flex;
+         justify-content: center;
+     } */
 }
