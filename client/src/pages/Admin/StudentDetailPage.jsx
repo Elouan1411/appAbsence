@@ -196,7 +196,7 @@ function StudentDetailPage() {
                     }
 
                     setHasUnsavedChanges(false);
-                    safeNavigate("/admin/studentDetail/" + newStudent.numeroEtudiant, { replace: true });
+                    safeNavigate("/admin/detail-etudiant/" + newStudent.numeroEtudiant, { replace: true });
                 }
                 setEditing(false);
                 toast.success("Vos modifications ont été enregistrées avec succès!");

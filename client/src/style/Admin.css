@@ -121,7 +121,7 @@ div > div.title-container > .title {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    width: 100%;
+    width: calc(100% - 10px);
 }
 
 .lucide {
@@ -1128,6 +1128,15 @@ p {
     gap: 10px;
 }
 
+.admin-loader-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+}
+
 .download-template {
     height: auto;
     background-color: transparent;
@@ -1158,3 +1167,17 @@ p {
     flex-wrap: wrap;
     justify-content: center;
 }
+
+.search-wrapper-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.page-container > .search-wrapper-container {
+    margin-right: 30px;
+}
+
+/* .page-container > .grid-container {
+    margin-right: 0;
+} */

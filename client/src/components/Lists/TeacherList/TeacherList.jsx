@@ -87,7 +87,7 @@ function TeacherList() {
                         if (params.value === 1 || params.value === true) {
                             return <span className="role-badge admin">Administrateur</span>;
                         }
-                        return <span className="role-badge teacher">Professeur</span>;
+                        return <span className="role-badge teacher">Enseignant</span>;
                     };
                 }
                 colDef.cellStyle = { display: "flex", alignItems: "center" };
@@ -114,20 +114,14 @@ function TeacherList() {
 
     return (
         <div className="student-list">
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <div className="search-wrapper-right" style={{ position: "relative" }}>
-                    {isSearchActive ? (
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher..."
-                            onIconClick={toggleSearch}
-                        />
-                    ) : (
-                        <button onClick={toggleSearch} className="search-toggle-button">
-                            <span className="icon icon-search search-icon-sized" />
-                        </button>
-                    )}
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
+                        placeholder="Rechercher..."
+                        onIconClick={toggleSearch}
+                    />
                 </div>
             </div>
             {loading ? (

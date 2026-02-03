@@ -104,6 +104,16 @@
     color: var(--badge-validated-text);
 }
 
+.refused-badge {
+    background-color: var(--badge-refused-bg);
+    color: var(--badge-refused-text);
+}
+
+.pending-badge {
+    background-color: var(--badge-pending-bg);
+    color: var(--badge-pending-text);
+}
+
 .card-absence-subject span {
     font-size: 15px;
 }

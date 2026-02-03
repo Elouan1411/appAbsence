@@ -63,7 +63,10 @@ router.get("/:id", verifyToken, isAdmin, (req, res) => {
         SELECT 1
         FROM JustificationAbsence
         WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence
-    ) AS justifie, groupeTD,groupeTP, Appel.promo
+    ) AS justifie, 
+    (SELECT validite FROM JustificationAbsence WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence) AS validite,
+    (SELECT motifValidite FROM JustificationAbsence WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence) AS motifValidite,
+    groupeTD,groupeTP, Appel.promo
 FROM Absence 
 INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
 INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT

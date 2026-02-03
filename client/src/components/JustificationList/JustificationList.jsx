@@ -178,24 +178,17 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
-                paddingRight: 10,
                 paddingLeft: 10,
             }}
         >
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
                 <div className="search-wrapper-right" style={{ position: "relative" }}>
-                    {isSearchActive ? (
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher..."
-                            onIconClick={toggleSearch}
-                        />
-                    ) : (
-                        <button onClick={toggleSearch} className="search-toggle-button">
-                            <span className="icon icon-search search-icon-sized" />
-                        </button>
-                    )}
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
+                        placeholder="Rechercher..."
+                        onIconClick={toggleSearch}
+                    />
                 </div>
             </div>
             {loading ? (

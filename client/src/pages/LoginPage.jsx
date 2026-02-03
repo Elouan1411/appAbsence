@@ -26,9 +26,9 @@ function LoginPage() {
             if (role === "admin") {
                 navigate("/admin/", { replace: true });
             } else if (role === "teacher") {
-                navigate("/teacher/", { replace: true });
+                navigate("/enseignant/", { replace: true });
             } else if (role === "student") {
-                navigate("/student/", { replace: true });
+                navigate("/etudiant/", { replace: true });
             } else {
                 navigate("/error", { replace: true });
             }

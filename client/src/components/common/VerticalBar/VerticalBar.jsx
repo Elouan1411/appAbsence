@@ -39,9 +39,10 @@ function VerticalBar({ notificationCount = 0 }) {
         let activeFound = null;
 
         const isLinkVisible = (link) => {
+            if (link.path === "parametres") return true; 
             if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return false;
             if (!link.label) return false;
-            if (link.path?.includes("studentdetail") || link.path?.includes("absencedetail")) return false;
+            if (link.path?.includes("detail-etudiant") || link.path?.includes("detail-absence")) return false;
             return true;
         };
 
@@ -88,6 +89,20 @@ function VerticalBar({ notificationCount = 0 }) {
         }
     }, [location.pathname, menuLinks, currentRoleConfig, lastActivePath, role]);
 
+    const visibleLinks = menuLinks.filter((link) => {
+        if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return false;
+        if (!link.label) return false;
+        if (link.path?.includes("detail-etudiant") || link.path?.includes("detail-absence")) return false;
+        return true;
+    });
+
+    const activeIndex = visibleLinks.findIndex((link) => {
+            const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
+            return lastActivePath === to;
+    });
+
+    const activeStyle = activeIndex !== -1 ? { "--active-index": activeIndex, "--item-count": visibleLinks.length } : {};
+
     return (
         <nav className={`sidebar ${isMenuOpen ? "open" : ""} ${isDarkMode ? "dark" : "light"}`}>
             <button className="vertical-bar-button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -96,28 +111,24 @@ function VerticalBar({ notificationCount = 0 }) {
 
             <div className="nav-container">
                 <ul className="nav-list">
-                    {menuLinks.map((link, index) => {
-                        if (link.path === "absence/:id" && !location.pathname.includes("/absence/")) return null;
-                        if (!link.label) return null;
-
-                        const isMobileItem = link.path === "settingsmobile";
-
+                     <div className="active-indicator" style={activeStyle}></div>
+                     {visibleLinks.map((link, index) => {
+                        const isMobileItem = link.path === "parametres";
                         const wrapperClass = `nav-wrapper ${isMobileItem ? "mobile-only-item" : ""}`;
-                        if (!link.path?.includes("studentdetail") && !link.path?.includes("absencedetail")) {
-                            const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
 
-                            return (
-                                <div key={index} className={wrapperClass}>
-                                    <NavItem 
-                                        link={link} 
-                                        index={index} 
-                                        to={to} 
-                                        isMenuOpen={isMenuOpen} 
-                                        isActiveOverride={lastActivePath === to}
-                                    />
-                                </div>
-                            );
-                        }
+                        const to = link.index ? currentRoleConfig.path : `${currentRoleConfig.path}/${link.path}`;
+
+                        return (
+                            <div key={index} className={wrapperClass}>
+                                <NavItem 
+                                    link={link} 
+                                    index={index} 
+                                    to={to} 
+                                    isMenuOpen={isMenuOpen} 
+                                    isActiveOverride={lastActivePath === to}
+                                />
+                            </div>
+                        );
                     })}
                 </ul>
 
@@ -125,11 +136,11 @@ function VerticalBar({ notificationCount = 0 }) {
                     {role === "admin" && (
                         <li className="nav-item">
                             <NavLink
-                                to="/admin/settings"
+                                to="/admin/parametres"
                                 className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    safeNavigate("/admin/settings");
+                                    safeNavigate("/admin/parametres");
                                 }}
                             >
                                 <span className="icon-nav icon-settings"></span>

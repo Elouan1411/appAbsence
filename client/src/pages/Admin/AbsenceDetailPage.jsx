@@ -80,6 +80,7 @@ function AbsenceDetailPage() {
                 setOldNumeroEtudiant(data[0].numeroEtudiant || "");
                 setOldLoginProfesseur(data[0].loginProfesseur || "");
                 setOldMatiere(data[0].codeMatiere || 0);
+
             }
         } catch (err) {
             console.error(err);

@@ -15,8 +15,7 @@
 
 .grid-container {
     flex: 1;
-    margin-top: 1rem;
-    margin-right: 10px;
+    width: calc(100% - 30px);
 }
 
 .select-container {
@@ -139,4 +138,3 @@
         gap: 0.5rem;
     }
 }
-

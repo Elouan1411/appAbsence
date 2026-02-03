@@ -10,10 +10,9 @@ import { useJustificationSubmit } from "../../hooks/useJustificationSubmit";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SearchInput from "../../components/common/SearchInput";
-import "../../style/Student.css"; 
-import "../../style/Admin.css"; 
+import "../../style/Student.css";
+import "../../style/Admin.css";
 import { API_URL } from "../../config";
-
 
 const AdminJustificationPage = () => {
     const [allStudents, setAllStudents] = useState([]);
@@ -54,12 +53,15 @@ const AdminJustificationPage = () => {
     useEffect(() => {
         if (searchTerm.length >= 1 && !selectedStudent) {
             const lowerTerm = searchTerm.toLowerCase();
-            const filtered = allStudents.filter(s => 
-                s.nom.toLowerCase().includes(lowerTerm) || 
-                s.prenom.toLowerCase().includes(lowerTerm) || 
-                (s.loginENT && s.loginENT.toLowerCase().includes(lowerTerm)) ||
-                String(s.numero).includes(lowerTerm)
-            ).slice(0, 10); 
+            const filtered = allStudents
+                .filter(
+                    (s) =>
+                        s.nom.toLowerCase().includes(lowerTerm) ||
+                        s.prenom.toLowerCase().includes(lowerTerm) ||
+                        (s.loginENT && s.loginENT.toLowerCase().includes(lowerTerm)) ||
+                        String(s.numero).includes(lowerTerm),
+                )
+                .slice(0, 10);
             setSuggestions(filtered);
         } else {
             setSuggestions([]);
@@ -81,7 +83,7 @@ const AdminJustificationPage = () => {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         if (selectedStudent) {
-             setSelectedStudent(null);
+            setSelectedStudent(null);
         }
     };
 
@@ -113,32 +115,40 @@ const AdminJustificationPage = () => {
         }
 
         const hasFiles = files.length > 0;
-        let message = '';
-        if (action === "create") message = hasFiles ? "Confirmer l'ajout de l'absence ?" : "Envoyer sans justificatif ?";
-        if (action === "validate") message = "Valider immédiatement cette justification ?";
-        if (action === "refuse") message = "Refuser immédiatement cette justification ?";
+        let message = "";
+        if (action === "create") {
+            message = hasFiles ? "Confirmer l'ajout de l'absence ?" : "Envoyer sans justificatif ?";
+            setWaitingLoading(true);
+        }
+        if (action === "validate") {
+            message = "Valider immédiatement cette justification ?";
+            setAcceptLoading(true);
+        }
+        if (action === "refuse") {
+            message = "Refuser immédiatement cette justification ?";
+            setRefuseLoading(true);
+        }
 
         const confirmation = await alertConfirm("Confirmation", message);
         if (!confirmation.isConfirmed) return;
 
         const result = await submit(period, reason, comment, files, "create", null, [], null, selectedStudent.loginENT);
-        setEditLoading(false);
         if (result && result.success) {
             if (action !== "create" && result.ids && result.ids.length > 0) {
                 try {
                     for (const id of result.ids) {
                         const validationBody = {
                             value: action === "validate" ? "validate" : "deny",
-                            reason: action === "refuse" ? "Refusé par l'administration lors de la création." : ""
+                            reason: action === "refuse" ? "Refusé par l'administration lors de la création." : "",
                         };
-                        
+
                         const valRes = await fetch(`${API_URL}/justification/validate/${id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(validationBody),
-                            credentials: 'include'
+                            credentials: "include",
                         });
-                        
+
                         if (!valRes.ok) {
                             console.error(`Failed to validate/refuse justification ${id}`);
                             toast.error(`Erreur lors de la validation/refus pour l'ID ${id}`);
@@ -160,33 +170,31 @@ const AdminJustificationPage = () => {
             setPeriodError(false);
             setEditLoading(false);
         }
-        setIsLoading(false);
+        setAcceptLoading(false);
+        setWaitingLoading(false);
+        setRefuseLoading(false);
     };
 
     return (
         <div className="student-justification-container">
             <PageTitle title="Justifier une absence (Admin)" icon={"icon-justification-student"} />
-            <div className="admin-justification-wrapper">  
+            <div className="admin-justification-wrapper">
                 <div className="adminJustificationPage">
                     <div className="search-section" ref={searchRef}>
                         <label className="input-label">Étudiant concerné</label>
                         {!selectedStudent ? (
                             <>
-                                <SearchInput 
-                                    value={searchTerm} 
-                                    onChange={handleSearchChange} 
-                                    placeholder="Rechercher un étudiant (Nom, Prénom, N°...)" 
+                                <SearchInput
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                    placeholder="Rechercher un étudiant (Nom, Prénom, N°...)"
                                     className="search-container-justification-admin"
                                 />
-                                
+
                                 {suggestions.length > 0 && (
                                     <ul className="suggestions-list">
                                         {suggestions.map((student) => (
-                                            <li 
-                                                key={student.numero} 
-                                                onClick={() => handleSelectStudent(student)}
-                                                className="suggestion-item"
-                                            >
+                                            <li key={student.numero} onClick={() => handleSelectStudent(student)} className="suggestion-item">
                                                 {student.nom} {student.prenom} - {student.promo} ({student.loginENT})
                                             </li>
                                         ))}
@@ -195,11 +203,10 @@ const AdminJustificationPage = () => {
                             </>
                         ) : (
                             <div className="search-container-justification-admin choice">
-                                <span>{selectedStudent.nom} {selectedStudent.prenom} ({selectedStudent.loginENT})</span>
-                                <span 
-                                    onClick={handleDeselectStudent}
-                                    className="choice-close-btn"
-                                >
+                                <span>
+                                    {selectedStudent.nom} {selectedStudent.prenom} ({selectedStudent.loginENT})
+                                </span>
+                                <span onClick={handleDeselectStudent} className="choice-close-btn">
                                     <span className="icon icon-x choice-close-icon"></span>
                                 </span>
                             </div>
@@ -208,16 +215,10 @@ const AdminJustificationPage = () => {
 
                     <hr className="section-divider" />
 
-                    <PeriodAbsence 
-                        period={period} 
-                        setPeriod={handlePeriodChange} 
-                        errors={errors} 
-                        error={periodError} 
-                        automaticPeriod={automaticPeriod} 
-                    />
-                    
+                    <PeriodAbsence period={period} setPeriod={handlePeriodChange} errors={errors} error={periodError} automaticPeriod={automaticPeriod} />
+
                     <hr className="section-divider" />
-                    
+
                     <ReasonInput
                         reason={reason}
                         comment={comment}
@@ -231,34 +232,28 @@ const AdminJustificationPage = () => {
                         }}
                         error={reasonError}
                     />
-                    
+
                     <hr className="section-divider" />
-                    
+
                     <FileUpload files={files} setFiles={setFiles} />
 
-                    <div className="admin-buttons-container">
-                        <Button 
-                            onClick={() => handleSubmit("create")} 
-                            className="submit-button btn-waiting"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "En attente"}
-                        </Button>
-                        <Button 
-                            onClick={() => handleSubmit("refuse")} 
-                            className="submit-button btn-refuse" 
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "Refuser"}
-                        </Button>
-                        <Button 
-                            onClick={() => handleSubmit("validate")} 
-                            className="submit-button btn-validate" 
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? <CustomLoader /> : "Valider"}
-                        </Button>
-                    </div>
+                    {isSubmitting ? (
+                        <div className="admin-loader-container">
+                            <CustomLoader />
+                        </div>
+                    ) : (
+                        <div className="admin-buttons-container">
+                            <Button onClick={() => handleSubmit("create")} className="submit-button btn-waiting" disabled={isSubmitting}>
+                                En attente
+                            </Button>
+                            <Button onClick={() => handleSubmit("refuse")} className="submit-button btn-refuse" disabled={isSubmitting}>
+                                Refuser
+                            </Button>
+                            <Button onClick={() => handleSubmit("validate")} className="submit-button btn-validate" disabled={isSubmitting}>
+                                Valider
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

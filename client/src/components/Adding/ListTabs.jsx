@@ -6,7 +6,7 @@ import "../../style/Admin.css";
 const ListTabs = ({ activeTab, setActiveTab }) => {
     const tabs = [
         { id: "student", label: "Étudiants" },
-        { id: "teacher", label: "Professeurs" },
+        { id: "teacher", label: "Enseignants" },
         { id: "absence", label: "Absences" },
     ];
 

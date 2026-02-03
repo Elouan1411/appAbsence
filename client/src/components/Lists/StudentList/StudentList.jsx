@@ -74,7 +74,7 @@ function StudentList() {
 
     const handleRowClick = (event) => {
         console.log(event.data);
-        safeNavigate(`/admin/studentdetail/${event.data.numero}`);
+        safeNavigate(`/admin/detail-etudiant/${event.data.numero}`);
     };
 
     useEffect(() => {
@@ -120,20 +120,14 @@ function StudentList() {
 
     return (
         <div className="student-list">
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <div className="search-wrapper-right" style={{ position: "relative" }}>
-                    {isSearchActive ? (
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher..."
-                            onIconClick={toggleSearch}
-                        />
-                    ) : (
-                        <button onClick={toggleSearch} className="search-toggle-button">
-                            <span className="icon icon-search search-icon-sized" />
-                        </button>
-                    )}
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
+                        placeholder="Rechercher..."
+                        onIconClick={toggleSearch}
+                    />
                 </div>
             </div>
             {loading ? (

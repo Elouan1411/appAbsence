@@ -44,24 +44,20 @@ function ModificationAbsence({
     const [pair, setPair] = useState(semesterParity(debut));
 
     const [dateValue, setDateValue] = useState(IntToDateObject(debut, fin));
-    const [hasUpdatedDate, setHasUpdatedDate] = useState(false);
-
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!hasUpdatedDate) {
-            if (debut === 0 || fin === 0) return;
+        if (debut === 0 || fin === 0) return;
 
-            const currentInts = DateObjectToInt(dateValue);
+        const currentInts = DateObjectToInt(dateValue);
 
-            if (currentInts.debut === debut && currentInts.fin === fin) {
-                return;
-            }
-
-            setDateValue(IntToDateObject(debut, fin));
-            setHasUpdatedDate(true);
+        // Compare loosely (==) to handle string/number differences
+        if (currentInts.debut == debut && currentInts.fin == fin) {
+            return;
         }
-    }, [debut, fin, dateValue]);
+
+        setDateValue(IntToDateObject(debut, fin));
+    }, [debut, fin]);
 
     const handleDateChange = (newValue) => {
         setDateValue(newValue);
@@ -308,6 +304,7 @@ function ModificationAbsence({
                             </div>
                         </div>
                         <div className="selector-container">
+                            
                             <SelectTime value={dateValue} onChange={handleDateChange} />
                             <SelectSubject value={matiere} onSelect={setMatiere} promo={promo} pair={pair} />
                         </div>

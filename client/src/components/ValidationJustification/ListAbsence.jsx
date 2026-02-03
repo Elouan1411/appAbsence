@@ -93,13 +93,13 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                                                 <button className="absence-detail-button">
                                                     <span
                                                         className="icon icon-triple-dot"
-                                                        onClick={() => safeNavigate("/admin/absencedetail/" + abs.idAbsence)}
+                                                        onClick={() => safeNavigate("/admin/detail-absence/" + abs.idAbsence)}
                                                     />
                                                 </button>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="empty-sub-absence">Aucune absence déclarée par un professeur sur cette période.</div>
+                                        <div className="empty-sub-absence">Aucune absence déclarée par un enseignant sur cette période.</div>
                                     )}
                                 </div>
                             </>

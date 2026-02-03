@@ -6,7 +6,7 @@ import "../../style/Admin.css";
 const AddingTabs = ({ activeTab, setActiveTab }) => {
     const tabs = [
         { id: "student", label: "Étudiants" },
-        { id: "teacher", label: "Professeurs" }
+        { id: "teacher", label: "Enseignants" }
     ];
 
     return (
