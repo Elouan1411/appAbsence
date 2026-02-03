@@ -29,8 +29,14 @@ const cors = require("cors");
  *****************************************************/
 var app = express();
 
-const PORT = process.env.PORT;
-app.listen(PORT, function () {
+const PORT = parseInt(process.env.PORT || "3000", 10);
+
+if (!process.env.JWT_SECRET) {
+    console.error("FATAL ERROR: JWT_SECRET involves is not defined in .env");
+    process.exit(1);
+}
+
+app.listen(PORT, "0.0.0.0", function () {
     console.log("C'est parti ! En attente de connexion sur le port", PORT);
 });
 // listening to proxy for react routing requests

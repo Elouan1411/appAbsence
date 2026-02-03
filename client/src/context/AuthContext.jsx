@@ -31,23 +31,25 @@ export function AuthProvider({ children }) {
 
     const login = async (user, pwd) => {
         setLoading(true);
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ user, pwd }),
-        });
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ user, pwd }),
+            });
 
-        if (!res.ok) {
+            if (!res.ok) {
+                throw new Error(await res.text());
+            }
+
+            const data = await res.json();
+            setUser(user);
+            setRole(data);
+            return data;
+        } finally {
             setLoading(false);
-            throw new Error(await res.text());
         }
-
-        const data = await res.json();
-        setUser(user);
-        setRole(data);
-        setLoading(false);
-        return data;
     };
 
     const logout = async () => {

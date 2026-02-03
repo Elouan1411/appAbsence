@@ -6,9 +6,9 @@ function verifyToken(req, res, next) {
     if (!token) {
         return res.status(403).json({ error: "Token manquant" });
     }
-    jwt.verify(token, "app absence", (err, decodedToken) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
         if (err) {
-            res.status(500).json({ error: "Token invalide" });
+            return res.status(500).json({ error: "Token invalide" });
         }
         req.user = decodedToken;
         next();

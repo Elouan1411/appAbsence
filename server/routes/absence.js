@@ -32,11 +32,11 @@ router.get("/dates", verifyToken, isAdmin, (req, res) => {
         SELECT * FROM Absence 
         INNER JOIN Appel ON Absence.idAppel = Appel.idAppel
         INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
-        WHERE Appel.debut < ${fin} AND Appel.fin > ${debut}
-        AND numeroEtudiant = ${numero}
+        WHERE Appel.debut < ? AND Appel.fin > ?
+        AND numeroEtudiant = ?
     `;
 
-    db.all(sql, (err, rows) => {
+    db.all(sql, [fin, debut, numero], (err, rows) => {
         if (err) {
             return res.status(500).json(err);
         }

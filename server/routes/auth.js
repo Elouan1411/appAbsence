@@ -10,14 +10,15 @@ let users = {};
 users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
+users["prof"] = { password: 1234, role: "teacher" };
 
 /**
  * Check if the user has an account
  * @param {*} user
  */
-function haveAccount(user) {
-    const sql = `SELECT * FROM Eleve WHERE loginENT = ?`;
-    return new Promise((resolve, reject) => {
+async function haveAccount(user) {
+    let sql = `SELECT * FROM Eleve WHERE loginENT = ?`;
+    const student = new Promise((resolve, reject) => {
         db.all(sql, [user], (err, rows) => {
             if (err) {
                 reject(err);
@@ -26,6 +27,18 @@ function haveAccount(user) {
             resolve(rows.length > 0);
         });
     });
+
+    sql = `SELECT * FROM Professeur WHERE loginENT = ?`;
+    const teacher = new Promise((resolve, reject) => {
+        db.all(sql, [user], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.length > 0);
+        });
+    });
+    return (await student) || (await teacher);
 }
 
 /*****************************************
@@ -53,7 +66,9 @@ router.post("/login", async (req, res) => {
 
     // CODE DEV
     if (users[user] != undefined) {
-        if (users[user].password == pwd) {
+        if (!(await haveAccount(user))) {
+            res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
+        } else if (users[user].password == pwd) {
             const token = createToken(user + "-" + users[user]["role"]);
             res.cookie("jwt", token, {
                 httpOnly: true,
@@ -69,8 +84,6 @@ router.post("/login", async (req, res) => {
         const authentification = await auth(user, pwd);
         if (!authentification.status) {
             res.status(401).json(authentification.error);
-        } else if (!authentification.isInfo) {
-            res.status(401).json("Vous n'avez pas accès à cette application (réservé aux membres du département Informatique)");
         } else if (!(await haveAccount(user))) {
             res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else {
@@ -84,7 +97,7 @@ router.post("/login", async (req, res) => {
         }
     }
 
-    // CODE FINAL ...
+    // CODE FINAL ... (enlever tout le bloc if) //TODO
 });
 
 //Route pour se déconnecter

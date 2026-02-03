@@ -75,6 +75,9 @@ router.post("/upload", (req, res) => {
             customName = path.parse(uploadedFile.originalFilename).name;
         }
 
+        // Remove any non-alphanumeric characters
+        customName = customName.replace(/[^a-zA-Z0-9_-]/g, "");
+
         // Check file limit (max 10)
         const MAX_NB_FILES = 10;
         const justificationId = customName.split("-")[0];

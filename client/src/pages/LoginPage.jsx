@@ -17,11 +17,12 @@ function LoginPage() {
     const { login, loading } = useAuth();
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        setUser(user.trim().toLocaleLowerCase());
-        setPassword(password.trim());
         e.preventDefault();
+        const sanitizedUser = user.trim();
+        const sanitizedPassword = password.trim();
+
         try {
-            const role = await login(user, password);
+            const role = await login(sanitizedUser, sanitizedPassword);
             if (role === "admin") {
                 navigate("/admin/", { replace: true });
             } else if (role === "teacher") {
@@ -33,7 +34,11 @@ function LoginPage() {
             }
             toast.success("Connexion réussie.");
         } catch (error) {
-            toast.error(error.message.replaceAll('"', ""));
+            let msg = error.message.replaceAll('"', "");
+            if (msg.includes("Failed to fetch")) {
+                msg = "Impossible de contacter le serveur.";
+            }
+            toast.error(msg);
         }
     };
 
