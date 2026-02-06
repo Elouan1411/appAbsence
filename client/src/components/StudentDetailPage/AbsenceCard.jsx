@@ -9,7 +9,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import CustomLoader from "../common/CustomLoader";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, validite, motifValidite, courseType, nom, prenom, idAbsence, setToUpdate }) => {
+const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, validite, motifValidite, courseType, nom, prenom, idAbsence, setToUpdate, studentInfo }) => {
     // const navigate = useNavigate();
     // const { hasUnsavedChanges } = useUnsaved();
     // const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -22,6 +22,15 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const [isLoading, setLoading] = useState(false);
+
+    const handleJustify = () => {
+        safeNavigate("/admin/justification", {
+            state: {
+                prefilledPeriod: [fullPeriod],
+                studentInfo: studentInfo,
+            },
+        });
+    };
 
     const handleDeleteAbsence = async () => {
         const confirmation = await alertConfirm("Voulez-vous supprimer cette absence ?");
@@ -97,9 +106,16 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
                     <CustomLoader />
                 ) : (
                     <button className="delete-button" onClick={() => handleDeleteAbsence()}>
-                        <span className="icon icon-trash" />
+                        <span className="icon icon-trash icon-xxl" />
                     </button>
                 )}
+
+                {validite !== 0 && (
+                    <button onClick={handleJustify}>
+                        <span className="icon icon-justifier-admin icon-xxl icon-primary details-icon" />
+                    </button>
+                )}
+                
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
                     <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/detail-absence/" + idAbsence)} />

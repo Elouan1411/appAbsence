@@ -212,3 +212,7 @@
     -webkit-mask-image: url(../assets/download.svg);
 }
 
+.icon-justifier-admin {
+    mask-image: url(../assets/justifier-admin.svg);
+    -webkit-mask-image: url(../assets/justifier-admin.svg);
+}

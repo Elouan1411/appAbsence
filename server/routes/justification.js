@@ -455,6 +455,66 @@ router.post("/", verifyToken, (req, res) => {
 /*****************************************
  *           Méthodes UPDATE
  *****************************************/
+// Validation rapide d'une absence (crée et valide en une seule action)
+router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, res) => {
+    const idAbsence = req.params.idAbsence;
+    const { motif = "Justification validée par l'enseignant" } = req.body;
+
+    // Récupérer les informations de l'absence
+    const getAbsenceSql = `
+        SELECT A.numeroEtudiant, A.login, Ap.debut, Ap.fin
+        FROM Absence A
+        INNER JOIN Appel Ap ON A.idAppel = Ap.idAppel
+        WHERE A.idAbsence = ?
+    `;
+
+    db.get(getAbsenceSql, [idAbsence], (err, absence) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: err.message });
+        }
+        if (!absence) {
+            return res.status(404).json({ error: "Absence non trouvée" });
+        }
+
+        // Vérifier si une justification existe déjà
+        const checkJustifSql = `SELECT idAbsJustifiee, validite FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
+        
+        db.get(checkJustifSql, [idAbsence], (err, existingJustif) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: err.message });
+            }
+
+            if (existingJustif) {
+                // Si une justification existe, la mettre à jour
+                const updateSql = `UPDATE JustificationAbsence SET validite = 0, motifValidite = ? WHERE idAbsJustifiee = ?`;
+                db.run(updateSql, [motif, idAbsence], (err) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).json({ error: err.message });
+                    }
+                    return res.status(200).json({ message: "Absence marquée comme justifiée" });
+                });
+            } else {
+                // Sinon, créer une nouvelle justification
+                const insertSql = `
+                    INSERT INTO JustificationAbsence (idAbsJustifiee, numeroEtudiant, login, debut, fin, motif, validite, motifValidite, dateDemande)
+                    VALUES (?, ?, ?, ?, ?, ?, 0, ?, datetime('now'))
+                `;
+                
+                db.run(insertSql, [idAbsence, absence.numeroEtudiant, absence.login, absence.debut, absence.fin, motif, motif], (err) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).json({ error: err.message });
+                    }
+                    return res.status(200).json({ message: "Absence marquée comme justifiée" });
+                });
+            }
+        });
+    });
+});
+
 // Validation d'une justification
 router.put("/validate/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
