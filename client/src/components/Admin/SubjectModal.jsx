@@ -121,10 +121,10 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
 
                     <div className="modal-footer">
                         <div className="footer-buttons">
-                            <Button type="button" className="btn-cancel" onClick={onClose}>
+                            <Button type="button" className="btn-cancel validate-btn" onClick={onClose}>
                                 Annuler
                             </Button>
-                            <Button type="submit" className="btn-submit" disabled={isLoading}>
+                            <Button type="submit" className="btn-submit validate-btn" disabled={isLoading}>
                                 {isLoading ? <CustomLoader /> : (initialData ? "Modifier" : "Ajouter")}
                             </Button>
                         </div>
