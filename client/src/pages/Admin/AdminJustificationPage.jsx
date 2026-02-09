@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import PageTitle from "../../components/common/PageTitle";
 import ReasonInput from "../../components/AbsenceForm/ReasonInput";
 import PeriodAbsence from "../../components/AbsenceForm/PeriodAbsence";
@@ -15,6 +16,7 @@ import "../../style/Admin.css";
 import { API_URL } from "../../config";
 
 const AdminJustificationPage = () => {
+    const location = useLocation();
     const [allStudents, setAllStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
@@ -49,6 +51,25 @@ const AdminJustificationPage = () => {
         };
         fetchStudents();
     }, []);
+
+    useEffect(() => {
+        if (location.state && location.state.studentInfo && allStudents.length > 0) {
+            const student = allStudents.find((s) => s.loginENT === location.state.studentInfo.loginENT);
+            if (student) {
+                setSelectedStudent(student);
+            }
+        }
+
+        if (location.state && location.state.prefilledPeriod) {
+            const periodsWithIds = location.state.prefilledPeriod.map((p, index) => ({
+                ...p,
+                id: Date.now() + index,
+            }));
+            setPeriod(periodsWithIds);
+            setPeriodError(false);
+            setAutomaticPeriod(true);
+        }
+    }, [location.state, allStudents, setPeriodError]);
 
     useEffect(() => {
         if (searchTerm.length >= 1 && !selectedStudent) {

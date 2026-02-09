@@ -56,14 +56,14 @@ function LoginPage() {
                 </div>
                 <div className="input-container">
                     <InputField
-                        placeholder="votre.email@example.com"
-                        text="Email"
+                        placeholder="Login ENT"
+                        text="Identifiant"
                         value={user}
                         onChange={(e) => setUser(e.target.value)}
                         autocomplete="username"
                     />
                     <InputField
-                        placeholder="motdepasse"
+                        placeholder="Mot de passe"
                         text="Mot de passe"
                         type={showPassword ? "text" : "password"}
                         value={password}

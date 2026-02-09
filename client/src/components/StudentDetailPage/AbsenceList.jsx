@@ -99,22 +99,46 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                     <CustomLoader />
                 ) : absencesToShow.length > 0 ? (
                     <>
-                        {absencesToShow.map((absence, index) => (
-                            <AbsenceCard
-                                key={absence.idAbsence || index}
-                                subject={absence.libelle}
-                                startTime={dateFormatter(absence.debut)}
-                                endTime={dateFormatter(absence.fin)}
-                                justified={absence.justifie}
-                                validite={absence.validite}
-                                motifValidite={absence.motifValidite}
-                                nom={absence.nom}
-                                prenom={absence.prenom}
-                                courseType={absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"}
-                                idAbsence={absence.idAbsence}
-                                setToUpdate={setToUpdate}
-                            />
-                        ))}
+                        {absencesToShow.map((absence, index) => {
+                            const parseDateStr = (dateStr) => {
+                                if (!dateStr) return null;
+                                const str = String(dateStr);
+                                const year = parseInt(str.substring(0, 4));
+                                const month = parseInt(str.substring(4, 6)) - 1;
+                                const day = parseInt(str.substring(6, 8));
+                                const hour = parseInt(str.substring(8, 10));
+                                const minute = parseInt(str.substring(10, 12));
+                                return new Date(year, month, day, hour, minute);
+                            };
+
+                            return (
+                                <AbsenceCard
+                                    key={absence.idAbsence || index}
+                                    subject={absence.libelle}
+                                    startTime={dateFormatter(absence.debut)}
+                                    endTime={dateFormatter(absence.fin)}
+                                    fullPeriod={{
+                                        start: parseDateStr(absence.debut),
+                                        end: parseDateStr(absence.fin),
+                                        id: absence.idAbsence,
+                                    }}
+                                    justified={absence.justifie}
+                                    validite={absence.validite}
+                                    motifValidite={absence.motifValidite}
+                                    nom={absence.nom}
+                                    prenom={absence.prenom}
+                                    courseType={absence.groupeTP ? "TP" : absence.groupeTD ? "TD" : "CM"}
+                                    idAbsence={absence.idAbsence}
+                                    setToUpdate={setToUpdate}
+                                    studentInfo={{
+                                        nom: student.nom,
+                                        prenom: student.prenom,
+                                        loginENT: student.loginENT,
+                                        numero: student.numeroEtudiant,
+                                    }}
+                                />
+                            );
+                        })}
                         <Pagination onPageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
                     </>
                 ) : (
