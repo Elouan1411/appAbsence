@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Checkbox from "../Checkbox";
 
-export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
+export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput, centerText = false }) {
     const [isClosing, setIsClosing] = useState(false);
     const [localMotif, setLocalMotif] = useState("");
     const [localChecked, setLocalChecked] = useState(false);
@@ -36,8 +36,8 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput }) {
                     <h2 className="alert-title">{title}</h2>
                 </div>
                 <span className="separator"></span>
-                <div className="content" style={toInput ? { minHeight: "auto" } : {}}>
-                    <span>{message}</span>
+                <div className="content" style={{ ...(toInput ? { minHeight: "auto" } : {}), ...(centerText ? { textAlign: "center" } : {}) }}>
+                    <span style={centerText ? { textAlign: "center", width: "100%" } : {}}>{message}</span>
                     {toInput ? <span className="input-label">Veuillez saisir un motif :</span> : <></>}
                 </div>
 

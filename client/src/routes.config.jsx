@@ -14,6 +14,7 @@ import AbsenceDetailPage from "./pages/Admin/AbsenceDetailPage";
 import SettingsPage from "./pages/Admin/SettingsPage";
 import AdminJustificationPage from "./pages/Admin/AdminJustificationPage";
 import SettingMobilePage from "./pages/SettingsMobilePage";
+import InitPage from "./pages/InitPage";
 
 export const routesConfig = [
     {
@@ -52,5 +53,10 @@ export const routesConfig = [
             { path: "absence/:id", element: <StudentAbsenceDetailsPage />, icon: "icon-absences" },
             { path: "parametres", label: "Menu", element: <SettingMobilePage />, icon: "icon-settings" },
         ],
+    },
+    {
+        path: "/init",
+        allowedRoles: ["init"],
+        children: [{ index: true, label: "Configuration", element: <InitPage />, icon: "icon-settings-2" }],
     },
 ];

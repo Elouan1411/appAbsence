@@ -69,6 +69,13 @@ function isOwner(login) {
     };
 }
 
+function isInit(req, res, next) {
+    if (req.user.pwd.split("-")[1] === "init") {
+        return next();
+    }
+    res.status(403).json({ error: "Accès refusé" });
+}
+
 module.exports = {
     isAdmin,
     isAdminOrOwner,
@@ -76,4 +83,5 @@ module.exports = {
     verifyToken,
     isOwner,
     isTeacher,
+    isInit,
 };

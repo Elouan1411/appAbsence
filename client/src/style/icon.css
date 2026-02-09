@@ -216,3 +216,8 @@
     mask-image: url(../assets/justifier-admin.svg);
     -webkit-mask-image: url(../assets/justifier-admin.svg);
 }
+
+.icon-settings-2 {
+    mask-image: url(../assets/settings-2.svg);
+    -webkit-mask-image: url(../assets/settings-2.svg);
+}

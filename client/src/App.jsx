@@ -125,6 +125,8 @@ const getHomeRoute = (role) => {
             return "/enseignant";
         case "student":
             return "/etudiant";
+        case "init":
+            return "/init";
         default:
             return "/";
     }
