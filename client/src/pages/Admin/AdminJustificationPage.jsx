@@ -32,6 +32,9 @@ const AdminJustificationPage = () => {
     const { submit, isSubmitting } = useJustificationSubmit();
     const [isLoading, setIsLoading] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
+    const [waitingLoading, setWaitingLoading] = useState(false);
+    const [refuseLoading, setRefuseLoading] = useState(false);
+    const [acceptLoading, setAcceptLoading] = useState(false);
 
     useEffect(() => {
         const fetchStudents = async () => {

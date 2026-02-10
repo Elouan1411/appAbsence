@@ -24,6 +24,7 @@
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: wrap;
+    margin: 1rem;
 }
 
 .select-item {
@@ -129,7 +130,6 @@
 
     .grid-container {
         padding: 0 15px 100px 15px;
-        width: unset;
     }
 }
 
