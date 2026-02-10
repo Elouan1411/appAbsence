@@ -120,7 +120,7 @@ router.get("/", verifyToken, (req, res) => {
 //Route pour se connecter
 router.post("/login", async (req, res) => {
     const { user, pwd } = req.body;
-    console.log({ user, pwd });
+    // console.log({ user, pwd });
 
     // CODE DEV
     if (users[user] != undefined) {
