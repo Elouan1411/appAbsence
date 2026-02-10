@@ -58,6 +58,47 @@ async function haveAdmin() {
     return await admin;
 }
 
+/**
+ * Get the role of the user
+ * and return it
+ */
+async function getRole(user) {
+    let sql = `SELECT * FROM Eleve WHERE loginENT = ?`;
+    const student = new Promise((resolve, reject) => {
+        db.all(sql, [user], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.length > 0);
+        });
+    });
+
+    sql = `SELECT * FROM Professeur WHERE loginENT = ?`;
+    const teacher = new Promise((resolve, reject) => {
+        db.all(sql, [user], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.length > 0);
+        });
+    });
+
+    // admin if administrator = 1
+    sql = `SELECT * FROM Professeur WHERE loginENT = ? AND administrateur = 1`;
+    const admin = new Promise((resolve, reject) => {
+        db.all(sql, [user], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.length > 0);
+        });
+    });
+    return (await admin) ? "admin" : (await teacher) ? "teacher" : (await student) ? "student" : "unknown";
+}
+
 /*****************************************
  *            Méthodes GET
  *****************************************/
@@ -119,13 +160,18 @@ router.post("/login", async (req, res) => {
         } else if (!(await haveAccount(user))) {
             res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else {
-            const token = createToken(user + "-" + authentification.role);
+            const role = await getRole(user);
+            console.log("mon role : ", role);
+            if (role == "unknown") {
+                return res.status(401).json("Identifiants ou mot de passe incorrects");
+            }
+            const token = createToken(user + "-" + role);
             res.cookie("jwt", token, {
                 httpOnly: true,
                 maxAge: maxAge,
                 sameSite: "strict",
             });
-            res.status(200).json(authentification.role);
+            res.status(200).json(role);
         }
     }
 
