@@ -12,10 +12,11 @@ function InputField({
     rightIcon,
     onRightIconClick,
     autocomplete,
+    name,
 }) {
     return (
         <div className={`input ${error ? "input-error-form" : ""}`} style={style}>
-            <div className="label-container">
+            <div className="label-container" style={{ marginBottom: "8px" }}>
                 <p>{text}</p>
             </div>
             <div style={{ position: "relative", width: "100%" }}>
@@ -28,6 +29,7 @@ function InputField({
                     className={error ? "border-red" : ""}
                     style={{ paddingRight: "15px" }}
                     autoComplete={autocomplete}
+                    name={name}
                 />
                 {rightIcon && (
                     <div

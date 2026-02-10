@@ -5,7 +5,7 @@
   "main": "start.js",
   "scripts": {
     "dev": "concurrently -n \"serveur,client\" -c \"yellow,cyan\" \"cd server && nodemon index.js\" \"cd client && npm run dev\"",
-    "prod": "cd client && npm run build && concurrently -n \"server,open\" -c \"yellow,blue\" \"cd ../server && node index.js\" \"sleep 3 && xdg-open http://localhost:3000\""
+    "prod": "cd client && npm run build && concurrently -n \"server,open\" -c \"yellow,blue\" \"cd ../server && node index.js\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

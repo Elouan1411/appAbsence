@@ -3,7 +3,7 @@ import { ConfirmAlert } from "../components/common/Alert/ConfirmAlert";
 import React from "react";
 
 const TOAST_ID = "unique-confirm-alert";
-export function alertConfirm(title, message, toInput = false) {
+export function alertConfirm(title, message, toInput = false, centerText = false) {
     return new Promise((resolve) => {
         toast.custom(
             (t) => (
@@ -11,6 +11,7 @@ export function alertConfirm(title, message, toInput = false) {
                     title={title}
                     message={message}
                     toInput={toInput}
+                    centerText={centerText}
                     onConfirm={(motifSaisi, type) => {
                         toast.remove(t.id);
                         resolve({ isConfirmed: true, motif: motifSaisi, type: type });
