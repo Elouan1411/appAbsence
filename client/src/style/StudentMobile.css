@@ -81,15 +81,26 @@
         text-decoration: none;
     }
 
+    .student-justification-container {
+        min-height: 85vh;
+        height: auto;
+    }
+
     .studentJustificationPage {
         width: 100%;
         max-width: 100%;
-        height: auto;
-        margin-top: 20px;
+        /* height: auto; */
+        margin-top: 0px;
         padding: 0 16px;
         margin-left: 0;
         margin-right: 0;
         box-sizing: border-box;
+    }
+
+    .mobile-spacer {
+        height: 120px;
+        display: block;
+        width: 100%;
     }
 
     .student-dashboard-container {

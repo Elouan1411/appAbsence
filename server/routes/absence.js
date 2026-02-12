@@ -71,7 +71,8 @@ FROM Absence
 INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
 INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT
 INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
-WHERE numeroEtudiant = ?`;
+WHERE numeroEtudiant = ?
+ORDER BY Appel.debut DESC`;
     db.all(sql, [id], (err, rows) => {
         if (err) {
             return res.status(500).json(err);

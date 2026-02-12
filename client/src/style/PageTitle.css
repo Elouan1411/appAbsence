@@ -21,3 +21,9 @@ div > div.title-container {
     min-width: 90%;
     max-width: 99%;
 }
+
+@media (max-width: 768px) {
+    .all-title-container {
+        max-width: 700px;
+    }
+}

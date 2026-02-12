@@ -379,6 +379,7 @@ function StudentHomePage() {
                     </>
                 )}
             </div>
+            <div className="mobile-spacer"></div>
             {isSelectionMode && selectedIds.length > 0 && (
                 <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
             )}

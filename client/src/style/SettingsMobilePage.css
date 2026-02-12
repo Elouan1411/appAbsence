@@ -23,8 +23,14 @@
 }
 
 @media (max-width: 768px) {
+    .settings-mobile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .settings-mobile-subcontainer {
         margin: 10px;
+        width: calc(100vw - 20px);
     }
     .settings-mobile-subcontainer h3 {
         margin-bottom: 0;
