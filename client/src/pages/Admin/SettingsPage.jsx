@@ -50,6 +50,7 @@ function SettingsPage() {
     const [selectedYear, setSelectedYear] = useState("");
 
     const [isExportXLSXLoading, setIsExportXLSXLoading] = useState(false);
+    const [isExportRSELoading, setIsExportRSELoading] = useState(false);
     const [isDownloadAllJustifLoading, setIsDownloadAllJustifLoading] = useState(false);
     const [isDownloadYearJustifLoading, setIsDownloadYearJustifLoading] = useState(false);
     const [isDeleteAllJustifLoading, setIsDeleteAllJustifLoading] = useState(false);
@@ -476,6 +477,15 @@ function SettingsPage() {
     };
 
 
+    const handleExportRSE = async () => {
+        handleDatabaseExport(
+            "/rse/export",
+            "export_rse.xlsx",
+            "Fichier RSE exporté avec succès.",
+            setIsExportRSELoading
+        );
+    };
+
     const handleDatabaseExport = async (endpoint, defaultFilename, successMessage, setLoading) => {
         try {
             setLoading(true);
@@ -803,6 +813,14 @@ function SettingsPage() {
                                         disabled={isExportXLSXLoading}
                                     >
                                         {isExportXLSXLoading ? <CustomLoader /> : "Exporter structure + données (.xlsx)"}
+                                    </button>
+
+                                    <button
+                                        onClick={handleExportRSE}
+                                        className="validate-btn settings-input-margin-fix"
+                                        disabled={isExportRSELoading}
+                                    >
+                                        {isExportRSELoading ? <CustomLoader /> : "Exporter RSE (.xlsx)"}
                                     </button>
 
                                     <button

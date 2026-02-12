@@ -17,6 +17,95 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
     });
 });
 
+const ExcelJS = require("exceljs");
+// Export des étudiants et leurs RSE
+router.get("/export", verifyToken, isAdmin, async (req, res) => {
+    try {
+        const sqlStudents = "SELECT numero, nom, prenom FROM Eleve ORDER BY nom, prenom";
+        const sqlRSE = "SELECT code, libelle FROM RSE ORDER BY code";
+        const sqlRSEAnnee = "SELECT numeroEtudiant, codeRSE FROM RSEAnnee";
+
+        const p1 = new Promise((resolve, reject) => {
+            db.all(sqlStudents, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        const p2 = new Promise((resolve, reject) => {
+            db.all(sqlRSE, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        const p3 = new Promise((resolve, reject) => {
+            db.all(sqlRSEAnnee, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        const [students, rseTypes, rseAnnee] = await Promise.all([p1, p2, p3]);
+
+        // Organiser les données RSEAnnee pour un accès facile
+        // Map<studentId, Set<rseCode>>
+        const studentRSEMap = {};
+        rseAnnee.forEach((row) => {
+            if (!studentRSEMap[row.numeroEtudiant]) {
+                studentRSEMap[row.numeroEtudiant] = new Set();
+            }
+            studentRSEMap[row.numeroEtudiant].add(row.codeRSE);
+        });
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("RSE Etudiants");
+
+        // Création des colonnes
+        const columns = [
+            { header: "Numéro Etudiant", key: "numero", width: 15 },
+            { header: "Nom", key: "nom", width: 20 },
+            { header: "Prénom", key: "prenom", width: 20 },
+        ];
+
+        // Ajouter une colonne par type de RSE
+        rseTypes.forEach((rse) => {
+            columns.push({ header: rse.libelle, key: `rse_${rse.code}`, width: 15 });
+        });
+
+        worksheet.columns = columns;
+
+        // Ajouter les données
+        students.forEach((student) => {
+            const rowData = {
+                numero: student.numero,
+                nom: student.nom,
+                prenom: student.prenom,
+            };
+
+            const studentRSEs = studentRSEMap[student.numero] || new Set();
+
+            rseTypes.forEach((rse) => {
+                rowData[`rse_${rse.code}`] = studentRSEs.has(rse.code);
+            });
+
+            worksheet.addRow(rowData);
+        });
+        
+        const filename = `export_rse_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (err) {
+        console.error("Erreur export RSE:", err);
+        res.status(500).json({ error: "Erreur lors de l'export Excel" });
+    }
+});
+
 /*****************************************
  *             Méthodes POST
  *****************************************/
