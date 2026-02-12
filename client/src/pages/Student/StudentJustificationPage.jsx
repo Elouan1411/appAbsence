@@ -79,7 +79,7 @@ const StudentJustificationPage = () => {
     return (
         <div className="student-justification-container">
             <div className="studentJustificationPage">
-                <PageTitle title="Justifier une absence" icon={"icon-justification-student"} canGoBack={true} />
+                <PageTitle title="Justifier une absence" icon={"icon-justification-student"} canGoBack={location.state} />
                 <PeriodAbsence
                     period={period}
                     setPeriod={handlePeriodChange}

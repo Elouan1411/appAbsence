@@ -73,7 +73,8 @@ function SettingsPage() {
             const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
             if (response.ok) {
                 const data = await response.json();
-                setContactEmail(data.contact_email || "");
+                console.log(data);
+                setContactEmail(data || "");
             }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'email de contact:", error);

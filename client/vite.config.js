@@ -7,6 +7,9 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: "autoUpdate",
+            devOptions: {
+                enabled: true, //PROD: not recommended for production
+            },
             includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
             manifest: {
                 name: "Gestion Absences",
@@ -15,6 +18,9 @@ export default defineConfig({
                 theme_color: "#3e7e86",
                 background_color: "#ffffff",
                 display: "standalone",
+                start_url: "/",
+                scope: "/",
+                id: "/",
                 icons: [
                     {
                         src: "pwa-192x192.png",
@@ -45,4 +51,7 @@ export default defineConfig({
             },
         }),
     ],
+    server: {
+        allowedHosts: true, //PROD: not recommended for production (use allowedHosts: ['mon-app-absences.com'] for production)
+    },
 });
