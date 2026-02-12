@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import SubjectModal from "../../components/Admin/SubjectModal";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
+import DatabaseResetCard from "../../components/Settings/DatabaseResetCard";
 
 function SettingsPage() {
     const { user } = useContext(AuthContext);
@@ -418,12 +419,15 @@ function SettingsPage() {
                 a.remove();
                 window.URL.revokeObjectURL(url);
                 toast.success(successMessage);
+                return true;
             } else {
                 toast.error("Erreur lors de l'export.");
+                return false;
             }
         } catch (err) {
             console.error(err);
             toast.error("Erreur connexion serveur.");
+            return false;
         } finally {
             setLoading(false);
         }
@@ -743,6 +747,10 @@ function SettingsPage() {
                                 </button>
                             </div>
                         </div>
+
+                        <DatabaseResetCard
+                            onExportDump={() => handleDatabaseExport("/database/dump", "backup_complete.sql", "Sauvegarde effectuée.", () => {})}
+                        />
                     </div>
                 )}
             </div>

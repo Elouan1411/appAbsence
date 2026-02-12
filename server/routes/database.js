@@ -152,4 +152,130 @@ router.get("/xlsx-tables", verifyToken, isAdmin, async (req, res) => {
         res.status(500).json({ error: "Erreur serveur lors de l'export Excel" });
     }
 });
+
+router.delete("/reset-specific", verifyToken, isAdmin, async (req, res) => {
+    try {
+        const tables = ["JustificationAbsence", "Absence", "Appel", "RSEAnnee", "Eleve"];
+
+        db.serialize(() => {
+            db.run("BEGIN TRANSACTION");
+
+            tables.forEach((table) => {
+                db.run(`DELETE FROM ${table}`, (err) => {
+                    if (err) {
+                        console.error(`Erreur suppression ${table}:`, err);
+                    }
+                });
+                db.run(`DELETE FROM sqlite_sequence WHERE name='${table}'`);
+            });
+
+            db.run("COMMIT", (err) => {
+                if (err) {
+                    console.error("Erreur commit reset:", err);
+                    return res.status(500).json({ error: "Erreur lors de la réinitialisation." });
+                }
+                res.json({ message: "Données réinitialisées avec succès (Appel, Absence, Eleve, Justif, RSE)." });
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur serveur lors de la réinitialisation." });
+    }
+});
+
+router.delete("/reset-full", verifyToken, isAdmin, async (req, res) => {
+    try {
+        const tables = ["JustificationAbsence", "Absence", "Appel", "RSEAnnee", "RSE", "Eleve", "Matiere", "Professeur"];
+
+        db.serialize(() => {
+            db.run("BEGIN TRANSACTION");
+
+            tables.forEach((table) => {
+                db.run(`DELETE FROM ${table}`, (err) => {
+                    if (err) {
+                        console.error(`Erreur suppression ${table}:`, err);
+                    }
+                });
+                db.run(`DELETE FROM sqlite_sequence WHERE name='${table}'`);
+            });
+
+            db.run("COMMIT", (err) => {
+                if (err) {
+                    console.error("Erreur commit reset full:", err);
+                    return res.status(500).json({ error: "Erreur lors de la réinitialisation complète." });
+                }
+                res.cookie("jwt", "", { maxAge: 1 });
+                res.json({ message: "Base de données entièrement réinitialisée." });
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur serveur lors de la réinitialisation complète." });
+    }
+});
+
+const formidable = require("formidable");
+const fs = require("fs");
+
+router.post("/restore", verifyToken, isAdmin, (req, res) => {
+    const form = new formidable.IncomingForm({ keepExtensions: true });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.error("Erreur parsing form:", err);
+            return res.status(500).json({ error: "Erreur lors de l'upload du fichier." });
+        }
+
+        const file = Array.isArray(files.file) ? files.file[0] : files.file;
+        if (!file) {
+            return res.status(400).json({ error: "Aucun fichier fourni." });
+        }
+
+        const tables = ["JustificationAbsence", "Absence", "Appel", "RSEAnnee", "RSE", "Eleve", "Matiere", "Professeur"];
+
+        fs.readFile(file.filepath, "utf8", (readErr, sqlContent) => {
+            if (readErr) {
+                console.error("Erreur lecture fichier:", readErr);
+                return res.status(500).json({ error: "Erreur lors de la lecture du fichier." });
+            }
+
+            // only execute insert but not create table...
+            const cleanSql = sqlContent
+                .replace(/CREATE TABLE[\s\S]+?;/gi, "")
+                .replace(/PRAGMA[\s\S]+?;/gi, "")
+                .replace(/BEGIN TRANSACTION;/gi, "")
+                .replace(/COMMIT;/gi, "");
+
+            db.serialize(() => {
+                db.run("BEGIN TRANSACTION");
+
+                tables.forEach((table) => {
+                    db.run(`DELETE FROM ${table}`);
+                    db.run(`DELETE FROM sqlite_sequence WHERE name='${table}'`);
+                });
+
+                db.exec(cleanSql, (execErr) => {
+                    if (fs.existsSync(file.filepath)) {
+                        fs.unlinkSync(file.filepath);
+                    }
+
+                    if (execErr) {
+                        console.error("Erreur execution SQL restore:", execErr);
+                        db.run("ROLLBACK");
+                        return res.status(400).json({ error: "Erreur SQL: " + execErr.message });
+                    }
+
+                    db.run("COMMIT", (commitErr) => {
+                        if (commitErr) {
+                            console.error("Commit error:", commitErr);
+                            return res.status(500).json({ error: "Erreur lors de la validation de la restauration." });
+                        }
+                        res.json({ message: "Base de données restaurée avec succès." });
+                    });
+                });
+            });
+        });
+    });
+});
+
 module.exports = router;

@@ -161,7 +161,6 @@ router.post("/login", async (req, res) => {
             res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else {
             const role = await getRole(user);
-            console.log("mon role : ", role);
             if (role == "unknown") {
                 return res.status(401).json("Identifiants ou mot de passe incorrects");
             }
@@ -216,20 +215,8 @@ router.post("/register-first-admin", verifyToken, isInit, async (req, res) => {
 
 //Route pour se déconnecter
 router.post("/logout", (req, res) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        res.cookie("jwt", "", { maxAge: 1 });
-        res.status(200).json({ succès: "Déconnecté" });
-    }
+    res.cookie("jwt", "", { maxAge: 1 });
+    res.status(200).json({ succès: "Déconnecté" });
 });
-
-//Route pour s'inscrire
-// router.post("/register", (req, res) => {
-//     // TODO: - Faire la route pour l'inscription
-// });
-
-// router.get("/role", verifyToken, (req, res) => {
-//   res.status(200).json(de)
-// });
 
 module.exports = router;

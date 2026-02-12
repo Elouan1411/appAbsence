@@ -202,7 +202,7 @@
 
 .settings-db-export-card h2 {
     margin-bottom: 0.5rem;
-    width: 100%;
+    /* width: 100%; */
 }
 
 .settings-db-justif-card {
@@ -234,41 +234,89 @@
     flex: 1;
 }
 
-.settings-btn-danger {
-    background-color: var(--error-color) !important;
-    border: none !important;
-    color: white !important;
+main div.Card.cols-2.settings-db-reset-card button.validate-btn {
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: none;
 }
 
-.settings-db-separator {
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    margin: 20px 0;
+button.validate-btn.settings-btn-danger {
+    background-color: var(--error-color);
+    color: white;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+button.validate-btn.settings-btn-danger:hover {
+    background-color: #991b1b;
+    opacity: 1;
+}
+
+.settings-reset-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    text-align: center;
+}
+
+.settings-reset-main-title {
+    /* width: 100%; */
+    margin-bottom: 1.5rem;
+}
+
+.settings-reset-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+.settings-reset-section-title {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.settings-reset-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.settings-reset-actions-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
     width: 100%;
 }
 
-.settings-db-subtitle {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-    margin-top: 0;
-    font-weight: 600;
+.settings-reset-btn-wrapper {
+    flex: 1;
+    min-width: 200px;
 }
 
-.settings-db-info-text {
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+.settings-reset-separator {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid var(--text-secondary);
+    opacity: 0.2;
+    margin: 0;
 }
 
-.settings-db-info-text strong {
-    color: var(--text-primary);
-}
-
-.Card.cols-2 > h2 {
-    margin-bottom: 20px;
-}
-
-.Card.cols-2 > button {
-    margin-top: 20px;
+.settings-reset-margin-top {
+    margin-top: 0.5rem;
 }
