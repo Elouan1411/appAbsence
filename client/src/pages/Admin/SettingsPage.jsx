@@ -10,6 +10,7 @@ import "../../style/SettingsPage.css";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import SubjectModal from "../../components/Admin/SubjectModal";
+import RSEModal from "../../components/Admin/RSEModal";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 
@@ -24,16 +25,21 @@ function SettingsPage() {
 
     const [promotions, setPromotions] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const [rses, setRses] = useState([]);
 
     const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
+    const [isRSEModalOpen, setIsRSEModalOpen] = useState(false);
     const [editingSubject, setEditingSubject] = useState(null);
+    const [editingRSE, setEditingRSE] = useState(null);
 
     const [filterPromo, setFilterPromo] = useState("");
     const [filterSemester, setFilterSemester] = useState("");
 
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
+    const [isRSELoading, setIsRSELoading] = useState(false);
     const [isAdminLoading, setIsAdminLoading] = useState(false);
     const [deletingSubjectId, setDeletingSubjectId] = useState(null);
+    const [deletingRSEId, setDeletingRSEId] = useState(null);
 
     const [isSchemaStructureLoading, setisSchemaStructureLoading] = useState(false);
     const [isBackUpSQLLoading, setIsBackUpSQLLoading] = useState(false);
@@ -103,6 +109,7 @@ function SettingsPage() {
         fetchPromotions();
         fetchTeachers();
         fetchSubjects();
+        fetchRSEs();
         fetchContactEmail();
     }, []);
 
@@ -388,6 +395,87 @@ function SettingsPage() {
         return promoMatch && semesterMatch;
     });
 
+    const fetchRSEs = async () => {
+        try {
+            const response = await fetch(`${API_URL}/rse`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setRses(data);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des RSE:", error);
+        }
+    };
+
+    const handleSaveRSE = async (formData) => {
+        const { libelle } = formData;
+
+        try {
+            setIsRSELoading(true);
+            let response;
+            if (editingRSE) {
+                response = await fetch(`${API_URL}/rse/update/${editingRSE.code}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ libelle }),
+                    credentials: "include",
+                });
+            } else {
+                response = await fetch(`${API_URL}/rse/add`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ libelle }),
+                    credentials: "include",
+                });
+            }
+
+            if (response.ok) {
+                toast.success(editingRSE ? "RSE modifié avec succès !" : "RSE ajouté avec succès !");
+                fetchRSEs();
+                setIsRSEModalOpen(false);
+                setEditingRSE(null);
+            } else {
+                toast.error("Erreur lors de l'enregistrement.");
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur de communication avec le serveur.");
+        } finally {
+            setIsRSELoading(false);
+        }
+    };
+
+    const handleEditRSE = (rse) => {
+        setEditingRSE(rse);
+        setIsRSEModalOpen(true);
+    };
+
+    const handleDeleteRSE = async (id) => {
+        const { isConfirmed } = await alertConfirm("Supprimer ce RSE ?", "Cette action est irréversible.");
+        if (isConfirmed) {
+            try {
+                setDeletingRSEId(id);
+                const response = await fetch(`${API_URL}/rse/${id}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+
+                if (response.ok) {
+                    toast.success("RSE supprimé.");
+                    fetchRSEs();
+                } else {
+                    toast.error("Erreur lors de la suppression.");
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("Erreur de communication avec le serveur.");
+            } finally {
+                setDeletingRSEId(null);
+            }
+        }
+    };
+
+
     const handleDatabaseExport = async (endpoint, defaultFilename, successMessage, setLoading) => {
         try {
             setLoading(true);
@@ -445,6 +533,19 @@ function SettingsPage() {
                         Ajouter
                     </button>
                 )}
+                {activeTab === "rse" && (
+                    <button
+                        className="validate-btn"
+                        style={{ padding: "0.5rem 1rem", display: "flex", alignItems: "center", gap: "0.5rem", borderRadius: "15px" }}
+                        onClick={() => {
+                            setEditingRSE(null);
+                            setIsRSEModalOpen(true);
+                        }}
+                    >
+                        <span className="icon icon-plus" style={{ backgroundColor: "white" }}></span>
+                        Ajouter
+                    </button>
+                )}
             </PageTitle>
 
             <div className="adding-container">
@@ -456,6 +557,10 @@ function SettingsPage() {
                     <button className={`dashboard-tab ${activeTab === "subject" ? "active" : ""}`} onClick={() => setActiveTab("subject")}>
                         <span className="tab-dot"></span>
                         Matières
+                    </button>
+                    <button className={`dashboard-tab ${activeTab === "rse" ? "active" : ""}`} onClick={() => setActiveTab("rse")}>
+                        <span className="tab-dot"></span>
+                        RSE
                     </button>
                     <button className={`dashboard-tab ${activeTab === "database" ? "active" : ""}`} onClick={() => setActiveTab("database")}>
                         <span className="tab-dot"></span>
@@ -614,6 +719,61 @@ function SettingsPage() {
                                                     ) : (
                                                         <span className="icon settings-icon icon-trash icon-xl" />
                                                     )}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
+                {activeTab === "rse" && (
+                    <div
+                        className="layout-container"
+                        style={{ display: "flex", flexDirection: "column", gap: "2rem", width: "-webkit-fill-available", margin: "10px" }}
+                    >
+                        <RSEModal
+                            isOpen={isRSEModalOpen}
+                            onClose={() => {
+                                setIsRSEModalOpen(false);
+                                setEditingRSE(null);
+                            }}
+                            onSubmit={handleSaveRSE}
+                            initialData={editingRSE}
+                            isLoading={isRSELoading}
+                        />
+
+                        <div>
+                            <div className="settings-card-subtitle-container">
+                                <h3 className="settings-card-subtitle">RSE enregistrés</h3>
+                                <button onClick={() => setIsRSEModalOpen(true)} className="validate-btn settings-input-margin-fix">
+                                    Ajouter un RSE
+                                </button>
+                            </div>
+                            <div className="settings-grid">
+                                {rses.length === 0 ? (
+                                    <p style={{ textAlign: "center", color: "var(--text-secondary)", gridColumn: "1 / -1" }}>Aucun RSE trouvé.</p>
+                                ) : (
+                                    rses.map((rse) => (
+                                        <div key={rse.code} className="settings-list-item">
+                                            <div style={{ flex: 1 }}>
+                                                <div className="settings-item-info">{rse.libelle}</div>
+                                            </div>
+                                            <div className="settings-item-actions">
+                                                <button onClick={() => handleEditRSE(rse)} className="settings-icon-button" title="Modifier">
+                                                    <span className="icon settings-icon icon-edit icon-xl" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleDeleteRSE(rse.code)}
+                                                    className="settings-icon-button"
+                                                    title="Supprimer"
+                                                    disabled={deletingRSEId === rse.code}
+                                                >
+                                                    {deletingRSEId === rse.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl" />}
                                                 </button>
                                             </div>
                                         </div>

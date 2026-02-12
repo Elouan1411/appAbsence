@@ -142,4 +142,44 @@ router.put("/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
             });
     });
 });
+//Insertion d'un nouveau RSE (indépendant)
+router.post("/add", verifyToken, isAdmin, (req, res) => {
+    const { libelle } = req.body;
+    const sql = "INSERT INTO RSE (libelle) VALUES (?)";
+
+    db.run(sql, [libelle], function (err) {
+        if (err) return res.status(500).json(err.message);
+        res.status(200).json({ id: this.lastID, message: "RSE ajouté avec succès" });
+    });
+});
+
+// Modification d'un RSE
+router.put("/update/:id", verifyToken, isAdmin, (req, res) => {
+    const { id } = req.params;
+    const { libelle } = req.body;
+    const sql = "UPDATE RSE SET libelle = ? WHERE code = ?";
+
+    db.run(sql, [libelle, id], function (err) {
+        if (err) return res.status(500).json(err.message);
+        res.status(200).json({ message: "RSE modifiée avec succès" });
+    });
+});
+
+// Suppression d'un RSE
+router.delete("/:id", verifyToken, isAdmin, (req, res) => {
+    const { id } = req.params;
+    // On supprime d'abord les associations dans RSEAnnee pour éviter les orphelins (si pas de CASCADE)
+    const sqlDeleteAssoc = "DELETE FROM RSEAnnee WHERE codeRSE = ?";
+    const sqlDeleteRSE = "DELETE FROM RSE WHERE code = ?";
+
+    db.run(sqlDeleteAssoc, [id], function (err) {
+        if (err) return res.status(500).json(err.message);
+
+        db.run(sqlDeleteRSE, [id], function (err) {
+            if (err) return res.status(500).json(err.message);
+            res.status(200).json({ message: "RSE supprimé avec succès" });
+        });
+    });
+});
+
 module.exports = router;
