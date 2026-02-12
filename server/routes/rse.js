@@ -86,7 +86,7 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
             const studentRSEs = studentRSEMap[student.numero] || new Set();
 
             rseTypes.forEach((rse) => {
-                rowData[`rse_${rse.code}`] = studentRSEs.has(rse.code);
+                rowData[`rse_${rse.code}`] = studentRSEs.has(rse.code) ? "oui" : "non";
             });
 
             worksheet.addRow(rowData);
