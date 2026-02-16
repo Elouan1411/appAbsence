@@ -24,6 +24,14 @@ div > div.title-container {
 
 @media (max-width: 768px) {
     .all-title-container {
-        max-width: 700px;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    div > div.title-container {
+        width: auto;
+        min-width: 0;
+        flex: 1;
     }
 }
