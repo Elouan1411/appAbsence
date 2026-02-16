@@ -1,0 +1,180 @@
+:root {
+    --primary-color: #3e7e86;
+    --background-color: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --cell-ignored-color: #9ca3af;
+    --input-bg: #f9fafb;
+    --upload-success-color: #10b981;
+}
+
+body.dark {
+    --background-color: #121212;
+    --card-bg: #1e1e24;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaaaaa;
+    --icon-color: #ffffff;
+    --cell-ignored-background: #1e1e24;
+    --autofilled-color: #666666;
+    --border-color: #4b5563;
+    --primary-color-rgb: 62, 126, 134;
+    --input-bg: #2a2a30;
+    --modal-bg: #24242a;
+    --dropzone-border: #4b5563;
+    --dropzone-bd: #4b5563;
+    --cloud-icon-bg: rgba(59, 130, 246, 0.2);
+    --file-item-bg: rgba(16, 185, 129, 0.1);
+    --file-item-border: rgba(16, 185, 129, 0.2);
+    --file-item-hover-border: #10b981;
+    --file-icon-bg: #2d3748;
+    --file-item-deletable-hover-bg: rgba(239, 68, 68, 0.1);
+    --file-item-deletable-hover-border: var(--error-color);
+    --header-background-color: color-mix(in srgb, #1e1e24, #fff 7.000000000000001%);
+    --dashboard-content-bg: var(--card-bg);
+    --badge-bg: rgba(239, 68, 68, 0.2);
+    --justified-badge-bg: rgba(68, 239, 68, 0.2);
+    --badge-text: #f87171;
+    --justified-badge-text: #71f871;
+    --badge-pending-bg: rgba(59, 130, 246, 0.2);
+    --badge-pending-text: #60a5fa;
+    --badge-validated-bg: rgba(34, 197, 94, 0.2);
+    --badge-validated-text: #4ade80;
+    --badge-refused-bg: rgba(239, 68, 68, 0.2);
+    --badge-refused-text: #f87171;
+    --pending-color: #60a5fa;
+    --tab-border-color: var(--border-color);
+    --row-duplicate: #3b83f697;
+    --background-warning: #332701;
+    --warning-color: #ffcd39;
+    --upload-success-color: #10b981;
+    --card-shadow: 0 0 0 1px rgba(255, 255, 255, 0.025), 0 6px 20px rgba(255, 255, 255, 0.06);
+    --card-shadow-hover: 0 0 0 1px rgba(255, 255, 255, 0.045), 0 10px 30px rgba(255, 255, 255, 0.11);
+}
+
+body.light {
+    --background-color: #fff;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --icon-color: #000000;
+    --cell-ignored-background: #e5e7eb;
+    --autofilled-color: #bfc5c5;
+    --border-color: #ced4da;
+    --primary-color-rgb: 62, 126, 134;
+    --input-bg: #f8f9fa;
+    --modal-bg: #f9fafb;
+    --dropzone-border: #cbd5e1;
+    --dropzone-bd: #cbd5e1;
+    --cloud-icon-bg: #eff6ff;
+    --file-item-bg: #ecfdf5;
+    --file-item-bg-hover: rgb(250, 209, 209);
+    --file-item-border: #d1fae5;
+    --file-item-hover-border: #34d399;
+    --file-icon-bg: #ffffff;
+    --file-item-deletable-hover-bg: rgba(239, 68, 68, 0.05);
+    --file-item-deletable-hover-border: var(--error-color, #ef4444);
+    --header-background-color: color-mix(in srgb, #fff, #181d1f 15.000000000000001%);
+    --dashboard-content-bg: #ffffff;
+    --badge-bg: #fee2e2;
+    --justified-badge-bg: #e2fee2;
+    --badge-text: #ef4444;
+    --justified-badge-text: #44ef44;
+    --badge-pending-bg: #dbeafe;
+    --badge-pending-text: #1e40af;
+    --badge-validated-bg: #dcfce7;
+    --badge-validated-text: #166534;
+    --badge-refused-bg: #fef2f2;
+    --badge-refused-text: #b91c1c;
+    --dot-color: #f87171;
+    --pending-color: #60a5fa;
+    --tab-border-color: #334155;
+    --row-duplicate: #649fff97;
+    --background-warning: #fff3cd;
+    --warning-color: #664d03;
+    --upload-success-color: #10b981;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.18), 0 6px 12px rgba(0, 0, 0, 0.14);
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+h2 {
+    color: var(--text-primary);
+}
+
+.layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+main {
+    flex: 1;
+    overflow: auto;
+    background-color: var(--background-color);
+}
+
+.icon-big {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color, var(--text-secondary));
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    flex-shrink: 0;
+}
+
+.toaster {
+    background-color: var(--cell-ignored-background);
+}
+
+@media (max-width: 768px) {
+    .icon-big {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-primary);
+}
+
+.btn-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: var(--card-shadow);
+}
