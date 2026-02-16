@@ -298,7 +298,7 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
 // Récuperer les justifications d'un etudiant pour une periode données ainsi que ca validité
 router.post("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) => {
     let body = req.body;
-    let userLogins = body.studentIds; 
+    let userLogins = body.studentIds;
     let start = body.start;
     let end = body.end;
 
@@ -307,8 +307,8 @@ router.post("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) 
     }
 
     const placeholders = userLogins.map(() => "?").join(",");
-    const userLoginsString = userLogins.map(id => String(id));
-    
+    const userLoginsString = userLogins.map((id) => String(id));
+
     const sql = `SELECT numeroEtudiant, validite FROM JustificationAbsence 
                  WHERE numeroEtudiant IN (${placeholders}) 
                  AND debut <= ? AND fin >= ?`;
@@ -375,7 +375,7 @@ router.post("/", verifyToken, (req, res) => {
                 SELECT idAbsJustifiee 
                 FROM JustificationAbsence 
                 WHERE numeroEtudiant = ? 
-                AND validite = 2 
+                AND validite = 2 OR validite = 1 OR validite = 0
                 AND (debut < ? AND fin > ?)
             `;
 
@@ -408,7 +408,7 @@ router.post("/", verifyToken, (req, res) => {
                 }
 
                 if (pendingRows.length > 0) {
-                    return res.status(409).json("Une justification est déjà en attente de validation pour cette période.");
+                    return res.status(409).json("Une justification est déjà été soumise pour une partie ou la totalité de cette période.");
                 }
 
                 db.all(refusedOverlapSql, [number, end, start], (err, refusedRows) => {
@@ -451,7 +451,6 @@ router.post("/", verifyToken, (req, res) => {
     });
 });
 
-
 /*****************************************
  *           Méthodes UPDATE
  *****************************************/
@@ -479,7 +478,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
 
         // Vérifier si une justification existe déjà
         const checkJustifSql = `SELECT idAbsJustifiee, validite FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
-        
+
         db.get(checkJustifSql, [idAbsence], (err, existingJustif) => {
             if (err) {
                 console.error(err);
@@ -502,7 +501,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
                     INSERT INTO JustificationAbsence (idAbsJustifiee, numeroEtudiant, login, debut, fin, motif, validite, motifValidite, dateDemande)
                     VALUES (?, ?, ?, ?, ?, ?, 0, ?, datetime('now'))
                 `;
-                
+
                 db.run(insertSql, [idAbsence, absence.numeroEtudiant, absence.login, absence.debut, absence.fin, motif, motif], (err) => {
                     if (err) {
                         console.error(err);
