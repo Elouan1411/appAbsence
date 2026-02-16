@@ -221,3 +221,12 @@
     mask-image: url(../assets/settings-2.svg);
     -webkit-mask-image: url(../assets/settings-2.svg);
 }
+
+.icon-refresh {
+    mask-image: url(../assets/refresh.svg);
+    -webkit-mask-image: url(../assets/refresh.svg);
+}
+
+.icon-refresh:hover {
+    background-color: var(--primary-color);
+}
