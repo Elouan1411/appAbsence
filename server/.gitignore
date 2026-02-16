@@ -1,1 +1,6 @@
+database/appAbsences.db
+database/*.db-shm
+database/*.db-wal
+.env
+upload/
 /node_modules
