@@ -375,7 +375,7 @@ router.post("/", verifyToken, (req, res) => {
                 SELECT idAbsJustifiee 
                 FROM JustificationAbsence 
                 WHERE numeroEtudiant = ? 
-                AND validite = 2 OR validite = 1 OR validite = 0
+                AND (validite = 2 OR validite = 1 OR validite = 0)
                 AND (debut < ? AND fin > ?)
             `;
 
