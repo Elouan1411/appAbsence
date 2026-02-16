@@ -315,7 +315,7 @@ function StudentHomePage() {
                 <div className="dashboard-header">
                     <div className="dashboard-actions">
                         <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
-                        <div style={{ display: "flex", gap: "10px" }}>
+                        <div className="dashboard-buttons-container">
                             <button
                                 className="btn-icon"
                                 onClick={() => {

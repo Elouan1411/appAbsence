@@ -644,6 +644,11 @@ span.loading-text {
     font-size: 0.95rem;
 }
 
+.dashboard-buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
 .btn-select {
     display: flex;
     align-items: center;
