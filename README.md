@@ -10,6 +10,9 @@ Commande pour générer le secret :
 node -e "console.log(require('crypto').randomBytes(128).toString('hex'))"
 ```
 
+Définir `CORS_ORIGIN` avec l'URL autorisée (ex: `https://mon-site.com`).
+Si vous avez plusieurs domaines, séparez-les par une virgule (ex: `https://mon-site.com,https://api.mon-site.com`).
+
 ## 2. Initialisation de la Base de Données
 Créer la base de données `/server/database/appAbsences.db` en exécutant la commande suivante à la racine :
 

@@ -36,6 +36,11 @@ if (!process.env.JWT_SECRET) {
     process.exit(1);
 }
 
+if (!process.env.CORS_ORIGIN) {
+    console.error("FATAL ERROR: CORS_ORIGIN is not defined in .env");
+    process.exit(1);
+}
+
 app.listen(PORT, "0.0.0.0", function () {
     console.log("C'est parti ! En attente de connexion sur le port", PORT);
 });
@@ -50,7 +55,7 @@ app.use(cookieParser());
 
 app.use(
     cors({
-        origin: true,
+        origin: process.env.CORS_ORIGIN.split(","),
         credentials: true,
     }),
 );
