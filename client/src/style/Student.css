@@ -681,9 +681,7 @@ span.icon.icon-list {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.15),
-        0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
     margin-bottom: 0;
     transition: all 0.2s;
 }
@@ -696,9 +694,7 @@ span.icon.icon-list {
 }
 
 .card-absence:hover {
-    box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--card-shadow-hover);
     transform: translateY(-1px);
 }
 

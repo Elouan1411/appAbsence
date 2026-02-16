@@ -48,6 +48,8 @@ body.dark {
     --background-warning: #332701;
     --warning-color: #ffcd39;
     --upload-success-color: #10b981;
+    --card-shadow: 0 0 0 1px rgba(255, 255, 255, 0.025), 0 6px 20px rgba(255, 255, 255, 0.06);
+    --card-shadow-hover: 0 0 0 1px rgba(255, 255, 255, 0.045), 0 10px 30px rgba(255, 255, 255, 0.11);
 }
 
 body.light {
@@ -91,6 +93,8 @@ body.light {
     --background-warning: #fff3cd;
     --warning-color: #664d03;
     --upload-success-color: #10b981;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.18), 0 6px 12px rgba(0, 0, 0, 0.14);
 }
 
 .loading {

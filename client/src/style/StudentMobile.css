@@ -330,6 +330,7 @@
 
     .card-absence:hover {
         transform: none;
+        box-shadow: var(--card-shadow);
     }
 
     .card-absence-left {
