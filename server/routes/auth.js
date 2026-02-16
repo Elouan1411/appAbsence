@@ -6,11 +6,14 @@ const auth = require("../routes/ldap");
 const db = require("../database/db");
 const { readEmail } = require("../utils/readEmail");
 const maxAge = 10 * 60 * 60 * 1000; // 10 heures
+
+// Just with Enable_DEV_AUTH = true in .env
 let users = {};
 users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
 users["prof"] = { password: 1234, role: "teacher" };
+//
 
 /**
  * Check if the user has an account
@@ -123,7 +126,7 @@ router.post("/login", async (req, res) => {
     // console.log({ user, pwd });
 
     // CODE DEV
-    if (users[user] != undefined) {
+    if (process.env.ENABLE_DEV_AUTH === "true" && users[user] != undefined) {
         if (!(await haveAccount(user))) {
             res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);
         } else if (users[user].password == pwd) {
@@ -139,7 +142,6 @@ router.post("/login", async (req, res) => {
             res.status(401).json("Mot de passe incorrect");
         }
     } else {
-        // CODE FINAL
         if (user === "admin" && pwd === "admin") {
             // default connection for admin the first time
             if (await haveAdmin()) {
@@ -173,8 +175,6 @@ router.post("/login", async (req, res) => {
             res.status(200).json(role);
         }
     }
-
-    // CODE FINAL ... (enlever tout le bloc if) //TODO
 });
 
 // Route pour l'inscription du premier administrateur

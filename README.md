@@ -13,6 +13,8 @@ node -e "console.log(require('crypto').randomBytes(128).toString('hex'))"
 Définir `CORS_ORIGIN` avec l'URL autorisée (ex: `https://mon-site.com`).
 Si vous avez plusieurs domaines, séparez-les par une virgule (ex: `https://mon-site.com,https://api.mon-site.com`).
 
+Pour le développement local **uniquement**, vous pouvez ajouter `ENABLE_DEV_AUTH=true` pour utiliser les comptes de test (etudiant, prof, admin) sans LDAP. **Ne jamais activer en production.**
+
 ## 2. Initialisation de la Base de Données
 Créer la base de données `/server/database/appAbsences.db` en exécutant la commande suivante à la racine :
 
