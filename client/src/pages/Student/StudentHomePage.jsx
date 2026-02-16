@@ -309,80 +309,82 @@ function StudentHomePage() {
     };
 
     return (
-        <div className="studentJustificationPage">
-            <div className="dashboard-header">
-                <PageTitle title="Mes Absences" icon="icon-home" />
-                <div className="dashboard-actions">
-                    <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
-                    {activeTab === "todo" && absences.length > 0 && (
-                        <button className="btn-select" onClick={toggleSelectionMode}>
-                            {isSelectionMode ? (
-                                // <X size={18} strokeWidth={2.5} />
-                                <span className="icon icon-x icon-xl icon-white icon-bold" />
-                            ) : (
-                                // <List size={18} strokeWidth={2.5} />
-                                <span className="icon icon-list icon-xl icon-bold" />
+        <div className="studentJustificationPageContainer">
+            <PageTitle title="Mes Absences" icon="icon-home" />
+            <div className="studentJustificationPage">
+                <div className="dashboard-header">
+                    <div className="dashboard-actions">
+                        <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
+                        {activeTab === "todo" && absences.length > 0 && (
+                            <button className="btn-select" onClick={toggleSelectionMode}>
+                                {isSelectionMode ? (
+                                    // <X size={18} strokeWidth={2.5} />
+                                    <span className="icon icon-x icon-xl icon-white icon-bold" />
+                                ) : (
+                                    // <List size={18} strokeWidth={2.5} />
+                                    <span className="icon icon-list icon-xl icon-bold" />
+                                )}
+                                {isSelectionMode ? "Annuler" : "Sélectionner"}
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <DashboardTabs activeTab={activeTab} setActiveTab={handleTabChange} counts={counts} />
+
+                <div className="dashboard-content">
+                    {isLoading ? (
+                        <CustomLoader />
+                    ) : (
+                        <>
+                            {groupedAbsences.map((group) => (
+                                <div key={group.dateLabel} className="absences-list">
+                                    <div className="absences-date-header">
+                                        <h4 className="absences-list-header">{group.dateLabel}</h4>
+                                        <div className="date-divider-line"></div>
+                                    </div>
+                                    {group.items.map((absence) => (
+                                        <AbsenceCard
+                                            key={absence.id}
+                                            id={absence.id}
+                                            subject={absence.subject}
+                                            teacher={absence.teacher}
+                                            startTime={absence.formattedStartTime}
+                                            endTime={absence.formattedEndTime}
+                                            fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}
+                                            isSelectionMode={isSelectionMode}
+                                            isSelected={selectedIds.includes(absence.id)}
+                                            onToggle={() => handleToggleAbsence(absence.id)}
+                                            status={absence.status}
+                                            reason={absence.reason}
+                                            adminComment={absence.adminComment}
+                                            justificationId={absence.justificationId}
+                                            fullPeriodGroup={absence.fullPeriodGroup}
+                                            dateDemande={absence.dateDemande}
+                                            onDelete={handleAbsenceDeleted}
+                                        />
+                                    ))}
+                                </div>
+                            ))}
+                            {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
+                            {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
+                            {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
+
+                            {counts[activeTab] > ITEMS_PER_PAGE && (
+                                <Pagination
+                                    currentPage={paginationState[activeTab]}
+                                    totalPages={Math.ceil(counts[activeTab] / ITEMS_PER_PAGE)}
+                                    onPageChange={handlePageChange}
+                                />
                             )}
-                            {isSelectionMode ? "Annuler" : "Sélectionner"}
-                        </button>
+                        </>
                     )}
                 </div>
-            </div>
-
-            <DashboardTabs activeTab={activeTab} setActiveTab={handleTabChange} counts={counts} />
-
-            <div className="dashboard-content">
-                {isLoading ? (
-                    <CustomLoader />
-                ) : (
-                    <>
-                        {groupedAbsences.map((group) => (
-                            <div key={group.dateLabel} className="absences-list">
-                                <div className="absences-date-header">
-                                    <h4 className="absences-list-header">{group.dateLabel}</h4>
-                                    <div className="date-divider-line"></div>
-                                </div>
-                                {group.items.map((absence) => (
-                                    <AbsenceCard
-                                        key={absence.id}
-                                        id={absence.id}
-                                        subject={absence.subject}
-                                        teacher={absence.teacher}
-                                        startTime={absence.formattedStartTime}
-                                        endTime={absence.formattedEndTime}
-                                        fullPeriod={{ start: absence.startDateObj, end: absence.endDateObj, id: absence.justificationId }}
-                                        isSelectionMode={isSelectionMode}
-                                        isSelected={selectedIds.includes(absence.id)}
-                                        onToggle={() => handleToggleAbsence(absence.id)}
-                                        status={absence.status}
-                                        reason={absence.reason}
-                                        adminComment={absence.adminComment}
-                                        justificationId={absence.justificationId}
-                                        fullPeriodGroup={absence.fullPeriodGroup}
-                                        dateDemande={absence.dateDemande}
-                                        onDelete={handleAbsenceDeleted}
-                                    />
-                                ))}
-                            </div>
-                        ))}
-                        {activeTab === "todo" && absences.length === 0 && <div className="empty-state">Aucune absence à justifier.</div>}
-                        {activeTab === "pending" && pendingAbsences.length === 0 && <div className="empty-state">Aucune absence en cours.</div>}
-                        {activeTab === "archived" && archivedAbsences.length === 0 && <div className="empty-state">Aucune archive.</div>}
-
-                        {counts[activeTab] > ITEMS_PER_PAGE && (
-                            <Pagination
-                                currentPage={paginationState[activeTab]}
-                                totalPages={Math.ceil(counts[activeTab] / ITEMS_PER_PAGE)}
-                                onPageChange={handlePageChange}
-                            />
-                        )}
-                    </>
+                <div className="mobile-spacer"></div>
+                {isSelectionMode && selectedIds.length > 0 && (
+                    <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
                 )}
             </div>
-            <div className="mobile-spacer"></div>
-            {isSelectionMode && selectedIds.length > 0 && (
-                <FloatingActionBar count={selectedIds.length} onJustify={() => handleJustifySelectioned(selectedIds)} />
-            )}
         </div>
     );
 }

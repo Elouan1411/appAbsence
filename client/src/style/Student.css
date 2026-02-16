@@ -1,14 +1,22 @@
+.studentJustificationPageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .studentJustificationPage {
     max-width: 800px;
     min-height: 710px;
     height: auto;
-    margin-top: calc(50vh - (5vh + 20px + 15px + 355px));
     margin-left: auto;
     margin-right: auto;
+    padding-top: 20px;
     padding-bottom: 50px;
     padding-left: 20px;
     padding-right: 20px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .select-container-student {
@@ -541,9 +549,9 @@ div.react-datepicker__time-container .react-datepicker__time .react-datepicker__
     background-color: var(--text-secondary);
 }
 
-.studentJustificationPage > div {
+/* .studentJustificationPage > div {
     margin-bottom: 30px;
-}
+} */
 
 .section-divider {
     border: 0;
@@ -591,13 +599,11 @@ span.loading-text {
 } */
 
 .student-justification-container {
-    min-height: 100vh;
     height: auto;
     width: 100%;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 

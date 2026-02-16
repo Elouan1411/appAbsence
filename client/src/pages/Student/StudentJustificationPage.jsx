@@ -78,8 +78,8 @@ const StudentJustificationPage = () => {
 
     return (
         <div className="student-justification-container">
+            <PageTitle title="Justifier une absence" icon={"icon-justification-student"} canGoBack={location.state} />
             <div className="studentJustificationPage">
-                <PageTitle title="Justifier une absence" icon={"icon-justification-student"} canGoBack={location.state} />
                 <PeriodAbsence
                     period={period}
                     setPeriod={handlePeriodChange}
@@ -119,6 +119,7 @@ const StudentJustificationPage = () => {
                         {isSubmitting ? <CustomLoader /> : "Envoyer la justification"}
                     </Button>
                 </div>
+                <div className="mobile-spacer"></div>
             </div>
         </div>
     );

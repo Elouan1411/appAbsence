@@ -203,12 +203,12 @@ const StudentAbsenceDetailsPage = () => {
 
     return (
         <div className="student-justification-container">
+            <PageTitle title="Détails de l'absence" icon="icon-justification-student" canGoBack={true} />
             <div className="studentJustificationPage">
                 {isLoading ? (
                     <CustomLoader />
                 ) : (
                     <>
-                        <PageTitle title="Détails de l'absence" icon="icon-justification-student" canGoBack={true} />
                         <AbsenceStatus status={status} adminComment={refusalReason} />
 
                         <PeriodAbsence
@@ -255,6 +255,7 @@ const StudentAbsenceDetailsPage = () => {
                         )}
                     </>
                 )}
+                <div className="mobile-spacer"></div>
             </div>
         </div>
     );
