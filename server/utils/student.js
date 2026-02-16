@@ -14,18 +14,6 @@ function importExcelInDB(filepath, fileExtension, promo) {
     return new Promise(async (resolve, reject) => {
         console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
 
-        //TEMP
-        //TELECHARGER SUR MON ORDI LE FICHIER :
-
-        const debugDir = path.join(__dirname, "../../debug"); // Adjust path depending on where your server root is
-        // Or simply use relative path if running from root:
-        if (!fs.existsSync("./debug")) {
-            fs.mkdirSync("./debug");
-        }
-
-        fs.copyFileSync(filepath, `./debug/debug_import${fileExtension}`);
-        // FIN TEMP
-
         try {
             const workbook = new exceljs.Workbook();
             if (fileExtension === ".csv") {

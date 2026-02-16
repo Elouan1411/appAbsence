@@ -4,3 +4,4 @@ database/*.db-wal
 .env
 upload/
 /node_modules
+.env
