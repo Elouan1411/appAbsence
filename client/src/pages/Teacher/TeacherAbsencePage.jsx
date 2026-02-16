@@ -256,19 +256,29 @@ function TeacherHistoryPage() {
     return (
         <div className="page-container">
             <PageTitle title="Historique des Absences" icon="icon-absences" />
-            <div className="search-wrapper-right">
-                {isSearchActive ? (
-                    <SearchInput
-                        value={quickFilterText}
-                        onChange={(e) => setQuickFilterText(e.target.value)}
-                        placeholder="Rechercher..."
-                        onIconClick={toggleSearch}
-                    />
-                ) : (
-                    <button onClick={toggleSearch} className="search-toggle-button">
-                        <span className="icon icon-search search-icon-sized" />
+            <div className="search-wrapper-container">
+                <div className="search-wrapper-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <button
+                        className="btn-icon"
+                        onClick={fetchHistory}
+                        title="Actualiser"
+                        style={{ background: "none", border: "none", cursor: "pointer" }}
+                    >
+                        <span className="icon icon-refresh icon-xl" />
                     </button>
-                )}
+                    {isSearchActive ? (
+                        <SearchInput
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
+                            placeholder="Rechercher..."
+                            onIconClick={toggleSearch}
+                        />
+                    ) : (
+                        <button onClick={toggleSearch} className="search-toggle-button">
+                            <span className="icon icon-search search-icon-sized" />
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="grid-container">
                 {isLoading ? (

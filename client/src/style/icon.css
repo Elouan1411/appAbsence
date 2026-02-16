@@ -227,6 +227,15 @@
     -webkit-mask-image: url(../assets/refresh.svg);
 }
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .icon-refresh:hover {
-    background-color: var(--primary-color);
+    animation: spin 1s linear infinite;
 }

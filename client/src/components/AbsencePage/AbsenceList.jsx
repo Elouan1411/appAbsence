@@ -143,7 +143,15 @@ function AbsenceList() {
     return (
         <div className="absence-list-container">
             <div className="search-wrapper-container">
-                <div className="search-wrapper-right" style={{ position: "relative" }}>
+                <div className="search-wrapper-right" style={{ position: "relative", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <button
+                        className="btn-icon"
+                        onClick={handleFetchAbsences}
+                        title="Actualiser"
+                        style={{ background: "none", border: "none", cursor: "pointer" }}
+                    >
+                        <span className="icon icon-refresh icon-xl" />
+                    </button>
                     <SearchInput
                         value={quickFilterText}
                         onChange={(e) => setQuickFilterText(e.target.value)}
