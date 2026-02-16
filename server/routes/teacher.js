@@ -102,6 +102,29 @@ router.post("/add", verifyToken, isAdmin, (req, res) => {
         }
     });
 });
+
+router.put("/:loginENT", verifyToken, isAdmin, (req, res) => {
+    const loginENT = req.params.loginENT;
+    const { nom, prenom } = req.body;
+
+    if (!nom || !prenom) {
+        return res.status(400).json({ error: "Nom et prénom sont requis." });
+    }
+
+    const sql = "UPDATE Professeur SET nom = ?, prenom = ? WHERE loginENT = ?";
+
+    db.run(sql, [nom, prenom, loginENT], function (err) {
+        if (err) {
+            console.error("Error updating teacher:", err.message);
+            return res.status(500).json({ error: "Erreur lors de la mise à jour." });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Enseignant non trouvé." });
+        }
+        res.status(200).json({ message: "Enseignant mis à jour avec succès." });
+    });
+});
+
 router.post("/teacherList", verifyToken, isAdmin, (req, res) => {
     const form = new formidable.IncomingForm();
 
@@ -159,6 +182,24 @@ router.delete("/:loginENT/admin", verifyToken, isAdmin, (req, res) => {
             return res.status(404).json({ error: "Enseignant non trouvé." });
         }
         res.status(200).json({ message: "Administrateur retiré avec succès." });
+    });
+});
+
+router.delete("/:loginENT", verifyToken, isAdmin, (req, res) => {
+    const loginENT = req.params.loginENT;
+    // Also delete associated constraints, history etc? Ideally DB constraints handle cascades or we do it manually.
+    // For now assuming simple delete.
+    const sql = "DELETE FROM Professeur WHERE loginENT = ?";
+
+    db.run(sql, [loginENT], function (err) {
+        if (err) {
+            console.error("Error deleting teacher:", err.message);
+            return res.status(500).json({ error: "Erreur lors de la suppression." });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Enseignant non trouvé." });
+        }
+        res.status(200).json({ message: "Enseignant supprimé avec succès." });
     });
 });
 

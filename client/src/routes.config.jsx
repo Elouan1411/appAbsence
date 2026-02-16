@@ -15,6 +15,7 @@ import SettingsPage from "./pages/Admin/SettingsPage";
 import AdminJustificationPage from "./pages/Admin/AdminJustificationPage";
 import SettingMobilePage from "./pages/SettingsMobilePage";
 import InitPage from "./pages/InitPage";
+import TeacherDetailPage from "./pages/Teacher/TeacherDetailPage";
 
 export const routesConfig = [
     {
@@ -29,6 +30,7 @@ export const routesConfig = [
             { path: "appel", label: "Appel", element: <RollCallPage />, icon: "icon-rollcall" },
             { path: "parametres", element: <SettingsPage /> },
             { path: "detail-etudiant/:userId", label: "Détail étudiant", element: <StudentDetailPage /> },
+            { path: "detail-enseignant/:loginENT", element: <TeacherDetailPage /> },
             { path: "detail-absence/:absenceId", label: "Détail absence", element: <AbsenceDetailPage /> },
             { path: "historique", label: "Historique", element: <TeacherHistoryPage />, icon: "icon-history" },
         ],

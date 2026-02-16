@@ -81,6 +81,11 @@ router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     db.all(sql, params, (err, rows) => {
         if (err) return console.error(err.message);
         let data = rows;
+
+        if (data.length === 0) {
+            return res.status(200).json([]);
+        }
+
         sql = "SELECT * FROM RSE WHERE code IN ( SELECT codeRSE FROM RSEAnnee WHERE numeroEtudiant = ?)";
         let compteur = 0;
         for (let i of data) {
