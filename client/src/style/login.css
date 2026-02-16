@@ -79,11 +79,15 @@
     min-height: 50px;
     height: 4vh;
     border-radius: 15px;
-    border: 3px solid var(--input-bg);
+    border: 1px solid var(--border-color);
     background-color: var(--input-bg);
     font-size: 1rem;
-    transition: 0.3s ease-in-out;
+    transition: 0.2s ease-in-out;
     color: var(--text-primary);
+}
+
+.input input:focus {
+    border: 2px solid var(--primary-color);
 }
 
 #root .login-container .login-form-container .input-container .input input:focus {
