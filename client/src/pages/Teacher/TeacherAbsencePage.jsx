@@ -283,6 +283,8 @@ function TeacherHistoryPage() {
             <div className="grid-container">
                 {isLoading ? (
                     <CustomLoader />
+                ) : rowData.length === 0 ? (
+                    <div className="empty-state">Aucun historique d'absence disponible</div>
                 ) : (
                     <AgGridReact
                         rowData={rowData}

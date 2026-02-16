@@ -162,6 +162,10 @@ function AbsenceList() {
             </div>
             {loading ? (
                 <CustomLoader />
+            ) : rowData.length === 0 ? (
+                <div className="empty-state" style={{ width: "100%" }}>
+                    Aucune absence à afficher
+                </div>
             ) : (
                 <div style={{ height: "100%", width: "100%" }}>
                     <AgGridReact

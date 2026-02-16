@@ -132,6 +132,8 @@ function StudentList() {
             </div>
             {loading ? (
                 <CustomLoader />
+            ) : rowData.length === 0 ? (
+                <div className="empty-state">Aucun étudiant trouvé.</div>
             ) : (
                 <div style={{ height: "100%", width: "100%" }}>
                     <AgGridReact

@@ -165,3 +165,16 @@ main {
 .btn-icon:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: var(--card-shadow);
+}
