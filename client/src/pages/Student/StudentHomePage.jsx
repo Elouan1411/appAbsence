@@ -315,18 +315,34 @@ function StudentHomePage() {
                 <div className="dashboard-header">
                     <div className="dashboard-actions">
                         <p className="dashboard-subtitle">Gérez vos justificatifs et suivez vos demandes.</p>
-                        {activeTab === "todo" && absences.length > 0 && (
-                            <button className="btn-select" onClick={toggleSelectionMode}>
-                                {isSelectionMode ? (
-                                    // <X size={18} strokeWidth={2.5} />
-                                    <span className="icon icon-x icon-xl icon-white icon-bold" />
-                                ) : (
-                                    // <List size={18} strokeWidth={2.5} />
-                                    <span className="icon icon-list icon-xl icon-bold" />
-                                )}
-                                {isSelectionMode ? "Annuler" : "Sélectionner"}
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            <button
+                                className="btn-icon"
+                                onClick={() => {
+                                    setIsLoading(true);
+                                    Promise.all([
+                                        fetchTodo(paginationState.todo),
+                                        fetchPending(paginationState.pending),
+                                        fetchArchived(paginationState.archived),
+                                    ]).finally(() => setIsLoading(false));
+                                }}
+                                title="Actualiser"
+                            >
+                                <span className="icon icon-refresh icon-xl" style={{ backgroundColor: "var(--primary-color)" }} />
                             </button>
-                        )}
+                            {activeTab === "todo" && absences.length > 0 && (
+                                <button className="btn-select" onClick={toggleSelectionMode}>
+                                    {isSelectionMode ? (
+                                        // <X size={18} strokeWidth={2.5} />
+                                        <span className="icon icon-x icon-xl icon-white icon-bold" />
+                                    ) : (
+                                        // <List size={18} strokeWidth={2.5} />
+                                        <span className="icon icon-list icon-xl icon-bold" />
+                                    )}
+                                    {isSelectionMode ? "Annuler" : "Sélectionner"}
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 

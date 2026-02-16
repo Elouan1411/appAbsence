@@ -66,7 +66,7 @@ const SettingMobilePage = () => {
 
     return (
         <div className="settings-mobile-container">
-            <PageTitle title="Paramètre" icon={"icon-settings"} />
+            <PageTitle title="Paramètres" icon={"icon-settings"} />
             <div className="settings-mobile-subcontainer">
                 <h3>Changez le thème de l'application</h3>
                 <div className="theme-toggle-container">
@@ -93,8 +93,8 @@ const SettingMobilePage = () => {
 
                 <div className="logout-container">
                     <button className="logout-button" onClick={handleLogout}>
-                        <span className="icon-btn icon-logout"></span>
-                        <span className="btn-text">Se déconnecter</span>
+                        <span className="icon-btn icon-logout" style={{ backgroundColor: "white" }}></span>
+                        <span style={{ color: "white" }}>Se déconnecter</span>
                     </button>
                 </div>
             </div>

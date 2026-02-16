@@ -221,3 +221,21 @@
     mask-image: url(../assets/settings-2.svg);
     -webkit-mask-image: url(../assets/settings-2.svg);
 }
+
+.icon-refresh {
+    mask-image: url(../assets/refresh.svg);
+    -webkit-mask-image: url(../assets/refresh.svg);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.icon-refresh:hover {
+    animation: spin 1s linear infinite;
+}

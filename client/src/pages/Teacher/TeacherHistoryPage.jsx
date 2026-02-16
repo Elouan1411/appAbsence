@@ -333,13 +333,27 @@ function TeacherHistoryPage() {
         <div className="page-container">
             <PageTitle title="Historique des Appels" icon="icon-history" />
             <div className="search-wrapper-container">
-                <div className="search-wrapper-right">
-                    <SearchInput
-                        value={quickFilterText}
-                        onChange={(e) => setQuickFilterText(e.target.value)}
-                        placeholder="Rechercher dans l'historique..."
-                        onIconClick={toggleSearch}
-                    />
+                    <div className="search-wrapper-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <button
+                            className="btn-icon"
+                            onClick={() => {
+                                if (role === "admin") {
+                                    fetchHistoryAdmin();
+                                } else {
+                                    fetchHistory();
+                                }
+                            }}
+                            title="Actualiser"
+                            style={{ background: "none", border: "none", cursor: "pointer" }}
+                        >
+                            <span className="icon icon-refresh icon-xl" />
+                        </button>
+                        <SearchInput
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
+                            placeholder="Rechercher dans l'historique..."
+                            onIconClick={toggleSearch}
+                        />
                 </div>
             </div>
             <div className="grid-container">
