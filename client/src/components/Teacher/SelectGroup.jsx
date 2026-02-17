@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../../style/SelectGroups.css";
 import { API_URL } from "../../config";
 
-
 function SelectGroup({ onValidate, date, style, initialSelection }) {
     const [promos, setPromos] = useState([]);
     const [TD, setTD] = useState([]);
@@ -28,7 +27,6 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
 
     useEffect(() => {
         if (initialSelection) {
-            console.log("Setting initial selection:", initialSelection);
             setSelectedPromo(initialSelection.promo || "");
 
             if (initialSelection.semestre) {
@@ -122,7 +120,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
 
     const handleChangePromo = (event) => {
         const newPromo = event.target.value;
-        console.log("Nouvelle promo sélectionnée :", newPromo);
+
         setSelectedPromo(newPromo);
         setTD([]);
         setTP([]);
@@ -133,7 +131,7 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
 
     const handleChangeSemestre = (event) => {
         const newSemestre = event.target.value;
-        console.log("Nouveau semestre sélectionné :", newSemestre);
+
         setSelectedSemestre(newSemestre);
         setTD([]);
         setTP([]);
@@ -143,12 +141,10 @@ function SelectGroup({ onValidate, date, style, initialSelection }) {
     };
 
     const handleChangeTD = (event) => {
-        console.log("Nouveau groupe TD sélectionné :", event.target.value);
         setSelectedTD(event.target.value);
     };
 
     const handleChangeTP = (event) => {
-        console.log("Nouveau groupe TP sélectionné :", event.target.value);
         setSelectedTP(event.target.value);
     };
 

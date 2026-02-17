@@ -37,7 +37,6 @@ ORDER BY JustificationAbsence.dateDemande DESC`;
 
     db.all(sql, [idAbsence], (err, rows) => {
         if (err) {
-            console.log(err);
             return res.status(500).json(err);
         }
         return res.status(200).json(rows);

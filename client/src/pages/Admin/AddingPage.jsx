@@ -49,8 +49,6 @@ function AddingPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (data) => {
-        console.log("Données reçues du formulaire :", data);
-
         const baseUrl = `${API_URL}`;
         const endpoint = activeTab === "student" ? "/eleve" : "/teacher";
         const url = `${baseUrl}${endpoint}/add`;
@@ -70,7 +68,6 @@ function AddingPage() {
                 throw new Error(`Erreur HTTP: ${response.status}`);
             }
             const createdUser = await response.json();
-            console.log("Utilisateur créé avec succès :", createdUser);
 
             toast.success(`${activeTab == "student" ? "Étudiant" : "Enseignant"} ajouté avec succès !`);
         } catch (error) {

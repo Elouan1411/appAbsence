@@ -158,8 +158,6 @@ function TeacherList() {
         };
     }, []);
 
-    console.log(rowData);
-
     const toggleSearch = () => {
         if (isSearchActive) {
             setQuickFilterText("");

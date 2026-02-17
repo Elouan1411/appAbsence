@@ -14,7 +14,7 @@ export default async function isLoginInDatabase(login) {
 
         const logins = await data.json();
         const estPresent = logins.some((item) => item.loginENT === login);
-        console.log("Est présent: ", estPresent);
+
         return estPresent;
     } catch (error) {
         console.error("Network error checking login:", error);

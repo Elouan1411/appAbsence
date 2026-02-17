@@ -226,10 +226,6 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
             return res.status(500).json({ error: "Error processing the file" });
         }
 
-        console.log("DEBUG - FIELDS REÇUS :", JSON.stringify(fields, null, 2));
-        console.log("DEBUG - FILES REÇUS :", files);
-        console.log("DEBUG - Type de files.file :", Array.isArray(files.file) ? "Array" : typeof files.file);
-
         const fileObject = files.file ? files.file[0] : null;
         const promo = fields.promo ? fields.promo[0] : null;
 
@@ -240,7 +236,7 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
         // Generate a unique filename
         const timestamp = Date.now();
         // Get extension of file
-        console.log("fileObject", fileObject);
+
         const fileExtension = path.extname(fileObject.originalFilename);
         const fileName = `${promo}_${timestamp}${fileExtension}`;
         const targetPath = path.join(__dirname, "../upload/student-list", fileName);
@@ -252,7 +248,7 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
                 return res.status(500).json({ error: "Error saving the file" });
             }
             let result;
-            console.log("fileExtension", fileExtension);
+
             switch (fileExtension) {
                 case ".xlsx":
                 case ".csv":

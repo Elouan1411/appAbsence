@@ -36,7 +36,6 @@ const StudentAbsenceDetailsPage = () => {
 
     const [isEditable, setIsEditable] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    console.log("chargement de la page");
 
     // Mark as unsaved helper
     const markAsUnsaved = () => {
@@ -45,7 +44,6 @@ const StudentAbsenceDetailsPage = () => {
 
     useEffect(() => {
         const loadFiles = async (justifId) => {
-            console.log("chargement des fichiers");
             try {
                 const response = await fetch(`${API_URL}/justification/${justifId}`, {
                     method: "GET",
@@ -58,7 +56,7 @@ const StudentAbsenceDetailsPage = () => {
                 }
 
                 const data = await response.json();
-                console.log("data", data);
+
                 if (data.validite === 0 || data.validite === 1) {
                     setIsEditable(false);
                 }
@@ -100,10 +98,7 @@ const StudentAbsenceDetailsPage = () => {
         };
 
         const init = async () => {
-            console.log("lancement de useEffect");
-
             if (location.state) {
-                console.log("Status received:", location.state.status);
                 if (location.state.status === "validated" || location.state.status === "refused") {
                     setIsEditable(false);
                 }

@@ -40,7 +40,7 @@ router.get("/dates", verifyToken, isAdmin, (req, res) => {
         if (err) {
             return res.status(500).json(err);
         }
-        console.log(rows);
+
         return res.status(200).json(rows);
     });
 });
@@ -605,10 +605,8 @@ router.get("/allID/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
 
 router.put("/:id", verifyToken, isAdmin, (req, res) => {
     const id = req.params.id;
-    console.log("id :", id);
-    const { newNumeroEtudiant, newLoginENT } = req.body;
 
-    console.log("LoginENT: ", newLoginENT, ", numeroEtudiant: ", newNumeroEtudiant);
+    const { newNumeroEtudiant, newLoginENT } = req.body;
 
     const sql = "UPDATE Absence SET numeroEtudiant = ?, login = ? WHERE idAbsence = ?";
     db.run(sql, [parseInt(newNumeroEtudiant), newLoginENT, id], (err) => {

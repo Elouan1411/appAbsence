@@ -22,7 +22,6 @@ function AbsenceList() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [quickFilterText, setQuickFilterText] = useState("");
     const [loading, setLoading] = useState(false);
-    console.log(ABSENCE_HEADER_DISPLAY_NAMES);
 
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -55,7 +54,6 @@ function AbsenceList() {
     }, []);
 
     const handleRowClick = (event) => {
-        console.log(event.data);
         safeNavigate(`/admin/detail-absence/${event.data.idAbsence}`);
     };
     const autoSizeStrategy = useMemo(() => {

@@ -12,38 +12,29 @@ const path = require("path");
  */
 function importExcelInDB(filepath, fileExtension, promo) {
     return new Promise(async (resolve, reject) => {
-        console.log(`[DEBUG] importExcelInDB started for file: ${filepath}, ext: ${fileExtension}, promo: ${promo}`);
-
         try {
             const workbook = new exceljs.Workbook();
             if (fileExtension === ".csv") {
-                console.log("[DEBUG] Reading CSV...");
                 await workbook.csv.readFile(filepath);
             } else {
-                console.log("[DEBUG] Reading XLSX...");
                 await workbook.xlsx.readFile(filepath);
             }
-            console.log("[DEBUG] File read complete.");
 
             const worksheet = workbook.getWorksheet(1);
 
             if (!worksheet) {
-                console.log("[DEBUG] No worksheet found.");
                 resolve({ success: false, message: "File uploaded but no worksheet found" });
                 return;
             }
 
             const totalRows = worksheet.rowCount;
-            console.log(`[DEBUG] Worksheet found. Total rows: ${totalRows}`);
 
             if (totalRows <= 1) {
                 // Assuming row 1 is header
-                console.log("[DEBUG] Not enough rows (<= 1).");
+
                 resolve({ success: false, message: "File uploaded but no student records found" });
                 return;
             }
-
-            console.log("[DEBUG] Preparing BULK INSERT...");
 
             const outputData = [];
             const placeholders = [];
@@ -78,14 +69,11 @@ function importExcelInDB(filepath, fileExtension, promo) {
                 `INSERT OR REPLACE INTO Eleve (numero, loginENT, nom, prenom, Promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair) VALUES ` +
                 placeholders.join(", ");
 
-            console.log(`[DEBUG] Executing Bulk Insert for ${placeholders.length} records...`);
-
             db.run(sql, outputData, (err) => {
                 if (err) {
                     console.error("[DEBUG] Error during Bulk Insert:", err.message);
                     resolve({ success: false, message: "Error during bulk insertion: " + err.message });
                 } else {
-                    console.log("[DEBUG] Bulk insert successful.");
                     resolve({ success: true, message: `Successfully imported ${placeholders.length} students.` });
                 }
             });

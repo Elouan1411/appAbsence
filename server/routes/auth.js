@@ -123,9 +123,7 @@ router.get("/", verifyToken, (req, res) => {
 //Route pour se connecter
 router.post("/login", async (req, res) => {
     const { user, pwd } = req.body;
-    // console.log({ user, pwd });
 
-    // CODE DEV
     if (process.env.ENABLE_DEV_AUTH === "true" && users[user] != undefined) {
         if (!(await haveAccount(user))) {
             res.status(401).json(`Votre compte n'a pas été ajouté dans le gestionnaire des absences, veuillez envoyer un mail à ${readEmail()}`);

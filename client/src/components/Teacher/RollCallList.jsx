@@ -17,13 +17,8 @@ import CustomLoader from "../common/CustomLoader";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-
 const Icon = ({ name, iconColor, title, className }) => (
-    <span
-        className={`icon icon-${name} icon-xl ${className || ""}`}
-        title={title}
-        style={{ backgroundColor: iconColor }}
-    />
+    <span className={`icon icon-${name} icon-xl ${className || ""}`} title={title} style={{ backgroundColor: iconColor }} />
 );
 
 const PresenceRenderer = (params) => {
@@ -51,14 +46,10 @@ const PresenceRenderer = (params) => {
                 alignItems: "center",
                 height: "100%",
                 width: "100%",
-                opacity: isActive ? 1 : 0.2, 
+                opacity: isActive ? 1 : 0.2,
             }}
         >
-            {isPresentCol ? (
-                <Icon name="check-success" iconColor={color} />
-            ) : (
-                <Icon name="x" iconColor={color} />
-            )}
+            {isPresentCol ? <Icon name="check-success" iconColor={color} /> : <Icon name="x" iconColor={color} />}
         </div>
     );
 };
@@ -70,7 +61,7 @@ const JustificationRenderer = (params) => {
 
     let iconName = "";
     let title = "";
-    let styleClass = ""; 
+    let styleClass = "";
 
     if (validite === 0) {
         iconName = "check-circle";
@@ -91,18 +82,17 @@ const JustificationRenderer = (params) => {
     );
 };
 
-
 function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT }) {
     const [rowData, setRowData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [updateLoading, setUpdateLoading] = useState(false);
     const [initialAbsences, setInitialAbsences] = useState([]);
     const [gridApi, setGridApi] = useState(null);
-    
+
     const theme = useTheme();
     const { user, role } = useAuth();
 
-    const login = loginENT || (typeof user === 'object' ? user.login || user.username : user);
+    const login = loginENT || (typeof user === "object" ? user.login || user.username : user);
 
     const colDefs = useMemo(() => {
         const isPair = criteria?.semestre === "1";
@@ -112,7 +102,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 headerName: "Présent",
                 width: 90,
                 minWidth: 90,
-                cellRenderer: PresenceRenderer, 
+                cellRenderer: PresenceRenderer,
                 cellStyle: { display: "flex", justifyContent: "center" },
                 sortable: false,
                 filter: false,
@@ -123,7 +113,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 headerName: "Absent",
                 width: 90,
                 minWidth: 90,
-                cellRenderer: PresenceRenderer, 
+                cellRenderer: PresenceRenderer,
                 cellStyle: { display: "flex", justifyContent: "center" },
                 sortable: false,
                 filter: false,
@@ -132,9 +122,9 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
             {
                 field: "justification",
                 headerName: "Justif.",
-                width: 80, 
+                width: 80,
                 minWidth: 50,
-                cellRenderer: JustificationRenderer, 
+                cellRenderer: JustificationRenderer,
                 cellStyle: { display: "flex", justifyContent: "center" },
                 sortable: true,
             },
@@ -162,12 +152,15 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
         ];
     }, [criteria]);
 
-    const defaultColDef = useMemo(() => ({
-        flex: 1,
-        filter: true,
-        sortable: true,
-        resizable: true,
-    }), []);
+    const defaultColDef = useMemo(
+        () => ({
+            flex: 1,
+            filter: true,
+            sortable: true,
+            resizable: true,
+        }),
+        [],
+    );
 
     useEffect(() => {
         async function fetchStudents() {
@@ -201,9 +194,11 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 if (callId) {
                     promises.push(
                         fetch(`${API_URL}/absence/appel/${callId}`, { credentials: "include" })
-                            .then(res => res.ok ? res.json() : [])
-                            .then(abs => { absencesForCall = abs; })
-                            .catch(e => console.error("Err Absences", e))
+                            .then((res) => (res.ok ? res.json() : []))
+                            .then((abs) => {
+                                absencesForCall = abs;
+                            })
+                            .catch((e) => console.error("Err Absences", e)),
                     );
                 }
 
@@ -215,9 +210,11 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                             body: JSON.stringify({ ids: studentIds }),
                             credentials: "include",
                         })
-                        .then(res => res.ok ? res.json() : {})
-                        .then(rse => { rseMap = rse; })
-                        .catch(e => console.error("Err RSE", e))
+                            .then((res) => (res.ok ? res.json() : {}))
+                            .then((rse) => {
+                                rseMap = rse;
+                            })
+                            .catch((e) => console.error("Err RSE", e)),
                     );
 
                     if (dateTime?.date && dateTime?.startTime && dateTime?.endTime) {
@@ -229,20 +226,20 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                             fetch(`${API_URL}/justification/rollCallJustification`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ 
-                                    studentIds: studentIds, 
-                                    start: startStr, 
-                                    end: endStr 
+                                body: JSON.stringify({
+                                    studentIds: studentIds,
+                                    start: startStr,
+                                    end: endStr,
                                 }),
                                 credentials: "include",
                             })
-                            .then(res => res.ok ? res.json() : [])
-                            .then(justifs => {
-                                justifs.forEach(j => {
-                                    justifMap[String(j.numeroEtudiant)] = j.validite;
-                                });
-                            })
-                            .catch(e => console.error("Err Justif", e))
+                                .then((res) => (res.ok ? res.json() : []))
+                                .then((justifs) => {
+                                    justifs.forEach((j) => {
+                                        justifMap[String(j.numeroEtudiant)] = j.validite;
+                                    });
+                                })
+                                .catch((e) => console.error("Err Justif", e)),
                         );
                     }
                 }
@@ -260,23 +257,19 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     const codeJustif = parseInt(s.justification, 10);
 
                     const aUnJustificatif = !isNaN(codeJustif) && (codeJustif === 0 || codeJustif === 2);
-                    
+
                     const etaitAbsentEnBase = absencesForCall.some((a) => a.numeroEtudiant === s.numero);
 
                     if (aUnJustificatif) {
                         s.attendanceStatus = "absent";
-                        // console.log(`Étudiant ${s.nom} passé en ABSENT (Justificatif code: ${codeJustif})`);
                     } else if (callId && etaitAbsentEnBase) {
-                        // console.log(`Étudiant ${s.nom} passé en ABSENT (Modif d'appel)`);
                         s.attendanceStatus = "absent";
                     } else {
-                        // console.log(`Étudiant ${s.nom} passé en PRESENT`);
                         s.attendanceStatus = "present";
                     }
                 });
 
-                setRowData(data);   
-
+                setRowData(data);
             } catch (err) {
                 console.error("Fetch error:", err);
                 toast.error("Erreur lors du chargement de la liste.");
@@ -353,19 +346,20 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     });
                 }
 
-                await Promise.all(removedAbsenceIds.map(id => 
-                    fetch(`${API_URL}/absence/`, {
-                        method: "DELETE",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ id, idAppel: callId }),
-                        credentials: "include",
-                    })
-                ));
+                await Promise.all(
+                    removedAbsenceIds.map((id) =>
+                        fetch(`${API_URL}/absence/`, {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ id, idAppel: callId }),
+                            credentials: "include",
+                        }),
+                    ),
+                );
 
                 toast.success("Appel mis à jour avec succès !");
                 setInitialAbsences(currentAbsentIds);
                 if (onSuccess) onSuccess();
-
             } else {
                 const payload = {
                     start: formatDate(dateTime.date, dateTime.startTime),
@@ -398,14 +392,13 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                         }),
                         credentials: "include",
                     });
-                    
+
                     if (!responseAbsence.ok) throw new Error("Erreur lors de la sauvegarde des absences");
                 }
 
                 toast.success("Appel validé avec succès !");
                 if (onSuccess) onSuccess();
             }
-
         } catch (err) {
             console.error(err);
             toast.error("Erreur technique : " + err.message);

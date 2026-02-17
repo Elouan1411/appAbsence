@@ -92,7 +92,7 @@
 
 #root .login-container .login-form-container .input-container .input input:focus {
     border: 3px solid var(--primary-color);
-    transition: 0.3s ease-in-out;
+    transition: 0.2s ease-in-out;
 }
 
 #root .login-container .login-form-container .input-container .input p {
