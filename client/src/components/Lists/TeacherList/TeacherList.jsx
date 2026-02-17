@@ -165,6 +165,10 @@ function TeacherList() {
         setIsSearchActive(!isSearchActive);
     };
 
+    const handleRowClick = (event) => {
+        safeNavigate(`/admin/detail-enseignant/${event.data.loginENT}`);
+    };
+
     return (
         <div className="student-list">
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -204,6 +208,7 @@ function TeacherList() {
                         localeText={AG_GRID_LOCALE_FR}
                         autoSizeStrategy={autoSizeStrategy}
                         quickFilterText={quickFilterText}
+                        onRowClicked={handleRowClick}
                     />
                 </div>
             )}

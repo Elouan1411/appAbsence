@@ -20,6 +20,7 @@ body.dark {
     --border-color: #4b5563;
     --primary-color-rgb: 62, 126, 134;
     --input-bg: #2a2a30;
+    --input-disabled-bg: #3a3a42;
     --modal-bg: #24242a;
     --dropzone-border: #4b5563;
     --dropzone-bd: #4b5563;
@@ -63,6 +64,7 @@ body.light {
     --border-color: #ced4da;
     --primary-color-rgb: 62, 126, 134;
     --input-bg: #f8f9fa;
+    --input-disabled-bg: #e9ecef;
     --modal-bg: #f9fafb;
     --dropzone-border: #cbd5e1;
     --dropzone-bd: #cbd5e1;
@@ -177,4 +179,10 @@ main {
     border-radius: 8px;
     margin-top: 20px;
     box-shadow: var(--card-shadow);
+}
+
+input:disabled {
+    background-color: var(--input-disabled-bg) !important;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
