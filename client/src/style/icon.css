@@ -107,6 +107,11 @@
     -webkit-mask-image: url(../assets/add-group.svg);
 }
 
+.icon-add {
+    mask-image: url(../assets/add_circle.svg);
+    -webkit-mask-image: url(../assets/add_circle.svg);
+}
+
 .icon-subject {
     mask-image: url(../assets/file_document.svg);
     -webkit-mask-image: url(../assets/file_document.svg);

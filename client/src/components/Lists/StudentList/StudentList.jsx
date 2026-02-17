@@ -120,7 +120,15 @@ function StudentList() {
     return (
         <div className="student-list">
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <div className="search-wrapper-right" style={{ position: "relative" }}>
+                <div className="search-wrapper-right" style={{ position: "relative", display: "flex", gap: "10px" }}>
+                    <button
+                        className="btn-icon"
+                        onClick={() => safeNavigate("/admin/ajout?tab=student")}
+                        title="Ajouter un étudiant"
+                        style={{ color: "var(--primary-color)" }}
+                    >
+                        <span className="icon icon-add icon-xl" />
+                    </button>
                     <SearchInput
                         value={quickFilterText}
                         onChange={(e) => setQuickFilterText(e.target.value)}
