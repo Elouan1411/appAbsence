@@ -20,6 +20,9 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
         promo: "",
         rse: [],
         loginENT: "",
+        groupeTDPair: "",
+        promoPair: "",
+        groupeTPPair: "",
     };
     const [formData, setFormData] = useState(initialState);
     const [errors, setErrors] = useState({});
@@ -91,6 +94,12 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             if (!DATA_REGEX.groupeTP.test(formData.groupeTP)) {
                 newErrors.groupeTP = "Ex: TP1a";
             }
+            if (!DATA_REGEX.groupeTD.test(formData.groupeTDPair)) {
+                newErrors.groupeTDPair = "Ex: TD1";
+            }
+            if (!DATA_REGEX.groupeTP.test(formData.groupeTPPair)) {
+                newErrors.groupeTPPair = "Ex: TP1a";
+            }
         }
 
         setErrors(newErrors);
@@ -138,6 +147,8 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             cleanData.groupeTP = formData.groupeTP;
             cleanData.promo = formData.promo;
             cleanData.rse = formData.rse;
+            cleanData.groupeTDPair = formData.groupeTDPair;
+            cleanData.groupeTPPair = formData.groupeTPPair;
         }
 
         onSubmit(cleanData);
@@ -197,22 +208,40 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                                     error={errors.promo}
                                 />
 
-                                <div className="row">
-                                    <InputField
-                                        text="Groupe TD"
-                                        placeholder="Ex: TD1"
-                                        value={formData.groupeTD}
-                                        onChange={(e) => handleFieldChange("groupeTD", e)}
-                                        error={errors.groupeTD}
-                                    />
-                                    <InputField
-                                        text="Groupe TP"
-                                        placeholder="Ex: TP1A"
-                                        value={formData.groupeTP}
-                                        onChange={(e) => handleFieldChange("groupeTP", e)}
-                                        error={errors.groupeTP}
-                                    />
-                                </div>
+                                <InputField
+                                    text="Groupe TD"
+                                    placeholder="Ex: TD1"
+                                    value={formData.groupeTD}
+                                    onChange={(e) => {
+                                        handleFieldChange("groupeTD", e);
+                                        handleFieldChange("groupeTDPair", e);
+                                    }}
+                                    error={errors.groupeTD}
+                                />
+                                <InputField
+                                    text="Groupe TD Semestre Pair"
+                                    placeholder="Ex: TD1"
+                                    value={formData.groupeTDPair}
+                                    onChange={(e) => handleFieldChange("groupeTDPair", e)}
+                                    error={errors.groupeTDPair}
+                                />
+                                <InputField
+                                    text="Groupe TP"
+                                    placeholder="Ex: TP1A"
+                                    value={formData.groupeTP}
+                                    onChange={(e) => {
+                                        handleFieldChange("groupeTP", e);
+                                        handleFieldChange("groupeTPPair", e);
+                                    }}
+                                    error={errors.groupeTP}
+                                />
+                                <InputField
+                                    text="Groupe TP Semestre Pair"
+                                    placeholder="Ex: TP1A"
+                                    value={formData.groupeTPPair}
+                                    onChange={(e) => handleFieldChange("groupeTPPair", e)}
+                                    error={errors.groupeTPPair}
+                                />
 
                                 <div className="rse-section">
                                     <p>RSE (Sélection multiple)</p>

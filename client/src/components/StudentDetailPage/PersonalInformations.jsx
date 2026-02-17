@@ -5,7 +5,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
 
-function PersonalInformations({ student, loading, editing, onChange, setStudent }) {
+function PersonalInformations({ student, loading, editing, onChange, setStudent, errors }) {
     const [allRSE, setAllRSE] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const fetchAllRSE = async () => {
@@ -32,7 +32,7 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent 
     const renderInput = (label, field) => (
         <div className="info-item">
             <span className="label">{label}</span>
-            <InputField value={student[field]} disabled={!editing} onChange={(e) => onChange(field, e.target.value)} />
+            <InputField value={student[field]} disabled={!editing} onChange={(e) => onChange(field, e.target.value)} error={errors[field]} />
         </div>
     );
 
