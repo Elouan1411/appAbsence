@@ -177,7 +177,6 @@ function AbsenceList() {
                         paginationPageSize={16}
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
-                        autoSizeStrategy={autoSizeStrategy}
                         quickFilterText={quickFilterText}
                     />
                 </div>

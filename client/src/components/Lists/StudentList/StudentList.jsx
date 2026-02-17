@@ -28,13 +28,7 @@ function StudentList() {
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
 
-    const autoSizeStrategy = useMemo(() => {
-        return {
-            type: "fitCellContents",
-            skipHeader: true,
-            scaleUpToFitGridWidth: true,
-        };
-    }, []);
+
 
     const defaultColDef = useMemo(() => {
         return {
@@ -154,7 +148,6 @@ function StudentList() {
                         paginationPageSize={10}
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
-                        autoSizeStrategy={autoSizeStrategy}
                         quickFilterText={quickFilterText}
                     />
                 </div>
