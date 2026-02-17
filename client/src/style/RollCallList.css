@@ -13,26 +13,23 @@
     .rollCallList-container {
         margin-bottom: 100px;
     }
-    .rollCallList-empty {
-        margin-bottom: 100px;
-    }
 }
 
 .rollCallList-container .ag-paging-panel {
- flex-wrap: nowrap !important;
- align-items: center !important;
- font-size: 0.9rem !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    font-size: 0.9rem !important;
 }
 
 .rollCallList-container .ag-paging-row-summary-panel,
 .rollCallList-container .ag-paging-page-summary-panel,
 .rollCallList-container .ag-paging-page-size {
- display: flex !important;
- flex-direction: row !important;
- align-items: center !important;
- white-space: nowrap !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    white-space: nowrap !important;
 }
 
 .rollCallList-container .ag-paging-page-size {
- margin-right: auto; 
+    margin-right: auto;
 }

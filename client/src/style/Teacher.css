@@ -115,13 +115,11 @@
 @media (max-width: 764px) {
     .recent-title {
         font-size: 1.2rem;
-        padding-left: 15px;
     }
 
     .recent-grid {
         display: flex;
         flex-direction: column;
-        padding: 0 15px 100px 15px;
     }
 
     .recent-grid .recent-card {
