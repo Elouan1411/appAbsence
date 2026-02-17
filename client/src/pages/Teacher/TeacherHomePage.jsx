@@ -84,6 +84,7 @@ function TeacherHomePage() {
                         {recentCourses.length === 0 && <p className="empty-message">Aucun cours récent trouvé.</p>}
                     </div>
                 )}
+                <div className="mobile-spacer"></div>
             </div>
         </div>
     );

@@ -23,7 +23,7 @@ function RollCallPage() {
                 promo: sc.promo,
                 groupeTD: sc.groupeTD,
                 groupeTP: sc.groupeTP,
-                semestre: "1"
+                semestre: "1",
             });
             setSubject(sc.codeMatiere);
             setDateTime({ date: dateTime.date, startTime: dateTime.startTime, endTime: dateTime.endTime });
@@ -49,7 +49,14 @@ function RollCallPage() {
 
             <div className="select-container">
                 {role === "admin" && <SelectTeacher value={loginENT} onChange={setLoginENT} className="select-item" />}
-                <SelectGroup key={resetKey} onValidate={(sel) => setSelection(sel)} date={dateTime.date} className="select-item-large" initialData={null} initialSelection={selection} />
+                <SelectGroup
+                    key={resetKey}
+                    onValidate={(sel) => setSelection(sel)}
+                    date={dateTime.date}
+                    className="select-item-large"
+                    initialData={null}
+                    initialSelection={selection}
+                />
 
                 <SelectTime onChange={setDateTime} value={dateTime} className="select-item" />
 
@@ -57,6 +64,7 @@ function RollCallPage() {
             </div>
 
             <RollCallList criteria={selection} dateTime={dateTime} subject={subject} loginENT={loginENT} onSuccess={handleSuccess} />
+            <div className="mobile-spacer"></div>
         </div>
     );
 }

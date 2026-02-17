@@ -6,10 +6,12 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     max-width: 1000px;
     margin: 2rem auto;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
     display: grid;
     gap: 1.5rem;
-    align-items: end; 
+    align-items: end;
     min-width: 300px;
 }
 
@@ -22,7 +24,7 @@
 }
 
 .Card.cols-1 {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
 }
 
 .input-group {
@@ -55,7 +57,9 @@
     border-radius: 8px;
     padding: 0.75rem 1rem;
     font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
     cursor: pointer;
     outline: none;
     appearance: none;
@@ -88,7 +92,7 @@
 }
 
 .validate-btn {
-    grid-column: 1 / -1; 
+    grid-column: 1 / -1;
     background-color: var(--primary-color);
     color: white;
     border: none;
@@ -97,9 +101,11 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    transition:
+        background-color 0.3s ease,
+        transform 0.1s ease;
     margin-top: 1rem;
-    justify-self: center; 
+    justify-self: center;
     min-width: 200px;
 }
 
@@ -111,13 +117,14 @@
     transform: scale(0.98);
 }
 
-
 @media (max-width: 890px) {
     .Card.cols-4,
     .Card.cols-3,
     .Card.cols-1 {
         grid-template-columns: 1fr;
         padding: 1.5rem;
+        width: 100%;
+        margin: 0;
     }
     .select-container {
         gap: 1rem;
