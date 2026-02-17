@@ -105,7 +105,6 @@ function StudentDetailPage() {
     };
 
     const handleCancelChanges = () => {
-        console.log("Je clique");
         setNewStudent(student);
         setEditing(false);
     };

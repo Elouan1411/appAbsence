@@ -93,7 +93,7 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
                 worksheet.addRow(rowData);
             }
         });
-        
+
         const filename = `export_rse_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
         res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -101,7 +101,6 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
 
         await workbook.xlsx.write(res);
         res.end();
-
     } catch (err) {
         console.error("Erreur export RSE:", err);
         res.status(500).json({ error: "Erreur lors de l'export Excel" });
@@ -153,14 +152,14 @@ router.post("/new", verifyToken, isAdmin, (req, res) => {
                                     VALUES(?)`;
 
     db.run(sql, [libelle], (err) => {
-        if (err) return console.log(err.message);
+        if (err) return res.status(401).json(err.message);
 
         sql = "SELECT COUNT(code) FROM RSE";
 
         let code;
 
         db.all(sql, [], (err, rows) => {
-            if (err) return console.log(err.message);
+            if (err) return res.status(401).json(err.message);
 
             code = rows[0]["COUNT(code)"];
 
@@ -168,7 +167,7 @@ router.post("/new", verifyToken, isAdmin, (req, res) => {
                                         VALUES(?, ?)`;
 
             db.run(sql, [number, code], (err) => {
-                if (err) return console.log(err.message);
+                if (err) return res.status(401).json(err.message);
 
                 res.status(200).json([]);
             });
@@ -183,9 +182,9 @@ router.post("/", verifyToken, isAdmin, (req, res) => {
                                     VALUES(?, ?)`;
 
     db.run(sql, [number, code], (err) => {
-        if (err) return console.log(err.message);
+        if (err) return res.status(401).json(err.message);
 
-        console.log("Values have been add successfully.");
+        res.status(200).json([]);
     });
 });
 

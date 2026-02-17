@@ -62,8 +62,6 @@ function AdminHomePage() {
 
             const data = await result.json();
 
-            console.log(data[0]);
-
             setNumberOfStudents(data[0].nombre);
         } catch (err) {
             console.error(err);
@@ -83,8 +81,6 @@ function AdminHomePage() {
             if (!result.ok) throw new Error("Erreur lors de la récupération");
 
             const data = await result.json();
-
-            console.log(data[0]);
 
             setNumberOfJustification(data[0].total);
         } catch (err) {

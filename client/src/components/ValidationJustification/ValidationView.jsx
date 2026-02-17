@@ -57,7 +57,6 @@ export default function ValidationView({ selectedItem, reload }) {
                 });
             });
         } catch (error) {
-            console.log(error);
             return;
         } finally {
             setValidationLoading(false);
@@ -103,7 +102,7 @@ export default function ValidationView({ selectedItem, reload }) {
     const handleLoadAbsences = async () => {
         try {
             const creneaux = selectedItem.liste_creneaux;
-            console.log(creneaux);
+
             if (!creneaux || creneaux.length === 0) return;
 
             const promises = creneaux.map(async (creneau, index) => {
@@ -117,7 +116,7 @@ export default function ValidationView({ selectedItem, reload }) {
                 if (!response.ok) return { index, data: [] };
 
                 const data = await response.json();
-                console.log("data :", data);
+
                 return { index, data };
             });
 
@@ -128,7 +127,6 @@ export default function ValidationView({ selectedItem, reload }) {
                 newAbsenceMap[res.index] = res.data;
             });
 
-            console.log("Absences chargées:", newAbsenceMap);
             setAbsencesBySlot(newAbsenceMap);
         } catch (err) {
             console.error(err);

@@ -5,18 +5,6 @@ const path = require("path");
 
 function importTeachersInDB(filepath) {
     return new Promise(async (resolve, reject) => {
-        console.log(`[DEBUG] importTeachersInDB started for file: ${filepath}`);
-
-        const debugDir = path.join(process.cwd(), "debug");
-        if (!fs.existsSync(debugDir)) {
-            fs.mkdirSync(debugDir, { recursive: true });
-        }
-        try {
-            fs.copyFileSync(filepath, path.join(debugDir, "debug_teacher_import.xlsx"));
-        } catch (e) {
-            console.error("[DEBUG] Erreur copie debug (non bloquant)", e.message);
-        }
-
         try {
             const workbook = new exceljs.Workbook();
             await workbook.xlsx.readFile(filepath);

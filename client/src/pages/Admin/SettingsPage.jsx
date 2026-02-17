@@ -74,7 +74,7 @@ function SettingsPage() {
             const response = await fetch(`${API_URL}/contact_email`, { credentials: "include" });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+
                 setContactEmail(data || "");
             }
         } catch (error) {
@@ -478,14 +478,8 @@ function SettingsPage() {
         }
     };
 
-
     const handleExportRSE = async () => {
-        handleDatabaseExport(
-            "/rse/export",
-            "export_rse.xlsx",
-            "Fichier RSE exporté avec succès.",
-            setIsExportRSELoading
-        );
+        handleDatabaseExport("/rse/export", "export_rse.xlsx", "Fichier RSE exporté avec succès.", setIsExportRSELoading);
     };
 
     const handleDatabaseExport = async (endpoint, defaultFilename, successMessage, setLoading) => {
@@ -744,7 +738,6 @@ function SettingsPage() {
                     </div>
                 )}
 
-
                 {activeTab === "rse" && (
                     <div
                         className="layout-container"
@@ -820,11 +813,7 @@ function SettingsPage() {
                                         {isExportXLSXLoading ? <CustomLoader /> : "Exporter structure + données (.xlsx)"}
                                     </button>
 
-                                    <button
-                                        onClick={handleExportRSE}
-                                        className="validate-btn settings-input-margin-fix"
-                                        disabled={isExportRSELoading}
-                                    >
+                                    <button onClick={handleExportRSE} className="validate-btn settings-input-margin-fix" disabled={isExportRSELoading}>
                                         {isExportRSELoading ? <CustomLoader /> : "Exporter RSE (.xlsx)"}
                                     </button>
 
@@ -887,7 +876,7 @@ function SettingsPage() {
                                 <button
                                     onClick={() => handleDownloadJustifications(true)}
                                     className="validate-btn settings-input-margin-fix settings-btn-full"
-                                    disabled={!selectedYear || isDownloadYearJustifLoading}
+                                    disabled={selectedYear == "" || isDownloadYearJustifLoading}
                                 >
                                     {isDownloadYearJustifLoading ? <CustomLoader /> : "Télécharger l'année (ZIP)"}
                                 </button>
@@ -895,7 +884,7 @@ function SettingsPage() {
                                     type="button"
                                     onClick={handleDeleteYearJustifications}
                                     className="validate-btn settings-input-margin-fix settings-btn-full settings-btn-danger"
-                                    disabled={!selectedYear || isDeleteYearJustifLoading}
+                                    disabled={selectedYear == "" || isDeleteYearJustifLoading}
                                 >
                                     {isDeleteYearJustifLoading ? <CustomLoader /> : "Supprimer l'année"}
                                 </button>

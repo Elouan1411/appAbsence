@@ -37,7 +37,6 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                 let notComplete = false;
                 if (absences) {
                     notComplete = absences.some((abs) => abs.debut < creneau.debut);
-                    console.log(absences);
                 }
 
                 return (

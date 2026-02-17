@@ -39,7 +39,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             if (!response.ok) throw new Error("Erreur HTTP " + response.status);
 
             const result = await response.json();
-            console.log(result);
+
             setRSE(result);
         } catch (err) {
             console.error("Erreur de fetch: " + err.message);

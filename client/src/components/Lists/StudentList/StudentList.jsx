@@ -73,7 +73,6 @@ function StudentList() {
     }, []);
 
     const handleRowClick = (event) => {
-        console.log(event.data);
         safeNavigate(`/admin/detail-etudiant/${event.data.numero}`);
     };
 

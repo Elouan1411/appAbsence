@@ -60,7 +60,7 @@ const AbsenceCard = ({
     const handleDelete = async (e) => {
         e.stopPropagation();
         const confirmation = await alertConfirm("Suppression d'une justification", "Êtes-vous sûr de vouloir supprimer cette justification ?");
-        console.log("Delete triggered for justificationId:", justificationId);
+
         if (confirmation.isConfirmed) {
             try {
                 setIsLoading(true);
@@ -69,17 +69,13 @@ const AbsenceCard = ({
                     credentials: "include",
                 });
 
-                console.log("apres api");
-
                 if (response.ok) {
                     toast.success("Justification supprimée");
                     onDelete(justificationId);
                 } else {
                     toast.error("Erreur lors de la suppression");
                 }
-                console.log("ca a marché");
             } catch (error) {
-                console.log("ca a pas marché");
                 console.error(error);
                 toast.error("Erreur serveur");
             } finally {

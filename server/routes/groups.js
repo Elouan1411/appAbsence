@@ -13,7 +13,7 @@ router.get("/promo", (req, res) => {
         if (err) return console.error(err.message);
         res.status(200).json(rows);
     });
-})
+});
 
 // Récuperer les groupes de TD/TP en fonction d'un group et d'une promo
 router.get("/groups/:promo/:pair", (req, res) => {
@@ -28,135 +28,134 @@ router.get("/groups/:promo/:pair", (req, res) => {
         sql += "groupeTD, groupeTP FROM Eleve WHERE promo = '" + promo + "'";
     }
 
-    
     db.all(sql, [], (err, rows) => {
         if (err) return console.error(err.message);
         res.status(200).json(rows);
     });
-})
+});
 
 router.post("/:pair", (req, res) => {
-  let pair = req.params.pair;
-  let body = req.body; 
+    let pair = req.params.pair;
+    let body = req.body;
 
-  let sql = "SELECT DISTINCT numero, nom, prenom, loginENT,";
+    let sql = "SELECT DISTINCT numero, nom, prenom, loginENT,";
 
-  if (pair == true) {
-    sql += " groupeTDPair, groupeTPPair ";
-  } else {
-    sql += " groupeTD, groupeTP ";
-  }
-
-  sql += "FROM Eleve ";
-
-  let conditions = [];
-  for (let key in body) {
-    if(body[key]) {
-        conditions.push(key + " LIKE '" + body[key] + "'");
+    if (pair == true) {
+        sql += " groupeTDPair, groupeTPPair ";
+    } else {
+        sql += " groupeTD, groupeTP ";
     }
-  }
 
-  if (conditions.length > 0) {
-    sql += "WHERE " + conditions.join(" AND ");
-  }
+    sql += "FROM Eleve ";
 
-  sql += " ORDER BY numero ASC";
+    let conditions = [];
+    for (let key in body) {
+        if (body[key]) {
+            conditions.push(key + " LIKE '" + body[key] + "'");
+        }
+    }
 
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
-    res.status(200).json(rows);
-  });
-})
+    if (conditions.length > 0) {
+        sql += "WHERE " + conditions.join(" AND ");
+    }
+
+    sql += " ORDER BY numero ASC";
+
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+        res.status(200).json(rows);
+    });
+});
 
 // Récupération des élèves appartenant à une association TD/TP
 router.get("/TDTP/:pair", (req, res) => {
-  let body = req.body;
-  let pair = req.params.pair.substring(1);
+    let body = req.body;
+    let pair = req.params.pair.substring(1);
 
-  let sql = "SELECT DISTINCT ";
+    let sql = "SELECT DISTINCT ";
 
-  if (pair == true) {
-    sql += "groupeTDPair ";
-  } else {
-    sql += "groupeTD ";
-  }
+    if (pair == true) {
+        sql += "groupeTDPair ";
+    } else {
+        sql += "groupeTD ";
+    }
 
-  sql += "FROM Eleve ";
+    sql += "FROM Eleve ";
 
-  for (let key in body) {
-    sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
-  }
+    for (let key in body) {
+        sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
+    }
 
-  if (pair == true) {
-    sql += "ORDER BY groupeTDPair ASC";
-  } else {
-    sql += "ORDER BY groupeTD ASC";
-  }
+    if (pair == true) {
+        sql += "ORDER BY groupeTDPair ASC";
+    } else {
+        sql += "ORDER BY groupeTD ASC";
+    }
 
-  let result = undefined;
-  console.log(sql);
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
+    let result = undefined;
 
-    result = rows;
-  });
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
 
-  sql = "SELECT DISTINCT ";
+        result = rows;
+    });
 
-  if (pair == true) {
-    sql += "groupeTPPair ";
-  } else {
-    sql += "groupeTP ";
-  }
+    sql = "SELECT DISTINCT ";
 
-  sql += "FROM Eleve ";
+    if (pair == true) {
+        sql += "groupeTPPair ";
+    } else {
+        sql += "groupeTP ";
+    }
 
-  for (let key in body) {
-    sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
-  }
+    sql += "FROM Eleve ";
 
-  if (pair == true) {
-    sql += "ORDER BY groupeTPPair ASC";
-  } else {
-    sql += "ORDER BY groupeTP ASC";
-  }
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
+    for (let key in body) {
+        sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
+    }
 
-    res.status(200).json(result ? result.concat(rows) : rows);
-  });
+    if (pair == true) {
+        sql += "ORDER BY groupeTPPair ASC";
+    } else {
+        sql += "ORDER BY groupeTP ASC";
+    }
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        res.status(200).json(result ? result.concat(rows) : rows);
+    });
 });
 
 //Récupération des étudiants appartenant un groupe de TP donné
 router.get("/tp/:pair", (req, res) => {
-  let body = req.body;
-  let pair = req.params.pair.substring(1);
+    let body = req.body;
+    let pair = req.params.pair.substring(1);
 
-  sql = "SELECT DISTINCT ";
+    sql = "SELECT DISTINCT ";
 
-  if (pair == true) {
-    sql += "groupeTPPair ";
-  } else {
-    sql += "groupeTP ";
-  }
+    if (pair == true) {
+        sql += "groupeTPPair ";
+    } else {
+        sql += "groupeTP ";
+    }
 
-  sql += "FROM Eleve ";
+    sql += "FROM Eleve ";
 
-  for (let key in body) {
-    sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
-  }
+    for (let key in body) {
+        sql += "WHERE " + key + " LIKE '%" + body[key] + "%' ";
+    }
 
-  if (pair == true) {
-    sql += "ORDER BY groupeTPPair ASC";
-  } else {
-    sql += "ORDER BY groupeTP ASC";
-  }
+    if (pair == true) {
+        sql += "ORDER BY groupeTPPair ASC";
+    } else {
+        sql += "ORDER BY groupeTP ASC";
+    }
 
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
+    db.all(sql, [], (err, rows) => {
+        if (err) return console.error(err.message);
 
-    res.status(200).json(rows);
-  });
+        res.status(200).json(rows);
+    });
 });
 
 module.exports = router;

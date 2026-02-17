@@ -62,12 +62,11 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
             if (!response.ok) throw new Error("Erreur HTTP " + response.status);
 
             const result = await response.json();
-            console.log(result);
+
             const processedData = result.map((item) => {
                 if (item.liste_creneaux && item.liste_creneaux.length > 0) {
                     let new_creneaux = JSON.parse(item.liste_creneaux);
                     const sortedByStart = [...new_creneaux].sort((a, b) => new Date(a.debut) - new Date(b.debut));
-                    console.log(sortedByStart);
 
                     const sortedByEnd = [...new_creneaux].sort((a, b) => new Date(b.fin) - new Date(a.fin));
 
@@ -161,7 +160,6 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
     }, []);
 
     const handleRowClick = (event) => {
-        console.log(event.data);
         setSelectedItem(event.data);
     };
 

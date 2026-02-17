@@ -66,7 +66,6 @@ function AbsenceDetailPage() {
                 credentials: "include",
             });
             const data = await result.json();
-            console.log(data);
 
             if (data && data.length > 0) {
                 setDebut(data[0].debut || 0);
@@ -80,7 +79,6 @@ function AbsenceDetailPage() {
                 setOldNumeroEtudiant(data[0].numeroEtudiant || "");
                 setOldLoginProfesseur(data[0].loginProfesseur || "");
                 setOldMatiere(data[0].codeMatiere || 0);
-
             }
         } catch (err) {
             console.error(err);
@@ -99,7 +97,7 @@ function AbsenceDetailPage() {
             });
             const data = await result.json();
             const item = data[0];
-            console.log(item.liste_creneaux);
+
             if (item.liste_creneaux && item.liste_creneaux.length > 0) {
                 let new_creneaux = JSON.parse(item.liste_creneaux);
                 const sortedByStart = [...new_creneaux].sort((a, b) => new Date(a.debut) - new Date(b.debut));
@@ -118,7 +116,6 @@ function AbsenceDetailPage() {
                     motif: motifTitle,
                     commentaire: commentaire,
                 };
-                console.log(newItem);
 
                 setJustification(newItem);
             }

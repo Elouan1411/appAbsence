@@ -65,7 +65,6 @@ router.delete("/:way", verifyToken, isOwner, (req, res) => {
                     console.error(errr);
                     res.status(500);
                 } else {
-                    console.log("Justificatif supprimé avec succés");
                     res.status(200).json("Justificatif supprimé avec succés");
                 }
             });

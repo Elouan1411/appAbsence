@@ -50,7 +50,9 @@ body {
     transform: scale(0.98);
     transition: all 0.8s ease;
 }
-.button:disabled {
+.button:disabled,
+button.validate-btn.settings-input-margin-fix.settings-btn-full:disabled,
+button.validate-btn.settings-input-margin-fix.settings-btn-full.settings-btn-danger:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

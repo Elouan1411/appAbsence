@@ -25,9 +25,7 @@ export function ConfirmAlert({ title, message, onConfirm, onCancel, toInput, cen
         triggerClose(onCancel);
     };
 
-    useEffect(() => {
-        console.log(localChecked);
-    }, [localChecked]);
+    useEffect(() => {}, [localChecked]);
 
     return (
         <div className={`alert-overlay ${isClosing ? "closing" : ""}`}>

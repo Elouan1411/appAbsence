@@ -76,7 +76,6 @@ const FileUpload = ({ files, setFiles }) => {
             const isAllowedDoc = ALLOWED_EXTENSIONS.docs.includes(extension);
 
             if (!isAllowedImage && !isAllowedDoc) {
-                console.log(extension);
                 toast.error(`L'extension du fichier ${truncateFileName(file.name)} n'est pas supportée.`);
                 return false;
             }

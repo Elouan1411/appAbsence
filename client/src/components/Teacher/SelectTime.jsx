@@ -15,7 +15,6 @@ function SelectTime({ onChange, style, value }) {
             if (value.endTime) setEndTime(value.endTime);
         } else if (!value || (!value.date && !value.startTime)) {
         }
-        console.log(value);
     }, [value]);
 
     useEffect(() => {
