@@ -9,12 +9,6 @@
     color: var(--text-secondary);
 }
 
-@media screen and (max-width: 768px) {
-    .rollCallList-container {
-        margin-bottom: 100px;
-    }
-}
-
 .rollCallList-container .ag-paging-panel {
     flex-wrap: nowrap !important;
     align-items: center !important;
