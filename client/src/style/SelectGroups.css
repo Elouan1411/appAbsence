@@ -159,3 +159,9 @@ html {
         margin: 1rem auto;
     }
 }
+
+@media (max-width: 768px) {
+    .Card {
+        min-width: unset;
+    }
+}
