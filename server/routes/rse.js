@@ -77,19 +77,21 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
 
         // Ajouter les données
         students.forEach((student) => {
-            const rowData = {
-                numero: student.numero,
-                nom: student.nom,
-                prenom: student.prenom,
-            };
+            const studentRSEs = studentRSEMap[student.numero];
 
-            const studentRSEs = studentRSEMap[student.numero] || new Set();
+            if (studentRSEs && studentRSEs.size > 0) {
+                const rowData = {
+                    numero: student.numero,
+                    nom: student.nom,
+                    prenom: student.prenom,
+                };
 
-            rseTypes.forEach((rse) => {
-                rowData[`rse_${rse.code}`] = studentRSEs.has(rse.code) ? "oui" : "non";
-            });
+                rseTypes.forEach((rse) => {
+                    rowData[`rse_${rse.code}`] = studentRSEs.has(rse.code) ? "oui" : "non";
+                });
 
-            worksheet.addRow(rowData);
+                worksheet.addRow(rowData);
+            }
         });
 
         const filename = `export_rse_${new Date().toISOString().slice(0, 10)}.xlsx`;
