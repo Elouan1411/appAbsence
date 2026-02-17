@@ -5,6 +5,8 @@ const path = require("path");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const { readEmail } = require("../utils/readEmail");
 
+const pathEmail = path.join(__dirname, "../database/contact_email.json");
+
 router.get("/", (req, res) => {
     const config = readEmail();
     res.status(200).json(config);

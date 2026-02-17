@@ -104,7 +104,6 @@
 
 .button {
     width: 100%;
-    padding: 6px 0;
     background-color: var(--primary-color);
     color: white;
     border: none;
@@ -159,4 +158,8 @@ p {
     .title {
         font-size: 1.25rem;
     }
+}
+
+.login-container .button {
+    padding: 0.75rem 0px;
 }
