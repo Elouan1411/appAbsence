@@ -126,7 +126,7 @@ function TeacherDetailPage() {
 
     return (
         <div className="student-detail-container">
-            <PageTitle title={`Modifier l'enseignant`} icon="icon-teacher" canGoBack={true} />
+            <PageTitle title={"Modifier l'enseignant"} icon="icon-student-list" canGoBack={true} />
             
             <div className="scrollable-content">
                 <div className="personal-info-container">
