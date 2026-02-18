@@ -9,20 +9,29 @@ const { isAdminOrOwner, isAdminOrTeacher, verifyToken, isAdmin } = require("../m
  *****************************************/
 
 router.get("/all", verifyToken, isAdmin, (req, res) => {
-    const sql = `SELECT Absence.idAbsence,Appel.debut, Appel.fin, CONCAT(Professeur.prenom, ' ', Professeur.nom) AS professeur, Matiere.libelle,CONCAT(Eleve.prenom, ' ', Eleve.nom) AS eleve,EXISTS (
-        SELECT 1
-        FROM JustificationAbsence
-        WHERE JustificationAbsence.idAbsJustifiee = Absence.idAbsence
-    ) AS justifie, Appel.groupeTD,Appel.groupeTP, Appel.promo
-FROM Absence 
-INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
-INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT
-INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
-INNER JOIN Eleve ON Absence.numeroEtudiant = Eleve.numero`;
+    const sql = `
+        SELECT 
+            Absence.idAbsence,
+            Appel.debut, 
+            Appel.fin, 
+            CONCAT(Professeur.prenom, ' ', Professeur.nom) AS professeur, 
+            Matiere.libelle,
+            CONCAT(Eleve.prenom, ' ', Eleve.nom) AS eleve,
+            Appel.groupeTD,
+            Appel.groupeTP, 
+            Appel.promo,
+            (SELECT J.validite 
+             FROM JustificationAbsence J 
+             WHERE J.idAbsJustifiee = Absence.idAbsence 
+             LIMIT 1) AS validite
+        FROM Absence 
+        INNER JOIN Appel ON Absence.idAppel = Appel.idAppel 
+        INNER JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT
+        INNER JOIN Matiere ON Appel.codeMatiere = Matiere.code
+        INNER JOIN Eleve ON Absence.numeroEtudiant = Eleve.numero`;
+
     db.all(sql, (err, rows) => {
-        if (err) {
-            return res.status(500).json(err);
-        }
+        if (err) return res.status(500).json(err);
         return res.status(200).json(rows);
     });
 });

@@ -26,7 +26,7 @@ function AbsenceList() {
     const { hasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
 
-    const columns = ["eleve", "debut", "fin", "libelle", "professeur", "promo", "groupeTD", "groupeTP", "justifie"];
+    const columns = ["eleve", "debut", "fin", "libelle", "professeur", "promo", "groupeTD", "groupeTP", "validite"];
 
     const theme = useTheme();
 
@@ -93,20 +93,19 @@ function AbsenceList() {
     useEffect(() => {
         if (rowData && rowData.length > 0) {
             const generatedColumns = columns.map((key) => {
-                if (key === "justifie") {
+                if (key === "validite") {
                     return {
                         headerName: ABSENCE_HEADER_DISPLAY_NAMES[key] || key,
-                        field: key,
+                        field: "validite",
                         cellRenderer: JustifieCell,
                         autoHeight: true,
                         resizable: true,
-                        cellStyle: () => ({
+                        cellStyle: {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                        }),
-                        sort: "asc",
-                        sortIndex: 0,
+                        },
+                        comparator: (valueA, valueB) => (valueA || 99) - (valueB || 99),
                     };
                 }
 
