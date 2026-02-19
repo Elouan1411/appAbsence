@@ -82,33 +82,33 @@ function SettingsPage() {
         }
     };
 
+    const fetchPromotions = async () => {
+        try {
+            const response = await fetch(`${API_URL}/groups/promo`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setPromotions(data.map((item) => item.promo).sort());
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des promos:", error);
+            setPromotions(["L2", "L3", "M1", "M2"]);
+        }
+    };
+
+    const fetchTeachers = async () => {
+        try {
+            const response = await fetch(`${API_URL}/teacher/all?t=${Date.now()}`, { credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                data.sort((a, b) => a.nom.localeCompare(b.nom));
+                setTeachers(data);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des enseignants:", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchPromotions = async () => {
-            try {
-                const response = await fetch(`${API_URL}/groups/promo`, { credentials: "include" });
-                if (response.ok) {
-                    const data = await response.json();
-                    setPromotions(data.map((item) => item.promo).sort());
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération des promos:", error);
-                setPromotions(["L2", "L3", "M1", "M2"]);
-            }
-        };
-
-        const fetchTeachers = async () => {
-            try {
-                const response = await fetch(`${API_URL}/teacher/all`, { credentials: "include" });
-                if (response.ok) {
-                    const data = await response.json();
-                    data.sort((a, b) => a.nom.localeCompare(b.nom));
-                    setTeachers(data);
-                }
-            } catch (error) {
-                console.error("Erreur lors de la récupération des enseignants:", error);
-            }
-        };
-
         fetchPromotions();
         fetchTeachers();
         fetchSubjects();
@@ -267,6 +267,7 @@ function SettingsPage() {
                 if (response.ok) {
                     toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
                     setAdminLogin("");
+                    await fetchTeachers();
                 } else {
                     toast.error("Erreur lors de l'ajout.");
                 }
@@ -296,8 +297,8 @@ function SettingsPage() {
 
                 if (response.ok) {
                     toast.success(`Droits retirés pour ${adminToRemove}.`);
-                    setTeachers((prev) => prev.map((t) => (t.loginENT === adminToRemove ? { ...t, administrateur: 0 } : t)));
                     setAdminToRemove("");
+                    await fetchTeachers();
                 } else {
                     toast.error("Erreur lors de la suppression.");
                 }

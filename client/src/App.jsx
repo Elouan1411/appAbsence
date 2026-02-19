@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { getHomeRoute } from "./utils/roleUtils.js";
 
 function App() {
     const { user, role, loading } = useAuth();
@@ -116,20 +117,5 @@ function App() {
         </>
     );
 }
-
-const getHomeRoute = (role) => {
-    switch (role) {
-        case "admin":
-            return "/admin";
-        case "teacher":
-            return "/enseignant";
-        case "student":
-            return "/etudiant";
-        case "init":
-            return "/init";
-        default:
-            return "/";
-    }
-};
 
 export default App;

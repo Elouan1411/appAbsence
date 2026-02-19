@@ -11,6 +11,7 @@ import Footer from "../../components/StudentDetailPage/Footer";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
+import { DATA_REGEX } from "../../utils/studentValidation";
 
 const emptyStudent = {
     prenom: "",
@@ -34,9 +35,28 @@ function StudentDetailPage() {
     const [student, setStudent] = useState(emptyStudent);
     const [newStudent, setNewStudent] = useState(emptyStudent);
     const [absences, setAbsences] = useState([]);
+    const [errors, setErrors] = useState({});
 
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsaved();
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!DATA_REGEX.nom.test(newStudent.nom)) newErrors.nom = "2-50 caractères";
+        if (!DATA_REGEX.prenom.test(newStudent.prenom)) newErrors.prenom = "2-50 caractères";
+        if (!DATA_REGEX.loginENT.test(newStudent.loginENT)) newErrors.loginENT = "Format invalide";
+        if (!DATA_REGEX.numero.test(newStudent.numeroEtudiant)) newErrors.numeroEtudiant = "8 chiffres requis";
+
+        if (!DATA_REGEX.promo.test(newStudent.promo)) newErrors.promo = "Ex: L1";
+        if (!DATA_REGEX.groupeTD.test(newStudent.groupeTD)) newErrors.groupeTD = "Ex: TD1";
+        if (!DATA_REGEX.groupeTP.test(newStudent.groupeTP)) newErrors.groupeTP = "Ex: TP1a";
+
+        if (newStudent.promoPair && !DATA_REGEX.promo.test(newStudent.promoPair)) newErrors.promoPair = "Format L1-M2";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const fetchStudent = useCallback(async () => {
         try {
@@ -86,6 +106,10 @@ function StudentDetailPage() {
     const handleChange = (field, value) => {
         setNewStudent((prev) => ({ ...prev, [field]: value }));
         setHasUnsavedChanges(true);
+
+        if (errors[field]) {
+            setErrors((prev) => ({ ...prev, [field]: null }));
+        }
     };
 
     const handleGoBack = () => {
@@ -132,6 +156,11 @@ function StudentDetailPage() {
             setEditing(false);
             return;
         }
+        if (!validateForm()) {
+            toast.error("Veuillez corriger les erreurs dans le formulaire.");
+            return;
+        }
+
         const result = await alertConfirm("Voulez-vous sauvegarder vos modifications ?", "Vous pourrez les modifier ultérieurement.");
         if (result.isConfirmed) {
             try {
@@ -221,6 +250,7 @@ function StudentDetailPage() {
                     setEditing={setEditing}
                     onChange={handleChange}
                     setStudent={(prev) => setNewStudent(prev)}
+                    errors={errors}
                 />
                 <AbsenceList setLoading={setLoading} userId={userId} setAbsences={setAbsences} absences={absences} student={student} />
             </div>

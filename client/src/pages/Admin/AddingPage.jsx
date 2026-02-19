@@ -10,13 +10,23 @@ import { useEffect } from "react";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { API_URL } from "../../config";
+import { useSearchParams } from "react-router-dom";
 
 function AddingPage() {
-    const [activeTab, setActiveTab] = useState("student");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = searchParams.get("tab") || "student";
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { setHasUnsavedChanges, hasUnsavedChanges } = useUnsaved();
 
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
+
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab && (tab === "student" || tab === "teacher")) {
+            setActiveTab(tab);
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {
@@ -43,6 +53,7 @@ function AddingPage() {
             if (!result.isConfirmed) return;
         }
 
+        setSearchParams({ tab: nextTab });
         setActiveTab(nextTab);
     };
 

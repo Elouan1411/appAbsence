@@ -30,13 +30,7 @@ function TeacherList() {
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
 
-    const autoSizeStrategy = useMemo(() => {
-        return {
-            type: "fitCellContents",
-            skipHeader: true,
-            scaleUpToFitGridWidth: true,
-        };
-    }, []);
+
 
     const defaultColDef = useMemo(() => {
         return {
@@ -165,6 +159,10 @@ function TeacherList() {
         setIsSearchActive(!isSearchActive);
     };
 
+    const handleRowClick = (event) => {
+        safeNavigate(`/admin/detail-enseignant/${event.data.loginENT}`);
+    };
+
     return (
         <div className="student-list">
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -202,8 +200,8 @@ function TeacherList() {
                         paginationPageSize={10}
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
-                        autoSizeStrategy={autoSizeStrategy}
                         quickFilterText={quickFilterText}
+                        onRowClicked={handleRowClick}
                     />
                 </div>
             )}

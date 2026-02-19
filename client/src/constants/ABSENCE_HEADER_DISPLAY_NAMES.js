@@ -8,6 +8,7 @@ const ABSENCE_HEADER_DISPLAY_NAMES = {
     promo: "Promo",
     professeur: "Enseignant",
     eleve: "Élève",
+    validite: "Validité",
 };
 
 export default ABSENCE_HEADER_DISPLAY_NAMES;

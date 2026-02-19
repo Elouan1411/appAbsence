@@ -358,7 +358,7 @@ main {
     padding: 10px 0;
 }
 .action-button {
-    padding: 0rem 1.5rem;
+    /* padding: 0rem 1.5rem; */
     width: 25%;
     font-size: 1.2rem;
     font-weight: 700;
@@ -535,7 +535,7 @@ p {
 .doc-button {
     all: unset;
     width: 15%;
-    padding: 10px;
+    /* padding: 10px; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -582,7 +582,6 @@ p {
 
 .content-import > .add-button {
     width: 10%;
-    padding: 0;
 }
 
 .add-separator {
@@ -665,14 +664,14 @@ p {
 .modal-content .input > input:focus {
     border-color: var(--primary-color);
 }
-.modal-content .input-error-form {
+.input-error-form {
     background-color: transparent;
 }
 .input-error-form > input {
     background-color: rgba(255, 0, 0, 0.4);
 }
 
-.modal-content .input .label-container p {
+.input .label-container p {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -1204,4 +1203,11 @@ p {
 .right-buttons-container > .btn-justifier-admin:hover {
     background-color: var(--primary-color-hover, var(--primary-color));
     transform: translateY(-2px);
+}
+
+.justification-container > .right > .empty-state {
+    height: 80vh;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
 }
