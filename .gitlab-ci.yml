@@ -17,4 +17,4 @@ prod:
   stage: deploy:prod
   script:
     - rsync --exclude ".git*" -a . $SSH_USER@$VM_IPADDRESS:$DEST_DIR
-    - ssh $SSH_USER@$VM_IPADDRESS "pm2 restart site --update-env"
+    - ssh $SSH_USER@$VM_IPADDRESS "pm2 restart appabsences --update-env"
