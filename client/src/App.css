@@ -178,3 +178,8 @@ main {
     margin-top: 20px;
     box-shadow: var(--card-shadow);
 }
+
+input[type="text"]:disabled {
+    color: var(--cell-ignored-color);
+    cursor: not-allowed;
+}

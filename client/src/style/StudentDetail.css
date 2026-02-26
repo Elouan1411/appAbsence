@@ -195,7 +195,7 @@ h3 {
 .footer-container button {
     width: 10vw;
     min-width: 150px;
-    padding: 0;
+    padding: 10px;
     max-height: 3vh;
     margin: 0;
 }
@@ -321,8 +321,8 @@ h3 {
 }
 
 @media (max-width: 768px) {
-    .delete-button:hover span {
-    }
+    /* .delete-button:hover span {
+    } */
 
     .delete-button span {
         background-color: var(--badge-text);

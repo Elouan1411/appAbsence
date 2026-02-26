@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../style/Teacher.css";
+import "../../style/SelectGroups.css";
 import RollCallList from "../../components/Teacher/RollCallList";
 import SelectGroup from "../../components/Teacher/SelectGroup";
 import SelectTime from "../../components/Teacher/SelectTime";
@@ -64,7 +65,7 @@ function RollCallPage() {
             </div>
 
             <RollCallList criteria={selection} dateTime={dateTime} subject={subject} loginENT={loginENT} onSuccess={handleSuccess} />
-            <div className="mobile-spacer"></div>
+            <div className="mobile-spacer spacer-appel"></div>
         </div>
     );
 }

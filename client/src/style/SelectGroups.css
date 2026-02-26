@@ -117,6 +117,12 @@
     transform: scale(0.98);
 }
 
+.spacer-appel {
+    height: 20px;
+    display: block;
+    width: 100%;
+}
+
 @media (max-width: 890px) {
     .Card.cols-4,
     .Card.cols-3,
@@ -128,6 +134,12 @@
     }
     .select-container {
         gap: 1rem;
+    }
+
+    .mobile-spacer {
+        height: 120px;
+        display: block;
+        width: 100%;
     }
 }
 
