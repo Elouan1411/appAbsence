@@ -5,6 +5,7 @@
   "main": "start.js",
   "scripts": {
     "dev": "concurrently -n \"serveur,client\" -c \"yellow,cyan\" \"cd server && nodemon index.js\" \"cd client && npm run dev\"",
+    "quick-prod": "cd client && npm run build && cd ../server && node index.js",
     "prod": "npm install && cd client && npm install && npm run build && cd ../server && npm install && node index.js"
   },
   "devDependencies": {

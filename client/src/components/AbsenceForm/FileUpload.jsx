@@ -11,7 +11,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 const FileUpload = ({ files, setFiles }) => {
     // Helper to check extensions
     const ALLOWED_EXTENSIONS = {
-        images: ["jpg", "jpeg", "png", "heic", "heif"],
+        images: ["jpg", "jpeg", "png"],
         docs: ["pdf"],
     };
 
@@ -59,32 +59,42 @@ const FileUpload = ({ files, setFiles }) => {
         return `${nameWithoutExt.substring(0, half)}...${nameWithoutExt.slice(-half)}.${extension}`;
     };
 
-    const addFiles = (newFiles) => {
+    const addFiles = async (newFiles) => {
         const MAX_NB_FILES = 10;
         if (files.length + newFiles.length > MAX_NB_FILES) {
             toast.error(`Vous ne pouvez pas ajouter plus de ${MAX_NB_FILES} fichiers.`);
             return;
         }
-        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-        const validFiles = newFiles.filter((file) => {
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+        const processedFiles = [];
+
+        for (let i = 0; i < newFiles.length; i++) {
+            let file = newFiles[i];
+
             if (file.size > MAX_SIZE) {
-                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 10Mo.`);
-                return false;
+                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 5Mo.`);
+                continue;
             }
+
             const extension = file.name.split(".").pop().toLowerCase();
             const isAllowedImage = ALLOWED_EXTENSIONS.images.includes(extension);
             const isAllowedDoc = ALLOWED_EXTENSIONS.docs.includes(extension);
 
             if (!isAllowedImage && !isAllowedDoc) {
                 toast.error(`L'extension du fichier ${truncateFileName(file.name)} n'est pas supportée.`);
-                return false;
+                continue;
             }
-            toast.success(`Le fichier ${truncateFileName(file.name)} a été ajouté.`);
-            return true;
-        });
 
-        if (validFiles.length > 0) {
-            setFiles((prev) => [...prev, ...validFiles]);
+            toast.success(`Le fichier ${truncateFileName(file.name)} a été ajouté.`);
+            processedFiles.push(file);
+        }
+
+        if (processedFiles.length > 0) {
+            setFiles((prev) => {
+                const combined = [...prev, ...processedFiles];
+                return combined.slice(0, MAX_NB_FILES);
+            });
         }
     };
 
@@ -131,14 +141,14 @@ const FileUpload = ({ files, setFiles }) => {
                 onDrop={handleDrop}
                 onClick={triggerFileInput}
             >
-                <input type="file" ref={fileInputRef} onChange={handleFileSelect} style={{ display: "none" }} multiple />
+                <input type="file" ref={fileInputRef} onChange={handleFileSelect} style={{ display: "none" }} multiple accept="image/jpeg, image/png" />
 
                 <div className="cloud-icon-container">
                     <img src={cloudIcon} alt="Upload" width="24" height="24" />
                 </div>
 
                 <p className="dropzone-text">Cliquez ou glissez vos fichiers ici</p>
-                <p className="dropzone-subtext">PDF, JPG, JPEG, PNG, HEIC, HEIF (Max 10Mo)</p>
+                <p className="dropzone-subtext">PDF, JPG, JPEG, PNG (Max 5Mo)</p>
             </div>
 
             {files.length > 0 && (

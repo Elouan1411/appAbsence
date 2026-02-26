@@ -4,7 +4,6 @@ const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
 const PDFDocument = require("pdfkit");
-const heicConvert = require("heic-convert");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const db = require("../database/db");
 
@@ -14,7 +13,7 @@ const db = require("../database/db");
 
 // Helper to check extensions
 const ALLOWED_EXTENSIONS = {
-    images: [".jpg", ".jpeg", ".png", ".heic", ".heif"],
+    images: [".jpg", ".jpeg", ".png"],
     docs: [".pdf"],
 };
 
@@ -99,21 +98,7 @@ router.post("/upload", (req, res) => {
 
         try {
             if (ALLOWED_EXTENSIONS.images.includes(ext)) {
-                let imagePathToConvert = uploadedFile.filepath;
-                let tempJpegPath = null;
-
-                if (ext === ".heic" || ext === ".heif") {
-                    const inputBuffer = fs.readFileSync(uploadedFile.filepath);
-                    const outputBuffer = await heicConvert({
-                        buffer: inputBuffer,
-                        format: "JPEG",
-                        quality: 1,
-                    });
-
-                    tempJpegPath = path.join(uploadDir, `temp-${Date.now()}.jpg`);
-                    fs.writeFileSync(tempJpegPath, Buffer.from(outputBuffer));
-                    imagePathToConvert = tempJpegPath;
-                }
+                const imagePathToConvert = uploadedFile.filepath;
 
                 // Convert to PDF
                 const finalPath = path.join(uploadDir, `${customName}.pdf`);
@@ -122,11 +107,6 @@ router.post("/upload", (req, res) => {
                 // Remove the temp uploaded image file (original)
                 if (fs.existsSync(uploadedFile.filepath)) {
                     fs.unlinkSync(uploadedFile.filepath);
-                }
-
-                // Remove intermediate jpeg if it was created
-                if (tempJpegPath && fs.existsSync(tempJpegPath)) {
-                    fs.unlinkSync(tempJpegPath);
                 }
 
                 return res.status(200).json({ message: "File uploaded and converted to PDF", fileName: `${customName}.pdf` });
