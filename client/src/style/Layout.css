@@ -4,14 +4,18 @@
 
 @media (max-width: 768px) {
     .layout {
-        display: block;
+        display: flex;
+        flex-direction: column-reverse;
+        height: 100dvh;
     }
 
     main,
     .main-content {
-        padding-bottom: 110px !important;
+        padding-bottom: 0px !important;
         margin-left: 0 !important;
         width: 100%;
-        box-sizing: content-box;
+        flex: 1;
+        overflow-y: auto;
+        box-sizing: border-box;
     }
 }

@@ -66,12 +66,12 @@ function App() {
         if (viewportMeta) {
             if (location.pathname.startsWith("/admin") && !location.pathname.includes("/appel")) {
                 if (window.screen.width < 1200) {
-                    viewportMeta.setAttribute("content", "width=1200, user-scalable=yes");
+                    viewportMeta.setAttribute("content", "width=1200, user-scalable=yes, viewport-fit=cover");
                 } else {
-                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+                    viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0, viewport-fit=cover");
                 }
             } else {
-                viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0");
+                viewportMeta.setAttribute("content", "width=device-width, initial-scale=1.0, viewport-fit=cover");
             }
         }
     }, [location]);
