@@ -23,6 +23,7 @@ import ExcelJS from "exceljs";
 import { API_URL } from "../../config";
 import "../../style/icon.css";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
 function DataImport({ type, openModal, setHasUnsavedImport }) {
     const [rowData, setRowData] = useState([]);
@@ -88,7 +89,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         const match = type === "student" ? studentMatchHeader(newName) : teacherMatchHeader(newName);
 
         if (!match) {
-            toast.error(`Le nom "${newName}" ne correspond à aucune colonne attendue.`);
+            notify(`Le nom "${newName}" ne correspond à aucune colonne attendue.`, "error");
             return;
         }
 
@@ -115,7 +116,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
             });
         });
 
-        toast.success(`Super, la colonne est désormais sous le bon nom : "${match}" !`);
+        notify(`Super, la colonne est désormais sous le bon nom : "${match}" !`, "success");
     };
 
     const handleDeleteColumn = (colId) => {
@@ -127,12 +128,12 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                 return newRow;
             });
         });
-        toast.success("Colonne supprimée avec succès.");
+        notify("Colonne supprimée avec succès.", "success");
     };
 
     const handleDeleteRow = (rowIndex) => {
         setRowData((currentRows) => currentRows.filter((_, index) => index !== rowIndex));
-        toast.success("Ligne supprimée avec succès.");
+        notify("Ligne supprimée avec succès.", "success");
     };
 
     const handleCellValueChanged = async (params) => {
@@ -172,7 +173,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
 
     const handleSaveAndSend = async () => {
         if (!gridRef.current || !gridRef.current.api) {
-            toast.error("La grille n'est pas initialisée");
+            notify("La grille n'est pas initialisée", "error");
             return;
         }
 
@@ -182,13 +183,13 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         });
 
         if (modifiedRows.length === 0) {
-            toast.error("Le tableau est vide !");
+            notify("Le tableau est vide !", "error");
             return;
         }
 
         const hasIgnoredCols = colDefs.some((col) => col.field.startsWith("_ignored_"));
         if (hasIgnoredCols) {
-            toast.error("Il y a des colonnes ignorées (grisées) !\nImportation impossible");
+            notify("Il y a des colonnes ignorées (grisées) !\nImportation impossible", "error");
             return;
         }
 
@@ -212,7 +213,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
         }
 
         if (hasErrors) {
-            toast.error("Veuillez corriger les données non-conformes.");
+            notify("Veuillez corriger les données non-conformes.", "error");
             return;
         }
 
@@ -256,14 +257,14 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                 });
 
                 if (response.ok) {
-                    toast.success("Données envoyées avec succès.");
+                    notify("Données envoyées avec succès.", "success");
                     setHasUnsavedImport(false);
                     setRowData([]);
                 } else {
-                    toast.error("Une erreur est survenue.");
+                    notify("Une erreur est survenue.", "error");
                 }
             } catch (error) {
-                toast.error("Erreur réseau", error);
+                notify("Erreur réseau", error, "error");
             } finally {
                 setLoading(false);
             }

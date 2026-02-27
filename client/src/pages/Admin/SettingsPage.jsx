@@ -14,6 +14,7 @@ import RSEModal from "../../components/Admin/RSEModal";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 import DatabaseResetCard from "../../components/Settings/DatabaseResetCard";
+import notify from "../../functions/notify";
 
 function SettingsPage() {
     const { user } = useContext(AuthContext);
@@ -167,13 +168,13 @@ function SettingsPage() {
                 a.click();
                 a.remove();
                 window.URL.revokeObjectURL(url);
-                toast.success("Téléchargement lancé.");
+                notify("Téléchargement lancé.", "success");
             } else {
-                toast.error("Erreur de téléchargement.");
+                notify("Erreur de téléchargement.", "error");
             }
         } catch (e) {
             console.error(e);
-            toast.error("Erreur serveur.");
+            notify("Erreur serveur.", "error");
         } finally {
             if (isYear) setIsDownloadYearJustifLoading(false);
             else setIsDownloadAllJustifLoading(false);
@@ -206,14 +207,14 @@ function SettingsPage() {
             });
             if (response.ok) {
                 const data = await response.json();
-                toast.success(data.message || "Suppression effectuée.");
+                notify(data.message || "Suppression effectuée.", "success");
                 fetchYears();
             } else {
-                toast.error("Erreur lors de la suppression.");
+                notify("Erreur lors de la suppression.", "error");
             }
         } catch (e) {
             console.error(e);
-            toast.error("Erreur serveur.");
+            notify("Erreur serveur.", "error");
         } finally {
             setLoading(false);
         }
@@ -222,7 +223,7 @@ function SettingsPage() {
     const handleSaveEmail = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(contactEmail)) {
-            toast.error("Format d'email invalide");
+            notify("Format d'email invalide", "error");
             return;
         }
 
@@ -236,13 +237,13 @@ function SettingsPage() {
             });
 
             if (response.ok) {
-                toast.success("Email de contact mis à jour !");
+                notify("Email de contact mis à jour !", "success");
             } else {
-                toast.error("Erreur lors de la mise à jour.");
+                notify("Erreur lors de la mise à jour.", "error");
             }
         } catch (error) {
             console.error(error);
-            toast.error("Erreur serveur.");
+            notify("Erreur serveur.", "error");
         } finally {
             setIsEmailLoading(false);
         }
@@ -250,7 +251,7 @@ function SettingsPage() {
 
     const handleAddAdmin = async () => {
         if (!adminLogin.trim()) {
-            toast.error("Veuillez sélectionner un enseignant.");
+            notify("Veuillez sélectionner un enseignant.", "error");
             return;
         }
 
@@ -265,15 +266,15 @@ function SettingsPage() {
                 });
 
                 if (response.ok) {
-                    toast.success(`Administrateur ${adminLogin} ajouté avec succès !`);
+                    notify(`Administrateur ${adminLogin} ajouté avec succès !`, "success");
                     setAdminLogin("");
                     await fetchTeachers();
                 } else {
-                    toast.error("Erreur lors de l'ajout.");
+                    notify("Erreur lors de l'ajout.", "error");
                 }
             } catch (error) {
                 console.error("Erreur:", error);
-                toast.error("Erreur connexion serveur.");
+                notify("Erreur connexion serveur.", "error");
             } finally {
                 setIsAdminLoading(false);
             }
@@ -282,7 +283,7 @@ function SettingsPage() {
 
     const handleRemoveAdmin = async () => {
         if (!adminToRemove.trim()) {
-            toast.error("Veuillez sélectionner un administrateur.");
+            notify("Veuillez sélectionner un administrateur.", "error");
             return;
         }
 
@@ -296,15 +297,15 @@ function SettingsPage() {
                 });
 
                 if (response.ok) {
-                    toast.success(`Droits retirés pour ${adminToRemove}.`);
+                    notify(`Droits retirés pour ${adminToRemove}.`, "success");
                     setAdminToRemove("");
                     await fetchTeachers();
                 } else {
-                    toast.error("Erreur lors de la suppression.");
+                    notify("Erreur lors de la suppression.", "error");
                 }
             } catch (error) {
                 console.error("Erreur:", error);
-                toast.error("Erreur serveur.");
+                notify("Erreur serveur.", "error");
             }
         }
     };
@@ -341,16 +342,16 @@ function SettingsPage() {
             }
 
             if (response.ok) {
-                toast.success(editingSubject ? "Matière modifiée avec succès !" : "Matière ajoutée avec succès !");
+                notify(editingSubject ? "Matière modifiée avec succès !" : "Matière ajoutée avec succès !", "success");
                 fetchSubjects();
                 setIsSubjectModalOpen(false);
                 setEditingSubject(null);
             } else {
-                toast.error("Erreur lors de l'enregistrement.");
+                notify("Erreur lors de l'enregistrement.", "error");
             }
         } catch (err) {
             console.error(err);
-            toast.error("Erreur de communication avec le serveur.");
+            notify("Erreur de communication avec le serveur.", "error");
         } finally {
             setIsSubjectLoading(false);
         }
@@ -372,14 +373,14 @@ function SettingsPage() {
                 });
 
                 if (response.ok) {
-                    toast.success("Matière supprimée.");
+                    notify("Matière supprimée.", "success");
                     fetchSubjects();
                 } else {
-                    toast.error("Erreur lors de la suppression.");
+                    notify("Erreur lors de la suppression.", "error");
                 }
             } catch (err) {
                 console.error(err);
-                toast.error("Erreur de communication avec le serveur.");
+                notify("Erreur de communication avec le serveur.", "error");
             } finally {
                 setDeletingSubjectId(null);
             }
@@ -434,16 +435,16 @@ function SettingsPage() {
             }
 
             if (response.ok) {
-                toast.success(editingRSE ? "RSE modifié avec succès !" : "RSE ajouté avec succès !");
+                notify(editingRSE ? "RSE modifié avec succès !" : "RSE ajouté avec succès !", "success");
                 fetchRSEs();
                 setIsRSEModalOpen(false);
                 setEditingRSE(null);
             } else {
-                toast.error("Erreur lors de l'enregistrement.");
+                notify("Erreur lors de l'enregistrement.", "error");
             }
         } catch (err) {
             console.error(err);
-            toast.error("Erreur de communication avec le serveur.");
+            notify("Erreur de communication avec le serveur.", "error");
         } finally {
             setIsRSELoading(false);
         }
@@ -465,14 +466,14 @@ function SettingsPage() {
                 });
 
                 if (response.ok) {
-                    toast.success("RSE supprimé.");
+                    notify("RSE supprimé.", "success");
                     fetchRSEs();
                 } else {
-                    toast.error("Erreur lors de la suppression.");
+                    notify("Erreur lors de la suppression.", "error");
                 }
             } catch (err) {
                 console.error(err);
-                toast.error("Erreur de communication avec le serveur.");
+                notify("Erreur de communication avec le serveur.", "error");
             } finally {
                 setDeletingRSEId(null);
             }
@@ -512,15 +513,15 @@ function SettingsPage() {
                 a.click();
                 a.remove();
                 window.URL.revokeObjectURL(url);
-                toast.success(successMessage);
+                notify(successMessage, "success");
                 return true;
             } else {
-                toast.error("Erreur lors de l'export.");
+                notify("Erreur lors de l'export.", "error");
                 return false;
             }
         } catch (err) {
             console.error(err);
-            toast.error("Erreur connexion serveur.");
+            notify("Erreur connexion serveur.", "error");
             return false;
         } finally {
             setLoading(false);

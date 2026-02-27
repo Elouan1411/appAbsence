@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import notify from "../functions/notify";
 
 export const useJustificationValidation = () => {
     const [errors, setErrors] = useState({});
@@ -42,9 +43,9 @@ export const useJustificationValidation = () => {
         toast.dismiss();
 
         if (hasInvalidDate) {
-            toast.error(invalidDateErrorMsg);
+            notify(invalidDateErrorMsg, "error");
         } else if (hasOverlap) {
-            toast.error(overlapErrorMsg);
+            notify(overlapErrorMsg, "error");
         }
 
         const isValid = Object.keys(newErrors).length === 0;
@@ -67,19 +68,19 @@ export const useJustificationValidation = () => {
         const isReasonValid = validateReason(reason, comment);
 
         if (periods.length === 0) {
-            toast.error("Veuillez ajouter au moins une période d'absence.");
+            notify("Veuillez ajouter au moins une période d'absence.", "error");
             setPeriodError(true);
             return false;
         }
 
         if (!isPeriodsValid) {
-            toast.error("Veuillez corriger les erreurs dans les périodes d'absence.");
+            notify("Veuillez corriger les erreurs dans les périodes d'absence.", "error");
             return false;
         }
 
         if (!isReasonValid) {
             const errorMsg = !reason ? "Veuillez indiquer un motif." : "Veuillez ajouter un commentaire pour le motif 'Autre'.";
-            toast.error(errorMsg);
+            notify(errorMsg, "error");
             return false;
         }
 

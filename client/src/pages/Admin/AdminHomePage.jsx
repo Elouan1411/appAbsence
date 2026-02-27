@@ -10,7 +10,7 @@ import PageTitle from "../../components/common/PageTitle";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
-
+import notify from "../../functions/notify";
 function AdminHomePage() {
     const [selectedItem, setSelectedItem] = useState(null);
     const containerRef = useRef(null);
@@ -65,7 +65,7 @@ function AdminHomePage() {
             setNumberOfStudents(data[0].nombre);
         } catch (err) {
             console.error(err);
-            toast.error("Erreur de chargement des étudiants");
+            notify("Erreur de chargement des étudiants", "error");
         } finally {
             setIsLoading(false);
         }
@@ -85,7 +85,7 @@ function AdminHomePage() {
             setNumberOfJustification(data[0].total);
         } catch (err) {
             console.error(err);
-            toast.error("Erreur de chargement des justifications");
+            notify("Erreur de chargement des justifications", "error");
         }
     }, []);
 

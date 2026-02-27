@@ -1,11 +1,21 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { API_URL } from "../config";
-
+import notify from "../functions/notify";
 export const useJustificationSubmit = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const submit = async (periods, reason, comment, files, mode = "create", existingId = null, removedFiles = [], originalDateDemande = null, studentLogin = null) => {
+    const submit = async (
+        periods,
+        reason,
+        comment,
+        files,
+        mode = "create",
+        existingId = null,
+        removedFiles = [],
+        originalDateDemande = null,
+        studentLogin = null,
+    ) => {
         setIsSubmitting(true);
         toast.dismiss();
         const createdIds = [];
@@ -129,11 +139,11 @@ export const useJustificationSubmit = () => {
                 }
             }
 
-            toast.success(mode === "create" ? "Justification envoyée !" : "Justification mise à jour !");
+            notify(mode === "create" ? "Justification envoyée !" : "Justification mise à jour !", "success");
             return { success: true, ids: createdIds, targetId };
         } catch (error) {
             const cleanMessage = error.message.replace(/^"|"$/g, ""); // clean json string
-            toast.error(cleanMessage || "Une erreur est survenue lors de l'envoi.");
+            notify(cleanMessage || "Une erreur est survenue lors de l'envoi.", "error");
             return { success: false };
         } finally {
             setIsSubmitting(false);

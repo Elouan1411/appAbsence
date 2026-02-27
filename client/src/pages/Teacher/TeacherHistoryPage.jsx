@@ -20,6 +20,7 @@ import "../../style/StudentDetail.css";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
+import notify from "../../functions/notify";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -135,18 +136,18 @@ function TeacherHistoryPage() {
                     credentials: "include",
                 });
                 if (response.ok) {
-                    toast.success("Appel supprimé avec succès");
+                    notify("Appel supprimé avec succès", "success");
                     if (role == "admin") {
                         fetchHistoryAdmin();
                     } else {
                         fetchHistory();
                     }
                 } else {
-                    toast.error("Erreur lors de la suppression");
+                    notify("Erreur lors de la suppression", "error");
                 }
             } catch (err) {
                 console.error(err);
-                toast.error("Erreur réseau");
+                notify("Erreur réseau", "error");
             }
         }
     };
@@ -333,27 +334,27 @@ function TeacherHistoryPage() {
         <div className="page-container">
             <PageTitle title="Historique des Appels" icon="icon-history" />
             <div className="search-wrapper-container">
-                    <div className="search-wrapper-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <button
-                            className="btn-icon"
-                            onClick={() => {
-                                if (role === "admin") {
-                                    fetchHistoryAdmin();
-                                } else {
-                                    fetchHistory();
-                                }
-                            }}
-                            title="Actualiser"
-                            style={{ background: "none", border: "none", cursor: "pointer" }}
-                        >
-                            <span className="icon icon-refresh icon-xl" />
-                        </button>
-                        <SearchInput
-                            value={quickFilterText}
-                            onChange={(e) => setQuickFilterText(e.target.value)}
-                            placeholder="Rechercher dans l'historique..."
-                            onIconClick={toggleSearch}
-                        />
+                <div className="search-wrapper-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <button
+                        className="btn-icon"
+                        onClick={() => {
+                            if (role === "admin") {
+                                fetchHistoryAdmin();
+                            } else {
+                                fetchHistory();
+                            }
+                        }}
+                        title="Actualiser"
+                        style={{ background: "none", border: "none", cursor: "pointer" }}
+                    >
+                        <span className="icon icon-refresh icon-xl" />
+                    </button>
+                    <SearchInput
+                        value={quickFilterText}
+                        onChange={(e) => setQuickFilterText(e.target.value)}
+                        placeholder="Rechercher dans l'historique..."
+                        onIconClick={toggleSearch}
+                    />
                 </div>
             </div>
             <div className="grid-container">

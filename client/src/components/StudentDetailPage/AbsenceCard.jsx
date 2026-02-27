@@ -8,8 +8,23 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 
 import { API_URL } from "../../config";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
-const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, validite, motifValidite, courseType, nom, prenom, idAbsence, setToUpdate, studentInfo }) => {
+const AbsenceCard = ({
+    subject,
+    startTime,
+    endTime,
+    fullPeriod,
+    justified,
+    validite,
+    motifValidite,
+    courseType,
+    nom,
+    prenom,
+    idAbsence,
+    setToUpdate,
+    studentInfo,
+}) => {
     // const navigate = useNavigate();
     // const { hasUnsavedChanges } = useUnsaved();
     // const safeNavigate = useSafeNavigate(hasUnsavedChanges);
@@ -42,10 +57,10 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
                     credentials: "include",
                 });
                 const data = await result.json();
-                toast.success(data);
+                notify(data, "success");
                 setToUpdate(true);
             } catch (err) {
-                toast.error(err);
+                notify(err, "error");
             } finally {
                 setLoading(false);
             }
@@ -92,14 +107,13 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
                 </div>
             </div>
             <div className="right-buttons-container">
-                <div className="justified-container" style={{ width: "auto", flexDirection: "column", alignItems: "flex-end", gap: "5px", marginRight: "10px" }}>
-                    <span className={status.className}>
-                        {status.text}
-                    </span>
+                <div
+                    className="justified-container"
+                    style={{ width: "auto", flexDirection: "column", alignItems: "flex-end", gap: "5px", marginRight: "10px" }}
+                >
+                    <span className={status.className}>{status.text}</span>
                     {(validite === 1 || validite === 3) && motifValidite && (
-                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "right", maxWidth: "150px" }}>
-                            {motifValidite}
-                        </span>
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "right", maxWidth: "150px" }}>{motifValidite}</span>
                     )}
                 </div>
                 {isLoading ? (
@@ -115,7 +129,7 @@ const AbsenceCard = ({ subject, startTime, endTime, fullPeriod, justified, valid
                         <span className="icon icon-justifier-admin icon-xxl icon-primary details-icon" />
                     </button>
                 )}
-                
+
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
                     <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/detail-absence/" + idAbsence)} />

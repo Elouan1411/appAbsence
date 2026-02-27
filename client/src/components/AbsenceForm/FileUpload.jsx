@@ -7,6 +7,7 @@ import checkIcon from "../../assets/check_success.svg";
 import trashIcon from "../../assets/trash.svg";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../hooks/alertConfirm";
+import notify from "../../functions/notify";
 
 const FileUpload = ({ files, setFiles }) => {
     // Helper to check extensions
@@ -62,7 +63,7 @@ const FileUpload = ({ files, setFiles }) => {
     const addFiles = async (newFiles) => {
         const MAX_NB_FILES = 10;
         if (files.length + newFiles.length > MAX_NB_FILES) {
-            toast.error(`Vous ne pouvez pas ajouter plus de ${MAX_NB_FILES} fichiers.`);
+            notify(`Vous ne pouvez pas ajouter plus de ${MAX_NB_FILES} fichiers.`, "error");
             return;
         }
         const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -73,7 +74,7 @@ const FileUpload = ({ files, setFiles }) => {
             let file = newFiles[i];
 
             if (file.size > MAX_SIZE) {
-                toast.error(`Le fichier ${truncateFileName(file.name)} dépasse la limite de 5Mo.`);
+                notify(`Le fichier ${truncateFileName(file.name, "error")} dépasse la limite de 5Mo.`);
                 continue;
             }
 
@@ -82,11 +83,11 @@ const FileUpload = ({ files, setFiles }) => {
             const isAllowedDoc = ALLOWED_EXTENSIONS.docs.includes(extension);
 
             if (!isAllowedImage && !isAllowedDoc) {
-                toast.error(`L'extension du fichier ${truncateFileName(file.name)} n'est pas supportée.`);
+                notify(`L'extension du fichier ${truncateFileName(file.name, "error")} n'est pas supportée.`);
                 continue;
             }
 
-            toast.success(`Le fichier ${truncateFileName(file.name)} a été ajouté.`);
+            notify(`Le fichier ${truncateFileName(file.name)} a été ajouté.`, "success");
             processedFiles.push(file);
         }
 

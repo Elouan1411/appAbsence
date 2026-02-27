@@ -7,6 +7,7 @@ import AbsencePdfDocument from "./AbsencePdfDocument";
 import Pagination from "../common/Pagination";
 import { API_URL } from "../../config";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
 const STEP = 4;
 
@@ -38,7 +39,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
             const data = await result.json();
             setAbsences(data);
         } catch (err) {
-            toast.error("Erreur : " + err.message);
+            notify("Erreur : " + err.message, "error");
         } finally {
             setLoading(false);
             setLocalLoading(false);

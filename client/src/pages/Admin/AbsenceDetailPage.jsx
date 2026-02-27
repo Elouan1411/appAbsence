@@ -16,6 +16,7 @@ import firstCharUppercase from "../../functions/firstCharUppercase";
 import BackButton from "../../components/common/BackButton";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
 import CustomLoader from "../../components/common/CustomLoader";
+import notify from "../../functions/notify";
 
 function AbsenceDetailPage() {
     const { absenceId } = useParams();
@@ -82,7 +83,7 @@ function AbsenceDetailPage() {
             }
         } catch (err) {
             console.error(err);
-            toast.error(err.message || "Erreur récupération absence");
+            notify(err.message || "Erreur récupération absence", "error");
         } finally {
             setLoading(false);
         }
@@ -148,10 +149,10 @@ function AbsenceDetailPage() {
                     credentials: "include",
                 });
                 const data = await result.json();
-                toast.success(data);
+                notify(data, "success");
                 handleGoBack();
             } catch (err) {
-                toast.error(err);
+                notify(err, "error");
             } finally {
                 setIsSaving(false);
             }
@@ -204,10 +205,10 @@ function AbsenceDetailPage() {
                         body: JSON.stringify({ newNumeroEtudiant: numeroEtudiant, newLoginENT: loginEtudiant }),
                     });
                 }
-                toast.success("Les changements ont été effectués avec succès.");
+                notify("Les changements ont été effectués avec succès.", "success");
                 handleGoBack();
             } catch (err) {
-                toast.error(err);
+                notify(err, "error");
             } finally {
                 setIsSaving(false);
             }

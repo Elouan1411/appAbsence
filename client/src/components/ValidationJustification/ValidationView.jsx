@@ -7,6 +7,7 @@ import ValidationFooter from "./ValidationFooter";
 import toast from "react-hot-toast";
 import dateFormatter from "../../functions/dateFormatter";
 import { API_URL } from "../../config";
+import notify from "../../functions/notify";
 
 export default function ValidationView({ selectedItem, reload }) {
     const [isLoading, setLoading] = useState(false);
@@ -130,7 +131,7 @@ export default function ValidationView({ selectedItem, reload }) {
             setAbsencesBySlot(newAbsenceMap);
         } catch (err) {
             console.error(err);
-            toast.error("Impossible de charger les absences correspondantes");
+            notify("Impossible de charger les absences correspondantes", "error");
         }
     };
 

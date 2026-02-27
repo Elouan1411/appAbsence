@@ -16,6 +16,7 @@ import { API_URL } from "../../../config";
 import CustomLoader from "../../common/CustomLoader";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../../hooks/alertConfirm";
+import notify from "../../../functions/notify";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -29,8 +30,6 @@ function TeacherList() {
 
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
-
-
 
     const defaultColDef = useMemo(() => {
         return {
@@ -77,15 +76,15 @@ function TeacherList() {
                 });
 
                 if (response.ok) {
-                    toast.success("Enseignant supprimé avec succès");
+                    notify("Enseignant supprimé avec succès", "success");
                     handleFetchStudents();
                 } else {
                     const errorData = await response.json();
-                    toast.error(errorData.error || "Erreur lors de la suppression");
+                    notify(errorData.error || "Erreur lors de la suppression", "error");
                 }
             } catch (err) {
                 console.error(err);
-                toast.error("Erreur réseau");
+                notify("Erreur réseau", "error");
             }
         }
     };
@@ -175,7 +174,7 @@ function TeacherList() {
                     >
                         <span className="icon icon-add icon-xl" />
                     </button>
-                    
+
                     <SearchInput
                         value={quickFilterText}
                         onChange={(e) => setQuickFilterText(e.target.value)}

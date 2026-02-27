@@ -12,6 +12,9 @@ import toast from "react-hot-toast";
 import { API_URL } from "../../config";
 import CustomLoader from "../common/CustomLoader";
 
+import notify from "../../functions/notify";
+import { motif_translation } from "../../constants/motif_translation";
+
 const AbsenceCard = ({
     id,
     subject,
@@ -70,19 +73,19 @@ const AbsenceCard = ({
                 });
 
                 if (response.ok) {
-                    toast.success("Justification supprimée");
+                    notify("Justification supprimée", "success");
                     onDelete(justificationId);
                 } else {
-                    toast.error("Erreur lors de la suppression");
+                    notify("Erreur lors de la suppression", "error");
                 }
             } catch (error) {
                 console.error(error);
-                toast.error("Erreur serveur");
+                notify("Erreur serveur", "error");
             } finally {
                 setIsLoading(false);
             }
         } else {
-            toast.error("Suppression annulée");
+            notify("Suppression annulée", "error");
         }
     };
 
@@ -140,7 +143,7 @@ const AbsenceCard = ({
                                 {reason && (
                                     <div className="card-absence-reason">
                                         <span className="reason-label">Motif :</span>
-                                        <span className="reason-text">{reason_split}</span>
+                                        <span className="reason-text">{motif_translation[reason_split]}</span>
                                     </div>
                                 )}
                                 {comment_split && (

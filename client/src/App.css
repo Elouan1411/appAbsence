@@ -183,3 +183,17 @@ input[type="text"]:disabled {
     color: var(--cell-ignored-color);
     cursor: not-allowed;
 }
+
+/* @media (hover: none) and (pointer: coarse) {
+    div[style*="position: fixed"][style*="z-index"] > div {
+        pointer-events: none !important;
+    }
+    div[style*="position: fixed"][style*="z-index"] > div > * {
+        pointer-events: auto !important;
+    }
+
+    .alert-overlay,
+    .container {
+        pointer-events: auto !important;
+    }
+} */

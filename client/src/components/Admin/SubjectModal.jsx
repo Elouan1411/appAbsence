@@ -5,13 +5,14 @@ import "../../style/FormModal.css";
 import Button from "../common/Button";
 import "../../style/icon.css";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
 const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultValues = null, promotions = ["L2", "L3", "M1", "M2"], isLoading }) => {
     const [formData, setFormData] = useState({
         libelle: "",
         promo: "",
         spair: "",
-        semester: ""
+        semester: "",
     });
 
     useEffect(() => {
@@ -20,19 +21,19 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
                 setFormData({
                     libelle: initialData.libelle,
                     promo: initialData.promo,
-                    semester: initialData.spair === 1 ? "Pair" : "Impair"
+                    semester: initialData.spair === 1 ? "Pair" : "Impair",
                 });
             } else if (defaultValues) {
                 setFormData({
                     libelle: "",
                     promo: defaultValues.promo || "",
-                    semester: defaultValues.semester || ""
+                    semester: defaultValues.semester || "",
                 });
             } else {
                 setFormData({
                     libelle: "",
                     promo: "",
-                    semester: ""
+                    semester: "",
                 });
             }
         }
@@ -41,20 +42,20 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
     if (!isOpen) return null;
 
     const handleFieldChange = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
     const validateForm = () => {
         if (!formData.libelle) {
-            toast.error("Le libellé de la matière est requis");
+            notify("Le libellé de la matière est requis", "error");
             return false;
         }
         if (!formData.promo) {
-            toast.error("La promotion est requise");
+            notify("La promotion est requise", "error");
             return false;
         }
         if (!formData.semester) {
-            toast.error("Le semestre est requis");
+            notify("Le semestre est requis", "error");
             return false;
         }
         return true;
@@ -67,15 +68,15 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
         const payload = {
             libelle: formData.libelle,
             promo: formData.promo,
-            semester: formData.semester
+            semester: formData.semester,
         };
         onSubmit(payload);
     };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content auto-height" style={{width: "60vh"}} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header" style={{marginBottom: "0"}}>
+            <div className="modal-content auto-height" style={{ width: "60vh" }} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header" style={{ marginBottom: "0" }}>
                     <h2>{initialData ? "Modifier une matière" : "Ajouter une matière"}</h2>
                     <button className="close-btn" onClick={onClose}>
                         <span className="icon-x" />
@@ -90,27 +91,27 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
                                 placeholder="Analyse syntaxique, Système..."
                                 value={formData.libelle}
                                 onChange={(e) => handleFieldChange("libelle", e.target.value)}
-                                style={{marginBottom: "1rem"}}
+                                style={{ marginBottom: "1rem" }}
                             />
-                            <div className="form-group" style={{flex: 1}}>
-                                <div className="label-container"><label>Promotion</label></div>
-                                <select 
-                                    value={formData.promo}
-                                    onChange={(e) => handleFieldChange("promo", e.target.value)}
-                                >
+                            <div className="form-group" style={{ flex: 1 }}>
+                                <div className="label-container">
+                                    <label>Promotion</label>
+                                </div>
+                                <select value={formData.promo} onChange={(e) => handleFieldChange("promo", e.target.value)}>
                                     <option value="">-- Sélectionner une promotion --</option>
-                                    {promotions.map(promo => (
-                                        <option key={promo} value={promo}>{promo}</option>
+                                    {promotions.map((promo) => (
+                                        <option key={promo} value={promo}>
+                                            {promo}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
-                            
-                            <div className="form-group" style={{flex: 1}}>
-                                <div className="label-container"><label>Semestre</label></div>
-                                <select 
-                                    value={formData.semester}
-                                    onChange={(e) => handleFieldChange("semester", e.target.value)}
-                                >
+
+                            <div className="form-group" style={{ flex: 1 }}>
+                                <div className="label-container">
+                                    <label>Semestre</label>
+                                </div>
+                                <select value={formData.semester} onChange={(e) => handleFieldChange("semester", e.target.value)}>
                                     <option value="">-- Sélectionner le semestre --</option>
                                     <option value="Impair">Impair</option>
                                     <option value="Pair">Pair</option>
@@ -125,7 +126,7 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
                                 Annuler
                             </Button>
                             <Button type="submit" className="btn-submit validate-btn" disabled={isLoading}>
-                                {isLoading ? <CustomLoader /> : (initialData ? "Modifier" : "Ajouter")}
+                                {isLoading ? <CustomLoader /> : initialData ? "Modifier" : "Ajouter"}
                             </Button>
                         </div>
                     </div>

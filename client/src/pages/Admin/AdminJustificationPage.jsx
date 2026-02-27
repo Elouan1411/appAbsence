@@ -14,6 +14,7 @@ import SearchInput from "../../components/common/SearchInput";
 import "../../style/Student.css";
 import "../../style/Admin.css";
 import { API_URL } from "../../config";
+import notify from "../../functions/notify";
 
 const AdminJustificationPage = () => {
     const location = useLocation();
@@ -47,7 +48,7 @@ const AdminJustificationPage = () => {
                 }
             } catch (error) {
                 console.error("Error fetching students", error);
-                toast.error("Impossible de charger la liste des étudiants");
+                notify("Impossible de charger la liste des étudiants", "error");
             } finally {
                 setIsLoading(false);
             }
@@ -130,7 +131,7 @@ const AdminJustificationPage = () => {
 
     const handleSubmit = async (action) => {
         if (!selectedStudent) {
-            toast.error("Veuillez sélectionner un étudiant.");
+            notify("Veuillez sélectionner un étudiant.", "error");
             return;
         }
 
@@ -175,11 +176,11 @@ const AdminJustificationPage = () => {
 
                         if (!valRes.ok) {
                             console.error(`Failed to validate/refuse justification ${id}`);
-                            toast.error(`Erreur lors de la validation/refus pour l'ID ${id}`);
+                            notify(`Erreur lors de la validation/refus pour l'ID ${id}`, "error");
                         }
                     }
-                    if (action === "validate") toast.success("Justification validée !");
-                    if (action === "refuse") toast.success("Justification refusée !");
+                    if (action === "validate") notify("Justification validée !", "success");
+                    if (action === "refuse") notify("Justification refusée !", "success");
                 } catch (e) {
                     console.error("Error during validation sequence", e);
                 }

@@ -9,6 +9,7 @@ import SelectTime from "../Teacher/SelectTime";
 import { DateObjectToInt, IntToDateObject, semesterParity } from "../../functions/dateFormatter";
 import SelectGroup from "../Teacher/SelectGroup";
 import { API_URL } from "../../config";
+import notify from "../../functions/notify";
 
 function ModificationAbsence({
     debut,
@@ -93,7 +94,7 @@ function ModificationAbsence({
             }
         } catch (err) {
             console.error(err);
-            toast.error(err.message || "Erreur récupération étudiant");
+            notify(err.message || "Erreur récupération étudiant", "error");
         } finally {
             setLoading(false);
         }
@@ -119,7 +120,7 @@ function ModificationAbsence({
             }
         } catch (err) {
             console.error(err);
-            toast.error(err.message || "Erreur récupération enseignant");
+            notify(err.message || "Erreur récupération enseignant", "error");
         } finally {
             setLoading(false);
         }
@@ -304,7 +305,6 @@ function ModificationAbsence({
                             </div>
                         </div>
                         <div className="selector-container">
-                            
                             <SelectTime value={dateValue} onChange={handleDateChange} />
                             <SelectSubject value={matiere} onSelect={setMatiere} promo={promo} pair={pair} />
                         </div>

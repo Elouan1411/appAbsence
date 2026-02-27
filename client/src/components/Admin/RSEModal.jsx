@@ -5,6 +5,7 @@ import "../../style/FormModal.css";
 import Button from "../common/Button";
 import "../../style/icon.css";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
 const RSEModal = ({ isOpen, onClose, onSubmit, initialData = null, isLoading }) => {
     const [libelle, setLibelle] = useState("");
@@ -24,7 +25,7 @@ const RSEModal = ({ isOpen, onClose, onSubmit, initialData = null, isLoading }) 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!libelle.trim()) {
-            toast.error("Le libellé du RSE est requis");
+            notify("Le libellé du RSE est requis", "error");
             return;
         }
         onSubmit({ libelle });

@@ -6,6 +6,7 @@ import CustomLoader from "../common/CustomLoader";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import { useAuth } from "../../hooks/useAuth";
 import "../../style/SettingsPage.css";
+import notify from "../../functions/notify";
 
 const DatabaseResetCard = ({ onExportDump }) => {
     const { logout } = useAuth();
@@ -23,7 +24,7 @@ const DatabaseResetCard = ({ onExportDump }) => {
         setIsBackupLoading(false);
 
         if (!success) {
-            toast.error("Sauvegarde échouée. Action annulée par sécurité.");
+            notify("Sauvegarde échouée. Action annulée par sécurité.", "error");
             return;
         }
 
@@ -43,14 +44,14 @@ const DatabaseResetCard = ({ onExportDump }) => {
                 });
 
                 if (response.ok) {
-                    toast.success("Données réinitialisées avec succès.");
+                    notify("Données réinitialisées avec succès.", "success");
                 } else {
                     const data = await response.json();
-                    toast.error(data.error || "Erreur lors de la réinitialisation.");
+                    notify(data.error || "Erreur lors de la réinitialisation.", "error");
                 }
             } catch (error) {
                 console.error(error);
-                toast.error("Erreur serveur.");
+                notify("Erreur serveur.", "error");
             } finally {
                 setIsResetLoading(false);
             }
@@ -64,7 +65,7 @@ const DatabaseResetCard = ({ onExportDump }) => {
         setIsFullResetLoading(false);
 
         if (!success) {
-            toast.error("Sauvegarde échouée. Action annulée par sécurité.");
+            notify("Sauvegarde échouée. Action annulée par sécurité.", "error");
             return;
         }
 
@@ -84,7 +85,7 @@ const DatabaseResetCard = ({ onExportDump }) => {
                 });
 
                 if (response.ok) {
-                    toast.success("Base de données entièrement réinitialisée. Déconnexion...");
+                    notify("Base de données entièrement réinitialisée. Déconnexion...", "success");
                     setTimeout(async () => {
                         try {
                             await logout();
@@ -96,12 +97,12 @@ const DatabaseResetCard = ({ onExportDump }) => {
                     }, 1500);
                 } else {
                     const data = await response.json();
-                    toast.error(data.error || "Erreur lors de la réinitialisation complète.");
+                    notify(data.error || "Erreur lors de la réinitialisation complète.", "error");
                     setIsFullResetLoading(false);
                 }
             } catch (error) {
                 console.error(error);
-                toast.error("Erreur serveur.");
+                notify("Erreur serveur.", "error");
                 setIsFullResetLoading(false);
             }
         }
@@ -137,14 +138,14 @@ const DatabaseResetCard = ({ onExportDump }) => {
                 });
 
                 if (response.ok) {
-                    toast.success("Base de données restaurée avec succès !");
+                    notify("Base de données restaurée avec succès !", "success");
                 } else {
                     const data = await response.json();
-                    toast.error(data.error || "Erreur lors de la restauration.");
+                    notify(data.error || "Erreur lors de la restauration.", "error");
                 }
             } catch (error) {
                 console.error(error);
-                toast.error("Erreur connexion serveur.");
+                notify("Erreur connexion serveur.", "error");
             } finally {
                 setIsRestoreLoading(false);
             }

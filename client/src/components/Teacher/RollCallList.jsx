@@ -14,6 +14,7 @@ import "../../style/RollCallList.css";
 import { useAuth } from "../../hooks/useAuth";
 import isLoginInDatabase from "../../functions/isLoginInDatabase";
 import CustomLoader from "../common/CustomLoader";
+import notify from "../../functions/notify";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -272,7 +273,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                 setRowData(data);
             } catch (err) {
                 console.error("Fetch error:", err);
-                toast.error("Erreur lors du chargement de la liste.");
+                notify("Erreur lors du chargement de la liste.", "error");
             } finally {
                 setLoading(false);
             }
@@ -287,26 +288,26 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
 
     const handleValidateRollCall = async () => {
         if (role === "admin" && !loginENT) {
-            toast.error("Veuillez saisir un identifiant ENT d'un enseignant.");
+            notify("Veuillez saisir un identifiant ENT d'un enseignant.", "error");
             return;
         }
         if (!subject) {
-            toast.error("Veuillez sélectionner une matière.");
+            notify("Veuillez sélectionner une matière.", "error");
             return;
         }
         if (!dateTime.date || !dateTime.startTime || !dateTime.endTime) {
-            toast.error("Veuillez vérifier la date et l'heure.");
+            notify("Veuillez vérifier la date et l'heure.", "error");
             return;
         }
         if (dateTime.endTime <= dateTime.startTime) {
-            toast.error("L'heure de fin doit être strictement supérieure à l'heure de début.");
+            notify("L'heure de fin doit être strictement supérieure à l'heure de début.", "error");
             return;
         }
 
         if (role === "admin") {
             const estPresent = await isLoginInDatabase(loginENT);
             if (!estPresent) {
-                toast.error("L'identifiant ne correspond à aucun enseignant.");
+                notify("L'identifiant ne correspond à aucun enseignant.", "error");
                 return;
             }
         }
@@ -357,7 +358,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     ),
                 );
 
-                toast.success("Appel mis à jour avec succès !");
+                notify("Appel mis à jour avec succès !", "success");
                 setInitialAbsences(currentAbsentIds);
                 if (onSuccess) onSuccess();
             } else {
@@ -396,12 +397,12 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                     if (!responseAbsence.ok) throw new Error("Erreur lors de la sauvegarde des absences");
                 }
 
-                toast.success("Appel validé avec succès !");
+                notify("Appel validé avec succès !", "success");
                 if (onSuccess) onSuccess();
             }
         } catch (err) {
             console.error(err);
-            toast.error("Erreur technique : " + err.message);
+            notify("Erreur technique : " + err.message, "error");
         } finally {
             setUpdateLoading(false);
         }

@@ -4,6 +4,7 @@ import InputField from "../common/InputField";
 import { alertConfirm } from "../../hooks/alertConfirm";
 import toast from "react-hot-toast";
 import { API_URL } from "../../config";
+import notify from "../../functions/notify";
 
 function PersonalInformations({ student, loading, editing, onChange, setStudent, errors }) {
     const [allRSE, setAllRSE] = useState([]);
@@ -18,7 +19,7 @@ function PersonalInformations({ student, loading, editing, onChange, setStudent,
             const data = await result.json();
             setAllRSE(data);
         } catch (err) {
-            toast.error(err);
+            notify(err, "error");
         } finally {
             setLoading(false);
         }

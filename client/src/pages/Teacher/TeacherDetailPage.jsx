@@ -11,7 +11,8 @@ import Button from "../../components/common/Button";
 import CustomLoader from "../../components/common/CustomLoader";
 import "../../style/Admin.css";
 import "../../style/Teacher.css";
-import "../../style/StudentDetail.css"; 
+import "../../style/StudentDetail.css";
+import notify from "../../functions/notify";
 
 function TeacherDetailPage() {
     const { loginENT } = useParams();
@@ -41,16 +42,16 @@ function TeacherDetailPage() {
                         setTeacher(data[0]);
                         setOriginalTeacher(data[0]);
                     } else {
-                        toast.error("Enseignant non trouvé");
+                        notify("Enseignant non trouvé", "error");
                         navigate("/admin/listes");
                     }
                 } else {
-                    toast.error("Erreur lors du chargement");
+                    notify("Erreur lors du chargement", "error");
                     navigate("/admin/listes");
                 }
             } catch (error) {
                 console.error("Error fetching teacher:", error);
-                toast.error("Erreur réseau");
+                notify("Erreur réseau", "error");
             } finally {
                 setLoading(false);
             }
@@ -83,79 +84,69 @@ function TeacherDetailPage() {
             });
 
             if (response.ok) {
-                toast.success("Mise à jour réussie");
+                notify("Mise à jour réussie", "success");
                 setOriginalTeacher(teacher);
                 navigate("/admin/listes");
             } else {
                 const errorData = await response.json();
-                toast.error(errorData.error || "Erreur lors de la mise à jour");
+                notify(errorData.error || "Erreur lors de la mise à jour", "error");
             }
         } catch (error) {
             console.error("Error updating teacher:", error);
-            toast.error("Erreur réseau");
+            notify("Erreur réseau", "error");
         } finally {
             setSaving(false);
         }
     };
 
     const handleDelete = async () => {
-         if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'enseignant ${teacher.prenom} ${teacher.nom} ?`)) {
-             try {
-                 const response = await fetch(`${API_URL}/teacher/${loginENT}`, {
-                     method: "DELETE",
-                     credentials: "include",
-                 });
+        if (await alertConfirm("Êtes-vous sûr ?", `Supprimer l'enseignant ${teacher.prenom} ${teacher.nom} ?`)) {
+            try {
+                const response = await fetch(`${API_URL}/teacher/${loginENT}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
 
-                 if (response.ok) {
-                     toast.success("Enseignant supprimé");
-                     navigate("/admin/listes");
-                 } else {
-                     const errorData = await response.json();
-                     toast.error(errorData.error || "Erreur lors de la suppression");
-                 }
-             } catch (error) {
-                 console.error("Error deleting teacher:", error);
-                 toast.error("Erreur réseau");
-             }
-         }
+                if (response.ok) {
+                    notify("Enseignant supprimé", "success");
+                    navigate("/admin/listes");
+                } else {
+                    const errorData = await response.json();
+                    notify(errorData.error || "Erreur lors de la suppression", "error");
+                }
+            } catch (error) {
+                console.error("Error deleting teacher:", error);
+                notify("Erreur réseau", "error");
+            }
+        }
     };
 
     if (loading) {
-        return <div className="loading"><CustomLoader /></div>;
+        return (
+            <div className="loading">
+                <CustomLoader />
+            </div>
+        );
     }
 
     return (
         <div className="student-detail-container">
             <PageTitle title={"Modifier l'enseignant"} icon="icon-student-list" canGoBack={true} />
-            
+
             <div className="scrollable-content">
                 <div className="personal-info-container">
                     <div className="personal-info-subcontainer">
-                         <div className="info-grid-container">
+                        <div className="info-grid-container">
                             <h3>Informations générales</h3>
                             <div className="info-grid">
                                 <div className="info-item">
-                                    <InputField 
-                                        text="Identifiant ENT"
-                                        value={teacher.loginENT} 
-                                        disabled={true}
-                                    />
+                                    <InputField text="Identifiant ENT" value={teacher.loginENT} disabled={true} />
                                 </div>
                                 <div className="info-item">
-                                    <InputField 
-                                        text="Nom"
-                                        name="nom"
-                                        value={teacher.nom} 
-                                        onChange={handleChange}
-                                    />
+                                    <InputField text="Nom" name="nom" value={teacher.nom} onChange={handleChange} />
                                 </div>
                                 <div className="info-item">
-                                    <InputField 
-                                        text="Prénom"
-                                        name="prenom"
-                                        value={teacher.prenom} 
-                                        onChange={handleChange}
-                                    />
+                                    <InputField text="Prénom" name="prenom" value={teacher.prenom} onChange={handleChange} />
                                 </div>
                             </div>
                         </div>

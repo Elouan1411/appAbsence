@@ -11,6 +11,7 @@ import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { useUnsaved } from "../../context/UnsavedContext";
 import { API_URL } from "../../config";
 import { useSearchParams } from "react-router-dom";
+import notify from "../../functions/notify";
 
 function AddingPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -80,10 +81,10 @@ function AddingPage() {
             }
             const createdUser = await response.json();
 
-            toast.success(`${activeTab == "student" ? "Étudiant" : "Enseignant"} ajouté avec succès !`);
+            notify(`${activeTab == "student" ? "Étudiant" : "Enseignant"} ajouté avec succès !`, "success");
         } catch (error) {
             console.error("Erreur lors de la création :", error);
-            toast.error("Une erreur est survenue");
+            notify("Une erreur est survenue", "error");
         } finally {
             setIsLoading(false);
         }

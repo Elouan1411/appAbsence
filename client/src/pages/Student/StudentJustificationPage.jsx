@@ -62,7 +62,7 @@ const StudentJustificationPage = () => {
 
         const hasFiles = files.length > 0;
         const message = hasFiles ? "Confirmer l'envoi de l'absence ?" : "Voulez vous envoyer l'absence sans justificatif ?";
-        const confirmation = await alertConfirm("Envoie de l'absence", message);
+        const confirmation = await alertConfirm("Envoi de l'absence", message);
         if (confirmation.isConfirmed) {
             const success = await submit(period, reason, comment, files, "create");
             if (success.success) {

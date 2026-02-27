@@ -5,6 +5,7 @@ import "../../style/Admin.css";
 import toast from "react-hot-toast";
 import EditableHeader from "./EditableHeader";
 import { API_URL } from "../../config";
+import notify from "../../functions/notify";
 
 // Import Student Utils
 import {
@@ -56,7 +57,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 }
             } catch (err) {
                 console.error("Erreur check doublons", err);
-                toast.error("Impossible de vérifier les doublons en base.");
+                notify("Impossible de vérifier les doublons en base.", "error");
             } finally {
                 setLoading(false);
             }
@@ -176,7 +177,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
             if (setRowData) setRowData(data);
         } catch (error) {
             console.error("Erreur lecture Excel :", error);
-            toast.error("Impossible de lire le fichier Excel.");
+            notify("Impossible de lire le fichier Excel.", "error");
         }
     };
 
@@ -187,7 +188,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
 
             const extension = file.name.split(".").pop().toLowerCase();
             if (extension !== "xlsx") {
-                toast.error("Seuls les fichiers .xlsx sont acceptés.");
+                notify("Seuls les fichiers .xlsx sont acceptés.", "error");
                 return;
             }
             processExcel(file);

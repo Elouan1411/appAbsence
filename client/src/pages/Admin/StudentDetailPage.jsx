@@ -12,6 +12,7 @@ import { alertConfirm } from "../../hooks/alertConfirm";
 import { API_URL } from "../../config";
 import NavigateBackButton from "../../components/common/NavigateBackButton";
 import { DATA_REGEX } from "../../utils/studentValidation";
+import notify from "../../functions/notify";
 
 const emptyStudent = {
     prenom: "",
@@ -93,7 +94,7 @@ function StudentDetailPage() {
                 rse: data.rse,
             });
         } catch (err) {
-            toast.error("Erreur lors du chargement");
+            notify("Erreur lors du chargement", "error");
         } finally {
             setLoading(false);
         }
@@ -144,7 +145,7 @@ function StudentDetailPage() {
                 });
                 handleGoBack();
             } catch (err) {
-                toast.error(err);
+                notify(err, "error");
             } finally {
                 setIsSaving(false);
             }
@@ -157,7 +158,7 @@ function StudentDetailPage() {
             return;
         }
         if (!validateForm()) {
-            toast.error("Veuillez corriger les erreurs dans le formulaire.");
+            notify("Veuillez corriger les erreurs dans le formulaire.", "error");
             return;
         }
 
@@ -227,9 +228,9 @@ function StudentDetailPage() {
                     safeNavigate("/admin/detail-etudiant/" + newStudent.numeroEtudiant, { replace: true });
                 }
                 setEditing(false);
-                toast.success("Vos modifications ont été enregistrées avec succès!");
+                notify("Vos modifications ont été enregistrées avec succès!", "success");
             } catch (err) {
-                toast.error(err);
+                notify(err, "error");
             } finally {
                 setIsSaving(false);
             }

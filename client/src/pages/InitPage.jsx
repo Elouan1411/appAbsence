@@ -13,6 +13,7 @@ import "../style/Student.css";
 import "../style/SelectGroups.css";
 import "../style/SettingsPage.css";
 import { alertConfirm } from "../hooks/alertConfirm";
+import notify from "../functions/notify";
 
 const InitPage = () => {
     const { logout } = useAuth();
@@ -55,16 +56,16 @@ const InitPage = () => {
             });
 
             if (response.status === 200) {
-                toast.success("Compte administrateur créé avec succès !");
+                notify("Compte administrateur créé avec succès !", "success");
                 await logout();
                 navigate("/");
             } else {
                 const errorText = await response.text();
-                toast.error(errorText || "Erreur lors de la création du compte.");
+                notify(errorText || "Erreur lors de la création du compte.", "error");
             }
         } catch (error) {
             console.error("Erreur création admin:", error);
-            toast.error("Erreur lors de la création du compte.");
+            notify("Erreur lors de la création du compte.", "error");
         } finally {
             setLoading(false);
         }

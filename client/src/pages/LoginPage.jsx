@@ -9,6 +9,8 @@ import Subtitle from "../components/common/Subtitle";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import CustomLoader from "../components/common/CustomLoader";
+import notify from "../functions/notify";
+
 function LoginPage() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
@@ -32,13 +34,13 @@ function LoginPage() {
             } else {
                 navigate("/error", { replace: true });
             }
-            toast.success("Connexion réussie.");
+            notify("Connexion réussie.", "success");
         } catch (error) {
             let msg = error.message.replaceAll('"', "");
             if (msg.includes("Failed to fetch")) {
                 msg = "Impossible de contacter le serveur.";
             }
-            toast.error(msg);
+            notify(msg, "error");
         }
     };
 
@@ -55,13 +57,7 @@ function LoginPage() {
                     <Subtitle>Connectez-vous pour accéder à votre compte</Subtitle>
                 </div>
                 <div className="input-container">
-                    <InputField
-                        placeholder="Login ENT"
-                        text="Identifiant"
-                        value={user}
-                        onChange={(e) => setUser(e.target.value)}
-                        autocomplete="username"
-                    />
+                    <InputField placeholder="Login ENT" text="Identifiant" value={user} onChange={(e) => setUser(e.target.value)} autocomplete="username" />
                     <InputField
                         placeholder="Mot de passe"
                         text="Mot de passe"

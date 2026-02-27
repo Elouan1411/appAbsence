@@ -19,6 +19,8 @@ import "../../style/searchAgGrid.css";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
+import notify from "../../functions/notify";
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TeacherHistoryPage() {
@@ -116,14 +118,14 @@ function TeacherHistoryPage() {
                         credentials: "include",
                     });
                     if (response.ok) {
-                        toast.success("Absence supprimée avec succès");
+                        notify("Absence supprimée avec succès", "success");
                         fetchHistory();
                     } else {
-                        toast.error("Erreur lors de la suppression");
+                        notify("Erreur lors de la suppression", "error");
                     }
                 } catch (err) {
                     console.error(err);
-                    toast.error("Erreur réseau");
+                    notify("Erreur réseau", "error");
                 }
             }
         };
@@ -196,7 +198,7 @@ function TeacherHistoryPage() {
                 filter: true,
                 width: 250,
             },
-            
+
             {
                 headerName: "Justification",
                 cellRenderer: JustificationRenderer,
@@ -258,12 +260,7 @@ function TeacherHistoryPage() {
             <PageTitle title="Historique des Absences" icon="icon-absences" />
             <div className="search-wrapper-container">
                 <div className="search-wrapper-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <button
-                        className="btn-icon"
-                        onClick={fetchHistory}
-                        title="Actualiser"
-                        style={{ background: "none", border: "none", cursor: "pointer" }}
-                    >
+                    <button className="btn-icon" onClick={fetchHistory} title="Actualiser" style={{ background: "none", border: "none", cursor: "pointer" }}>
                         <span className="icon icon-refresh icon-xl" />
                     </button>
                     {isSearchActive ? (
