@@ -540,7 +540,7 @@ function SettingsPage() {
                             setIsSubjectModalOpen(true);
                         }}
                     >
-                        <span className="icon icon-plus" style={{ backgroundColor: "white" }}></span>
+                        <span className="icon icon-plus" style={{ backgroundColor: "white" }} title="Ajouter" ></span>
                         Ajouter
                     </button>
                 )}
@@ -553,7 +553,7 @@ function SettingsPage() {
                             setIsRSEModalOpen(true);
                         }}
                     >
-                        <span className="icon icon-plus" style={{ backgroundColor: "white" }}></span>
+                        <span className="icon icon-plus" style={{ backgroundColor: "white" }} title="Ajouter" ></span>
                         Ajouter
                     </button>
                 )}
@@ -716,7 +716,7 @@ function SettingsPage() {
                                             </div>
                                             <div className="settings-item-actions">
                                                 <button onClick={() => handleEditSubject(sub)} className="settings-icon-button" title="Modifier">
-                                                    <span className="icon settings-icon icon-edit icon-xl" />
+                                                    <span className="icon settings-icon icon-edit icon-xl"  title="Modifier" />
                                                 </button>
 
                                                 <button
@@ -728,7 +728,7 @@ function SettingsPage() {
                                                     {deletingSubjectId === sub.code ? (
                                                         <CustomLoader />
                                                     ) : (
-                                                        <span className="icon settings-icon icon-trash icon-xl" />
+                                                        <span className="icon settings-icon icon-trash icon-xl"  title="Supprimer" />
                                                     )}
                                                 </button>
                                             </div>
@@ -774,7 +774,7 @@ function SettingsPage() {
                                             </div>
                                             <div className="settings-item-actions">
                                                 <button onClick={() => handleEditRSE(rse)} className="settings-icon-button" title="Modifier">
-                                                    <span className="icon settings-icon icon-edit icon-xl" />
+                                                    <span className="icon settings-icon icon-edit icon-xl"  title="Modifier" />
                                                 </button>
 
                                                 <button
@@ -783,7 +783,7 @@ function SettingsPage() {
                                                     title="Supprimer"
                                                     disabled={deletingRSEId === rse.code}
                                                 >
-                                                    {deletingRSEId === rse.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl" />}
+                                                    {deletingRSEId === rse.code ? <CustomLoader /> : <span className="icon settings-icon icon-trash icon-xl"  title="Supprimer" />}
                                                 </button>
                                             </div>
                                         </div>

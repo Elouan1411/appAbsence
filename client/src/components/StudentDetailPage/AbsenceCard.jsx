@@ -82,7 +82,7 @@ const AbsenceCard = ({
             <div className="card-absence-left">
                 <div className={`selection-checkbox-wrapper`}>
                     {/* <div className="selection-checkbox">{isSelected && <Check size={14} color="white" strokeWidth={4} />}</div> */}
-                    {/* <div className="selection-checkbox">{isSelected && <span className="icon icon-check" style={{ backgroundColor: "white", width: "14px", height: "14px" }} />}</div> */}
+                    {/* <div className="selection-checkbox">{isSelected && <span className="icon icon-check" style={{ backgroundColor: "white", width: "14px", height: "14px" }}  title="Valider" />}</div> */}
                 </div>
 
                 <div className="card-absence-info">
@@ -120,19 +120,19 @@ const AbsenceCard = ({
                     <CustomLoader />
                 ) : (
                     <button className="delete-button" onClick={() => handleDeleteAbsence()}>
-                        <span className="icon icon-trash icon-xxl" />
+                        <span className="icon icon-trash icon-xxl"  title="Supprimer" />
                     </button>
                 )}
 
                 {validite !== 0 && (
                     <button onClick={handleJustify}>
-                        <span className="icon icon-justifier-admin icon-xxl icon-primary details-icon" />
+                        <span className="icon icon-justifier-admin icon-xxl icon-primary details-icon"  title="Justifier" />
                     </button>
                 )}
 
                 <button className="absence-detail-button">
                     {/* <Eye className="icon-eye details-icon" onClick={() => safeNavigate("/admin/absencedetail/" + idAbsence)} /> */}
-                    <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/detail-absence/" + idAbsence)} />
+                    <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={() => safeNavigate("/admin/detail-absence/" + idAbsence)} title="Afficher" />
                 </button>
             </div>
 

@@ -103,7 +103,7 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 readOnly={readOnly}
                             />
                         </div>
-                        <span className="icon icon-arrow-right icon-xl period-card-arrow-icon" />
+                        <span className="icon icon-arrow-right icon-xl period-card-arrow-icon"  title="jusqu'au" />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
                             <DatePicker

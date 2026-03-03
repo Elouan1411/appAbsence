@@ -49,7 +49,7 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                             <div className="date-id">
                                 {notComplete && (
                                     <span className="badge-warning">
-                                        <span className="icon icon-warning"></span>
+                                        <span className="icon icon-warning" title="Absence partiellement justifiée"></span>
                                     </span>
                                 )}
                                 <span className="id-absence">Créneau {index + 1}</span>
@@ -89,7 +89,7 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                                                         <span className={abs.fin > creneau.fin ? "abs-warning" : ""}>{dateFormatter(abs.fin)}</span>
                                                     </span>
                                                 </div>
-                                                <button className="absence-detail-button">
+                                                <button className="absence-detail-button" title="Options">
                                                     <span
                                                         className="icon icon-triple-dot"
                                                         onClick={() => safeNavigate("/admin/detail-absence/" + abs.idAbsence)}

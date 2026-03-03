@@ -122,7 +122,7 @@ function TeacherList() {
                             title="Modifier"
                             style={{ color: "var(--primary-color, #3b82f6)" }}
                         >
-                            <span className="icon icon-edit icon-xl" />
+                            <span className="icon icon-edit icon-xl"  title="Modifier" />
                         </button>
                         <button
                             className="btn-icon delete-button"
@@ -130,7 +130,7 @@ function TeacherList() {
                             title="Supprimer"
                             style={{ color: "var(--error-color, #ef4444)" }}
                         >
-                            <span className="icon icon-trash icon-xl" />
+                            <span className="icon icon-trash icon-xl"  title="Supprimer" />
                         </button>
                     </div>
                 ),
@@ -172,7 +172,7 @@ function TeacherList() {
                         title="Ajouter un enseignant"
                         style={{ color: "var(--primary-color)" }}
                     >
-                        <span className="icon icon-add icon-xl" />
+                        <span className="icon icon-add icon-xl"  title="Ajouter" />
                     </button>
 
                     <SearchInput

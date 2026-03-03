@@ -147,7 +147,7 @@ function AbsenceList() {
                         title="Actualiser"
                         style={{ background: "none", border: "none", cursor: "pointer" }}
                     >
-                        <span className="icon icon-refresh icon-xl" />
+                        <span className="icon icon-refresh icon-xl"  title="Actualiser" />
                     </button>
                     <SearchInput
                         value={quickFilterText}

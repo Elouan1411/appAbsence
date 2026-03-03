@@ -169,7 +169,7 @@ const FileUpload = ({ files, setFiles }) => {
                             </div>
                             <div className="file-actions">
                                 <button className="action-icon-btn download-btn" onClick={(e) => downloadFile(e, file)} title="Télécharger">
-                                    <span className="icon icon-download" />
+                                    <span className="icon icon-download"  title="Télécharger" />
                                 </button>
                                 <span
                                     className="upload-success deletable"

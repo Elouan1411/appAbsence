@@ -152,11 +152,11 @@ function VerticalBar({ notificationCount = 0 }) {
                     <div className="theme-toggle-container">
                         <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={toggleTheme}>
                             <div className={`toggle-option ${!isDarkMode ? "active" : ""}`}>
-                                <span className="icon-nav icon-sun"></span>
+                                <span className="icon-nav icon-sun" title="Mode clair" ></span>
                                 {isMenuOpen && <span>Clair</span>}
                             </div>
                             <div className={`toggle-option ${isDarkMode ? "active" : ""}`}>
-                                <span className="icon-nav icon-moon"></span>
+                                <span className="icon-nav icon-moon" title="Mode sombre" ></span>
                                 {isMenuOpen && <span>Sombre</span>}
                             </div>
                         </button>
@@ -164,7 +164,7 @@ function VerticalBar({ notificationCount = 0 }) {
 
                     <div className="logout-container">
                         <button className="nav-link logout-btn" onClick={handleSignOut}>
-                            <span className="icon-nav icon-logout"></span>
+                            <span className="icon-nav icon-logout" title="Déconnexion" ></span>
                             <span className="label">Se déconnecter</span>
                         </button>
                     </div>

@@ -37,6 +37,7 @@ const EditableHeader = (props) => {
                         e.stopPropagation();
                         context.onDelete(props.column.colId);
                     }}
+                    title="Supprimer"
                 />
             )}
         </div>

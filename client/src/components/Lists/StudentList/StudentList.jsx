@@ -121,7 +121,7 @@ function StudentList() {
                         title="Ajouter un étudiant"
                         style={{ color: "var(--primary-color)" }}
                     >
-                        <span className="icon icon-add icon-xl" />
+                        <span className="icon icon-add icon-xl"  title="Ajouter" />
                     </button>
                     <SearchInput
                         value={quickFilterText}

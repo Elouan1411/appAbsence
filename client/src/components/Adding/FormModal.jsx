@@ -161,7 +161,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                 <div className="modal-header">
                     <h2>{mode === "student" ? "Ajouter un Étudiant" : "Ajouter un Enseignant"}</h2>
                     <button className="close-btn" onClick={onClose}>
-                        <span className="icon-x" />
+                        <span className="icon-x"  title="Fermer" />
                     </button>
                 </div>
 

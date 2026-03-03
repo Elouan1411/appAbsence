@@ -328,16 +328,16 @@ function StudentHomePage() {
                                 }}
                                 title="Actualiser"
                             >
-                                <span className="icon icon-refresh icon-xl" style={{ backgroundColor: "var(--primary-color)" }} />
+                                <span className="icon icon-refresh icon-xl" style={{ backgroundColor: "var(--primary-color)" }}  title="Actualiser" />
                             </button>
                             {activeTab === "todo" && absences.length > 0 && (
                                 <button className="btn-select" onClick={toggleSelectionMode}>
                                     {isSelectionMode ? (
                                         // <X size={18} strokeWidth={2.5} />
-                                        <span className="icon icon-x icon-xl icon-white icon-bold" />
+                                        <span className="icon icon-x icon-xl icon-white icon-bold"  title="Annuler" />
                                     ) : (
                                         // <List size={18} strokeWidth={2.5} />
-                                        <span className="icon icon-list icon-xl icon-bold" />
+                                        <span className="icon icon-list icon-xl icon-bold"  title="Sélectionner" />
                                     )}
                                     {isSelectionMode ? "Annuler" : "Sélectionner"}
                                 </button>

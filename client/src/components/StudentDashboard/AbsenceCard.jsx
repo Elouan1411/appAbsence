@@ -116,7 +116,7 @@ const AbsenceCard = ({
                 <div className="card-absence-left">
                     <div className={`selection-checkbox-wrapper ${isSelectionMode ? "visible" : ""}`}>
                         <div className="selection-checkbox">
-                            {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />}
+                            {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }}  title="Valider" />}
                         </div>
                     </div>
 
@@ -166,11 +166,11 @@ const AbsenceCard = ({
                 <div className="card-absence-right">
                     <div className={`mobile-selection-checkbox ${isSelectionMode ? "visible-mobile" : ""}`} onClick={isSelectionMode ? onToggle : undefined}>
                         <div className="selection-checkbox">
-                            {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }} />}
+                            {isSelected && <span className="icon icon-check" style={{ width: 14, height: 14, backgroundColor: "white" }}  title="Valider" />}
                         </div>
                     </div>
                     <div className={`action-button-wrapper ${isSelectionMode ? "hidden" : ""}`}>
-                        {status !== "todo" && <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={handleDetails} />}
+                        {status !== "todo" && <span className="icon icon-eye details-icon icon-xl icon-primary" onClick={handleDetails}  title="Afficher" />}
                         {status === "todo" && (
                             <button className="btn-justifier" onClick={adminComment ? handleDetails : handleJustify}>
                                 {adminComment ? "Modifier" : "Justifier"}

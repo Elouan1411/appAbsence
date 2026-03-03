@@ -66,9 +66,9 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         rightIcon={
                             showPassword ? (
-                                <span className="icon icon-eye-close icon-xl icon-primary" />
+                                <span className="icon icon-eye-close icon-xl icon-primary"  title="Afficher" />
                             ) : (
-                                <span className="icon icon-eye icon-xl icon-primary" />
+                                <span className="icon icon-eye icon-xl icon-primary"  title="Afficher" />
                             )
                         }
                         onRightIconClick={() => setShowPassword(!showPassword)}

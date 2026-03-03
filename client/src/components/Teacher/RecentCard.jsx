@@ -6,17 +6,17 @@ function RecentCard({ promo, group, subject, date, onClick }) {
     return (
         <div className="recent-card">
             <div className="recent-card-info-row">
-                <span className="icon icon-promo" style={{ width: 20, height: 20 }}></span>
+                <span className="icon icon-promo" style={{ width: 20, height: 20 }} title="Promotion" ></span>
                 <span>{promo}</span>
             </div>
             
             <div className="recent-card-info-row">
-                <span className="icon icon-group" style={{ width: 20, height: 20 }}></span>
+                <span className="icon icon-group" style={{ width: 20, height: 20 }} title="Groupe" ></span>
                 <span>{group}</span>
             </div>
             
             <div className="recent-card-info-row">
-                <span className="icon icon-subject" style={{ width: 20, height: 20 }}></span>
+                <span className="icon icon-subject" style={{ width: 20, height: 20 }} title="Matière" ></span>
                 <span>{subject}</span>
             </div>
 

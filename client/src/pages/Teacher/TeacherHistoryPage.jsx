@@ -162,7 +162,7 @@ function TeacherHistoryPage() {
                         handleDelete(params.data.idAppel, params.data.libelle);
                     }}
                 >
-                    <span className="icon icon-trash icon-xl" />
+                    <span className="icon icon-trash icon-xl"  title="Supprimer" />
                 </button>
             </div>
         );
@@ -347,7 +347,7 @@ function TeacherHistoryPage() {
                         title="Actualiser"
                         style={{ background: "none", border: "none", cursor: "pointer" }}
                     >
-                        <span className="icon icon-refresh icon-xl" />
+                        <span className="icon icon-refresh icon-xl"  title="Actualiser" />
                     </button>
                     <SearchInput
                         value={quickFilterText}

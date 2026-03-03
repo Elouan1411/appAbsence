@@ -202,7 +202,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
     return (
         <div {...getRootProps()} className="dropzone-container">
             <input {...getInputProps()} />
-            <span className="icon icon-import icon-xxxl import-icon" />
+            <span className="icon icon-import icon-xxxl import-icon"  title="Importer" />
             {isDragActive ? <p>Déposez le fichier ici...</p> : <p>Glissez-déposez vos fichiers ici...</p>}
         </div>
     );

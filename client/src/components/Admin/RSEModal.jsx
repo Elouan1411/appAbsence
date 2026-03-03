@@ -37,7 +37,7 @@ const RSEModal = ({ isOpen, onClose, onSubmit, initialData = null, isLoading }) 
                 <div className="modal-header" style={{ marginBottom: "0" }}>
                     <h2>{initialData ? "Modifier un RSE" : "Ajouter un RSE"}</h2>
                     <button className="close-btn" onClick={onClose}>
-                        <span className="icon-x" />
+                        <span className="icon-x"  title="Fermer" />
                     </button>
                 </div>
 

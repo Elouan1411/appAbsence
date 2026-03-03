@@ -10,7 +10,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     text: adminComment ? "Refusée" : "Action requise",
                     className: "status-badge-refused",
                     containerClass: "status-container-refused",
-                    icon: <span className="icon icon-alert-circle icon-medium icon-red" />,
+                    icon: <span className="icon icon-alert-circle icon-medium icon-red"  title="Refusée" />,
                     color: "var(--error-color)",
                 };
             case "pending":
@@ -18,7 +18,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     text: "En attente de validation",
                     className: "status-badge-pending",
                     containerClass: "status-container-pending",
-                    icon: <span className="icon icon-clock icon-medium icon-pending" />,
+                    icon: <span className="icon icon-clock icon-medium icon-pending"  title="En attente" />,
                     color: "var(--warning-color)",
                 };
             case "validated":
@@ -26,7 +26,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     text: "Justifiée",
                     className: "status-badge-validated",
                     containerClass: "status-container-validated",
-                    icon: <span className="icon icon-check-circle icon-medium icon-success" />,
+                    icon: <span className="icon icon-check-circle icon-medium icon-success"  title="Valider" />,
                     color: "var(--upload-success-color)",
                 };
             case "refused":
@@ -34,7 +34,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     text: "Refusée",
                     className: "status-badge-refused",
                     containerClass: "status-container-refused",
-                    icon: <span className="icon icon-alert-circle icon-medium icon-red" />,
+                    icon: <span className="icon icon-alert-circle icon-medium icon-red"  title="Refusée" />,
                     color: "var(--error-color)",
                 };
             default:
@@ -42,7 +42,7 @@ const AbsenceStatus = ({ status, adminComment }) => {
                     text: "Archivé",
                     className: "status-badge-archived",
                     containerClass: "status-container-archived",
-                    icon: <span className="icon icon-archive icon-medium icon-text-secondary" />,
+                    icon: <span className="icon icon-archive icon-medium icon-text-secondary"  title="Archive" />,
                     color: "var(--text-secondary)",
                 };
         }

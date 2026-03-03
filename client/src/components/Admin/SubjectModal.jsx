@@ -79,7 +79,7 @@ const SubjectModal = ({ isOpen, onClose, onSubmit, initialData = null, defaultVa
                 <div className="modal-header" style={{ marginBottom: "0" }}>
                     <h2>{initialData ? "Modifier une matière" : "Ajouter une matière"}</h2>
                     <button className="close-btn" onClick={onClose}>
-                        <span className="icon-x" />
+                        <span className="icon-x"  title="Fermer" />
                     </button>
                 </div>
 

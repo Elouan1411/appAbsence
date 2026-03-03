@@ -10,7 +10,7 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
                 <div className="reason-readonly-grid">
                     <div className="info-card reason-card">
                         <div className="info-card-header">
-                            <span className="icon icon-file-text icon-large info-icon reason-icon" />
+                            <span className="icon icon-file-text icon-large info-icon reason-icon"  title="Motif" />
                             <span className="info-card-title">Motif de l'absence</span>
                         </div>
                         <div className="info-value-box reason-value-box">{motif_translation[reason] || reason || "Motif non spécifié"}</div>
@@ -18,7 +18,7 @@ const ReasonInput = ({ reason, comment, onReasonChange, onCommentChange, error, 
 
                     <div className="info-card comment-card">
                         <div className="info-card-header">
-                            <span className="icon icon-message-square icon-large info-icon comment-icon" />
+                            <span className="icon icon-message-square icon-large info-icon comment-icon"  title="Message" />
                             <span className="info-card-title">Commentaire</span>
                         </div>
                         <div className="info-value-box comment-value-box">{comment || "Aucun commentaire"}</div>

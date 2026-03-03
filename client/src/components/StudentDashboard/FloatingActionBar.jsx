@@ -11,7 +11,7 @@ const FloatingActionBar = ({ count, onJustify }) => {
             </div>
             <button className="btn-fab-justify" onClick={onJustify}>
                 Tout justifier
-                <span className="icon icon-arrow-right icon-medium icon-bold" />
+                <span className="icon icon-arrow-right icon-medium icon-bold"  title="Suivant" />
             </button>
         </div>
     );

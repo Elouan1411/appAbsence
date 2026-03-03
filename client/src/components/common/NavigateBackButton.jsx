@@ -12,7 +12,7 @@ function NavigateBackButton() {
     return (
         <div id="navigate-button-container">
             <button onClick={handleGoBack}>
-                <span className="icon icon-previous"></span>
+                <span className="icon icon-previous" title="Précédent" ></span>
             </button>
         </div>
     );

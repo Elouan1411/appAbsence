@@ -78,7 +78,7 @@ function AbsenceList({ setLoading, userId, setAbsences, absences, student }) {
                     >
                         {({ loading }) => (
                             <button className="icon-button" title="Exporter en PDF" disabled={loading}>
-                                <span className="icon icon-export"></span>
+                                <span className="icon icon-export" title="Exporter" ></span>
                             </button>
                         )}
                     </PDFDownloadLink>

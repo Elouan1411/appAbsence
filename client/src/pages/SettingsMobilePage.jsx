@@ -72,11 +72,11 @@ const SettingMobilePage = () => {
                 <div className="theme-toggle-container">
                     <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={toggleTheme}>
                         <div className={`toggle-option ${!isDarkMode ? "active" : ""}`}>
-                            <span className="icon icon-sun"></span>
+                            <span className="icon icon-sun" title="Mode clair" ></span>
                             <span>Clair</span>
                         </div>
                         <div className={`toggle-option ${isDarkMode ? "active" : ""}`}>
-                            <span className="icon icon-moon"></span>
+                            <span className="icon icon-moon" title="Mode sombre" ></span>
                             <span>Sombre</span>
                         </div>
                     </button>
@@ -84,7 +84,7 @@ const SettingMobilePage = () => {
 
                     <div className="logout-container" style={{ marginBottom: "10px" }}>
                         <button className="logout-button" onClick={handleInstallClick} style={{ backgroundColor: "var(--text-primary)" }}>
-                            <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }}></span>
+                            <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger" ></span>
                             <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
                                 Installer l'application
                             </span>
@@ -93,7 +93,7 @@ const SettingMobilePage = () => {
 
                 <div className="logout-container">
                     <button className="logout-button" onClick={handleLogout}>
-                        <span className="icon-btn icon-logout" style={{ backgroundColor: "white" }}></span>
+                        <span className="icon-btn icon-logout" style={{ backgroundColor: "white" }} title="Déconnexion" ></span>
                         <span style={{ color: "white" }}>Se déconnecter</span>
                     </button>
                 </div>

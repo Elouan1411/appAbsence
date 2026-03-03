@@ -232,7 +232,7 @@ const AdminJustificationPage = () => {
                                     {selectedStudent.nom} {selectedStudent.prenom} ({selectedStudent.loginENT})
                                 </span>
                                 <span onClick={handleDeselectStudent} className="choice-close-btn">
-                                    <span className="icon icon-x choice-close-icon"></span>
+                                    <span className="icon icon-x choice-close-icon" title="Fermer" ></span>
                                 </span>
                             </div>
                         )}

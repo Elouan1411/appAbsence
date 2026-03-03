@@ -122,7 +122,7 @@ function JustificationAbsence({ justification }) {
                             <h3 className="section-title" style={{ margin: 0 }}>Statut de la justification</h3>
                             {!isEditingStatus && (
                                 <button className="icon-button" onClick={() => setIsEditingStatus(true)} title="Modifier le statut">
-                                    <span className="icon icon-edit"></span>
+                                    <span className="icon icon-edit" title="Modifier" ></span>
                                 </button>
                             )}
                         </div>

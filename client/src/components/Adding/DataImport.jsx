@@ -304,7 +304,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                     <div className="all-import-container">
                         <div className="import-header">
                             <button className="close-import-button" onClick={confirmClose}>
-                                <span className="icon-x" />
+                                <span className="icon-x"  title="Fermer" />
                             </button>
                         </div>
                         <div className="import-container">
@@ -350,7 +350,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
                         <ImportZone type={type} setRowData={handleInitialDataLoad} setColDefs={setColDefs} />
                         <div style={{ marginTop: "1rem" }}>
                             <Button onClick={handleDownloadTemplate} className="download-template">
-                                <span className="icon-download" style={{ marginRight: "8px" }}></span>
+                                <span className="icon-download" style={{ marginRight: "8px" }} title="Télécharger" ></span>
                                 Télécharger un modèle
                             </Button>
                         </div>

@@ -19,13 +19,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     return (
         <div className="pagination-container">
             <button className="pagination-button" onClick={handlePrevious} disabled={currentPage === 1} aria-label="Previous page">
-                <span className="icon icon-chevron-left icon-xl" />
+                <span className="icon icon-chevron-left icon-xl"  title="Précédent" />
             </button>
             <span className="pagination-info">
                 Page {currentPage} sur {totalPages}
             </span>
             <button className="pagination-button" onClick={handleNext} disabled={currentPage === totalPages} aria-label="Next page">
-                <span className="icon icon-chevron-right icon-xl" />
+                <span className="icon icon-chevron-right icon-xl"  title="Suivant" />
             </button>
         </div>
     );

@@ -53,7 +53,7 @@ const FileReadOnlyList = ({ files }) => {
                                         maskImage: `url(${downloadIcon})`,
                                         WebkitMaskImage: `url(${downloadIcon})`,
                                     }}
-                                />
+                                 title="Télécharger" /> 
                             </span>
                         </div>
                     ))}

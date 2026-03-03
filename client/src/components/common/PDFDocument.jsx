@@ -56,7 +56,7 @@ export default function PDFDocument({ file }) {
                 <div className="pdf-toolbar">
                     {pageNumber > 1 ? (
                         <button onClick={() => setPageNumber((p) => Math.max(p - 1, 1))} disabled={pageNumber === 1}>
-                            <span className="icon-previous-button"></span>
+                            <span className="icon-previous-button" title="Précédent" ></span>
                         </button>
                     ) : (
                         <></>
@@ -66,7 +66,7 @@ export default function PDFDocument({ file }) {
                     </span>
                     {numPages > 1 && pageNumber < numPages ? (
                         <button onClick={() => setPageNumber((p) => Math.min(p + 1, numPages))} disabled={pageNumber === numPages}>
-                            <span className="icon-next-button"></span>
+                            <span className="icon-next-button" title="Suivant" ></span>
                         </button>
                     ) : (
                         <></>
@@ -74,7 +74,7 @@ export default function PDFDocument({ file }) {
                 </div>
                 <div className="download-button-container">
                     <button onClick={handleDownload}>
-                        <span className="icon-download"></span>
+                        <span className="icon-download" title="Télécharger" ></span>
                     </button>
                 </div>
             </div>
