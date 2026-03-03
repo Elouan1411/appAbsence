@@ -1385,3 +1385,11 @@ span.icon.icon-list {
     background-color: rgba(249, 115, 22, 0.08);
     border-color: rgba(249, 115, 22, 0.15);
 }
+
+.no-data-message {
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1rem;
+    font-weight: 500;
+}

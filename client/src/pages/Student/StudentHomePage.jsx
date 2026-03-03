@@ -382,9 +382,9 @@ function StudentHomePage() {
                                     ))}
                                 </div>
                             ))}
-                            {activeTab === "todo" && absences.length === 0 && <div>Aucune absence à justifier.</div>}
-                            {activeTab === "pending" && pendingAbsences.length === 0 && <div>Aucune absence en cours.</div>}
-                            {activeTab === "archived" && archivedAbsences.length === 0 && <div>Aucune archive.</div>}
+                            {activeTab === "todo" && absences.length === 0 && <div className="no-data-message">Aucune absence à justifier.</div>}
+                            {activeTab === "pending" && pendingAbsences.length === 0 && <div className="no-data-message">Aucune absence en cours.</div>}
+                            {activeTab === "archived" && archivedAbsences.length === 0 && <div className="no-data-message">Aucune archive.</div>}
 
                             {counts[activeTab] > ITEMS_PER_PAGE && (
                                 <Pagination
