@@ -1,9 +1,3 @@
-CREATE TABLE "RelationMatiereEleve" (
-    "codeMatiere" INTEGER NOT NULL,
-    "numeroEleve" INTEGER NOT NULL,
-    "presenceObligatoire" INTEGER NOT NULL DEFAULT 1,
-    PRIMARY KEY("codeMatiere", "numeroEleve")
-);
 CREATE TABLE "RSEAnnee" (
     "numeroEtudiant" INTEGER NOT NULL,
     "codeRSE" INTEGER NOT NULL,
