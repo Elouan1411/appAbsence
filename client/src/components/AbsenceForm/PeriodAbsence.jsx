@@ -11,6 +11,15 @@ import { motion, AnimatePresence } from "framer-motion";
 registerLocale("fr", fr);
 
 const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, readOnly }) => {
+    const [isMobile, setIsMobile] = React.useState(typeof window !== "undefined" && window.innerWidth <= 800);
+
+    React.useEffect(() => {
+        if (typeof window === "undefined") return;
+        const handleResize = () => setIsMobile(window.innerWidth <= 800);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const addPeriod = () => {
         let baseDate = new Date();
 
@@ -101,9 +110,16 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
                                 readOnly={readOnly}
+                                onFocus={(e) => {
+                                    if (isMobile) e.target.blur();
+                                }}
+                                onClickOutside={(e) => {
+                                    if (isMobile) e.target.blur();
+                                }}
+                                withPortal={isMobile}
                             />
                         </div>
-                        <span className="icon icon-arrow-right icon-xl period-card-arrow-icon"  title="jusqu'au" />
+                        <span className="icon icon-arrow-right icon-xl period-card-arrow-icon" title="jusqu'au" />
                         <div className="period-card-column">
                             <span className="period-card-label">AU</span>
                             <DatePicker
@@ -117,6 +133,16 @@ const PeriodAbsence = ({ period, setPeriod, errors, error, automaticPeriod, read
                                 className={`custom-datepicker-input ${readOnly ? "custom-datepicker-input-readonly" : ""}`}
                                 shouldCloseOnSelect={true}
                                 readOnly={readOnly}
+                                onFocus={(e) => {
+                                    if (isMobile) e.target.blur();
+                                }}
+                                onClickOutside={(e) => {
+                                    if (isMobile) e.target.blur();
+                                }}
+                                onKeyDown={(e) => {
+                                    if (isMobile) e.preventDefault();
+                                }}
+                                withPortal={isMobile}
                             />
                         </div>
                         {!readOnly && (

@@ -291,6 +291,34 @@
         position: relative;
     } */
 
+    div.react-datepicker {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        width: max-content;
+        max-width: 95vw;
+        transform: scale(0.95);
+        transform-origin: center;
+    }
+
+    div.react-datepicker__month-container {
+        float: none;
+    }
+
+    div.react-datepicker__time-container {
+        float: none;
+        width: 85px;
+    }
+
+    div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+        width: 100%;
+    }
+
+    div.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
     .period-card {
         position: relative;
     }
