@@ -5,17 +5,20 @@ import { lightTheme, darkTheme } from "../../constants/grid";
 import { useTheme } from "../../hooks/useTheme";
 // import { CircleX } from "lucide-react";
 import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
+import { useIsMobile } from "../../hooks/useIsMobile";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCellValueChanged }) => {
+    const isMobile = useIsMobile();
+
     const defaultColDef = useMemo(
         () => ({
             editable: true,
             filter: true,
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             suppressMovable: true,
         }),
-        [],
+        [isMobile],
     );
 
     const extendedColDefs = useMemo(() => {
@@ -26,7 +29,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                 field: "actions",
                 editable: false,
                 filter: false,
-                flex: 0.5,
+                flex: isMobile ? undefined : 0.5,
                 cellRenderer: (params) => (
                     <div
                         style={{
@@ -72,6 +75,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                 // Ajout de la règle CSS pour les lignes
                 rowClassRules={rowClassRules}
                 localeText={AG_GRID_LOCALE_FR}
+                autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
             />
         </div>
     );

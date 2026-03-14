@@ -17,6 +17,7 @@ import CustomLoader from "../../common/CustomLoader";
 import toast from "react-hot-toast";
 import { alertConfirm } from "../../../hooks/alertConfirm";
 import notify from "../../../functions/notify";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -30,10 +31,11 @@ function TeacherList() {
 
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
+    const isMobile = useIsMobile();
 
     const defaultColDef = useMemo(() => {
         return {
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             minWidth: 100,
             filter: true,
             sortable: true,
@@ -42,7 +44,7 @@ function TeacherList() {
             autoHeight: true,
             floatingFilter: isSearchActive,
         };
-    }, [isSearchActive]);
+    }, [isSearchActive, isMobile]);
 
     async function handleFetchStudents() {
         try {
@@ -201,6 +203,7 @@ function TeacherList() {
                         localeText={AG_GRID_LOCALE_FR}
                         quickFilterText={quickFilterText}
                         onRowClicked={handleRowClick}
+                        autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
                     />
                 </div>
             )}

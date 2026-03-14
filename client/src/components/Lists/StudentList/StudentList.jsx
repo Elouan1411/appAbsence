@@ -14,6 +14,7 @@ import SearchInput from "../../common/SearchInput";
 import "../../../style/searchAgGrid.css";
 import { API_URL } from "../../../config";
 import CustomLoader from "../../common/CustomLoader";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -27,12 +28,13 @@ function StudentList() {
 
     const safeNavigate = useSafeNavigate(hasUnsavedChanges);
     const theme = useTheme();
+    const isMobile = useIsMobile();
 
 
 
     const defaultColDef = useMemo(() => {
         return {
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             minWidth: 100,
             filter: true,
             sortable: true,
@@ -41,7 +43,7 @@ function StudentList() {
             autoHeight: true,
             floatingFilter: isSearchActive,
         };
-    }, [isSearchActive]);
+    }, [isSearchActive, isMobile]);
 
     async function handleFetchStudents() {
         try {
@@ -149,6 +151,7 @@ function StudentList() {
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
                         quickFilterText={quickFilterText}
+                        autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
                     />
                 </div>
             )}

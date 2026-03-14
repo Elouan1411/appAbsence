@@ -15,6 +15,7 @@ import { useUnsaved } from "../../context/UnsavedContext";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 import { API_URL } from "../../config";
 import "../../style/AbsencePage.css";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 function AbsenceList() {
     const [rowData, setRowData] = useState([]);
@@ -29,6 +30,7 @@ function AbsenceList() {
     const columns = ["eleve", "debut", "fin", "libelle", "professeur", "promo", "groupeTD", "groupeTP", "validite"];
 
     const theme = useTheme();
+    const isMobile = useIsMobile();
 
     async function handleFetchAbsences() {
         try {
@@ -57,16 +59,17 @@ function AbsenceList() {
         safeNavigate(`/admin/detail-absence/${event.data.idAbsence}`);
     };
     const autoSizeStrategy = useMemo(() => {
+        if (!isMobile) return undefined;
         return {
             type: "fitCellContents",
             skipHeader: true,
             scaleUpToFitGridWidth: true,
         };
-    }, []);
+    }, [isMobile]);
 
     const defaultColDef = useMemo(() => {
         return {
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             minWidth: 100,
             filter: true,
             sortable: true,
@@ -75,7 +78,7 @@ function AbsenceList() {
             autoHeight: true,
             floatingFilter: isSearchActive,
         };
-    }, [isSearchActive]);
+    }, [isSearchActive, isMobile]);
 
     const rowSelection = useMemo(() => {
         return {
@@ -177,6 +180,7 @@ function AbsenceList() {
                         paginationPageSizeSelector={[10, 20, 50, 100]}
                         localeText={AG_GRID_LOCALE_FR}
                         quickFilterText={quickFilterText}
+                        autoSizeStrategy={autoSizeStrategy}
                     />
                 </div>
             )}

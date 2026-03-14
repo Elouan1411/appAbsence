@@ -12,6 +12,7 @@ import SearchInput from "../common/SearchInput";
 import { API_URL } from "../../config";
 import "../../style/searchAgGrid.css";
 import CustomLoader from "../common/CustomLoader";
+import { useIsMobile } from "../../hooks/useIsMobile";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const columnOrder = ["numeroEtudiant", "nom", "prenom", "debut", "fin", "motif", "commentaire"];
@@ -22,20 +23,22 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
     const [loading, setLoading] = useState(false);
     const [quickFilterText, setQuickFilterText] = useState("");
     const [isSearchActive, setIsSearchActive] = useState(false);
+    const isMobile = useIsMobile();
 
     const theme = useTheme();
 
     const autoSizeStrategy = useMemo(() => {
+        if (!isMobile) return undefined;
         return {
             type: "fitCellContents",
             skipHeader: true,
             scaleUpToFitGridWidth: true,
         };
-    }, []);
+    }, [isMobile]);
 
     const defaultColDef = useMemo(() => {
         return {
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             minWidth: 100,
             filter: true,
             sortable: true,
@@ -44,7 +47,7 @@ function JustificationList({ selectedItem, setSelectedItem, reload }) {
             autoHeight: false,
             floatingFilter: isSearchActive,
         };
-    }, [isSearchActive]);
+    }, [isSearchActive, isMobile]);
 
     const isFirstLoad = React.useRef(true);
 

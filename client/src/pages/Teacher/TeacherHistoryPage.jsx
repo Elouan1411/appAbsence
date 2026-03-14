@@ -21,6 +21,7 @@ import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 import notify from "../../functions/notify";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -32,6 +33,7 @@ function TeacherHistoryPage() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();
+    const isMobile = useIsMobile();
 
     const parseDateValue = (value) => {
         if (!value) return null;
@@ -224,7 +226,7 @@ function TeacherHistoryPage() {
                     return params.data ? params.data.loginProfesseur : "";
                 },
                 filter: true,
-                flex: 1,
+                flex: isMobile ? undefined : 1,
             });
         }
 
@@ -233,7 +235,7 @@ function TeacherHistoryPage() {
                 field: "libelle",
                 headerName: "Matière",
                 filter: true,
-                flex: 1,
+                flex: isMobile ? undefined : 1,
             },
             {
                 field: "promo",
@@ -264,7 +266,7 @@ function TeacherHistoryPage() {
         );
 
         return cols;
-    }, [role]);
+    }, [role, isMobile]);
 
     const defaultColDef = useMemo(
         () => ({
@@ -376,6 +378,7 @@ function TeacherHistoryPage() {
                         onSortChanged={onSortChanged}
                         quickFilterText={quickFilterText}
                         localeText={AG_GRID_LOCALE_FR}
+                        autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
                     />
                 )}
             </div>

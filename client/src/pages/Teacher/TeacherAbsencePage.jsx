@@ -20,6 +20,7 @@ import { AG_GRID_LOCALE_FR } from "../../constants/fr-FR";
 import { API_URL } from "../../config";
 import CustomLoader from "../../components/common/CustomLoader";
 import notify from "../../functions/notify";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -30,6 +31,7 @@ function TeacherHistoryPage() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme();
+    const isMobile = useIsMobile();
 
     const fetchHistory = async () => {
         if (!user) return;
@@ -149,7 +151,7 @@ function TeacherHistoryPage() {
         () => [
             { field: "nom", headerName: "Nom", filter: true },
             { field: "prenom", headerName: "Prénom", filter: true },
-            { field: "motif", headerName: "Motif", filter: true, flex: 1 },
+            { field: "motif", headerName: "Motif", filter: true, flex: isMobile ? undefined : 1 },
             {
                 headerName: "Date",
                 field: "debut",
@@ -225,7 +227,7 @@ function TeacherHistoryPage() {
                 cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" },
             },
         ],
-        [user],
+        [user, isMobile],
     );
 
     const defaultColDef = useMemo(
@@ -294,6 +296,7 @@ function TeacherHistoryPage() {
                         onSortChanged={onSortChanged}
                         quickFilterText={quickFilterText}
                         localeText={AG_GRID_LOCALE_FR}
+                        autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
                     />
                 )}
             </div>

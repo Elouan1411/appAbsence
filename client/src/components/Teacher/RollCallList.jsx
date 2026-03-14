@@ -15,6 +15,7 @@ import { useAuth } from "../../hooks/useAuth";
 import isLoginInDatabase from "../../functions/isLoginInDatabase";
 import CustomLoader from "../common/CustomLoader";
 import notify from "../../functions/notify";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -92,6 +93,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
 
     const theme = useTheme();
     const { user, role } = useAuth();
+    const isMobile = useIsMobile();
 
     const login = loginENT || (typeof user === "object" ? user.login || user.username : user);
 
@@ -155,12 +157,12 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
 
     const defaultColDef = useMemo(
         () => ({
-            flex: 1,
+            flex: isMobile ? undefined : 1,
             filter: true,
             sortable: true,
             resizable: true,
         }),
-        [],
+        [isMobile],
     );
 
     useEffect(() => {
@@ -451,6 +453,7 @@ function RollCallList({ criteria, dateTime, subject, callId, onSuccess, loginENT
                         paginationPageSize={100}
                         localeText={AG_GRID_LOCALE_FR}
                         domLayout="autoHeight"
+                        autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}
                     />
                 </div>
             )}
