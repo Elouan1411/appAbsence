@@ -1,7 +1,11 @@
 .teacherListContainer > .absence-list-container {
-    height: 88vh;
+    height: 100%;
     width: calc(100% - 10px);
     margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 .search-wrapper-right {
     width: 100%;
