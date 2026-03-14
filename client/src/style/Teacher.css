@@ -1,4 +1,5 @@
 .page-container {
+    height: calc(100vh - 15px);
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -16,18 +17,6 @@
 .grid-container {
     flex: 1;
     width: calc(100% - 30px);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-}
-
-.grid-container > .ag-theme-alpine,
-.grid-container > .ag-theme-balham,
-.grid-container > .ag-theme-quartz,
-.grid-container > .ag-theme-material {
-    flex: 1;
-    height: 100% !important;
 }
 
 .select-container {
@@ -139,9 +128,7 @@
     }
 
     .grid-container {
-        padding: 0 15px 15px 15px;
-        flex: 1;
-        min-height: 0;
+        padding: 0 15px 100px 15px;
     }
 }
 
