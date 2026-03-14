@@ -57,7 +57,15 @@ function LoginPage() {
                     <Subtitle>Connectez-vous pour accéder à votre compte</Subtitle>
                 </div>
                 <div className="input-container">
-                    <InputField placeholder="Login ENT" text="Identifiant" value={user} onChange={(e) => setUser(e.target.value)} autocomplete="username" />
+                    <InputField
+                        placeholder="Login ENT"
+                        text="Identifiant"
+                        value={user}
+                        onChange={(e) => setUser(e.target.value)}
+                        autocomplete="username"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                    />
                     <InputField
                         placeholder="Mot de passe"
                         text="Mot de passe"
@@ -66,13 +74,15 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         rightIcon={
                             showPassword ? (
-                                <span className="icon icon-eye-close icon-xl icon-primary"  title="Afficher" />
+                                <span className="icon icon-eye-close icon-xl icon-primary" title="Afficher" />
                             ) : (
-                                <span className="icon icon-eye icon-xl icon-primary"  title="Afficher" />
+                                <span className="icon icon-eye icon-xl icon-primary" title="Afficher" />
                             )
                         }
                         onRightIconClick={() => setShowPassword(!showPassword)}
                         autocomplete="current-password"
+                        autoCapitalize="none"
+                        autoCorrect="off"
                     />
                 </div>
 

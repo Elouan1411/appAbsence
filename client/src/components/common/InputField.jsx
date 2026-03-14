@@ -13,6 +13,8 @@ function InputField({
     onRightIconClick,
     autocomplete,
     name,
+    autoCapitalize = "sentences",
+    autoCorrect = "on",
 }) {
     return (
         <div className={`input ${error ? "input-error-form" : ""}`} style={style}>
@@ -30,6 +32,8 @@ function InputField({
                     style={{ paddingRight: "15px" }}
                     autoComplete={autocomplete}
                     name={name}
+                    autoCapitalize={autoCapitalize}
+                    autoCorrect={autoCorrect}
                 />
                 {rightIcon && (
                     <div

@@ -88,6 +88,9 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             if (!DATA_REGEX.promo.test(formData.promo)) {
                 newErrors.promo = "Format L1-L3 ou M1-M2";
             }
+            if (!DATA_REGEX.promo.test(formData.promoPair)) {
+                newErrors.promo = "Format L1-L3 ou M1-M2";
+            }
             if (!DATA_REGEX.groupeTD.test(formData.groupeTD)) {
                 newErrors.groupeTD = "Ex: TD1";
             }
@@ -149,6 +152,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
             cleanData.rse = formData.rse;
             cleanData.groupeTDPair = formData.groupeTDPair;
             cleanData.groupeTPPair = formData.groupeTPPair;
+            cleanData.promoPair = formData.promoPair;
         }
 
         onSubmit(cleanData);
@@ -161,7 +165,7 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                 <div className="modal-header">
                     <h2>{mode === "student" ? "Ajouter un Étudiant" : "Ajouter un Enseignant"}</h2>
                     <button className="close-btn" onClick={onClose}>
-                        <span className="icon-x"  title="Fermer" />
+                        <span className="icon-x" title="Fermer" />
                     </button>
                 </div>
 
@@ -204,8 +208,19 @@ const FormModal = ({ isOpen, onClose, mode, onSubmit, isLoading }) => {
                                     text="Promo"
                                     placeholder="Ex: L1"
                                     value={formData.promo}
-                                    onChange={(e) => handleFieldChange("promo", e)}
+                                    onChange={(e) => {
+                                        handleFieldChange("promo", e);
+                                        handleFieldChange("promoPair", e);
+                                    }}
                                     error={errors.promo}
+                                />
+
+                                <InputField
+                                    text="Promo Semestre Pair"
+                                    placeholder="Ex: L1"
+                                    value={formData.promoPair}
+                                    onChange={(e) => handleFieldChange("promoPair", e)}
+                                    error={errors.promoPair}
                                 />
 
                                 <InputField
