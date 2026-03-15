@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "../style/SettingsMobilePage.css";
 import "../style/VerticalBar.css";
 import PageTitle from "../components/common/PageTitle";
+import PWAInstallModal from "../components/common/PWAInstallModal";
 
 const SettingMobilePage = () => {
     const { logout, role } = useAuth();
@@ -13,6 +14,7 @@ const SettingMobilePage = () => {
     const navigate = useNavigate();
     const isDarkMode = theme === "dark";
     const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -49,16 +51,6 @@ const SettingMobilePage = () => {
         };
     }, []);
 
-    const handleInstallClick = async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === "accepted") {
-            setDeferredPrompt(null);
-            window.deferredPrompt = null;
-        }
-    };
-
     const handleLogout = async () => {
         await logout();
         navigate("/", { replace: true });
@@ -82,14 +74,15 @@ const SettingMobilePage = () => {
                     </button>
                 </div>
 
-                    <div className="logout-container" style={{ marginBottom: "10px" }}>
-                        <button className="logout-button" onClick={handleInstallClick} style={{ backgroundColor: "var(--text-primary)" }}>
-                            <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger" ></span>
-                            <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
-                                Installer l'application
-                            </span>
-                        </button>
-                    </div>
+                <div className="logout-container" style={{ marginBottom: "10px" }}>
+                    <PWAInstallModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+                    <button className="logout-button" onClick={() => setIsModalOpen(true)} style={{ backgroundColor: "var(--text-primary)" }}>
+                        <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger" ></span>
+                        <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
+                            Installer l'application
+                        </span>
+                    </button>
+                </div>
 
                 <div className="logout-container">
                     <button className="logout-button" onClick={handleLogout}>
