@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
 import toggleTheme from "../functions/toggleTheme";
 import { useNavigate } from "react-router-dom";
+import { isAndroid, isIOS } from "react-device-detect";
 import "../style/SettingsMobilePage.css";
 import "../style/VerticalBar.css";
 import PageTitle from "../components/common/PageTitle";
@@ -51,6 +52,15 @@ const SettingMobilePage = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (sessionStorage.getItem("pwa_auto_refresh")) {
+            sessionStorage.removeItem("pwa_auto_refresh");
+            import("react-hot-toast").then((module) => {
+                module.default.success("Prêt ! Cliquez à nouveau pour installer.", { duration: 4000 });
+            });
+        }
+    }, []);
+
     const handleLogout = async () => {
         await logout();
         navigate("/", { replace: true });
@@ -64,11 +74,11 @@ const SettingMobilePage = () => {
                 <div className="theme-toggle-container">
                     <button className={`theme-toggle ${isDarkMode ? "dark" : "light"}`} onClick={toggleTheme}>
                         <div className={`toggle-option ${!isDarkMode ? "active" : ""}`}>
-                            <span className="icon icon-sun" title="Mode clair" ></span>
+                            <span className="icon icon-sun" title="Mode clair"></span>
                             <span>Clair</span>
                         </div>
                         <div className={`toggle-option ${isDarkMode ? "active" : ""}`}>
-                            <span className="icon icon-moon" title="Mode sombre" ></span>
+                            <span className="icon icon-moon" title="Mode sombre"></span>
                             <span>Sombre</span>
                         </div>
                     </button>
@@ -77,22 +87,44 @@ const SettingMobilePage = () => {
                 <div className="logout-container" style={{ marginBottom: "10px" }}>
                     <PWAInstallModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
                     <button
+                        id="install-pwa-btn"
                         className="logout-button"
                         onClick={() => {
-                            if (deferredPrompt) {
-                                deferredPrompt.prompt();
-                                deferredPrompt.userChoice.then((choiceResult) => {
+                            const currentPrompt = window.deferredPrompt || deferredPrompt;
+
+                            if (currentPrompt) {
+                                sessionStorage.removeItem("pwa_auto_refresh");
+                                currentPrompt.prompt().catch(() => {
+                                    // Some browsers block auto-prompts. Optional toast notification here if needed.
+                                });
+                                currentPrompt.userChoice.then((choiceResult) => {
                                     if (choiceResult.outcome === "accepted") {
                                         setDeferredPrompt(null);
+                                        window.deferredPrompt = null;
                                     }
                                 });
                             } else {
-                                setIsModalOpen(true);
+                                const isMobileView = window.innerWidth <= 768;
+                                const isMobileDevice = isAndroid || isIOS || isMobileView;
+                                const hasRefreshed = sessionStorage.getItem("pwa_auto_refresh");
+                                console.log("--- PWA INSTALL FALLBACK ---");
+                                console.log("isMobileDevice:", isMobileDevice, "(Android:", isAndroid, ", iOS:", isIOS, ", Viewport:", isMobileView, ")");
+                                console.log("hasRefreshed:", hasRefreshed);
+
+                                if (isMobileDevice && !hasRefreshed) {
+                                    sessionStorage.setItem("pwa_auto_refresh", "true");
+                                    console.log("-> Automatically refreshing page to catch PWA prompt...");
+                                    window.location.reload();
+                                } else {
+                                    console.log("-> Opening tutorial modal.");
+                                    sessionStorage.removeItem("pwa_auto_refresh");
+                                    setIsModalOpen(true);
+                                }
                             }
                         }}
                         style={{ backgroundColor: "var(--text-primary)" }}
                     >
-                        <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger" ></span>
+                        <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger"></span>
                         <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
                             Installer l'application
                         </span>
