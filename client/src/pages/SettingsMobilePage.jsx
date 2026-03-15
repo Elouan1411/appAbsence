@@ -55,9 +55,14 @@ const SettingMobilePage = () => {
     useEffect(() => {
         if (sessionStorage.getItem("pwa_auto_refresh")) {
             sessionStorage.removeItem("pwa_auto_refresh");
-            import("react-hot-toast").then((module) => {
-                module.default.success("Prêt ! Cliquez à nouveau pour installer.", { duration: 4000 });
-            });
+            if (isIOS) {
+                // Sur iOS (Apple), on ouvre directement la popup tutoriel après le refresh
+                setIsModalOpen(true);
+            } else {
+                import("react-hot-toast").then((module) => {
+                    module.default.success("Prêt ! Cliquez à nouveau pour installer.", { duration: 4000 });
+                });
+            }
         }
     }, []);
 
@@ -105,18 +110,15 @@ const SettingMobilePage = () => {
                                 });
                             } else {
                                 const isMobileView = window.innerWidth <= 768;
-                                const isMobileDevice = isAndroid || isIOS || isMobileView;
                                 const hasRefreshed = sessionStorage.getItem("pwa_auto_refresh");
-                                console.log("--- PWA INSTALL FALLBACK ---");
-                                console.log("isMobileDevice:", isMobileDevice, "(Android:", isAndroid, ", iOS:", isIOS, ", Viewport:", isMobileView, ")");
-                                console.log("hasRefreshed:", hasRefreshed);
 
-                                if (isMobileDevice && !hasRefreshed) {
+                                if (isIOS) {
+                                    // Sur iOS, l'event n'existe pas, refresh inutile
+                                    setIsModalOpen(true);
+                                } else if ((isAndroid || isMobileView) && !hasRefreshed) {
                                     sessionStorage.setItem("pwa_auto_refresh", "true");
-                                    console.log("-> Automatically refreshing page to catch PWA prompt...");
                                     window.location.reload();
                                 } else {
-                                    console.log("-> Opening tutorial modal.");
                                     sessionStorage.removeItem("pwa_auto_refresh");
                                     setIsModalOpen(true);
                                 }
