@@ -32,7 +32,7 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
                 </button>
                 <h3>Installer l'application</h3>
 
-                {os === "other" && (
+                {os === "ios" && (
                     <div className="pwa-tutorial-content">
                         <p>Pour installer l'application sur votre appareil iOS :</p>
                         <ol>
@@ -54,7 +54,7 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
                     </div>
                 )}
 
-                {os === "ios" && (
+                {os === "other" && (
                     <div className="pwa-tutorial-content">
                         <p>Pour installer l'application sur votre ordinateur :</p>
                         <ol>
