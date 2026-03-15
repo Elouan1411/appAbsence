@@ -76,7 +76,22 @@ const SettingMobilePage = () => {
 
                 <div className="logout-container" style={{ marginBottom: "10px" }}>
                     <PWAInstallModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-                    <button className="logout-button" onClick={() => setIsModalOpen(true)} style={{ backgroundColor: "var(--text-primary)" }}>
+                    <button
+                        className="logout-button"
+                        onClick={() => {
+                            if (deferredPrompt) {
+                                deferredPrompt.prompt();
+                                deferredPrompt.userChoice.then((choiceResult) => {
+                                    if (choiceResult.outcome === "accepted") {
+                                        setDeferredPrompt(null);
+                                    }
+                                });
+                            } else {
+                                setIsModalOpen(true);
+                            }
+                        }}
+                        style={{ backgroundColor: "var(--text-primary)" }}
+                    >
                         <span className="icon-btn icon-download" style={{ backgroundColor: "var(--sidebar-bg)" }} title="Télécharger" ></span>
                         <span className="btn-text" style={{ color: "var(--sidebar-bg)" }}>
                             Installer l'application
@@ -86,7 +101,7 @@ const SettingMobilePage = () => {
 
                 <div className="logout-container">
                     <button className="logout-button" onClick={handleLogout}>
-                        <span className="icon-btn icon-logout" style={{ backgroundColor: "white" }} title="Déconnexion" ></span>
+                        <span className="icon-btn icon-logout" style={{ backgroundColor: "white" }} title="Déconnexion"></span>
                         <span style={{ color: "white" }}>Se déconnecter</span>
                     </button>
                 </div>

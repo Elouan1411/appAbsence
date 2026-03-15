@@ -14,6 +14,12 @@ const root = createRoot(document.getElementById("root"));
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
+if ("serviceWorker" in navigator) {
+    import("virtual:pwa-register").then(({ registerSW }) => {
+        registerSW({ immediate: true });
+    });
+}
+
 root.render(
     <StrictMode>
         <AuthProvider>
