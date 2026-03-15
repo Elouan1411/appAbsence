@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { isIOS, isAndroid, isMobile, isDesktop } from 'react-device-detect';
 import "../../style/PWAInstallModal.css";
 import "../../style/icon.css";
 
 const PWAInstallModal = ({ isOpen, onClose }) => {
-    const [os, setOs] = useState("unknown");
-
     useEffect(() => {
         if (!isOpen) return;
-
-        const userAgent = window.navigator.platform || window.navigator.userAgent || window.navigator.vendor || window.opera;
-        // iOS detection
-        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            setOs("ios");
-        }
-        // Android detection
-        else if (/android/i.test(userAgent)) {
-            setOs("android");
-        }
-        else {
-            setOs("other");
-        }
     }, [isOpen]);
 
     if (!isOpen) return null;
@@ -32,7 +18,7 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
                 </button>
                 <h3>Installer l'application</h3>
 
-                {os === "ios" && (
+                {isIOS && (  
                     <div className="pwa-tutorial-content">
                         <p>Pour installer l'application sur votre appareil iOS :</p>
                         <ol>
@@ -43,7 +29,7 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
                     </div>
                 )}
 
-                {os === "android" && (
+                {isAndroid && (
                     <div className="pwa-tutorial-content">
                         <p>Pour installer l'application sur votre appareil Android :</p>
                         <ol>
@@ -54,13 +40,21 @@ const PWAInstallModal = ({ isOpen, onClose }) => {
                     </div>
                 )}
 
-                {os === "other" && (
+                {isDesktop && (
                     <div className="pwa-tutorial-content">
                         <p>Pour installer l'application sur votre ordinateur :</p>
                         <ol>
                             <li>Recherchez l'icône d'installation dans la barre d'adresse de votre navigateur (généralement à droite).</li>
                             <li>Cliquez dessus puis sur <strong>Installer</strong>.</li>
                         </ol>
+                    </div>
+                )}
+
+                {!isIOS && !isAndroid && !isDesktop && (
+                    <div className="pwa-tutorial-content">
+                        <p>La méthode d'installation sur votre système n'est pas connue.</p>
+                        <p>Vous pouvez essayer de l'installer en suivant les instructions générales pour les PWA.</p>
+                        <p>Ou en suivant ce lien : <a href="https://web.dev/learn/pwa/installation?hl=fr">https://web.dev/learn/pwa/installation?hl=fr</a></p>
                     </div>
                 )}
             </div>
