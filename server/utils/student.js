@@ -48,12 +48,13 @@ function importExcelInDB(filepath, fileExtension, promo) {
                 const login = row.getCell(2).value;
                 const nom = row.getCell(3).value;
                 const prenom = row.getCell(4).value;
-                const promo = row.getCell(5).value;
-                const groupeTD = row.getCell(6).value;
-                const groupeTP = row.getCell(7).value;
-                const promoPair = row.getCell(8).value;
-                const groupeTDPair = row.getCell(9).value;
-                const groupeTPPair = row.getCell(10).value;
+                const toUpper = (val) => val ? String(val).toUpperCase() : val;
+                const promo = toUpper(row.getCell(5).value);
+                const groupeTD = toUpper(row.getCell(6).value);
+                const groupeTP = toUpper(row.getCell(7).value);
+                const promoPair = toUpper(row.getCell(8).value);
+                const groupeTDPair = toUpper(row.getCell(9).value);
+                const groupeTPPair = toUpper(row.getCell(10).value);
 
                 outputData.push(numero, login, nom, prenom, promo, groupeTD, groupeTP, promoPair, groupeTDPair, groupeTPPair);
 

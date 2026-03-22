@@ -162,7 +162,11 @@ router.get("/:id", verifyToken, isAdmin, (req, res) => {
 });
 
 router.post("/add", verifyToken, isAdmin, (req, res) => {
-    const { numeroEtudiant, loginENT, nom, prenom, promo, groupeTD, groupeTP, rse = [] } = req.body;
+    let { numeroEtudiant, loginENT, nom, prenom, promo, groupeTD, groupeTP, rse = [] } = req.body;
+
+    if (promo) promo = promo.toUpperCase();
+    if (groupeTD) groupeTD = groupeTD.toUpperCase();
+    if (groupeTP) groupeTP = groupeTP.toUpperCase();
 
     const handleRSE = () => {
         if (!Array.isArray(rse) || rse.length === 0) return;
@@ -278,7 +282,14 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
 
 //Mise à jour des informations d'un élève
 router.put("/", verifyToken, isAdmin, (req, res) => {
-    const { nom, prenom, promo, groupeTD, groupeTP, loginENT, groupeTDPair, groupeTPPair, promoPair, numeroEtudiant } = req.body;
+    let { nom, prenom, promo, groupeTD, groupeTP, loginENT, groupeTDPair, groupeTPPair, promoPair, numeroEtudiant } = req.body;
+
+    if (promo) promo = promo.toUpperCase();
+    if (groupeTD) groupeTD = groupeTD.toUpperCase();
+    if (groupeTP) groupeTP = groupeTP.toUpperCase();
+    if (promoPair) promoPair = promoPair.toUpperCase();
+    if (groupeTDPair) groupeTDPair = groupeTDPair.toUpperCase();
+    if (groupeTPPair) groupeTPPair = groupeTPPair.toUpperCase();
 
     const sql = `UPDATE Eleve SET nom = ?, prenom = ?,loginENT = ?, promo = ?, groupeTD = ?, groupeTP = ?, promoPair = ?, groupeTDPair = ?, groupeTPPair = ? WHERE numero = ?`;
 
