@@ -1,24 +1,24 @@
-# Client - Projet L3
+# Client - L3 Project
 
-**Version React conseillée :** v19.2.1
+**Recommended React Version:** v19.2.1
 
-## Lancement (depuis le dossier `/client`)
+## Launch (from the `/client` directory)
 
-* **Développement** (serveur Vite avec rechargement rapide) : 
+* **Development** (Vite server with fast refresh): 
 ```bash
 npm run dev
 ```
 
-* **Production** (génération des fichiers optimisés) :
+* **Production** (generation of optimized files):
 ```bash
 npm run build
 ```
 
-* **Aperçu** (tester le build de production en local) :
+* **Preview** (test the production build locally):
 ```bash
 npm run preview
 ```
 
 ---
 
-💡 **Note :** Il est prévu de lancer le client et le serveur en même temps directement depuis la racine du projet. Les commandes globales (comme `npm run dev` ou `npm run prod`) sont expliquées dans le **`README.md` à la racine**.
+💡 **Note:** It is intended to launch the client and the server simultaneously directly from the project root. Global commands (such as `npm run dev` or `npm run prod`) are explained in the **`README.md` at the root**.

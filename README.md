@@ -1,59 +1,86 @@
-# Projet L3 - Serveur + Client
+# Absence Management System - IT Department
 
-## 1. Prérequis et Versions conseillées
+## 📖 About the Project
 
-Pour garantir le bon fonctionnement du projet, il est recommandé d'utiliser les versions suivantes. Ces versions correspondent à l'environnement de développement initial :
+This application was developed to manage student absences for the IT department of **Marie & Louis Pasteur University**. 
 
-* **Node.js** : v23.11.0
-* **npm** : v10.9.2
-* **React** : v19.2.1
+Built by a team of 3 students, this project started with an inherited legacy codebase. However, due to its poor code quality, we made the strategic decision to **rewrite the entire application from scratch** (both client and server architectures). 
 
-## 2. Commandes de lancement (Scripts)
+The project was delivered on time and is fully operational. It was developed over a 4-month period, representing approximately 3 weeks of full-time work for the team, with the remaining effort completed alongside coursework. This experience allowed us to learn and master **React**, while actively implementing security measures to protect the application against common web vulnerabilities.
 
-À la racine du projet, plusieurs commandes sont configurées dans le `package.json` pour lancer l'application selon vos besoins :
+## ✨ Key Features
 
-### Mode Développement
-* **`npm run dev`** : Lance simultanément le serveur (avec rechargement automatique via `nodemon`) et le client (en mode développement). C'est la commande principale à utiliser lors du développement. Les logs du serveur s'afficheront en jaune et ceux du client en bleu.
+### 🎓 For Students
+* **Dashboard:** View personal absence history.
+* **Justifications:** Submit absence justifications directly through the app.
 
-💡 **Note pour le développement :** Une fois l'application lancée via `dev`, elle est accessible par défaut sur le port `5173` (**http://localhost:5173**).
+### 👨‍🏫 For Professors
+* **Attendance Tracking:** easily take roll call directly from a smartphone or computer during class.
 
-### Mode Production
-* **`npm run quick-prod`** : Build l'application React côté client, puis lance le serveur Node.js. Utile en développement si vos dépendances sont déjà installées et que vous voulez tester le rendu final rapidement (avec optimisations).
-* **`npm run prod`** : La commande complète pour un déploiement propre. Elle se charge d'installer toutes les dépendances (à la racine, dans le client et dans le serveur), de faire le build du client, puis de lancer le serveur en production.
+### ⚙️ For the Administration (Secretariat)
+* **Absence Management:** Validate or reject student justifications.
+* **System Configuration:** Manage user accounts, create subjects, configure special student accommodations (regimes), and adjust global app settings.
+* **Impersonation System:** Ability to act on behalf of a professor to input paper-based attendance, or act on behalf of a student to upload a justification received via email.
+* **Data Security:** Built-in tools to create database backups and restore previous versions directly from the interface.
 
-💡 **Note pour la production :** Une fois l'application lancée via `quick-prod` ou `prod`, elle est accessible par défaut sur le port `3000` (**http://localhost:3000**).
+### 📱 Technical Highlights
+* **Responsive Design:** Optimized for both desktop and mobile screens.
+* **PWA (Progressive Web App):** Users can install the application directly onto their smartphones or computers for a native-like experience.
 
+## 📄 Documentation & Report
+For more details, screenshots of the UI, and in-depth explanations of our technical choices and how we achieved this result, please check our complete project report located at: **[`report/report.pdf`](./report/report.pdf)**.
 
-## 3 - Préparer le projet pour la mise en prod
+---
 
-### 1. Configuration de l'environnement
-Créer un fichier `/server/.env` identique à `/server/.env.example`.
+## 🛠 1. Prerequisites and Recommended Versions
 
-Remplacer `JWT_SECRET` par une chaîne de caractères aléatoire de 128 caractères.
+To ensure the project functions properly, it is recommended to use the following versions. These correspond to our initial development environment:
 
-Commande pour générer le secret :
-```bash
-node -e "console.log(require('crypto').randomBytes(128).toString('hex'))"
-```
+* **Node.js**: v23.11.0
+* **npm**: v10.9.2
+* **React**: v19.2.1
 
-Définir `CORS_ORIGIN` avec l'URL autorisée (ex: `https://mon-site.com`).
-Si vous avez plusieurs domaines, séparez-les par une virgule (ex: `https://mon-site.com,https://api.mon-site.com`).
+## 🚀 2. Launch Commands (Scripts)
 
-Pour le développement local **uniquement**, vous pouvez ajouter `ENABLE_DEV_AUTH=true` pour utiliser les comptes de test (etudiant, prof, admin) sans LDAP. **Ne jamais activer en production.**
+At the root of the project, several commands are configured in the `package.json` to launch the application according to your needs:
 
-### 2. Initialisation de la Base de Données
-Créer la base de données `/server/database/appAbsences.db` en exécutant la commande suivante à la racine :
+### Development Mode
+* **`npm run dev`**: Simultaneously launches the server (with automatic reload via `nodemon`) and the client (in development mode). This is the main command to use during development. The server logs will be displayed in yellow and the client logs in blue.
+
+> 💡 **Note for development:** Once launched via `dev`, the application is accessible by default on port `5173` (**http://localhost:5173**).
+
+### Production Mode
+* **`npm run quick-prod`**: Builds the React client application, then launches the Node.js server. Useful in development if your dependencies are already installed and you want to test the final output quickly (with optimizations).
+* **`npm run prod`**: The complete command for a clean deployment. It handles the installation of all dependencies (at the root, in the client, and in the server), building the client, and then launching the server in production.
+
+> 💡 **Note for production:** Once launched via `quick-prod` or `prod`, the application is accessible by default on port `3000` (**http://localhost:3000**).
+
+## ⚙️ 3. Preparing the Project for Production
+
+### Step 1: Environment Configuration
+Create a `/server/.env` file identical to the `/server/.env.example` template.
+
+1.  Replace `JWT_SECRET` with a random 128-character string. You can generate one using this command:
+    ```bash
+    node -e "console.log(require('crypto').randomBytes(128).toString('hex'))"
+    ```
+2.  Set `CORS_ORIGIN` with your allowed URL (e.g., `https://my-site.com`). If you have multiple domains, separate them with a comma (e.g., `https://my-site.com,https://api.my-site.com`).
+
+> ⚠️ **For local development only:** You can add `ENABLE_DEV_AUTH=true` to use the test accounts (student, prof, admin) without the LDAP connection. **Never enable this in production.**
+
+### Step 2: Database Initialization
+Create the database `/server/database/appAbsences.db` by executing the following command at the root of the project:
 
 ```bash
 sqlite3 server/database/appAbsences.db < server/database/schema.sql
 ```
 
-### 3. Lancement du projet
-Lancer le projet avec la commande suivante à la racine :
+### Step 3: Launching the Project
+Launch the project using the following command at the root:
 
 ```bash
 npm run prod
 ```
 
-### 4. Intégration Continue (CI)
-En CI, il suffit de relancer `npm run prod` pour que tout soit mis à jour (installation des dépendances, build client, etc.).
+### Step 4: Continuous Integration (CI)
+In a CI environment, simply run `npm run prod` for everything to be updated automatically (dependency installation, client build, server launch).

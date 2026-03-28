@@ -1,31 +1,31 @@
 /*********************************************************
- *                Chargement des modules
+ *                Module loading
  *********************************************************/
 
 const formidable = require("formidable");
 const ExcelJS = require("exceljs");
 
-//Lecture de fichiers
+// File reading
 const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
 
-//Importation express : serveur web
+// Express import: web server
 var express = require("express");
 
-//Token : serveur web
+// Token: web server
 const jwt = require("jsonwebtoken");
 
-//Cookie parser
+// Cookie parser
 const cookieParser = require("cookie-parser");
 
-//Importation dotenv pour les variables d'environnement
+// Dotenv import for environment variables
 require("dotenv").config();
 
 const cors = require("cors");
 
 /*****************************************************
- *             Lancement du serveur web
+ *             Starting the web server
  *****************************************************/
 var app = express();
 
@@ -46,7 +46,7 @@ app.listen(PORT, "0.0.0.0", function () {
 });
 // listening to proxy for react routing requests
 
-// Configuration d'express pour utiliser le répertoire "dist" du client
+// Express configuration to use the client's "dist" directory
 const clientDistPath = path.join(__dirname, "../client/dist");
 app.use(express.static(clientDistPath));
 app.use(express.urlencoded({ extended: false }));
@@ -61,7 +61,7 @@ app.use(
 );
 
 /*****************************************************
- *             Constantes utilisées
+ *             Constants used
  *****************************************************/
 
 // Ensure upload directory exists
@@ -80,47 +80,47 @@ if (!fs.existsSync(justificationDir)) {
     fs.mkdirSync(justificationDir, { recursive: true });
 }
 
-// Utilisation de la route d'absence
+// Using absence route
 const absenceRoutes = require("./routes/absence");
 app.use("/absence", absenceRoutes);
 
-// Utilisation de la route d'authentification
+// Using authentication route
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
 
-//Utilisation de la route appel
+// Using call route
 const appelRoutes = require("./routes/appel");
 app.use("/appel", appelRoutes);
 
-//Utilisation de la route dispense
+// Using exemption route
 const dispenseRoutes = require("./routes/dispense");
 app.use("/dispense", dispenseRoutes);
 
-//Utilisation de la route file
+// Using file route
 const fileRoutes = require("./routes/file");
 app.use("/file", fileRoutes);
 
-//Utilisation de la route groups
+// Using groups route
 const groupsRoutes = require("./routes/groups");
 app.use("/groups", groupsRoutes);
 
-//Utilisation de la route justificatif
+// Using justification document route
 const justificatifRoutes = require("./routes/justificatif");
 app.use("/justificatif", justificatifRoutes);
 
-//Utilisation de la route justification
+// Using justification route
 const justificationRoutes = require("./routes/justification");
 app.use("/justification", justificationRoutes);
 
-//Utilisation de la route RSE
+// Using CSR route
 const rseRoutes = require("./routes/rse");
 app.use("/rse", rseRoutes);
 
-//Utilisation de la route étudiant
+// Using student route
 const studentRoutes = require("./routes/student");
 app.use("/eleve", studentRoutes);
 
-//Utilisation de la route matière
+// Using subject route
 const subjectRoutes = require("./routes/subject");
 app.use("/subject", subjectRoutes);
 

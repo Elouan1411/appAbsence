@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-//Middleware de vérification de la validité du token
+// Middleware to verify token validity
 function verifyToken(req, res, next) {
     const token = req.cookies.jwt;
     if (!token) {
@@ -15,7 +15,7 @@ function verifyToken(req, res, next) {
     });
 }
 
-//Middleware qui vérifie si l'utilisateur est un admin
+// Middleware verifying if the user is an admin
 function isAdmin(req, res, next) {
     if (req.user.pwd.split("-")[1] === "admin") {
         return next();
@@ -23,7 +23,7 @@ function isAdmin(req, res, next) {
     res.status(403).json({ error: "Accès refusé" });
 }
 
-//Middleware qui vérifie si l'utilisateur est un admin ou un professeur
+// Middleware verifying if the user is an admin or a teacher
 function isAdminOrTeacher(req, res, next) {
     if (req.user && req.user.pwd) {
         const parts = req.user.pwd.split("-");
@@ -42,7 +42,7 @@ function isTeacher(req, res, next) {
     res.status(403).json({ error: "Accès refusé" });
 }
 
-//Fonction qui vérifie si l'utilisateur est un admin ou le propriétaire de l'absence
+// Function verifying if the user is an admin or the owner of the absence
 function isAdminOrOwner(login) {
     return (req, res, next) => {
         const role = req.user.pwd.split("-")[1];
@@ -61,8 +61,8 @@ function isAdminOrOwner(login) {
 
 function isOwner(login) {
     return (req, res, next) => {
-        const userLogin = req.user.pwd.split("-")[0]; // login de l'utilisateur connecté
-        const loginParam = req.params[login]; // login présent dans l'URL
+        const userLogin = req.user.pwd.split("-")[0]; // connected user's login
+        const loginParam = req.params[login]; // login present in the URL
 
         if (userLogin === loginParam) return next();
         res.status(403).json({ error: "Accès refusé" });

@@ -10,10 +10,10 @@ const { error } = require("console");
 // exceljs import not needed here as it is used in utils
 
 /*****************************************
- *           Méthodes DELETE
+ *           DELETE Methods
  *****************************************/
 
-//Suppression d'un élève
+// Deleting a student
 router.delete("/:id", verifyToken, isAdmin, (req, res) => {
     const id = req.params.id;
     const sql = `DELETE from Eleve WHERE numero == ?`;
@@ -26,7 +26,7 @@ router.delete("/:id", verifyToken, isAdmin, (req, res) => {
 });
 
 /*****************************************
- *             Méthodes GET
+ *             GET Methods
  *****************************************/
 
 router.get("/search", verifyToken, isAdminOrTeacher, (req, res) => {
@@ -56,7 +56,7 @@ router.get("/search", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
-//Sélection de tous les étudiants
+// Selecting all students
 router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     let body = req.body;
 
@@ -64,7 +64,7 @@ router.get("/all", verifyToken, isAdminOrTeacher, (req, res) => {
     let params = [];
     let conditions = [];
 
-    // Liste blanche des colonnes autorisées pour éviter l'injection SQL via les noms de colonnes
+    // White list of allowed columns to prevent SQL injection via column names
     const allowedColumns = ["numero", "loginENT", "Promo", "groupeTD", "groupeTP", "nom", "prenom", "promoPair", "groupeTDPair", "groupeTPPair"];
 
     for (let key in body) {
@@ -129,10 +129,10 @@ router.get("/count", verifyToken, isAdmin, (req, res) => {
 });
 
 /*****************************************
- *             Méthodes POST
+ *             POST Methods
  *****************************************/
 
-//Récupération d'un étudiant avec un id particulier ainsi que les RSE et matières associées
+// Retrieving a student with a specific id as well as the associated RSE and subjects
 router.get("/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
     let sqlStudent = `SELECT * FROM Eleve WHERE numero = ?`;
@@ -221,7 +221,7 @@ router.post("/add", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-//Publication d'une liste d'étudiants
+// Publishing a student list
 router.post("/studentList", verifyToken, isAdmin, (req, res) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
@@ -277,10 +277,10 @@ router.post("/studentList", verifyToken, isAdmin, (req, res) => {
 });
 
 /*****************************************
- *           Méthodes UPDATE
+ *           UPDATE Methods
  *****************************************/
 
-//Mise à jour des informations d'un élève
+// Updating a student's information
 router.put("/", verifyToken, isAdmin, (req, res) => {
     let { nom, prenom, promo, groupeTD, groupeTP, loginENT, groupeTDPair, groupeTPPair, promoPair, numeroEtudiant } = req.body;
 

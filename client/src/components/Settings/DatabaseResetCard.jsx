@@ -156,7 +156,7 @@ const DatabaseResetCard = ({ onExportDump }) => {
         <div className="Card cols-2 settings-db-reset-card settings-reset-card-container">
             <h2 className="settings-reset-main-title">Maintenance de la Base de Données</h2>
 
-            {/* Section Nouvelle Année */}
+            {/* New School Year Section */}
             <div className="settings-reset-section">
                 <h3 className="settings-reset-section-title">Nouvelle Année Scolaire</h3>
                 <p className="settings-reset-description">
@@ -175,7 +175,7 @@ const DatabaseResetCard = ({ onExportDump }) => {
 
             <hr className="settings-reset-separator" />
 
-            {/* Section Danger Absolu */}
+            {/* Absolute Danger Section */}
             <div className="settings-reset-section">
                 <h3 className="settings-reset-section-title">Actions Destructrices</h3>
                 <p className="settings-reset-description">

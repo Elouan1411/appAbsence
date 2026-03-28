@@ -4,16 +4,16 @@ const router = express.Router();
 const db = require("../database/db");
 
 /***************************************
- *            Méthodes GET
+ *            GET Methods
  ***************************************/
 
-// Récupération des justificatifs
+// Retrieving justification documents
 router.get("/admin/:way", verifyToken, isAdmin, (req, res) => {
     let way = req.params.way.substring(1);
     res.sendFile(__dirname + "/upload/" + way);
 });
 
-//Récupération des justifications
+// Retrieving justifications
 router.get("/:way", verifyToken, isOwner, (req, res) => {
     let way = req.params.way.substring(1);
     const sql = "SELECT * FROM JustificationAbsence WHERE login = ? AND idAbsJustifiee = ?";
@@ -29,10 +29,10 @@ router.get("/:way", verifyToken, isOwner, (req, res) => {
 });
 
 /***************************************
- *          Méthodes POST
+ *          POST Methods
  ***************************************/
 
-// Publication d'un nouveau justificatif
+// Publishing a new justification document
 router.post("/new", verifyToken, isOwner, (req, res) => {
     const sql = "SELECT * FROM JustificationAbsence WHERE login = ? AND idAbsJustifiee = ?";
     const login = decodedToken.pwd.split("-")[0];
@@ -46,10 +46,10 @@ router.post("/new", verifyToken, isOwner, (req, res) => {
 });
 
 /***************************************
- *          Méthodes DELETE
+ *          DELETE Methods
  ***************************************/
 
-// Suppression d'un justificatif
+// Deleting a justification document
 router.delete("/:way", verifyToken, isOwner, (req, res) => {
     let way = req.params.way.substring(1);
 

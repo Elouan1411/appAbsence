@@ -63,7 +63,7 @@ const StudentAbsenceDetailsPage = () => {
 
                 if (data.list && Array.isArray(data.list) && data.list.length > 0) {
                     const filePromises = data.list.map(async (filename) => {
-                        // Récupere les fichiers avec les "beaux" noms mais en gardant les noms originaux pour la supression
+                        // Get files with "pretty" names but keeping original names for deletion
                         try {
                             const fileRes = await fetch(`${API_URL}/justification/download/${filename}`, {
                                 credentials: "include",

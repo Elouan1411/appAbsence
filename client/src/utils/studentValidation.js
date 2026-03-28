@@ -1,27 +1,27 @@
 import { API_URL } from "../config";
 
-// Nom des colonnes finales dans la grid
+// Name of the final columns in the grid
 const EXPECTED_HEADERS = ["numero", "loginENT", "nom", "prenom", "promo", "groupeTD", "groupeTP", "promoPair", "groupeTDPair", "groupeTPPair"];
 
-// Regex pour matcher les en-têtes du fichier
+// Regex to match the file headers
 const HEADER_MATCH_PATTERNS = {
-    // Match : num, numero, numéro, numer, num., num etudiant, num_etudiant, numetudiant,
+    // Match: num, numero, numéro, numer, num., num etudiant, num_etudiant, numetudiant,
     // num etu, num_etu, numetu, numéro etudiant, numéro_etudiant, numéro etu, numéro_etu,
     // n. etu, n._etu, n.etu, matricule
     numero: /^(num([eé]ro|er|.)?([\s_-]??[eé]tudiant|[\s_-]??etu)?|n\.[\s_-]??etu?|matricule)$/i,
 
-    // Match : login, login ent, login_ent, loginent, id, ident, identifiant,
+    // Match: login, login ent, login_ent, loginent, id, ident, identifiant,
     // user, username, user_name, pseudo, compte,
-    // ainsi que toute chaîne contenant "ent" ou "ldap" entouré d'espaces ou d'underscores
-    // (ex : " ent", "_ent", " ent ", "_ent_", etc.)
+    // as well as any string containing "ent" or "ldap" surrounded by spaces or underscores
+    // (e.g.: " ent", "_ent", " ent ", "_ent_", etc.)
     loginENT: /^(login([\s_-]??ent)?|id(entifiant)?|user([\s_-]??name)?|pseudo|compte|.*[\s_-]??ent[\s_-]??.*|.*[\s_-]??ldap[\s_-]??.*)$/i,
 
-    // Match :
+    // Match:
     // 'nom', 'nom_de_famille', 'nom de famille', 'lastname', 'familyname', 'family_name', 'name'
-    // Ne match jamais une chaîne contenant uniquement 'prénom'
+    // Never matches a string containing only 'prénom'
     nom: /^(nom([\s_-]??de[\s_-]??famille)?|lastname|family[\s_-]??name|name)$/i,
 
-    // Match :
+    // Match:
     // 'prénom', 'prenom', 'prénom usuel', 'prenom_usuel', 'first name', 'first_name', 'given name', 'given_name'
     prenom: /^(pr[eé]nom([\s_-]??usuel)?|first[\s_-]??name|given[\s_-]??name|surname)$/i,
 
@@ -64,18 +64,18 @@ const DATA_REGEX = {
 };
 
 /**
- * Tente de faire correspondre un en-tête de fichier avec un en-tête attendu via Regex.
- * @param {string} cellHeader - L'en-tête trouvé dans le fichier.
- * @returns {string|null} - La clé canonique (ex: "Numéro") ou null.
+ * Attempts to match a file header with an expected header via Regex.
+ * @param {string} cellHeader - The header found in the file.
+ * @returns {string|null} - The canonical key (e.g., "Numéro") or null.
  */
 function matchHeader(cellHeader) {
     if (!cellHeader) return null;
     const cellHeaderClean = cellHeader.trim();
 
-    // On teste chaque pattern
+    // We test each pattern
     for (const [keyHeader, regex] of Object.entries(HEADER_MATCH_PATTERNS)) {
         if (regex.test(cellHeaderClean)) {
-            // dés que ca match, on retourne la clé
+            // as soon as it matches, we return the key
             return keyHeader;
         }
     }

@@ -3,10 +3,10 @@ const { verifyToken, isAdmin } = require("../middlewares/auth");
 const router = express.Router();
 
 /*****************************************
- *            Méthodes GET
+ *            GET Methods
  *****************************************/
 
-// Récupération de toutes les dispenses
+// Retrieving all exemptions
 router.get("/", (req, res) => {
   let sql = "SELECT * FROM RelationMatiereEleve";
 
@@ -18,10 +18,10 @@ router.get("/", (req, res) => {
 });
 
 /*****************************************
- *            Méthodes POST
+ *            POST Methods
  *****************************************/
 
-//Insertion d'une nouvelle dispense
+// Inserting a new exemption
 router.post("/", verifyToken, isAdmin, (req, res) => {
   let body = req.body;
   let code = body["code"];

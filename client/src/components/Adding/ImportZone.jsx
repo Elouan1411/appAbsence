@@ -25,14 +25,14 @@ import {
 import CustomLoader from "../common/CustomLoader";
 
 function ImportZone({ setRowData, setColDefs, type }) {
-    // Configuration selon le type
+    // Configuration based on type
     const isStudent = type === "student";
 
     const validateData = isStudent ? validateStudentData : validateTeacherData;
     const matchHeader = isStudent ? matchStudentHeader : matchTeacherHeader;
     const expectedHeaders = isStudent ? EXPECTED_STUDENT_HEADERS : EXPECTED_TEACHER_HEADERS;
     const headerDisplayNames = isStudent ? STUDENT_DISPLAY_NAMES : TEACHER_DISPLAY_NAMES;
-    const idField = isStudent ? "numero" : "loginENT"; // Champ clé pour check doublon
+    const idField = isStudent ? "numero" : "loginENT"; // Key field for duplicate check
     const checkIdEndpoint = isStudent ? `${API_URL}/eleve/allID` : `${API_URL}/teacher/allLoginENT`;
 
     const [loading, setLoading] = useState(false);
@@ -78,7 +78,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 let headerName = cell.value?.toString().trim() || "";
 
                 if (!headerName) {
-                    // Logique "Sans nom" (identique à avant)
+                    // "No name" logic (same as before)
                     const column = worksheet.getColumn(colNumber);
                     let hasData = false;
                     column.eachCell((cellData, rowNumber) => {
@@ -166,7 +166,7 @@ function ImportZone({ setRowData, setColDefs, type }) {
                 const errors = validateData(rowItem);
                 rowItem._errors = errors;
 
-                // Check doublon BDD
+                // Check duplicate DB
                 if (rowItem[idField] && existingIds.has(String(rowItem[idField]))) {
                     rowItem._isDuplicate = true;
                 }

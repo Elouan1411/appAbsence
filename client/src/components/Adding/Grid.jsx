@@ -50,7 +50,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
         ];
     }, [colDefs]);
 
-    // --- Règle pour colorer la ligne si c'est un doublon ---
+    // --- Rule to color the row if it's a duplicate ---
     const rowClassRules = useMemo(() => {
         return {
             "row-duplicate-db": (params) => {
@@ -72,7 +72,7 @@ const Grid = ({ rowData, colDefs, gridRef, onRename, onDelete, onDeleteRow, onCe
                 context={{ onRename, onDelete, onDeleteRow }}
                 onCellValueChanged={onCellValueChanged}
                 tooltipShowDelay={600}
-                // Ajout de la règle CSS pour les lignes
+                // Adding the CSS rule for the rows
                 rowClassRules={rowClassRules}
                 localeText={AG_GRID_LOCALE_FR}
                 autoSizeStrategy={isMobile ? { type: "fitCellContents" } : undefined}

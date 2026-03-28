@@ -3,10 +3,10 @@ const db = require("../database/db");
 const router = express.Router();
 
 /*****************************************
- *            Méthodes GET
+ *            GET Methods
  *****************************************/
 
-// Récuperer les differentes promos
+// Retrieving the different promos
 router.get("/promo", (req, res) => {
     let sql = "SELECT DISTINCT promo FROM Eleve";
     db.all(sql, [], (err, rows) => {
@@ -15,7 +15,7 @@ router.get("/promo", (req, res) => {
     });
 });
 
-// Récuperer les groupes de TD/TP en fonction d'un group et d'une promo
+// Retrieving TD/TP groups based on a group and a promo
 router.get("/groups/:promo/:pair", (req, res) => {
     let promo = req.params.promo;
     let pair = req.params.pair;
@@ -67,7 +67,7 @@ router.post("/:pair", (req, res) => {
     });
 });
 
-// Récupération des élèves appartenant à une association TD/TP
+// Retrieving students belonging to a TD/TP association
 router.get("/TDTP/:pair", (req, res) => {
     let body = req.body;
     let pair = req.params.pair.substring(1);
@@ -126,7 +126,7 @@ router.get("/TDTP/:pair", (req, res) => {
     });
 });
 
-//Récupération des étudiants appartenant un groupe de TP donné
+// Retrieving students belonging to a given TP group
 router.get("/tp/:pair", (req, res) => {
     let body = req.body;
     let pair = req.params.pair.substring(1);

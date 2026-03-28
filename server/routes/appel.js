@@ -9,10 +9,10 @@ const router = express.Router();
 const db = require("../database/db");
 
 /*****************************************
- *             Méthodes GET
+ *             GET Methods
  *****************************************/
 
-//Sélection de tous les appels
+// Selecting all calls
 router.get("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const sql = "SELECT * FROM Appel";
   db.all(sql, [], (err, rows) => {
@@ -22,7 +22,7 @@ router.get("/", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
-//Séletion des appels de tous les enseignant 
+// Selecting calls from all teachers 
 router.get("/all", verifyToken, isAdmin, (req, res) => {
     const sql = "SELECT idAppel, debut, fin, loginProfesseur, Professeur.nom, Professeur.prenom, libelle, Appel.codeMatiere, Appel.promo, groupeTD, groupeTP FROM Appel JOIN Matiere ON Appel.codeMatiere = Matiere.code JOIN Professeur ON Appel.loginProfesseur = Professeur.loginENT";
     db.all(sql, [], (err, rows) => {
@@ -31,7 +31,7 @@ router.get("/all", verifyToken, isAdmin, (req, res) => {
     });
 })
 
-//Sélection des appels d'un enseignant
+// Selecting a teacher's calls
 router.get("/:login", verifyToken, isAdminOrTeacher, (req, res) => {
   let login = req.params.login.substring(1);
   const sql =
@@ -82,7 +82,7 @@ router.get("/recent/:login", verifyToken, isAdminOrTeacher, (req, res) => {
 });
 
 
-//Sélection des informations d'un appel à partir d'un id d'appel
+// Selecting call information from a call id
 router.get("/info/:id", verifyToken, isTeacher, (req, res) => {
   const sql = "SELECT * FROM Appel WHERE idAppel = ?";
 
@@ -103,10 +103,10 @@ router.delete("/:id", verifyToken, isAdminOrTeacher, (req, res) => {
 });
 
 /*****************************************
- *             Méthodes POST
+ *             POST Methods
  *****************************************/
 
-// Publication d'un appel
+// Publishing a call
 router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const { start, end, loginProf, code, promo, groupeTD, groupeTP } = req.body;
   let sql = `INSERT INTO Appel (debut, fin, loginProfesseur, codeMatiere, promo, groupeTD, groupeTP)
@@ -119,7 +119,7 @@ router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
 });
 
 /*****************************************
- *            Méthodes UPDATE
+ *            UPDATE Methods
  *****************************************/
 
 router.put("/presence", verifyToken, isAdmin, (req, res) => {

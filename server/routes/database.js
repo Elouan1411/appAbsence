@@ -11,7 +11,7 @@ router.get("/schema", verifyToken, isAdmin, (req, res) => {
             return res.status(500).json({ error: "Erreur serveur" });
         }
 
-        // Concatener pour créer le fichier sql
+        // Concatenate to create the sql file
         const schema = rows.map((row) => row.sql).join(";\n\n") + ";";
 
         res.setHeader("Content-Type", "application/sql");
@@ -33,7 +33,7 @@ router.get("/dump", verifyToken, isAdmin, async (req, res) => {
 
             let fullDump = "";
 
-            // recup les données d'une table
+            // get data from a table
             const getTableData = (tableName) => {
                 return new Promise((resolve, reject) => {
                     db.all(`SELECT * FROM ${tableName}`, [], (err, rows) => {
@@ -44,14 +44,14 @@ router.get("/dump", verifyToken, isAdmin, async (req, res) => {
             };
 
             for (const table of tables) {
-                fullDump += `-- Structure de la table : ${table.name}\n`;
+                fullDump += `-- Table structure: ${table.name}\n`;
                 fullDump += `${table.sql};\n\n`;
 
                 try {
                     const rows = await getTableData(table.name);
 
                     if (rows.length > 0) {
-                        fullDump += `-- Données de la table : ${table.name}\n`;
+                        fullDump += `-- Table data: ${table.name}\n`;
                         rows.forEach((row) => {
                             const columns = Object.keys(row).join(", ");
                             const values = Object.values(row)
@@ -71,7 +71,7 @@ router.get("/dump", verifyToken, isAdmin, async (req, res) => {
                     }
                 } catch (dataErr) {
                     console.error(`Erreur lors de la récupération des données pour ${table.name}:`, dataErr);
-                    fullDump += `-- Erreur lors de l'export des données pour ${table.name}\n\n`;
+                    fullDump += `-- Error during data export for ${table.name}\n\n`;
                 }
             }
 
@@ -122,7 +122,7 @@ router.get("/xlsx-tables", verifyToken, isAdmin, async (req, res) => {
             for (const table of tables) {
                 try {
                     const rows = await getTableData(table.name);
-                    const sheetName = table.name.substring(0, 31); // eviter bug excel
+                    const sheetName = table.name.substring(0, 31); // prevent excel bug
                     const worksheet = workbook.addWorksheet(sheetName);
 
                     if (rows.length > 0) {

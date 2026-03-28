@@ -3,10 +3,10 @@ const { verifyToken, isAdmin, isAdminOrTeacher } = require("../middlewares/auth"
 const router = express.Router();
 const db = require("../database/db");
 /*****************************************
- *             Méthodes GET
+ *             GET Methods
  *****************************************/
 
-//Récupération de tous les RSE
+// Retrieving all CSRs (RSE)
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql = "SELECT * FROM RSE";
 
@@ -18,7 +18,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 });
 
 const ExcelJS = require("exceljs");
-// Export des étudiants et leurs RSE
+// Exporting students and their CSRs
 router.get("/export", verifyToken, isAdmin, async (req, res) => {
     try {
         const sqlStudents = "SELECT numero, nom, prenom FROM Eleve ORDER BY nom, prenom";
@@ -48,7 +48,7 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
 
         const [students, rseTypes, rseAnnee] = await Promise.all([p1, p2, p3]);
 
-        // Organiser les données RSEAnnee pour un accès facile
+        // Organize RSEAnnee data for easy access
         // Map<studentId, Set<rseCode>>
         const studentRSEMap = {};
         rseAnnee.forEach((row) => {
@@ -61,21 +61,21 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("RSE Etudiants");
 
-        // Création des colonnes
+        // Creating columns
         const columns = [
             { header: "Numéro Etudiant", key: "numero", width: 15 },
             { header: "Nom", key: "nom", width: 20 },
             { header: "Prénom", key: "prenom", width: 20 },
         ];
 
-        // Ajouter une colonne par type de RSE
+        // Adding one column per CSR type
         rseTypes.forEach((rse) => {
             columns.push({ header: rse.libelle, key: `rse_${rse.code}`, width: 15 });
         });
 
         worksheet.columns = columns;
 
-        // Ajouter les données
+        // Adding the data
         students.forEach((student) => {
             const studentRSEs = studentRSEMap[student.numero];
 
@@ -108,17 +108,17 @@ router.get("/export", verifyToken, isAdmin, async (req, res) => {
 });
 
 /*****************************************
- *             Méthodes POST
+ *             POST Methods
  *****************************************/
 
-// Récupération des RSE pour une liste d'étudiants
+// Retrieving CSRs for a list of students
 router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
     const { ids } = req.body;
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
         return res.status(200).json({});
     }
 
-    // Création du tableau -> chaine de placeholder (["?", "?"] -> "?, ?") pour eviter les injections sql
+    // Array creation -> placeholder string (["?", "?"] -> "?, ?") to prevent sql injections
     const placeholders = ids.map(() => "?").join(",");
     const sql = `
         SELECT ra.numeroEtudiant, r.code, r.libelle 
@@ -145,7 +145,7 @@ router.post("/list", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
-//Insertion d'un nouveau RSE
+// Inserting a new CSR
 router.post("/new", verifyToken, isAdmin, (req, res) => {
     const { libelle, number } = req.body;
     let sql = `INSERT INTO RSE (libelle)
@@ -175,7 +175,7 @@ router.post("/new", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-//Insertion d'un RSE pour un étudiant
+// Inserting a CSR for a student
 router.post("/", verifyToken, isAdmin, (req, res) => {
     const { number, code } = req.body;
     const sql = `INSERT INTO RSEAnnee (numeroEtudiant, codeRSE)
@@ -189,9 +189,9 @@ router.post("/", verifyToken, isAdmin, (req, res) => {
 });
 
 /*****************************************
- *            Méthodes DELETE
+ *            DELETE Methods
  *****************************************/
-//Suppression d'un RSE pour un étudiant
+// Deleting a CSR for a student
 router.delete("/", verifyToken, isAdmin, (req, res) => {
     const { id, code } = req.body;
     const sql = `DELETE FROM RSEAnnee WHERE numeroEtudiant = ? AND codeRSE = ?`;
@@ -232,7 +232,7 @@ router.put("/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
             });
     });
 });
-//Insertion d'un nouveau RSE (indépendant)
+// Inserting a new independent CSR
 router.post("/add", verifyToken, isAdmin, (req, res) => {
     const { libelle } = req.body;
     const sql = "INSERT INTO RSE (libelle) VALUES (?)";
@@ -243,7 +243,7 @@ router.post("/add", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// Modification d'un RSE
+// Modifying a CSR
 router.put("/update/:id", verifyToken, isAdmin, (req, res) => {
     const { id } = req.params;
     const { libelle } = req.body;
@@ -255,10 +255,10 @@ router.put("/update/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// Suppression d'un RSE
+// Deleting a CSR
 router.delete("/:id", verifyToken, isAdmin, (req, res) => {
     const { id } = req.params;
-    // On supprime d'abord les associations dans RSEAnnee pour éviter les orphelins (si pas de CASCADE)
+    // First, associations in RSEAnnee are deleted to avoid orphans (if no CASCADE)
     const sqlDeleteAssoc = "DELETE FROM RSEAnnee WHERE codeRSE = ?";
     const sqlDeleteRSE = "DELETE FROM RSE WHERE code = ?";
 

@@ -8,7 +8,7 @@ const { verifyToken, isAdmin } = require("../middlewares/auth");
 const db = require("../database/db");
 
 /*****************************************
- *            Méthodes POST
+ *            POST Methods
  *****************************************/
 
 // Helper to check extensions
@@ -139,7 +139,7 @@ router.post("/upload", (req, res) => {
 });
 
 /*****************************************
- *           Méthodes DELETE
+ *           DELETE Methods
  *****************************************/
 
 const archiver = require("archiver");

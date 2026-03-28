@@ -1,19 +1,19 @@
-# Serveur - Projet L3
+# Server - L3 Project
 
-**Version Node.js conseillée :** v23.11.0
+**Recommended Node.js Version:** v23.11.0
 
-## Lancement (depuis le dossier `/server`)
+## Launch (from the `/server` directory)
 
-* **Développement** (rechargement automatique) : 
+* **Development** (automatic reload): 
 ```bash
 nodemon .
 ```
 
-* **Production** (exécution classique) :
+* **Production** (classic execution):
 ```bash
 node .
 ```
 
 ---
 
-💡 **Note :** Il est possible de lancer le serveur et le client en même temps directement depuis la racine du projet. Les commandes globales (comme `npm run dev` ou `npm run prod`) sont expliquées dans le **`README.md` à la racine**.
+💡 **Note:** It is possible to launch the server and the client simultaneously directly from the project root. Global commands (such as `npm run dev` or `npm run prod`) are explained in the **`README.md` at the root**.

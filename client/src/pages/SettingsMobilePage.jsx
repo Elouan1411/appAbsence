@@ -56,7 +56,7 @@ const SettingMobilePage = () => {
         if (sessionStorage.getItem("pwa_auto_refresh")) {
             sessionStorage.removeItem("pwa_auto_refresh");
             if (isIOS) {
-                // Sur iOS (Apple), on ouvre directement la popup tutoriel après le refresh
+                // On iOS (Apple), we open the tutorial popup directly after the refresh
                 setIsModalOpen(true);
             } else {
                 import("react-hot-toast").then((module) => {
@@ -113,7 +113,7 @@ const SettingMobilePage = () => {
                                 const hasRefreshed = sessionStorage.getItem("pwa_auto_refresh");
 
                                 if (isIOS) {
-                                    // Sur iOS, l'event n'existe pas, refresh inutile
+                                    // On iOS, the event doesn't exist, refresh useless
                                     setIsModalOpen(true);
                                 } else if ((isAndroid || isMobileView) && !hasRefreshed) {
                                     sessionStorage.setItem("pwa_auto_refresh", "true");

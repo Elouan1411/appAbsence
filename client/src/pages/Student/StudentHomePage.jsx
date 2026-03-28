@@ -239,7 +239,7 @@ function StudentHomePage() {
         };
     });
 
-    // sort decroissant
+    // sort descending
     enrichedAbsences.sort((a, b) => b.startDateObj - a.startDateObj);
 
     // group by date
@@ -256,7 +256,7 @@ function StudentHomePage() {
         }
     });
 
-    // sort croissant hours
+    // sort ascending hours
     groupedAbsences.forEach((group) => {
         group.items.sort((a, b) => a.startDateObj - b.startDateObj);
     });

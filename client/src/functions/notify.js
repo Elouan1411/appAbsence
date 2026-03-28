@@ -1,4 +1,4 @@
-import toast from "react-hot-toast"; // ou ton package de toast
+import toast from "react-hot-toast"; // or your toast package
 
 const notify = (message, type) => {
     const options = {
@@ -11,7 +11,7 @@ const notify = (message, type) => {
     } else if (type === "error") {
         toast.error(message, options);
     } else {
-        toast(message, options); // Toast par défaut si type inconnu
+        toast(message, options); // Default toast if unknown type
     }
 };
 

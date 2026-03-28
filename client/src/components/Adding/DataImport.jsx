@@ -50,7 +50,7 @@ function DataImport({ type, openModal, setHasUnsavedImport }) {
     };
     const entityLabel = type === "student" ? "étudiant" : "enseignant";
     const containerClass = type === "student" ? "adding-student-container" : "add-teacher-container";
-    const contentClass = type === "student" ? "content-container" : "add-teacher-content"; // Assure-toi que ces classes existent dans ton CSS
+    const contentClass = type === "student" ? "content-container" : "add-teacher-content"; // Ensure these classes exist in your CSS
 
     const handleInitialDataLoad = async (newRows) => {
         let detectedError = false;

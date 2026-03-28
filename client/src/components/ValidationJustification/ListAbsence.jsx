@@ -4,7 +4,7 @@ import { useUnsaved } from "../../context/UnsavedContext";
 import { useSafeNavigate } from "../../hooks/useSafeNavigate";
 
 function ListAbsence({ creneaux, absencesBySlot }) {
-    // État pour savoir quels créneaux sont ouverts (tableau d'index)
+    // State to know which slots are open (index array)
     const [openIndices, setOpenIndices] = useState([]);
 
     const { hasUnsavedChanges } = useUnsaved();
@@ -13,9 +13,9 @@ function ListAbsence({ creneaux, absencesBySlot }) {
     const toggleAccordion = (index) => {
         setOpenIndices((prev) => {
             if (prev.includes(index)) {
-                return prev.filter((i) => i !== index); // Fermer
+                return prev.filter((i) => i !== index); // Close
             } else {
-                return [...prev, index]; // Ouvrir
+                return [...prev, index]; // Open
             }
         });
     };
@@ -68,7 +68,7 @@ function ListAbsence({ creneaux, absencesBySlot }) {
                             </div>
                         </div>
 
-                        {/* Liste déroulante des absences */}
+                        {/* Dropdown list of absences */}
                         {isOpen && (
                             <>
                                 {notComplete && (

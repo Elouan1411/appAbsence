@@ -493,7 +493,7 @@ function SettingsPage() {
             });
 
             if (response.ok) {
-                // get le nom du fichier depuis le header
+                // get the filename from the header
                 const disposition = response.headers.get("Content-Disposition");
                 let filename = defaultFilename;
                 if (disposition && disposition.indexOf("filename=") !== -1) {

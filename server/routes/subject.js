@@ -4,10 +4,10 @@ const db = require("../database/db");
 const router = express.Router();
 
 /*****************************************
- *             Méthodes GET
+ *             GET Methods
  *****************************************/
 
-//Récupération de toutes les matières
+// Retrieving all subjects
 router.get("/", verifyToken, isAdminOrTeacher, (req, res) => {
   const sql = "SELECT * FROM Matiere";
   db.all(sql, [], (err, rows) => {  
@@ -37,7 +37,7 @@ router.post("/promo", verifyToken, isAdminOrTeacher, (req, res) => {
   });
 });
 
-//Récupération d'une matière spécifique avec son id
+// Retrieving a specific subject with its id
 router.get("/:subjectId", verifyToken, isAdminOrTeacher, (req, res) => {
   const sql = "SELECT * FROM Matiere WHERE code = ?";
   let id = req.params.ID.substring(1);

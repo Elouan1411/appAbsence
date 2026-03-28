@@ -5,7 +5,7 @@ const router = express.Router();
 const auth = require("../routes/ldap");
 const db = require("../database/db");
 const { readEmail } = require("../utils/readEmail");
-const maxAge = 10 * 60 * 60 * 1000; // 10 heures
+const maxAge = 10 * 60 * 60 * 1000; // 10 hours
 
 // Just with Enable_DEV_AUTH = true in .env
 let users = {};
@@ -102,9 +102,9 @@ async function getRole(user) {
 }
 
 /*****************************************
- *            Méthodes GET
+ *            GET Methods
  *****************************************/
-//Récupération des informations de l'utilisateur en fonction de son token
+// Retrieving user information based on their token
 router.get("/", verifyToken, (req, res) => {
     const [login, role] = req.user.pwd.split("-");
 
@@ -116,10 +116,10 @@ router.get("/", verifyToken, (req, res) => {
     });
 });
 /*****************************************
- *            Méthodes POST
+ *            POST Methods
  *****************************************/
 
-//Route pour se connecter
+// Route to connect
 router.post("/login", async (req, res) => {
     const { user, pwd } = req.body;
 
@@ -174,7 +174,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Route pour l'inscription du premier administrateur
+// Route for the registration of the first administrator
 const { isInit } = require("../middlewares/auth");
 router.post("/register-first-admin", verifyToken, isInit, async (req, res) => {
     const { loginENT, nom, prenom } = req.body;
@@ -210,7 +210,7 @@ router.post("/register-first-admin", verifyToken, isInit, async (req, res) => {
     });
 });
 
-//Route pour se déconnecter
+// Route to disconnect
 router.post("/logout", (req, res) => {
     res.cookie("jwt", "", { maxAge: 1 });
     res.status(200).json({ succès: "Déconnecté" });

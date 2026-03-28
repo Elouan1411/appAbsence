@@ -7,7 +7,7 @@ const path = require("path");
 const { validateJustificationInput } = require("../utils/justificationSecurity");
 
 /*****************************************
- *             Méthodes GET
+ *             GET Methods
  *****************************************/
 
 router.get("/absence/:idAbsence", verifyToken, isAdmin, (req, res) => {
@@ -42,7 +42,7 @@ ORDER BY JustificationAbsence.dateDemande DESC`;
         return res.status(200).json(rows);
     });
 });
-//Récupération des nouvelles justifications
+// Retrieving new justifications
 router.get("/new", verifyToken, isAdmin, (req, res) => {
     const sql = `SELECT 
     idAbsJustifiee,
@@ -85,7 +85,7 @@ FROM (
     });
 });
 
-// Récupération de toutes les justifications
+// Retrieving all justifications
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql =
         "SELECT idAbsJustifiee, numeroEtudiant, nom, prenom, debut, fin, motif, validite,  FROM JustificationAbsence, Eleve WHERE JustificationAbsence.numeroEtudiant = Eleve.numero";
@@ -95,7 +95,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
         res.json(rows);
     });
 });
-//Récupération des documents justificatifs d'une justification
+// Retrieving justification documents for a justification
 router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
     const ID = req.params.id;
     fs.readdir("./upload/justification", (err, files) => {
@@ -111,7 +111,7 @@ router.get("/documents/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// Téléchargement d'un justificatif avec renommage pour l'étudiant
+// Downloading a justification document with renaming for the student
 router.get("/download/:filename", verifyToken, (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(__dirname, "../upload/justification", filename);
@@ -177,7 +177,7 @@ router.get("/download/:filename", verifyToken, (req, res) => {
     });
 });
 
-// Récupération d'une justification particulière
+// Retrieving a specific justification
 router.get("/:id", verifyToken, (req, res) => {
     const ID = req.params.id;
     let result = [];
@@ -215,7 +215,7 @@ router.get("/:id", verifyToken, (req, res) => {
     });
 });
 
-//Récupération d'une justification particulière côté admin
+// Retrieving a specific justification on the admin side
 router.get("/admin/:id", verifyToken, isAdmin, (req, res) => {
     const ID = req.params.id;
     let result = [];
@@ -240,7 +240,7 @@ router.get("/admin/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-//Récupération de toutes les absences à partir d'un login
+// Retrieving all absences from a login
 router.get("/login/:id", verifyToken, isAdminOrOwner, (req, res) => {
     const sql = "SELECT * FROM JustificationAbsence WHERE login = ?";
     db.all(sql, [login], (err, rows) => {
@@ -250,7 +250,7 @@ router.get("/login/:id", verifyToken, isAdminOrOwner, (req, res) => {
     });
 });
 
-//Récupération des absences qui correspondent à un filtre
+// Retrieving absences that match a filter
 router.get("/filter", verifyToken, isAdmin, (req, res) => {
     let body = req.body;
 
@@ -294,7 +294,7 @@ router.get("/filter", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// Récuperer les justifications d'un etudiant pour une periode données ainsi que ca validité
+// Retrieving a student's justifications for a given period as well as its validity
 router.post("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) => {
     let body = req.body;
     let userLogins = body.studentIds;
@@ -322,11 +322,10 @@ router.post("/rollCallJustification", verifyToken, isAdminOrTeacher, (req, res) 
 });
 
 /*****************************************
- *             Méthodes POST
+ *             POST Methods
  *****************************************/
 
-//Publication d'une justification
-//Publication d'une justification
+// Publishing a justification
 router.post("/", verifyToken, (req, res) => {
     let body = req.body;
     let userLogin = req.user.pwd.split("-")[0];
@@ -378,7 +377,7 @@ router.post("/", verifyToken, (req, res) => {
                 AND (debut < ? AND fin > ?)
             `;
 
-            // On regarde si ya deja des justifications refusées sur cette periode
+            // Checking if there are already refused justifications on this period
             const refusedOverlapSql = `
                 SELECT idAbsJustifiee 
                 FROM JustificationAbsence 
@@ -434,11 +433,11 @@ router.post("/", verifyToken, (req, res) => {
                                 console.error("Error deleting justifications:", err);
                                 return res.status(500).json(err.message);
                             }
-                            // Et on insère la nouvelle
+                            // And inserting the new one
                             insertNewJustification();
                         });
                     } else {
-                        // Sinon on cree une nouvelle justification normalement
+                        // Otherwise create a new justification normally
                         insertNewJustification();
                     }
                 });
@@ -451,14 +450,14 @@ router.post("/", verifyToken, (req, res) => {
 });
 
 /*****************************************
- *           Méthodes UPDATE
+ *           UPDATE Methods
  *****************************************/
-// Validation rapide d'une absence (crée et valide en une seule action)
+// Fast validation of an absence (create and validate in a single action)
 router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, res) => {
     const idAbsence = req.params.idAbsence;
     const { motif = "Justification validée par l'enseignant" } = req.body;
 
-    // Récupérer les informations de l'absence
+    // Retrieving absence information
     const getAbsenceSql = `
         SELECT A.numeroEtudiant, A.login, Ap.debut, Ap.fin
         FROM Absence A
@@ -475,7 +474,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
             return res.status(404).json({ error: "Absence non trouvée" });
         }
 
-        // Vérifier si une justification existe déjà
+        // Checking if a justification already exists
         const checkJustifSql = `SELECT idAbsJustifiee, validite FROM JustificationAbsence WHERE idAbsJustifiee = ?`;
 
         db.get(checkJustifSql, [idAbsence], (err, existingJustif) => {
@@ -485,7 +484,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
             }
 
             if (existingJustif) {
-                // Si une justification existe, la mettre à jour
+                // If a justification exists, updating it
                 const updateSql = `UPDATE JustificationAbsence SET validite = 0, motifValidite = ? WHERE idAbsJustifiee = ?`;
                 db.run(updateSql, [motif, idAbsence], (err) => {
                     if (err) {
@@ -495,7 +494,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
                     return res.status(200).json({ message: "Absence marquée comme justifiée" });
                 });
             } else {
-                // Sinon, créer une nouvelle justification
+                // Otherwise, creating a new justification
                 const insertSql = `
                     INSERT INTO JustificationAbsence (idAbsJustifiee, numeroEtudiant, login, debut, fin, motif, validite, motifValidite, dateDemande)
                     VALUES (?, ?, ?, ?, ?, ?, 0, ?, datetime('now'))
@@ -513,7 +512,7 @@ router.post("/quick-validate/:idAbsence", verifyToken, isAdminOrTeacher, (req, r
     });
 });
 
-// Validation d'une justification
+// Validating a justification
 router.put("/validate/:id", verifyToken, isAdmin, (req, res) => {
     let id = req.params.id;
     let body = req.body;
@@ -536,7 +535,7 @@ router.put("/validate/:id", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-//Mise à jour d'une justification
+// Updating a justification
 
 router.put("/:id", verifyToken, (req, res) => {
     let body = req.body;
@@ -597,9 +596,9 @@ router.put("/:id", verifyToken, (req, res) => {
 });
 
 /*****************************************
- *           Méthodes DELETE
+ *           DELETE Methods
  *****************************************/
-//Suppression justification
+// Deleting justification
 router.delete("/:id", verifyToken, (req, res) => {
     let id = req.params.id;
     const checkSql = `

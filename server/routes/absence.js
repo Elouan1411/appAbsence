@@ -5,7 +5,7 @@ const db = require("../database/db");
 const { isAdminOrOwner, isAdminOrTeacher, verifyToken, isAdmin } = require("../middlewares/auth");
 
 /*****************************************
- *            Méthodes GET
+ *            GET Methods
  *****************************************/
 
 router.get("/all", verifyToken, isAdmin, (req, res) => {
@@ -54,7 +54,7 @@ router.get("/dates", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-//Récupération de toutes les absences
+// Retrieving all absences
 router.get("/", verifyToken, isAdmin, (req, res) => {
     const sql = `
     SELECT A.*, Ap.debut, Ap.fin, Ap.codeMatiere, Ap.loginProfesseur 
@@ -105,7 +105,7 @@ router.get("/detail/:idAbsence", verifyToken, isAdmin, (req, res) => {
     });
 });
 
-// Récupération des absences concernant un login
+// Retrieving absences concerning a login
 router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
 
@@ -132,7 +132,7 @@ router.get("/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     });
 });
 
-// Récupération des absences n'ayant pas de justificatif
+// Retrieving absences without justification document
 router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
     const page = parseInt(req.query.page) || 1;
@@ -248,7 +248,7 @@ router.get("/unjustified/:login", verifyToken, isAdminOrOwner("login"), (req, re
     });
 });
 
-// Récupération des absences n'ayant pas de justificatif (en cours)
+// Retrieving absences without justification document (in progress)
 router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
     const page = parseInt(req.query.page) || 1;
@@ -360,7 +360,7 @@ router.get("/in-progress/:login", verifyToken, isAdminOrOwner("login"), (req, re
     });
 });
 
-// Récupération des absences archivées (validées ou refusées)
+// Retrieving archived absences (validated or refused)
 router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) => {
     const login = req.params.login.substring(1);
     const page = parseInt(req.query.page) || 1;
@@ -473,7 +473,7 @@ router.get("/archived/:login", verifyToken, isAdminOrOwner("login"), (req, res) 
     });
 });
 
-//Récupération de l'historique des absences pour un professeur (avec détails)
+// Retrieving the history of absences for a teacher (with details)
 router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     let loginProf = req.params.login.substring(1);
     const sql = `
@@ -509,7 +509,7 @@ router.get("/history/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
-//Récupération des absences pour un professeur donné
+// Retrieving absences for a given teacher
 router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     const loginProf = req.params.login.substring(1);
 
@@ -533,7 +533,7 @@ router.get("/teacher/:login", verifyToken, isAdminOrTeacher, (req, res) => {
     });
 });
 
-// Récupération des absences d'un appel spécifique
+// Retrieving absences of a specific call
 router.get("/appel/:idAppel", verifyToken, isAdminOrTeacher, (req, res) => {
     const { idAppel } = req.params;
 
@@ -546,10 +546,10 @@ router.get("/appel/:idAppel", verifyToken, isAdminOrTeacher, (req, res) => {
 });
 
 /*****************************************
- *            Méthodes POST
+ *            POST Methods
  *****************************************/
 
-// Insertion d'une nouvelle absence
+// Inserting a new absence
 router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
     const { number, idAppel, login } = req.body;
 
@@ -568,10 +568,10 @@ router.post("/", verifyToken, isAdminOrTeacher, (req, res) => {
 });
 
 /*****************************************
- *            Méthodes DELETE
+ *            DELETE Methods
  *****************************************/
 
-// Suppression d'une absence
+// Deleting an absence
 router.delete("/", verifyToken, isAdminOrTeacher, (req, res) => {
     const { id, idAppel } = req.body;
 
@@ -609,7 +609,7 @@ router.get("/allID/:numeroEtudiant", verifyToken, isAdmin, (req, res) => {
 });
 
 /*****************************************
- *            Méthodes UPDATE
+ *            UPDATE Methods
  *****************************************/
 
 router.put("/:id", verifyToken, isAdmin, (req, res) => {
