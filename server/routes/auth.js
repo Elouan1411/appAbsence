@@ -13,7 +13,6 @@ users["etudiant"] = { password: 1234, role: "student" };
 users["apierrot"] = { password: 1234, role: "admin" };
 users["fdadeau"] = { password: 1234, role: "teacher" };
 users["prof"] = { password: 1234, role: "teacher" };
-//
 
 /**
  * Check if the user has an account
